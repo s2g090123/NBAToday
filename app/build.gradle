@@ -72,7 +72,8 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutine_version"
 
     // retrofit
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
 
     // room
     implementation "androidx.room:room-runtime:$room_version"
@@ -84,4 +85,7 @@ dependencies {
 
     // coil
     implementation "io.coil-kt:coil-compose:2.2.2"
+
+    // gson
+    implementation 'com.google.code.gson:gson:2.10'
 }
