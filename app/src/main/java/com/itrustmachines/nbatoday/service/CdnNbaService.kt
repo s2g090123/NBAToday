@@ -5,5 +5,5 @@ import retrofit2.http.GET
 
 interface CdnNbaService {
     @GET("static/json/staticData/scheduleLeagueV2_32.json")
-    fun getScheduleLeague(): Schedule?
+    suspend fun getScheduleLeague(): Schedule?
 }
