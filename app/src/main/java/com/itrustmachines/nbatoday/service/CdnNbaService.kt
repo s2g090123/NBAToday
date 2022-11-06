@@ -1,6 +1,6 @@
 package com.itrustmachines.nbatoday.service
 
-import com.itrustmachines.nbatoday.data.schedule.Schedule
+import com.itrustmachines.nbatoday.data.remote.Schedule
 import retrofit2.http.GET
 
 interface CdnNbaService {

@@ -1,4 +1,4 @@
-package com.itrustmachines.nbatoday.ui.theme
+package com.itrustmachines.nbatoday.compose.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle

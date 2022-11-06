@@ -1,7 +1,6 @@
 package com.itrustmachines.nbatoday.data.remote
 
 import com.google.gson.GsonBuilder
-import com.itrustmachines.nbatoday.data.schedule.Schedule
 import com.itrustmachines.nbatoday.service.CdnNbaService
 import com.itrustmachines.nbatoday.service.StatsNbaService
 import retrofit2.Retrofit

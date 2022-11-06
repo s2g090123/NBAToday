@@ -1,7 +1,7 @@
-package com.itrustmachines.nbatoday.data.schedule
-
+package com.itrustmachines.nbatoday.data.remote
 
 import com.google.gson.annotations.SerializedName
+import com.itrustmachines.nbatoday.data.local.NbaGame
 
 data class Schedule(
     @SerializedName("leagueSchedule") val leagueSchedule: LeagueSchedule?
@@ -60,7 +60,20 @@ data class Schedule(
                     val teamTricode: String?, // 隊伍縮寫名稱, e.g. LAC
                     @SerializedName("wins")
                     val wins: Int? // 勝場場次(從這場之前), e.g. 2
-                )
+                ) {
+                    fun toNbaAwayTeam(): NbaGame.NbaAwayTeam? {
+                        val losses = losses ?: return null
+                        val score = score ?: return null
+                        val teamCity = teamCity ?: return null
+                        val teamId = teamId ?: return null
+                        val teamName = teamName ?: return null
+                        val teamTricode = teamTricode ?: return null
+                        val wins = wins ?: return null
+                        return NbaGame.NbaAwayTeam(
+                            losses, score, teamCity, teamId, teamName, teamTricode, wins
+                        )
+                    }
+                }
 
                 data class HomeTeam(
                     @SerializedName("losses")
@@ -77,7 +90,20 @@ data class Schedule(
                     val teamTricode: String?,
                     @SerializedName("wins")
                     val wins: Int?
-                )
+                ) {
+                    fun toNbaHomeTeam(): NbaGame.NbaHomeTeam? {
+                        val losses = losses ?: return null
+                        val score = score ?: return null
+                        val teamCity = teamCity ?: return null
+                        val teamId = teamId ?: return null
+                        val teamName = teamName ?: return null
+                        val teamTricode = teamTricode ?: return null
+                        val wins = wins ?: return null
+                        return NbaGame.NbaHomeTeam(
+                            losses, score, teamCity, teamId, teamName, teamTricode, wins
+                        )
+                    }
+                }
 
                 data class PointsLeader(
                     @SerializedName("firstName")
@@ -94,8 +120,56 @@ data class Schedule(
                     val teamName: String?, // 球員所屬球隊名稱, e.g. Thunder
                     @SerializedName("teamTricode")
                     val teamTricode: String? // 球員所屬球隊縮寫名稱, e.g. OKC
-                )
+                ) {
+                    fun toNbaPointsLeader(): NbaGame.NbaPointsLeader? {
+                        val firstName = firstName ?: return null
+                        val lastName = lastName ?: return null
+                        val personId = personId ?: return null
+                        val points = points ?: return null
+                        val teamId = teamId ?: return null
+                        val teamName = teamName ?: return null
+                        val teamTricode = teamTricode ?: return null
+                        return NbaGame.NbaPointsLeader(
+                            firstName, lastName, personId, points, teamId, teamName, teamTricode
+                        )
+                    }
+                }
             }
+        }
+
+        fun toNbaGames(): List<NbaGame> {
+            val leagueId = leagueId ?: return emptyList()
+            val seasonYear = seasonYear ?: return emptyList()
+            val games = mutableListOf<NbaGame>()
+            gameDates?.forEach {
+                val nbaGameDate = it?.gameDate?.let { date ->
+                    NbaGame.NbaGameDate(seasonYear, date)
+                } ?: return@forEach
+                it.games?.mapNotNull { game ->
+                    game ?: return@mapNotNull null
+                    val awayTeam = game.awayTeam?.toNbaAwayTeam() ?: return@mapNotNull null
+                    val homeTeam = game.homeTeam?.toNbaHomeTeam() ?: return@mapNotNull null
+                    val pointsLeaders = game.pointsLeaders?.mapNotNull { leader ->
+                        leader?.toNbaPointsLeader()
+                    } ?: return@mapNotNull null
+                    val day = game.day ?: return@mapNotNull null
+                    val gameCode = game.gameCode ?: return@mapNotNull null
+                    val gameId = game.gameId ?: return@mapNotNull null
+                    val gameStatusText = game.gameStatusText ?: return@mapNotNull null
+                    val gameSequence = game.gameSequence ?: return@mapNotNull null
+                    val homeTeamTime = game.homeTeamTime ?: return@mapNotNull null
+                    val monthNum = game.monthNum ?: return@mapNotNull null
+                    val weekNumber = game.weekNumber ?: return@mapNotNull null
+                    NbaGame(
+                        leagueId, nbaGameDate, awayTeam, day,
+                        gameCode, gameId, gameStatusText, gameSequence,
+                        homeTeam, homeTeamTime, monthNum, pointsLeaders, weekNumber
+                    )
+                }?.also { nbaGames ->
+                    games.addAll(nbaGames)
+                }
+            }
+            return games
         }
     }
 }
