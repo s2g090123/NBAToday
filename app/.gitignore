@@ -1,12 +1,1 @@
 /build
-
-# Android Studio
-*.iml
-.idea
-.gradle
-build/
-keystore.properties
-*.patch
-*.keystore
-gradle/wrapper/gradle-wrapper.properties
-*.apk
