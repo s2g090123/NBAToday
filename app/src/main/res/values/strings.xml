@@ -2,4 +2,5 @@
     <string name="app_name">NBAToday</string>
 
     <string name="is_loading_app">資料載入中…</string>
+    <string name="home_bottom_schedule">賽程</string>
 </resources>

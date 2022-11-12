@@ -1,7 +1,9 @@
 package com.jiachian.nbatoday
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,6 +21,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Observer
+import androidx.lifecycle.asLiveData
+import com.jiachian.nbatoday.compose.screen.home.HomeScreen
+import com.jiachian.nbatoday.compose.state.NbaState
 import com.jiachian.nbatoday.compose.theme.NBATodayTheme
 import com.jiachian.nbatoday.utils.LocalActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -35,17 +41,30 @@ class MainActivity : ComponentActivity() {
                 LocalTextStyle provides LocalTextStyle.current.copy(textDirection = TextDirection.Ltr),
                 LocalActivity provides this
             ) {
-
-            }
-            NBATodayTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
-                    NbaScreen(viewModel)
+                NBATodayTheme {
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.colors.primary
+                    ) {
+                        NbaScreen(viewModel)
+                    }
                 }
             }
         }
+
+        observeData()
+    }
+
+    private fun observeData() {
+        viewModel.eventFlow.asLiveData().observe(this, Observer(this::onEvent))
+    }
+
+    private fun onEvent(event: MainViewModel.Event?) {
+        when (event) {
+            MainViewModel.Event.Exit -> finish()
+            else -> {}
+        }
+        viewModel.onEventConsumed(event)
     }
 }
 
@@ -75,11 +94,24 @@ private fun SplashScreen() {
     }
 }
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 private fun MainScreen(
     viewModel: MainViewModel
 ) {
-    Scaffold() {
+    val currentState by viewModel.currentState.collectAsState()
+    val stateStack by viewModel.stateStack.collectAsState()
+    Scaffold {
+        stateStack.forEach { state ->
+            when (state) {
+                is NbaState.Home -> {
+                    HomeScreen(state.viewModel)
+                }
+            }
+        }
+    }
 
+    BackHandler {
+        viewModel.backState()
     }
 }
