@@ -8,7 +8,7 @@ android {
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.itrustmachines.nbatoday"
+        applicationId "com.jiachian.nbatoday"
         minSdk 21
         targetSdk 32
         versionCode 1
