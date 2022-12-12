@@ -1,17 +1,14 @@
 package com.jiachian.nbatoday.data.remote
 
 import com.google.gson.GsonBuilder
+import com.jiachian.nbatoday.CDN_BASE_URL
+import com.jiachian.nbatoday.STATS_BASE_URL
 import com.jiachian.nbatoday.service.CdnNbaService
 import com.jiachian.nbatoday.service.StatsNbaService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class NbaRemoteDataSource : RemoteDataSource() {
-
-    companion object {
-        private const val CDN_BASE_URL = "https://cdn.nba.com/"
-        private const val STATS_BASE_URL = "https://stats.nba.com/"
-    }
 
     private val cdnGson = GsonBuilder().create()
     private val statsGson = GsonBuilder().create()

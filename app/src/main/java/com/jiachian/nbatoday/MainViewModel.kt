@@ -14,7 +14,7 @@ import kotlinx.coroutines.withContext
 
 class MainViewModel(
     private val repository: BaseRepository,
-    private val initState: NbaState = NbaState.Home(HomeViewModel()),
+    private val initState: NbaState = NbaState.Home(HomeViewModel(repository)),
     private val eventManager: EventManager<Event> = EventManager()
 ) : ViewModel(), EventBroadcaster<MainViewModel.Event> by eventManager {
 

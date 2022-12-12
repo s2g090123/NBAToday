@@ -1,7 +1,11 @@
 package com.jiachian.nbatoday.data.remote
 
+import android.annotation.SuppressLint
+import androidx.room.ColumnInfo
 import com.google.gson.annotations.SerializedName
 import com.jiachian.nbatoday.data.local.NbaGame
+import java.text.SimpleDateFormat
+import java.util.*
 
 data class Schedule(
     @SerializedName("leagueSchedule") val leagueSchedule: LeagueSchedule?
@@ -36,8 +40,10 @@ data class Schedule(
                 val gameSequence: Int?, // 今天的第幾場比賽(起始為1), e.g. 1
                 @SerializedName("homeTeam")
                 val homeTeam: HomeTeam?,
-                @SerializedName("homeTeamTime")
-                val homeTeamTime: String?, // 比賽開始時間, e.g. 2022-10-30T12:00:00Z
+                @ColumnInfo(name = "gameDateEst")
+                val gameDateEst: String?, // 比賽開始日期(固定為00:00), e.g. 2022-11-20T00:00:00Z
+                @SerializedName("gameDateTimeEst")
+                val gameDateTimeEst: String?, // 比賽開始時間, e.g. 2022-10-30T12:00:00Z
                 @SerializedName("monthNum")
                 val monthNum: Int?, // 月份, e.g. 10
                 @SerializedName("pointsLeaders")
@@ -137,15 +143,15 @@ data class Schedule(
             }
         }
 
+        @SuppressLint("SimpleDateFormat")
         fun toNbaGames(): List<NbaGame> {
             val leagueId = leagueId ?: return emptyList()
-            val seasonYear = seasonYear ?: return emptyList()
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").apply {
+                timeZone = TimeZone.getTimeZone("EST")
+            }
             val games = mutableListOf<NbaGame>()
             gameDates?.forEach {
-                val nbaGameDate = it?.gameDate?.let { date ->
-                    NbaGame.NbaGameDate(seasonYear, date)
-                } ?: return@forEach
-                it.games?.mapNotNull { game ->
+                it?.games?.mapNotNull { game ->
                     game ?: return@mapNotNull null
                     val awayTeam = game.awayTeam?.toNbaAwayTeam() ?: return@mapNotNull null
                     val homeTeam = game.homeTeam?.toNbaHomeTeam() ?: return@mapNotNull null
@@ -157,13 +163,25 @@ data class Schedule(
                     val gameId = game.gameId ?: return@mapNotNull null
                     val gameStatusText = game.gameStatusText ?: return@mapNotNull null
                     val gameSequence = game.gameSequence ?: return@mapNotNull null
-                    val homeTeamTime = game.homeTeamTime ?: return@mapNotNull null
+                    val gameDate = game.gameDateEst?.let { time ->
+                        try {
+                            dateFormat.parse(time)
+                        } catch (e: Exception) {
+                            null
+                        }
+                    } ?: return@mapNotNull null
+                    val gameDateTime = game.gameDateTimeEst?.let { time ->
+                        try {
+                            dateFormat.parse(time)
+                        } catch (e: Exception) {
+                            null
+                        }
+                    } ?: return@mapNotNull null
                     val monthNum = game.monthNum ?: return@mapNotNull null
                     val weekNumber = game.weekNumber ?: return@mapNotNull null
                     NbaGame(
-                        leagueId, nbaGameDate, awayTeam, day,
-                        gameCode, gameId, gameStatusText, gameSequence,
-                        homeTeam, homeTeamTime, monthNum, pointsLeaders, weekNumber
+                        leagueId, awayTeam, day, gameCode, gameId, gameStatusText, gameSequence,
+                        homeTeam, gameDate, gameDateTime, monthNum, pointsLeaders, weekNumber
                     )
                 }?.also { nbaGames ->
                     games.addAll(nbaGames)

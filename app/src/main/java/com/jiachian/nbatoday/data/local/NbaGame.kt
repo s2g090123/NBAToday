@@ -3,13 +3,12 @@ package com.jiachian.nbatoday.data.local
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.util.*
 
 @Entity(tableName = "nba_game")
 data class NbaGame(
     @ColumnInfo(name = "league_id")
     val leagueId: String, // 聯盟id, e.g. 00
-    @ColumnInfo(name = "game_date")
-    val gameDate: NbaGameDate, // 比賽日期，時間都12:00, e.g. 10/30/2022 12:00:00 AM
     @ColumnInfo(name = "away_team")
     val awayTeam: NbaAwayTeam,
     @ColumnInfo(name = "day")
@@ -24,8 +23,10 @@ data class NbaGame(
     val gameSequence: Int, // 今天的第幾場比賽(起始為1), e.g. 1
     @ColumnInfo(name = "home_team")
     val homeTeam: NbaHomeTeam,
-    @ColumnInfo(name = "home_team_time")
-    val homeTeamTime: String, // 比賽開始時間, e.g. 2022-10-30T12:00:00Z
+    @ColumnInfo(name = "game_date")
+    val gameDate: Date, // 比賽開始日期(固定為00:00), e.g. 2022-11-20T00:00:00Z
+    @ColumnInfo(name = "game_date_time")
+    val gameDateTime: Date, // 比賽開始時間, e.g. 2022-11-20T15:30:00Z
     @ColumnInfo(name = "month_num")
     val monthNum: Int, // 月份, e.g. 10
     @ColumnInfo(name = "points_leader")
@@ -33,13 +34,6 @@ data class NbaGame(
     @ColumnInfo(name = "week_number")
     val weekNumber: Int // 系列賽第幾週, e.g. 3
 ) {
-    data class NbaGameDate(
-        @ColumnInfo(name = "season_year")
-        val seasonYear: String, // 賽季年份, e.g. 2022-23
-        @ColumnInfo(name = "game_date")
-        val gameDate: String, // 比賽日期，時間都12:00, e.g. 10/30/2022 12:00:00 AM
-    )
-
     data class NbaAwayTeam(
         @ColumnInfo(name = "losses")
         val losses: Int, // 敗場場次(從這場之前), e.g. 2

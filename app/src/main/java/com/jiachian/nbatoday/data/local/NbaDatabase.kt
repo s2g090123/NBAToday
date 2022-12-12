@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.jiachian.nbatoday.data.local.converter.AwayTeamConverter
-import com.jiachian.nbatoday.data.local.converter.GameDateConverter
+import com.jiachian.nbatoday.data.local.converter.DateConverter
 import com.jiachian.nbatoday.data.local.converter.HomeTeamConverter
 import com.jiachian.nbatoday.data.local.converter.PointsLeaderConverter
 
@@ -15,10 +15,10 @@ import com.jiachian.nbatoday.data.local.converter.PointsLeaderConverter
     version = 1
 )
 @TypeConverters(
-    GameDateConverter::class,
     AwayTeamConverter::class,
     HomeTeamConverter::class,
-    PointsLeaderConverter::class
+    PointsLeaderConverter::class,
+    DateConverter::class
 )
 abstract class NbaDatabase : RoomDatabase() {
 
