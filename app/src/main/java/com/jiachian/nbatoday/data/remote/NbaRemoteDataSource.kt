@@ -5,10 +5,16 @@ import com.jiachian.nbatoday.CDN_BASE_URL
 import com.jiachian.nbatoday.STATS_BASE_URL
 import com.jiachian.nbatoday.service.CdnNbaService
 import com.jiachian.nbatoday.service.StatsNbaService
+import okhttp3.Interceptor
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class NbaRemoteDataSource : RemoteDataSource() {
+
+    companion object {
+        private const val HEADER_STATS_REFER = "https://www.nba.com/"
+    }
 
     private val cdnGson = GsonBuilder().create()
     private val statsGson = GsonBuilder().create()
@@ -20,6 +26,7 @@ class NbaRemoteDataSource : RemoteDataSource() {
     private val statsRetrofit = Retrofit.Builder()
         .baseUrl(STATS_BASE_URL)
         .addConverterFactory(GsonConverterFactory.create(statsGson))
+        .client(buildStatsOkHttpClient())
         .build()
 
     val cdnService by lazy {
@@ -31,5 +38,19 @@ class NbaRemoteDataSource : RemoteDataSource() {
 
     override suspend fun getSchedule(): Schedule? {
         return cdnService.getScheduleLeague()
+    }
+
+    private fun buildStatsOkHttpClient(): OkHttpClient {
+        return OkHttpClient.Builder()
+            .addInterceptor(
+                Interceptor { chain ->
+                    val request = chain.request()
+                        .newBuilder()
+                        .addHeader("Refer", HEADER_STATS_REFER)
+                        .build()
+                    chain.proceed(request)
+                }
+            )
+            .build()
     }
 }
