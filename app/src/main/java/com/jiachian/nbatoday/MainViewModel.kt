@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.jiachian.nbatoday.compose.screen.home.HomeViewModel
 import com.jiachian.nbatoday.compose.state.NbaState
 import com.jiachian.nbatoday.data.BaseRepository
+import com.jiachian.nbatoday.data.datastore.NbaDataStore
 import com.jiachian.nbatoday.event.EventBroadcaster
 import com.jiachian.nbatoday.event.EventManager
 import kotlinx.coroutines.Dispatchers
@@ -14,6 +15,7 @@ import kotlinx.coroutines.withContext
 
 class MainViewModel(
     private val repository: BaseRepository,
+    private val dataStore: NbaDataStore,
     private val initState: NbaState = NbaState.Home(HomeViewModel(repository)),
     private val eventManager: EventManager<Event> = EventManager()
 ) : ViewModel(), EventBroadcaster<MainViewModel.Event> by eventManager {
