@@ -14,7 +14,7 @@ class NbaLocalDataSource(
         return dao.getGamesDuring(from, to)
     }
 
-    override fun insertGames(games: List<NbaGame>) {
+    override suspend fun insertGames(games: List<NbaGame>) {
         dao.insertGames(games)
     }
 }

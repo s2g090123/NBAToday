@@ -11,5 +11,5 @@ abstract class LocalDataSource {
 
     abstract fun getGamesDuring(from: Long, to: Long): Flow<List<NbaGame>>
 
-    abstract fun insertGames(games: List<NbaGame>)
+    abstract suspend fun insertGames(games: List<NbaGame>)
 }

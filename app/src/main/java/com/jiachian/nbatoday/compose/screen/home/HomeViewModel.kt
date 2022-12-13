@@ -1,6 +1,7 @@
 package com.jiachian.nbatoday.compose.screen.home
 
 import android.text.format.DateUtils
+import com.jiachian.nbatoday.SCHEDULE_DATE_RANGE
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.data.BaseRepository
 import com.jiachian.nbatoday.utils.NbaUtils
@@ -12,10 +13,6 @@ import java.util.*
 class HomeViewModel(
     repository: BaseRepository
 ) : ComposeViewModel() {
-
-    companion object {
-        private const val SCHEDULE_DATE_RANGE = 10
-    }
 
     private val coroutineScope = CoroutineScope(Dispatchers.Unconfined)
 

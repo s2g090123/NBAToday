@@ -20,6 +20,6 @@ interface NbaDao {
     @Query("SELECT DISTINCT game_date FROM nba_game")
     fun getDates(): Flow<List<Date>>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertGames(games: List<NbaGame>)
+    @Insert(entity = NbaGame::class, onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertGames(games: List<NbaGame>)
 }
