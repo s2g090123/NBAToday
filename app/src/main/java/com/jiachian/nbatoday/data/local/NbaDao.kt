@@ -1,9 +1,7 @@
 package com.jiachian.nbatoday.data.local
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
+import com.jiachian.nbatoday.data.remote.game.GameUpdateData
 import kotlinx.coroutines.flow.Flow
 import java.util.*
 
@@ -20,6 +18,12 @@ interface NbaDao {
     @Query("SELECT DISTINCT game_date FROM nba_game")
     fun getDates(): Flow<List<Date>>
 
+    @Query("SELECT EXISTS (SELECT 1 FROM nba_game)")
+    fun exitsData(): Boolean
+
     @Insert(entity = NbaGame::class, onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertGames(games: List<NbaGame>)
+
+    @Update(entity = NbaGame::class, onConflict = OnConflictStrategy.REPLACE)
+    suspend fun updateGame(status: List<GameUpdateData>)
 }

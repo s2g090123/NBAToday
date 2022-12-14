@@ -1,6 +1,6 @@
 package com.jiachian.nbatoday.service
 
-import com.jiachian.nbatoday.data.remote.Schedule
+import com.jiachian.nbatoday.data.remote.game.Schedule
 import retrofit2.http.GET
 
 interface CdnNbaService {

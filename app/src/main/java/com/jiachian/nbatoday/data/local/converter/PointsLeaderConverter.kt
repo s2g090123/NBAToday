@@ -7,14 +7,14 @@ import com.jiachian.nbatoday.data.local.NbaGame
 
 class PointsLeaderConverter {
     @TypeConverter
-    fun fromPointsLeader(value: List<NbaGame.NbaPointsLeader>): String {
+    fun from(value: List<NbaGame.NbaPointsLeader>): String {
         val gson = Gson()
         val type = object : TypeToken<List<NbaGame.NbaPointsLeader>>() {}.type
         return gson.toJson(value, type)
     }
 
     @TypeConverter
-    fun toPointsLeader(value: String): List<NbaGame.NbaPointsLeader> {
+    fun to(value: String): List<NbaGame.NbaPointsLeader> {
         val gson = Gson()
         val type = object : TypeToken<List<NbaGame.NbaPointsLeader>>() {}.type
         return gson.fromJson(value, type)

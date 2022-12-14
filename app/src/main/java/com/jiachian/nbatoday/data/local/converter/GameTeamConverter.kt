@@ -3,20 +3,20 @@ package com.jiachian.nbatoday.data.local.converter
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.jiachian.nbatoday.data.local.NbaGame
+import com.jiachian.nbatoday.data.remote.team.GameTeam
 
-class HomeTeamConverter {
+class GameTeamConverter {
     @TypeConverter
-    fun fromHomeTeam(value: NbaGame.NbaHomeTeam): String {
+    fun from(value: GameTeam): String {
         val gson = Gson()
-        val type = object : TypeToken<NbaGame.NbaHomeTeam>() {}.type
+        val type = object : TypeToken<GameTeam>() {}.type
         return gson.toJson(value, type)
     }
 
     @TypeConverter
-    fun toHomeTeam(value: String): NbaGame.NbaHomeTeam {
+    fun to(value: String): GameTeam {
         val gson = Gson()
-        val type = object : TypeToken<NbaGame.NbaHomeTeam>() {}.type
+        val type = object : TypeToken<GameTeam>() {}.type
         return gson.fromJson(value, type)
     }
 }

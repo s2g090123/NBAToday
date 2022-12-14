@@ -24,4 +24,8 @@ object NbaUtils {
     fun getPlayerImageUrlById(playerId: Int): String {
         return "${CDN_BASE_URL}headshots/nba/latest/260x190/$playerId.png"
     }
+
+    fun formatScoreboardGameDate(year: Int, month: Int, day: Int): String {
+        return String.format("%d-%d-%d", year, month, day)
+    }
 }

@@ -1,9 +1,10 @@
-package com.jiachian.nbatoday.data.remote
+package com.jiachian.nbatoday.data.remote.game
 
 import android.annotation.SuppressLint
 import androidx.room.ColumnInfo
 import com.google.gson.annotations.SerializedName
 import com.jiachian.nbatoday.data.local.NbaGame
+import com.jiachian.nbatoday.data.remote.team.GameTeam
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -34,6 +35,8 @@ data class Schedule(
                 val gameCode: String?, // 日期與對戰隊伍, e.g. 20221030/WASBOS
                 @SerializedName("gameId")
                 val gameId: String?, // 比賽id, e.g. 0022200089
+                @SerializedName("gameStatus")
+                val gameStatus: GameStatusCode?,
                 @SerializedName("gameStatusText")
                 val gameStatusText: String?, // 比賽狀態(Final或開始時間), e.g. Final or 3:00 pm ET
                 @SerializedName("gameSequence")
@@ -67,7 +70,7 @@ data class Schedule(
                     @SerializedName("wins")
                     val wins: Int? // 勝場場次(從這場之前), e.g. 2
                 ) {
-                    fun toNbaAwayTeam(): NbaGame.NbaAwayTeam? {
+                    fun toNbaAwayTeam(): GameTeam? {
                         val losses = losses ?: return null
                         val score = score ?: return null
                         val teamCity = teamCity ?: return null
@@ -75,8 +78,15 @@ data class Schedule(
                         val teamName = teamName ?: return null
                         val teamTricode = teamTricode ?: return null
                         val wins = wins ?: return null
-                        return NbaGame.NbaAwayTeam(
-                            losses, score, teamCity, teamId, teamName, teamTricode, wins
+                        return GameTeam(
+                            losses,
+                            score,
+                            teamCity,
+                            teamId,
+                            teamName,
+                            teamTricode,
+                            wins,
+                            emptyList()
                         )
                     }
                 }
@@ -97,7 +107,7 @@ data class Schedule(
                     @SerializedName("wins")
                     val wins: Int?
                 ) {
-                    fun toNbaHomeTeam(): NbaGame.NbaHomeTeam? {
+                    fun toNbaHomeTeam(): GameTeam? {
                         val losses = losses ?: return null
                         val score = score ?: return null
                         val teamCity = teamCity ?: return null
@@ -105,8 +115,15 @@ data class Schedule(
                         val teamName = teamName ?: return null
                         val teamTricode = teamTricode ?: return null
                         val wins = wins ?: return null
-                        return NbaGame.NbaHomeTeam(
-                            losses, score, teamCity, teamId, teamName, teamTricode, wins
+                        return GameTeam(
+                            losses,
+                            score,
+                            teamCity,
+                            teamId,
+                            teamName,
+                            teamTricode,
+                            wins,
+                            emptyList()
                         )
                     }
                 }
@@ -161,6 +178,7 @@ data class Schedule(
                     val day = game.day ?: return@mapNotNull null
                     val gameCode = game.gameCode ?: return@mapNotNull null
                     val gameId = game.gameId ?: return@mapNotNull null
+                    val gameStatus = game.gameStatus ?: return@mapNotNull null
                     val gameStatusText = game.gameStatusText ?: return@mapNotNull null
                     val gameSequence = game.gameSequence ?: return@mapNotNull null
                     val gameDate = game.gameDateEst?.let { time ->
@@ -180,8 +198,22 @@ data class Schedule(
                     val monthNum = game.monthNum ?: return@mapNotNull null
                     val weekNumber = game.weekNumber ?: return@mapNotNull null
                     NbaGame(
-                        leagueId, awayTeam, day, gameCode, gameId, gameStatusText, gameSequence,
-                        homeTeam, gameDate, gameDateTime, monthNum, pointsLeaders, weekNumber
+                        leagueId,
+                        awayTeam,
+                        day,
+                        gameCode,
+                        gameId,
+                        gameStatus,
+                        gameStatusText,
+                        gameSequence,
+                        homeTeam,
+                        gameDate,
+                        gameDateTime,
+                        monthNum,
+                        pointsLeaders,
+                        weekNumber,
+                        null,
+                        null
                     )
                 }?.also { nbaGames ->
                     games.addAll(nbaGames)

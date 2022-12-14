@@ -11,10 +11,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ScrollableTabRow
-import androidx.compose.material.Tab
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -41,10 +38,9 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.data.local.NbaGame
-import com.jiachian.nbatoday.utils.FocusableColumn
-import com.jiachian.nbatoday.utils.FocusableConstraintLayout
-import com.jiachian.nbatoday.utils.NbaUtils
-import com.jiachian.nbatoday.utils.rippleClickable
+import com.jiachian.nbatoday.data.remote.game.GameStatusCode
+import com.jiachian.nbatoday.data.remote.leader.GameLeaders
+import com.jiachian.nbatoday.utils.*
 import kotlinx.coroutines.launch
 
 @Composable
@@ -348,65 +344,20 @@ private fun GameStatusCard(
             exit = shrinkOut()
         ) {
             Column {
-                game.pointsLeaders.forEach { player ->
-                    ConstraintLayout(
+                val isFinal = game.gameStatus == GameStatusCode.FINAL
+                val leaders = if (isFinal) game.gameLeaders else game.teamLeaders
+                val homeLeader = leaders?.homeLeaders
+                val awayLeader = leaders?.awayLeaders
+                if (homeLeader != null && awayLeader != null) {
+                    LeaderInfo(
                         modifier = Modifier
                             .padding(top = 8.dp)
                             .fillMaxWidth()
-                            .wrapContentHeight()
-                    ) {
-                        val (playerImage, teamText, playerText, scoreText) = createRefs()
-
-                        AsyncImage(
-                            modifier = Modifier
-                                .constrainAs(playerImage) {
-                                    top.linkTo(parent.top, 8.dp)
-                                    start.linkTo(parent.start)
-                                }
-                                .size(width = 52.dp, height = 38.dp),
-                            model = ImageRequest.Builder(LocalContext.current)
-                                .data(NbaUtils.getPlayerImageUrlById(player.personId))
-                                .decoderFactory(SvgDecoder.Factory())
-                                .build(),
-                            error = painterResource(R.drawable.ic_black_person),
-                            placeholder = painterResource(R.drawable.ic_black_person),
-                            contentDescription = null
-                        )
-                        Text(
-                            modifier = Modifier
-                                .constrainAs(teamText) {
-                                    start.linkTo(playerImage.end, 16.dp)
-                                    linkTo(playerImage.top, playerImage.bottom)
-                                },
-                            text = player.teamTricode,
-                            color = MaterialTheme.colors.primary,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Text(
-                            modifier = Modifier
-                                .constrainAs(playerText) {
-                                    linkTo(teamText.end, scoreText.start, 8.dp, 8.dp)
-                                    linkTo(playerImage.top, playerImage.bottom)
-                                    width = Dimension.fillToConstraints
-                                },
-                            text = player.firstName + "\n" + player.lastName,
-                            textAlign = TextAlign.Center,
-                            color = MaterialTheme.colors.primary,
-                            fontSize = 14.sp
-                        )
-                        Text(
-                            modifier = Modifier
-                                .constrainAs(scoreText) {
-                                    end.linkTo(parent.end)
-                                    linkTo(playerImage.top, playerImage.bottom)
-                                },
-                            text = player.points.toInt().toString(),
-                            color = MaterialTheme.colors.primary,
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
+                            .wrapContentHeight(),
+                        isGameFinal = isFinal,
+                        homeLeader = homeLeader,
+                        awayLeader = awayLeader
+                    )
                 }
                 Image(
                     modifier = Modifier
@@ -419,6 +370,155 @@ private fun GameStatusCard(
                     colorFilter = ColorFilter.tint(MaterialTheme.colors.primary),
                     contentDescription = null
                 )
+            }
+        }
+    }
+}
+
+@Composable
+private fun LeaderInfo(
+    modifier: Modifier = Modifier,
+    isGameFinal: Boolean,
+    homeLeader: GameLeaders.GameLeader,
+    awayLeader: GameLeaders.GameLeader
+) {
+    ConstraintLayout(modifier = modifier) {
+        val (divider, leaderGroup, ptsTitle, ptsText, rebTitle, rebText, astTitle, astText) = createRefs()
+
+        Text(
+            modifier = Modifier
+                .constrainAs(astTitle) {
+                    end.linkTo(parent.end)
+                    top.linkTo(parent.top)
+                }
+                .width(36.dp),
+            text = stringResource(R.string.player_info_ast_abbr),
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colors.primary,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold
+        )
+        Text(
+            modifier = Modifier
+                .constrainAs(rebTitle) {
+                    end.linkTo(astTitle.start)
+                    top.linkTo(parent.top)
+                }
+                .width(36.dp),
+            text = stringResource(R.string.player_info_reb_abbr),
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colors.primary,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold
+        )
+        Text(
+            modifier = Modifier
+                .constrainAs(ptsTitle) {
+                    end.linkTo(rebTitle.start)
+                    top.linkTo(parent.top)
+                }
+                .width(36.dp),
+            text = stringResource(R.string.player_info_pts_abbr),
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colors.primary,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold
+        )
+        Divider(
+            modifier = Modifier
+                .constrainAs(divider) {
+                    top.linkTo(ptsTitle.bottom, 4.dp)
+                }
+                .fillMaxWidth(),
+            color = MaterialTheme.colors.divider()
+        )
+        Column(
+            modifier = Modifier
+                .constrainAs(leaderGroup) {
+                    top.linkTo(divider.bottom)
+                }
+                .fillMaxWidth()
+        ) {
+            arrayOf(homeLeader, awayLeader).forEach { player ->
+                ConstraintLayout(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    val (playerImage, playerNameText, playerInfoText) = createRefs()
+                    AsyncImage(
+                        modifier = Modifier
+                            .constrainAs(playerImage) {
+                                top.linkTo(parent.top, 8.dp)
+                                start.linkTo(parent.start)
+                            }
+                            .size(width = 52.dp, height = 38.dp),
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(NbaUtils.getPlayerImageUrlById(player.personId))
+                            .decoderFactory(SvgDecoder.Factory())
+                            .build(),
+                        error = painterResource(R.drawable.ic_black_person),
+                        placeholder = painterResource(R.drawable.ic_black_person),
+                        contentDescription = null
+                    )
+                    Text(
+                        modifier = Modifier
+                            .constrainAs(playerNameText) {
+                                start.linkTo(playerImage.end, 4.dp)
+                                linkTo(playerImage.top, playerInfoText.top)
+                            },
+                        text = player.name,
+                        color = MaterialTheme.colors.primary,
+                        fontSize = 12.sp
+                    )
+                    Text(
+                        modifier = Modifier
+                            .constrainAs(playerInfoText) {
+                                start.linkTo(playerImage.end, 4.dp)
+                                linkTo(playerNameText.bottom, playerImage.bottom)
+                            },
+                        text = player.teamTricode + " | #" + player.jerseyNum + " | " + player.position,
+                        color = MaterialTheme.colors.primary,
+                        fontSize = 12.sp
+                    )
+                    Text(
+                        modifier = Modifier
+                            .constrainAs(astText) {
+                                end.linkTo(parent.end)
+                                linkTo(playerImage.top, playerImage.bottom)
+                            }
+                            .width(36.dp),
+                        text = (if (isGameFinal) player.assists.toInt() else player.assists).toString(),
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colors.primary,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        modifier = Modifier
+                            .constrainAs(rebText) {
+                                end.linkTo(astText.start)
+                                linkTo(playerImage.top, playerImage.bottom)
+                            }
+                            .width(36.dp),
+                        text = (if (isGameFinal) player.rebounds.toInt() else player.rebounds).toString(),
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colors.primary,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        modifier = Modifier
+                            .constrainAs(ptsText) {
+                                end.linkTo(rebText.start)
+                                linkTo(playerImage.top, playerImage.bottom)
+                            }
+                            .width(36.dp),
+                        text = (if (isGameFinal) player.points.toInt() else player.points).toString(),
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colors.primary,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
         }
     }

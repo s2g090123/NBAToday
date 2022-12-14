@@ -3,16 +3,24 @@ package com.jiachian.nbatoday.utils
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.material.Colors
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintLayoutScope
 
+inline val String.color: Color get() = Color(android.graphics.Color.parseColor(this))
+
 @Composable
 fun Dp.toPx() = with(LocalDensity.current) { this@toPx.toPx() }
+
+@Composable
+fun Colors.divider() = MaterialTheme.colors.primary.copy(alpha = 0.25f)
 
 val LocalActivity = staticCompositionLocalOf<ComponentActivity> {
     error("CompositionLocal LocalActivity not present")
