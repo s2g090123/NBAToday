@@ -5,7 +5,7 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface StatsNbaService {
-    @GET("stats/scoreboardv3")
+    @GET("scoreboardv3")
     suspend fun getScoreboard(
         @Query("LeagueId") leagueId: String,
         @Query("GameDate") gameDate: String
