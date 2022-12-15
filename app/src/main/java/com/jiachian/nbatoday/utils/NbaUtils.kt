@@ -1,7 +1,9 @@
 package com.jiachian.nbatoday.utils
 
+import android.annotation.SuppressLint
 import com.jiachian.nbatoday.CDN_BASE_URL
 import com.jiachian.nbatoday.data.local.team.DefaultTeam
+import java.text.SimpleDateFormat
 import java.util.*
 
 object NbaUtils {
@@ -26,6 +28,22 @@ object NbaUtils {
     }
 
     fun formatScoreboardGameDate(year: Int, month: Int, day: Int): String {
+        return formatDate(year, month, day)
+    }
+
+    fun formatDate(year: Int, month: Int, day: Int): String {
         return String.format("%d-%d-%d", year, month, day)
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    fun parseDate(year: Int, month: Int, day: Int): Date? {
+        val sdf = SimpleDateFormat("yyyy-MM-dd")
+        return sdf.parse(formatDate(year, month, day))
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    fun parseDate(dateInFormat: String): Date? {
+        val sdf = SimpleDateFormat("yyyy-MM-dd")
+        return sdf.parse(dateInFormat)
     }
 }

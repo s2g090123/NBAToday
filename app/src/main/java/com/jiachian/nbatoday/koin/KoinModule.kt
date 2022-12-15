@@ -18,7 +18,7 @@ val module = module {
     factory { NbaLocalDataSource(get()) }
 
     single { NbaDatabase.getInstance(androidContext()) }
-    single { NbaRepository(get<NbaRemoteDataSource>(), get<NbaLocalDataSource>()) }
+    single { NbaRepository(get<NbaRemoteDataSource>(), get<NbaLocalDataSource>(), get()) }
     single { NbaDataStore(androidApplication()) }
 
     viewModel { MainViewModel(get<NbaRepository>(), get()) }

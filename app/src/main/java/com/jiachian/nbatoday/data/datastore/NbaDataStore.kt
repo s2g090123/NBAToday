@@ -9,9 +9,9 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.jiachian.nbatoday.DATA_STORE_NAME
-import com.jiachian.nbatoday.data.datastore.NbaDataStore.PreferencesKeys.SCHEDULE_FROM
-import com.jiachian.nbatoday.data.datastore.NbaDataStore.PreferencesKeys.SCHEDULE_TO
+import com.jiachian.nbatoday.data.datastore.NbaDataStore.PreferencesKeys.RECORD_SCHEDULE_TODAY
 import com.jiachian.nbatoday.data.datastore.NbaDataStore.PreferencesKeys.STATS_COOKIES
+import com.jiachian.nbatoday.utils.NbaUtils
 import kotlinx.coroutines.flow.map
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = DATA_STORE_NAME)
@@ -21,24 +21,12 @@ class NbaDataStore(
 ) {
 
     object PreferencesKeys {
-        val SCHEDULE_FROM = stringPreferencesKey("schedule_from")
-        val SCHEDULE_TO = stringPreferencesKey("schedule_to")
         val STATS_COOKIES = stringSetPreferencesKey("stats_cookies")
+        val RECORD_SCHEDULE_TODAY = stringPreferencesKey("record_schedule_today")
     }
 
     private val dataStore by lazy {
         application.applicationContext.dataStore
-    }
-
-    val scheduleFrom by lazy {
-        dataStore.data.map { pref ->
-            pref[SCHEDULE_FROM] ?: ""
-        }
-    }
-    val scheduleTo by lazy {
-        dataStore.data.map { pref ->
-            pref[SCHEDULE_TO] ?: ""
-        }
     }
 
     val statsCookies by lazy {
@@ -47,16 +35,21 @@ class NbaDataStore(
         }
     }
 
-    suspend fun updateScheduleDate(from: String, to: String) {
-        dataStore.edit { settings ->
-            settings[SCHEDULE_FROM] = from
-            settings[SCHEDULE_TO] = to
+    val recordScheduleToday by lazy {
+        dataStore.data.map { pref ->
+            pref[RECORD_SCHEDULE_TODAY] ?: NbaUtils.formatDate(1990, 1, 1)
         }
     }
 
     suspend fun updateStatsCookies(cookies: Set<String>) {
         dataStore.edit { settings ->
             settings[STATS_COOKIES] = cookies
+        }
+    }
+
+    suspend fun updateRecordScheduleToday(year: Int, month: Int, day: Int) {
+        dataStore.edit { settings ->
+            settings[RECORD_SCHEDULE_TODAY] = NbaUtils.formatDate(year, month, day)
         }
     }
 }
