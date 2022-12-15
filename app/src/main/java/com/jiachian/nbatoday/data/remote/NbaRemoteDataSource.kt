@@ -50,10 +50,7 @@ class NbaRemoteDataSource(private val dataStore: NbaDataStore) : RemoteDataSourc
         return OkHttpClient.Builder()
             .addInterceptor { chain ->
                 runBlocking {
-                    val request = chain.request()
-                        .newBuilder()
-                        .build()
-                    val response = chain.proceed(request)
+                    val response = chain.proceed(chain.request())
                     if (response.headers("Set-Cookie").isNotEmpty()) {
                         val cookies = mutableSetOf<String>()
                         response.headers("Set-Cookie").forEach {
