@@ -3,7 +3,6 @@ package com.jiachian.nbatoday.data.remote
 import com.google.gson.GsonBuilder
 import com.jiachian.nbatoday.CDN_BASE_URL
 import com.jiachian.nbatoday.STATS_BASE_URL
-import com.jiachian.nbatoday.data.datastore.NbaDataStore
 import com.jiachian.nbatoday.data.remote.game.GameScoreboard
 import com.jiachian.nbatoday.data.remote.game.Schedule
 import com.jiachian.nbatoday.service.CdnNbaService
@@ -15,7 +14,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
-class NbaRemoteDataSource(private val dataStore: NbaDataStore) : RemoteDataSource() {
+class NbaRemoteDataSource : RemoteDataSource() {
 
     private val cdnGson = GsonBuilder().create()
     private val statsGson = GsonBuilder().create()
