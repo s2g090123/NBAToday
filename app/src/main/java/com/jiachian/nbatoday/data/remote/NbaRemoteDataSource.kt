@@ -8,10 +8,9 @@ import com.jiachian.nbatoday.data.remote.game.GameScoreboard
 import com.jiachian.nbatoday.data.remote.game.Schedule
 import com.jiachian.nbatoday.service.CdnNbaService
 import com.jiachian.nbatoday.service.StatsNbaService
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
-import okhttp3.*
-import okhttp3.ResponseBody.Companion.toResponseBody
+import okhttp3.Interceptor
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
@@ -48,35 +47,9 @@ class NbaRemoteDataSource(private val dataStore: NbaDataStore) : RemoteDataSourc
 
     private fun buildStatsOkHttpClient(): OkHttpClient {
         return OkHttpClient.Builder()
-            .addInterceptor { chain ->
-                runBlocking {
-                    val request = Request.Builder()
-                        .method("GET", null)
-                        .url(STATS_BASE_URL)
-                        .addHeader("Connection", "keep-alive")
-                        .addHeader("Accept", "*/*")
-                        .build()
-                    val response = chain.proceed(request)
-                    if (response.headers("Set-Cookie").isNotEmpty()) {
-                        val cookies = mutableSetOf<String>()
-                        response.headers("Set-Cookie").forEach {
-                            cookies.add(it)
-                        }
-                        dataStore.updateStatsCookies(cookies)
-                    }
-                    Response.Builder()
-                        .request(request)
-                        .protocol(Protocol.HTTP_1_1)
-                        .code(200)
-                        .message("")
-                        .body("{}".toResponseBody(null))
-                        .build()
-                }
-            }
             .addInterceptor(
                 Interceptor { chain ->
                     runBlocking {
-                        val cookies = dataStore.statsCookies.first()
                         val request = chain.request()
                             .newBuilder()
                             .addHeader("Referer", "https://stats.nba.com/")
@@ -86,11 +59,6 @@ class NbaRemoteDataSource(private val dataStore: NbaDataStore) : RemoteDataSourc
                                 "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"
                             )
                             .addHeader("Accept", "*/*")
-                            .apply {
-                                cookies.forEach {
-                                    addHeader("Cookie", it)
-                                }
-                            }
                             .build()
                         chain.proceed(request)
                     }
