@@ -1,5 +1,6 @@
 package com.jiachian.nbatoday.data.local
 
+import com.jiachian.nbatoday.data.local.score.GameBoxScore
 import com.jiachian.nbatoday.data.remote.game.GameUpdateData
 import kotlinx.coroutines.flow.Flow
 
@@ -25,5 +26,13 @@ class NbaLocalDataSource(
 
     override suspend fun updateGame(status: List<GameUpdateData>) {
         dao.updateGame(status)
+    }
+
+    override fun getGameBoxScore(gameId: String): Flow<GameBoxScore?> {
+        return dao.getGameBoxScore(gameId)
+    }
+
+    override suspend fun insertGameBoxScore(boxScore: GameBoxScore) {
+        dao.insertGameBoxScore(boxScore)
     }
 }

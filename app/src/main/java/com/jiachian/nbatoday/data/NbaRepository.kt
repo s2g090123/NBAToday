@@ -5,6 +5,7 @@ import com.jiachian.nbatoday.SCHEDULE_DATE_RANGE
 import com.jiachian.nbatoday.data.datastore.NbaDataStore
 import com.jiachian.nbatoday.data.local.LocalDataSource
 import com.jiachian.nbatoday.data.local.NbaGame
+import com.jiachian.nbatoday.data.local.score.GameBoxScore
 import com.jiachian.nbatoday.data.remote.RemoteDataSource
 import com.jiachian.nbatoday.utils.NbaUtils
 import kotlinx.coroutines.flow.Flow
@@ -61,7 +62,21 @@ class NbaRepository(
         }
     }
 
+    override suspend fun refreshGameBoxScore(gameId: String) {
+        val boxScore = remoteDataSource.getGameBoxScore(gameId)
+        if (boxScore != null) {
+            val game = boxScore.game?.toLocal()
+            if (game != null) {
+                localDataSource.insertGameBoxScore(game)
+            }
+        }
+    }
+
     override fun getGamesDuring(from: Long, to: Long): Flow<List<NbaGame>> {
         return localDataSource.getGamesDuring(from, to)
+    }
+
+    override fun getGameBoxScore(gameId: String): Flow<GameBoxScore?> {
+        return localDataSource.getGameBoxScore(gameId)
     }
 }

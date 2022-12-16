@@ -23,6 +23,8 @@ data class GameTeam(
     data class Period(
         @ColumnInfo(name = "period")
         val period: Int?, // 第幾節, e.g. 1
+        @ColumnInfo(name = "period_type")
+        val periodType: String?, // e.g. REGULAR or OVERTIME
         @ColumnInfo(name = "score")
         val score: Int? // 得分, e.g 20
     )
