@@ -12,6 +12,9 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -98,7 +101,7 @@ private fun HomeBody(
     }
 }
 
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalPagerApi::class, ExperimentalMaterialApi::class)
 @Composable
 private fun SchedulePage(
     modifier: Modifier = Modifier,
@@ -109,10 +112,53 @@ private fun SchedulePage(
     val dateStrings = viewModel.scheduleDates
     val index by viewModel.scheduleIndex.collectAsState()
     val scheduleGames by viewModel.scheduleGames.collectAsState()
+    val isRefreshing by viewModel.isRefreshingSchedule.collectAsState()
+    val pullRefreshState = rememberPullRefreshState(
+        refreshing = isRefreshing,
+        onRefresh = { viewModel.updateTodaySchedule() }
+    )
 
-    Column(
+    Box(
         modifier = modifier
     ) {
+        HorizontalPager(
+            modifier = Modifier
+                .padding(top = 48.dp)
+                .fillMaxSize(),
+            state = pagerState,
+            count = dateStrings.size
+        ) { page ->
+            val dateString = dateStrings.getOrNull(page)
+            Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
+                if (dateString != null) {
+                    LazyColumn(modifier = Modifier.fillMaxSize()) {
+                        val games = scheduleGames[dateString] ?: listOf()
+                        itemsIndexed(games) { index, game ->
+                            GameStatusCard(
+                                modifier = Modifier
+                                    .padding(
+                                        top = 16.dp,
+                                        bottom = if (index >= games.size - 1) 16.dp else 0.dp,
+                                        start = 16.dp,
+                                        end = 16.dp
+                                    )
+                                    .clip(RoundedCornerShape(16.dp))
+                                    .shadow(8.dp)
+                                    .fillMaxWidth()
+                                    .wrapContentHeight()
+                                    .background(MaterialTheme.colors.secondary),
+                                game = game
+                            )
+                        }
+                    }
+                }
+                PullRefreshIndicator(
+                    modifier = Modifier.align(Alignment.TopCenter),
+                    refreshing = isRefreshing,
+                    state = pullRefreshState
+                )
+            }
+        }
         ScrollableTabRow(
             selectedTabIndex = pagerState.currentPage,
             backgroundColor = MaterialTheme.colors.secondary,
@@ -130,37 +176,6 @@ private fun SchedulePage(
                     selected = dateIndex == index,
                     onClick = { viewModel.updateScheduleIndex(dateIndex) }
                 )
-            }
-        }
-        HorizontalPager(
-            modifier = Modifier.fillMaxSize(),
-            state = pagerState,
-            count = dateStrings.size
-        ) { page ->
-            val dateString = dateStrings.getOrNull(page)
-            if (dateString != null) {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    val games = scheduleGames[dateString] ?: listOf()
-                    itemsIndexed(games) { index, game ->
-                        GameStatusCard(
-                            modifier = Modifier
-                                .padding(
-                                    top = 16.dp,
-                                    bottom = if (index >= games.size - 1) 16.dp else 0.dp,
-                                    start = 16.dp,
-                                    end = 16.dp
-                                )
-                                .clip(RoundedCornerShape(16.dp))
-                                .shadow(8.dp)
-                                .fillMaxWidth()
-                                .wrapContentHeight()
-                                .background(MaterialTheme.colors.secondary),
-                            game = game
-                        )
-                    }
-                }
             }
         }
     }

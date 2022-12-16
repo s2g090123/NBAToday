@@ -11,6 +11,7 @@ interface BaseRepository {
     val games: Flow<List<NbaGame>>
 
     suspend fun refreshSchedule()
+    suspend fun refreshSchedule(year: Int, month: Int, day: Int)
 
     fun getGamesDuring(from: Long, to: Long): Flow<List<NbaGame>>
 }

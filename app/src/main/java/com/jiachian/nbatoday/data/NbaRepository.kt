@@ -52,6 +52,15 @@ class NbaRepository(
         dataStore.updateRecordScheduleToday(todayYear, todayMonth, todayDay)
     }
 
+    override suspend fun refreshSchedule(year: Int, month: Int, day: Int) {
+        val gameDate = NbaUtils.formatScoreboardGameDate(year, month, day)
+        val scoreboard = remoteDataSource.getScoreboard(NBA_LEAGUE_ID, gameDate)
+        val updateData = scoreboard?.toGameUpdateData()
+        if (updateData != null) {
+            localDataSource.updateGame(updateData)
+        }
+    }
+
     override fun getGamesDuring(from: Long, to: Long): Flow<List<NbaGame>> {
         return localDataSource.getGamesDuring(from, to)
     }

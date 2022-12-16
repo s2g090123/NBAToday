@@ -8,10 +8,12 @@ import com.jiachian.nbatoday.utils.NbaUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 
 class HomeViewModel(
-    repository: BaseRepository
+    private val repository: BaseRepository
 ) : ComposeViewModel() {
 
     private val coroutineScope = CoroutineScope(Dispatchers.Unconfined)
@@ -32,7 +34,6 @@ class HomeViewModel(
             it.timeInMillis + DateUtils.DAY_IN_MILLIS * (SCHEDULE_DATE_RANGE + 1)
         )
     }
-
     val scheduleGames = scheduleGamesImp.map {
         val calendar = NbaUtils.getCalendar()
         it.groupBy { game ->
@@ -44,6 +45,8 @@ class HomeViewModel(
             )
         }
     }.stateIn(coroutineScope, SharingStarted.Eagerly, mapOf())
+    private val isRefreshingScheduleImp = MutableStateFlow(false)
+    val isRefreshingSchedule = isRefreshingScheduleImp.asStateFlow()
 
     fun updateHomeIndex(index: Int) {
         homeIndexImp.value = index.coerceIn(0, 2)
@@ -87,5 +90,19 @@ class HomeViewModel(
             )
         }
         return dateStrings
+    }
+
+    fun updateTodaySchedule() {
+        val cal = NbaUtils.getCalendar()
+        val year = cal.get(Calendar.YEAR)
+        val month = cal.get(Calendar.MONTH)
+        val day = cal.get(Calendar.DAY_OF_MONTH)
+        coroutineScope.launch {
+            isRefreshingScheduleImp.value = true
+            withContext(Dispatchers.IO) {
+                repository.refreshSchedule(year, month, day)
+            }
+            isRefreshingScheduleImp.value = false
+        }
     }
 }
