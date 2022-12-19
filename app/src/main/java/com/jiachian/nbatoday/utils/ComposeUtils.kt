@@ -20,7 +20,10 @@ inline val String.color: Color get() = Color(android.graphics.Color.parseColor(t
 fun Dp.toPx() = with(LocalDensity.current) { this@toPx.toPx() }
 
 @Composable
-fun Colors.divider() = MaterialTheme.colors.primary.copy(alpha = 0.25f)
+fun Colors.dividerPrimary() = MaterialTheme.colors.primary.copy(alpha = 0.25f)
+
+@Composable
+fun Colors.dividerSecondary() = MaterialTheme.colors.secondary.copy(alpha = 0.25f)
 
 val LocalActivity = staticCompositionLocalOf<ComponentActivity> {
     error("CompositionLocal LocalActivity not present")

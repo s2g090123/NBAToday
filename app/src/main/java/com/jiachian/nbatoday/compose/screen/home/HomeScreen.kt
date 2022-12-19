@@ -1,5 +1,6 @@
 package com.jiachian.nbatoday.compose.screen.home
 
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandIn
 import androidx.compose.animation.shrinkOut
@@ -107,6 +108,7 @@ private fun SchedulePage(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel
 ) {
+    val context = LocalContext.current
     val pagerState = rememberPagerState()
     val coroutineScope = rememberCoroutineScope()
     val dateStrings = viewModel.scheduleDates
@@ -147,7 +149,19 @@ private fun SchedulePage(
                                     .fillMaxWidth()
                                     .wrapContentHeight()
                                     .background(MaterialTheme.colors.secondary)
-                                    .rippleClickable { viewModel.openGameBoxScore(game.gameId) },
+                                    .rippleClickable {
+                                        if (game.gameStatus == GameStatusCode.COMING_SOON) {
+                                            Toast
+                                                .makeText(
+                                                    context,
+                                                    context.getString(R.string.game_is_coming_soon),
+                                                    Toast.LENGTH_SHORT
+                                                )
+                                                .show()
+                                        } else {
+                                            viewModel.openGameBoxScore(game.gameId)
+                                        }
+                                    },
                                 game = game
                             )
                         }
@@ -446,7 +460,7 @@ private fun LeaderInfo(
                     top.linkTo(ptsTitle.bottom, 4.dp)
                 }
                 .fillMaxWidth(),
-            color = MaterialTheme.colors.divider()
+            color = MaterialTheme.colors.dividerPrimary()
         )
         Column(
             modifier = Modifier
