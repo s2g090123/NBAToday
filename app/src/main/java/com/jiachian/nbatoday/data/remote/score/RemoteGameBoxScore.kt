@@ -1,15 +1,19 @@
 package com.jiachian.nbatoday.data.remote.score
 
+import android.annotation.SuppressLint
 import com.jiachian.nbatoday.data.local.score.GameBoxScore
 import com.jiachian.nbatoday.data.remote.game.GameStatusCode
 import com.jiachian.nbatoday.data.remote.game.PeriodType
+import com.jiachian.nbatoday.utils.NbaUtils
+import java.text.SimpleDateFormat
+import java.util.*
 
 data class RemoteGameBoxScore(
     val game: Game?
 ) {
     data class Game(
         val gameId: String?,
-        val gameEt: String?,
+        val gameEt: String?, // e.g. 2022-12-15T20:00:00-05:00
         val gameCode: String?,
         val gameStatusText: String?,
         val gameStatus: GameStatusCode?,
@@ -230,10 +234,28 @@ data class RemoteGameBoxScore(
             }
         }
 
+        @SuppressLint("SimpleDateFormat")
         fun toLocal(): GameBoxScore {
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").apply {
+                timeZone = TimeZone.getTimeZone("EST")
+            }
             return GameBoxScore(
                 gameId ?: "",
-                gameEt?.substringBefore("T") ?: "",
+                gameEt?.substringBeforeLast("-")?.let {
+                    try {
+                        dateFormat.parse(it)?.let { date ->
+                            val cal = NbaUtils.getCalendar()
+                            cal.time = date
+                            NbaUtils.formatScoreboardGameDate(
+                                cal.get(Calendar.YEAR),
+                                cal.get(Calendar.MONTH) + 1,
+                                cal.get(Calendar.DAY_OF_MONTH)
+                            )
+                        }
+                    } catch (e: Exception) {
+                        null
+                    }
+                } ?: "",
                 gameCode ?: "",
                 gameStatusText ?: "",
                 gameStatus ?: GameStatusCode.COMING_SOON,

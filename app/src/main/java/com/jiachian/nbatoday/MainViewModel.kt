@@ -16,7 +16,6 @@ import kotlinx.coroutines.withContext
 class MainViewModel(
     private val repository: BaseRepository,
     private val dataStore: NbaDataStore,
-    private val initState: NbaState = NbaState.Home(HomeViewModel(repository)),
     private val eventManager: EventManager<Event> = EventManager()
 ) : ViewModel(), EventBroadcaster<MainViewModel.Event> by eventManager {
 
@@ -27,6 +26,13 @@ class MainViewModel(
     private fun Event.send() {
         eventManager.send(this)
     }
+
+    private val initState: NbaState = NbaState.Home(
+        HomeViewModel(
+            repository = repository,
+            openScreen = this::updateState
+        )
+    )
 
     private val isLoadingAppImp = MutableStateFlow(true)
     val isLoadingApp = isLoadingAppImp.asStateFlow()

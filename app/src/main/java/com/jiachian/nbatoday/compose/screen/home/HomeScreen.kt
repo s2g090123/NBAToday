@@ -146,7 +146,8 @@ private fun SchedulePage(
                                     .shadow(8.dp)
                                     .fillMaxWidth()
                                     .wrapContentHeight()
-                                    .background(MaterialTheme.colors.secondary),
+                                    .background(MaterialTheme.colors.secondary)
+                                    .rippleClickable { viewModel.openGameBoxScore(game.gameId) },
                                 game = game
                             )
                         }

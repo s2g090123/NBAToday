@@ -3,6 +3,8 @@ package com.jiachian.nbatoday.compose.screen.home
 import android.text.format.DateUtils
 import com.jiachian.nbatoday.SCHEDULE_DATE_RANGE
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
+import com.jiachian.nbatoday.compose.screen.score.BoxScoreViewModel
+import com.jiachian.nbatoday.compose.state.NbaState
 import com.jiachian.nbatoday.data.BaseRepository
 import com.jiachian.nbatoday.utils.NbaUtils
 import kotlinx.coroutines.CoroutineScope
@@ -13,7 +15,8 @@ import kotlinx.coroutines.withContext
 import java.util.*
 
 class HomeViewModel(
-    private val repository: BaseRepository
+    private val repository: BaseRepository,
+    private val openScreen: (state: NbaState) -> Unit
 ) : ComposeViewModel() {
 
     private val coroutineScope = CoroutineScope(Dispatchers.Unconfined)
@@ -104,5 +107,9 @@ class HomeViewModel(
             }
             isRefreshingScheduleImp.value = false
         }
+    }
+
+    fun openGameBoxScore(gameId: String) {
+        openScreen(NbaState.BoxScore(BoxScoreViewModel(gameId, repository, coroutineScope)))
     }
 }

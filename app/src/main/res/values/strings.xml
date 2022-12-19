@@ -6,4 +6,5 @@
     <string name="player_info_pts_abbr">PTS</string>
     <string name="player_info_reb_abbr">REB</string>
     <string name="player_info_ast_abbr">AST</string>
+    <string name="box_score_empty">找不到關於這場比賽的資料</string>
 </resources>
