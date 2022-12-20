@@ -89,7 +89,9 @@ data class GameBoxScore(
                 @ColumnInfo(name = "assists")
                 val assists: Int, // 助攻數
                 @ColumnInfo(name = "blocks")
-                val blocks: Int, // 阻攻數
+                val blocks: Int, // 阻攻數,
+                @ColumnInfo(name = "blocks_received")
+                val blocksReceived: Int, // 被阻攻數
                 @ColumnInfo(name = "field_goals_attempted")
                 val fieldGoalsAttempted: Int, // 出手次數
                 @ColumnInfo(name = "field_goals_made")
@@ -111,13 +113,13 @@ data class GameBoxScore(
                 @ColumnInfo(name = "free_throws_percentage")
                 val freeThrowsPercentage: Double, // 66.6
                 @ColumnInfo(name = "minus")
-                val minus: Double, // 在場上時，球隊損失總分
+                val minus: Int, // 在場上時，球隊損失總分
                 @ColumnInfo(name = "minutes")
                 val minutes: String, // 上場總時間, e.g. 36:12 (分：秒)
                 @ColumnInfo(name = "plus")
-                val plus: Double, // 在場上時，球隊得分總分
+                val plus: Int, // 在場上時，球隊得分總分
                 @ColumnInfo(name = "plus_minus_points")
-                val plusMinusPoints: Double, // 加減評分
+                val plusMinusPoints: Int, // 加減評分
                 @ColumnInfo(name = "points")
                 val points: Int, // 得分數
                 @ColumnInfo(name = "rebounds_defensive")
@@ -142,7 +144,10 @@ data class GameBoxScore(
                 val twoPointersMade: Int, // 兩分進球數
                 @ColumnInfo(name = "two_pointers_percentage")
                 val twoPointersPercentage: Double // 66.6
-            )
+            ) {
+                val efficiency =
+                    points + reboundsTotal + assists + steals + blocks - ((fieldGoalsAttempted - fieldGoalsMade) + (freeThrowsAttempted - freeThrowsMade) + turnovers)
+            }
         }
 
         data class Statistics(

@@ -25,6 +25,9 @@ fun Colors.dividerPrimary() = MaterialTheme.colors.primary.copy(alpha = 0.25f)
 @Composable
 fun Colors.dividerSecondary() = MaterialTheme.colors.secondary.copy(alpha = 0.25f)
 
+@Composable
+fun Int.px2Dp() = with(LocalDensity.current) { this@px2Dp.toDp() }
+
 val LocalActivity = staticCompositionLocalOf<ComponentActivity> {
     error("CompositionLocal LocalActivity not present")
 }

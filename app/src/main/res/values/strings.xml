@@ -8,5 +8,6 @@
     <string name="player_info_ast_abbr">AST</string>
     <string name="box_score_empty">找不到關於這場比賽的資料</string>
     <string name="box_score_total_abbr">T</string>
+    <string name="box_score_tab_statistics">Statistics</string>
     <string name="game_is_coming_soon">比賽即將開始</string>
 </resources>

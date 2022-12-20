@@ -1,13 +1,19 @@
 package com.jiachian.nbatoday.compose.screen.score
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -19,11 +25,17 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import coil.compose.AsyncImage
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.rememberPagerState
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.data.local.score.GameBoxScore
+import com.jiachian.nbatoday.data.remote.score.PlayerActiveStatus
 import com.jiachian.nbatoday.utils.NbaUtils
 import com.jiachian.nbatoday.utils.dividerSecondary
 import com.jiachian.nbatoday.utils.noRippleClickable
+import com.jiachian.nbatoday.utils.px2Dp
+import kotlin.math.max
 
 @Composable
 fun BoxScoreScreen(
@@ -58,13 +70,17 @@ fun BoxScoreScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(MaterialTheme.colors.primary)
-                        .noRippleClickable { },
+                        .noRippleClickable { }
+                        .verticalScroll(rememberScrollState()),
                     score = it,
                     viewModel = viewModel,
                     onBack = onBack
                 )
             }
         }
+    }
+    BackHandler {
+        onBack()
     }
 }
 
@@ -76,7 +92,7 @@ private fun ScoreScreen(
     onBack: () -> Unit
 ) {
     ConstraintLayout(modifier = modifier) {
-        val (backBtn, dateTitle, scoreTotal, scorePeriod) = createRefs()
+        val (backBtn, dateTitle, scoreTotal, scorePeriod, scoreDetail) = createRefs()
 
         IconButton(
             modifier = Modifier
@@ -119,6 +135,15 @@ private fun ScoreScreen(
                 }
                 .padding(horizontal = 12.dp)
                 .fillMaxWidth(),
+            score = score
+        )
+        ScoreDetail(
+            modifier = Modifier
+                .constrainAs(scoreDetail) {
+                    top.linkTo(scorePeriod.bottom, 16.dp)
+                }
+                .fillMaxWidth(),
+            viewModel = viewModel,
             score = score
         )
     }
@@ -272,6 +297,215 @@ private fun ScorePeriod(
             color = MaterialTheme.colors.dividerSecondary(),
             thickness = 2.dp
         )
+    }
+}
+
+@OptIn(ExperimentalPagerApi::class)
+@Composable
+private fun ScoreDetail(
+    modifier: Modifier = Modifier,
+    viewModel: BoxScoreViewModel,
+    score: GameBoxScore
+) {
+    val selectIndex by viewModel.selectIndex.collectAsState()
+    val pagerState = rememberPagerState(initialPage = selectIndex)
+
+    Column(modifier = modifier) {
+        TabRow(
+            selectedTabIndex = selectIndex,
+            backgroundColor = MaterialTheme.colors.secondary
+        ) {
+            Tab(
+                text = {
+                    Text(
+                        text = score.homeTeam?.teamName ?: "",
+                        color = MaterialTheme.colors.primary,
+                        fontSize = 14.sp
+                    )
+                },
+                selected = selectIndex == 0,
+                onClick = { viewModel.updateSelectIndex(0) }
+            )
+            Tab(
+                text = {
+                    Text(
+                        text = score.awayTeam?.teamName ?: "",
+                        color = MaterialTheme.colors.primary,
+                        fontSize = 14.sp
+                    )
+                },
+                selected = selectIndex == 1,
+                onClick = { viewModel.updateSelectIndex(1) }
+            )
+            Tab(
+                text = {
+                    Text(
+                        text = stringResource(R.string.box_score_tab_statistics),
+                        color = MaterialTheme.colors.primary,
+                        fontSize = 14.sp
+                    )
+                },
+                selected = selectIndex == 2,
+                onClick = { viewModel.updateSelectIndex(2) }
+            )
+        }
+        HorizontalPager(
+            modifier = Modifier.fillMaxWidth(),
+            state = pagerState,
+            count = 3,
+            userScrollEnabled = false
+        ) { index ->
+            when {
+                index == 0 && score.homeTeam != null -> {
+                    PlayerStatistics(
+                        modifier = Modifier.fillMaxWidth(),
+                        viewModel = viewModel,
+                        players = score.homeTeam.players
+                    )
+                }
+                index == 1 && score.awayTeam != null -> {
+                    PlayerStatistics(
+                        modifier = Modifier.fillMaxWidth(),
+                        viewModel = viewModel,
+                        players = score.awayTeam.players
+                    )
+                }
+            }
+        }
+    }
+    LaunchedEffect(selectIndex) {
+        pagerState.animateScrollToPage(selectIndex)
+    }
+}
+
+@Composable
+private fun PlayerStatistics(
+    modifier: Modifier = Modifier,
+    viewModel: BoxScoreViewModel,
+    players: List<GameBoxScore.BoxScoreTeam.Player>
+) {
+    val labels by viewModel.scoreLabel
+    val horizontalScrollState = rememberScrollState()
+    var dividerWidth by remember { mutableStateOf(0) }
+
+    Column(modifier = modifier.horizontalScroll(horizontalScrollState)) {
+        Row(
+            modifier = Modifier
+                .onSizeChanged {
+                    dividerWidth = max(dividerWidth, it.width)
+                }
+                .fillMaxWidth()
+                .wrapContentHeight()
+        ) {
+            labels.forEach { label ->
+                Text(
+                    modifier = Modifier
+                        .width(label.width)
+                        .height(40.dp)
+                        .padding(8.dp),
+                    text = label.text,
+                    textAlign = label.textAlign,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+            }
+        }
+        Divider(
+            modifier = Modifier.width(dividerWidth.px2Dp()),
+            color = MaterialTheme.colors.dividerSecondary(),
+            thickness = 3.dp
+        )
+        LazyColumn(
+            modifier = Modifier
+                .onSizeChanged {
+                    dividerWidth = max(dividerWidth, it.width)
+                }
+                .heightIn(max = (LocalConfiguration.current.screenHeightDp * 0.7f).dp)
+                .fillMaxWidth()
+        ) {
+            itemsIndexed(players) { index, player ->
+                val statistics = player.statistics
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp)
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .width(labels.getOrNull(0)?.width?.minus(16.dp) ?: 124.dp)
+                            .padding(start = 8.dp),
+                        text = player.nameAbbr,
+                        textAlign = TextAlign.Start,
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colors.secondary.copy(if (player.status == PlayerActiveStatus.ACTIVE) 1f else 0.5f),
+                        maxLines = 1,
+                        softWrap = false
+                    )
+                    Text(
+                        modifier = Modifier.width(16.dp),
+                        text = if (player.starter) player.position.last().toString() else "",
+                        textAlign = TextAlign.End,
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colors.secondary
+                    )
+                    if (player.status == PlayerActiveStatus.INACTIVE) {
+                        Text(
+                            modifier = Modifier.width(72.dp),
+                            text = "DNP",
+                            textAlign = TextAlign.Center,
+                            fontSize = 16.sp,
+                            color = MaterialTheme.colors.secondary.copy(0.5f)
+                        )
+                        Text(
+                            modifier = Modifier.padding(start = 16.dp),
+                            text = player.notPlayingReason ?: "",
+                            fontSize = 16.sp,
+                            color = MaterialTheme.colors.secondary.copy(0.5f)
+                        )
+                    } else if (player.status == PlayerActiveStatus.ACTIVE && statistics != null) {
+                        (1 until labels.size).forEach { index ->
+                            val label = labels[index]
+                            Text(
+                                modifier = Modifier
+                                    .width(label.width)
+                                    .padding(horizontal = 8.dp),
+                                text = when (label.text) {
+                                    "MIN" -> player.statistics.minutes
+                                    "FGM-A" -> "${statistics.fieldGoalsMade}-${statistics.fieldGoalsAttempted}"
+                                    "3PM-A" -> "${statistics.threePointersMade}-${statistics.threePointersAttempted}"
+                                    "FTM-A" -> "${statistics.freeThrowsMade}-${statistics.freeThrowsAttempted}"
+                                    "+/-" -> statistics.plusMinusPoints.toString()
+                                    "OR" -> statistics.reboundsOffensive.toString()
+                                    "DR" -> statistics.reboundsDefensive.toString()
+                                    "TR" -> statistics.reboundsTotal.toString()
+                                    "AS" -> statistics.assists.toString()
+                                    "PF" -> statistics.foulsPersonal.toString()
+                                    "ST" -> statistics.steals.toString()
+                                    "TO" -> statistics.turnovers.toString()
+                                    "BS" -> statistics.blocks.toString()
+                                    "BA" -> statistics.blocksReceived.toString()
+                                    "PTS" -> statistics.points.toString()
+                                    "EFF" -> statistics.efficiency.toString()
+                                    else -> ""
+                                },
+                                textAlign = label.textAlign,
+                                fontSize = 16.sp,
+                                color = MaterialTheme.colors.secondary
+                            )
+                        }
+                    }
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                if (index < players.size - 1) {
+                    Divider(
+                        modifier = Modifier.width(dividerWidth.px2Dp()),
+                        color = MaterialTheme.colors.dividerSecondary(),
+                        thickness = 1.dp
+                    )
+                }
+            }
+        }
     }
 }
 

@@ -45,7 +45,7 @@ data class RemoteGameBoxScore(
                         period == 2 -> "2nd"
                         period == 3 -> "3rd"
                         period == 4 -> "4th"
-                        else -> "OT${period - 1}"
+                        else -> "OT${period - 4}"
                     }
                     return GameBoxScore.BoxScoreTeam.Period(period, periodLabel, score ?: 0)
                 }
@@ -70,6 +70,7 @@ data class RemoteGameBoxScore(
                 data class Statistics(
                     val assists: Int?,
                     val blocks: Int?,
+                    val blocksReceived: Int?,
                     val fieldGoalsAttempted: Int?,
                     val fieldGoalsMade: Int?,
                     val fieldGoalsPercentage: Double?,
@@ -101,6 +102,7 @@ data class RemoteGameBoxScore(
                         return GameBoxScore.BoxScoreTeam.Player.Statistics(
                             assists ?: 0,
                             blocks ?: 0,
+                            blocksReceived ?: 0,
                             fieldGoalsAttempted ?: 0,
                             fieldGoalsMade ?: 0,
                             fieldGoalsPercentage?.times(1000)?.toInt()?.div(10.0) ?: 0.0,
@@ -111,11 +113,11 @@ data class RemoteGameBoxScore(
                             freeThrowsAttempted ?: 0,
                             freeThrowsMade ?: 0,
                             freeThrowsPercentage?.times(1000)?.toInt()?.div(10.0) ?: 0.0,
-                            minus ?: 0.0,
+                            minus?.toInt() ?: 0,
                             minutes?.substringAfter("PT")?.substringBefore(".")?.replace("M", ":")
                                 ?: "00:00",
-                            plus ?: 0.0,
-                            plusMinusPoints ?: 0.0,
+                            plus?.toInt() ?: 0,
+                            plusMinusPoints?.toInt() ?: 0,
                             points ?: 0,
                             reboundsDefensive ?: 0,
                             reboundsOffensive ?: 0,
@@ -133,9 +135,18 @@ data class RemoteGameBoxScore(
                 }
 
                 fun toLocal(): GameBoxScore.BoxScoreTeam.Player {
+                    val notPlaying = when (notPlayingReason) {
+                        "INACTIVE_INJURY" -> "Injury"
+                        "INACTIVE_GLEAGUE_TWOWAY" -> "G League Two Way"
+                        "INACTIVE_PERSONAL" -> "Personal"
+                        "INACTIVE_COACH" -> "Coach's Decision"
+                        "INACTIVE_NOT_WITH_TEAM" -> "Not With Team"
+                        "INACTIVE_GLEAGUE_ON_ASSIGNMENT" -> "G League On Assignment"
+                        else -> notPlayingReason
+                    }
                     return GameBoxScore.BoxScoreTeam.Player(
                         status ?: PlayerActiveStatus.INACTIVE,
-                        notPlayingReason,
+                        notPlaying,
                         order ?: 0,
                         personId ?: 0,
                         jerseyNum ?: "0",

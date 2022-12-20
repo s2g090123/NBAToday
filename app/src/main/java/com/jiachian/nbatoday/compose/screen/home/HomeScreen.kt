@@ -45,7 +45,6 @@ import com.jiachian.nbatoday.data.local.NbaGame
 import com.jiachian.nbatoday.data.remote.game.GameStatusCode
 import com.jiachian.nbatoday.data.remote.leader.GameLeaders
 import com.jiachian.nbatoday.utils.*
-import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
@@ -77,7 +76,6 @@ private fun HomeBody(
 ) {
     val homeIndex by viewModel.homeIndex.collectAsState()
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
-    val coroutineScope = rememberCoroutineScope()
     val lazyState = rememberLazyListState()
 
     LazyRow(
@@ -96,9 +94,7 @@ private fun HomeBody(
     }
 
     LaunchedEffect(homeIndex) {
-        coroutineScope.launch {
-            lazyState.animateScrollToItem(homeIndex)
-        }
+        lazyState.animateScrollToItem(homeIndex)
     }
 }
 
@@ -110,7 +106,6 @@ private fun SchedulePage(
 ) {
     val context = LocalContext.current
     val pagerState = rememberPagerState()
-    val coroutineScope = rememberCoroutineScope()
     val dateStrings = viewModel.scheduleDates
     val index by viewModel.scheduleIndex.collectAsState()
     val scheduleGames by viewModel.scheduleGames.collectAsState()
@@ -195,9 +190,7 @@ private fun SchedulePage(
         }
     }
     LaunchedEffect(index) {
-        coroutineScope.launch {
-            pagerState.scrollToPage(index)
-        }
+        pagerState.scrollToPage(index)
     }
 }
 

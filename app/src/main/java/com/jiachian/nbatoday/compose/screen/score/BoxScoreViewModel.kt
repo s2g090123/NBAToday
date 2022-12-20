@@ -1,5 +1,9 @@
 package com.jiachian.nbatoday.compose.screen.score
 
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.data.BaseRepository
 import kotlinx.coroutines.CoroutineScope
@@ -10,6 +14,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+
+data class ScoreLabel(
+    val width: Dp,
+    val text: String,
+    val textAlign: TextAlign
+)
 
 class BoxScoreViewModel(
     private val gameId: String,
@@ -23,6 +33,31 @@ class BoxScoreViewModel(
     val boxScore = repository.getGameBoxScore(gameId)
         .stateIn(coroutineScope, SharingStarted.Eagerly, null)
 
+    private val selectIndexImp = MutableStateFlow(0)
+    val selectIndex = selectIndexImp.asStateFlow()
+
+    val scoreLabel = derivedStateOf {
+        listOf(
+            ScoreLabel(140.dp, "PLAYER", TextAlign.Start),
+            ScoreLabel(72.dp, "MIN", TextAlign.Center),
+            ScoreLabel(72.dp, "FGM-A", TextAlign.End),
+            ScoreLabel(72.dp, "3PM-A", TextAlign.End),
+            ScoreLabel(72.dp, "FTM-A", TextAlign.End),
+            ScoreLabel(40.dp, "+/-", TextAlign.End),
+            ScoreLabel(40.dp, "OR", TextAlign.End),
+            ScoreLabel(40.dp, "DR", TextAlign.End),
+            ScoreLabel(40.dp, "TR", TextAlign.End),
+            ScoreLabel(40.dp, "AS", TextAlign.End),
+            ScoreLabel(40.dp, "PF", TextAlign.End),
+            ScoreLabel(40.dp, "ST", TextAlign.End),
+            ScoreLabel(40.dp, "TO", TextAlign.End),
+            ScoreLabel(40.dp, "BS", TextAlign.End),
+            ScoreLabel(40.dp, "BA", TextAlign.End),
+            ScoreLabel(48.dp, "PTS", TextAlign.End),
+            ScoreLabel(48.dp, "EFF", TextAlign.End)
+        )
+    }
+
     init {
         refreshScore()
     }
@@ -35,5 +70,9 @@ class BoxScoreViewModel(
             }
             isRefreshingImp.value = false
         }
+    }
+
+    fun updateSelectIndex(index: Int) {
+        selectIndexImp.value = index.coerceIn(0, 2)
     }
 }
