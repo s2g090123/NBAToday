@@ -1,13 +1,11 @@
 package com.jiachian.nbatoday.compose.screen.score
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.background
-import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -378,6 +376,7 @@ private fun ScoreDetail(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun PlayerStatistics(
     modifier: Modifier = Modifier,
@@ -387,125 +386,181 @@ private fun PlayerStatistics(
     val labels by viewModel.scoreLabel
     val horizontalScrollState = rememberScrollState()
     var dividerWidth by remember { mutableStateOf(0) }
+    val statisticsState = rememberLazyListState()
+    val playerState = rememberLazyListState()
+    val stateStatisticsOffset by remember { derivedStateOf { statisticsState.firstVisibleItemScrollOffset } }
+    val stateStatisticsIndex by remember { derivedStateOf { statisticsState.firstVisibleItemIndex } }
+    val statePlayerOffset by remember { derivedStateOf { playerState.firstVisibleItemScrollOffset } }
+    val statePlayerIndex by remember { derivedStateOf { playerState.firstVisibleItemIndex } }
 
-    Column(modifier = modifier.horizontalScroll(horizontalScrollState)) {
-        Row(
-            modifier = Modifier
-                .onSizeChanged {
-                    dividerWidth = max(dividerWidth, it.width)
-                }
-                .fillMaxWidth()
-                .wrapContentHeight()
-        ) {
-            labels.forEach { label ->
-                Text(
+    Row(modifier = modifier) {
+        Column(modifier = Modifier.width(124.dp)) {
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(40.dp)
+                    .padding(8.dp),
+                text = stringResource(R.string.box_score_label_player),
+                textAlign = TextAlign.Start,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colors.secondary
+            )
+            Divider(
+                modifier = Modifier.fillMaxWidth(),
+                color = MaterialTheme.colors.dividerSecondary(),
+                thickness = 3.dp
+            )
+            CompositionLocalProvider(
+                LocalOverscrollConfiguration provides null
+            ) {
+                LazyColumn(
                     modifier = Modifier
-                        .width(label.width)
-                        .height(40.dp)
-                        .padding(8.dp),
-                    text = label.text,
-                    textAlign = label.textAlign,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colors.secondary
-                )
-            }
-        }
-        Divider(
-            modifier = Modifier.width(dividerWidth.px2Dp()),
-            color = MaterialTheme.colors.dividerSecondary(),
-            thickness = 3.dp
-        )
-        LazyColumn(
-            modifier = Modifier
-                .onSizeChanged {
-                    dividerWidth = max(dividerWidth, it.width)
-                }
-                .heightIn(max = (LocalConfiguration.current.screenHeightDp * 0.7f).dp)
-                .fillMaxWidth()
-        ) {
-            itemsIndexed(players) { index, player ->
-                val statistics = player.statistics
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp)
+                        .heightIn(max = (LocalConfiguration.current.screenHeightDp * 0.7f).dp)
+                        .fillMaxWidth(),
+                    state = playerState
                 ) {
-                    Text(
-                        modifier = Modifier
-                            .width(labels.getOrNull(0)?.width?.minus(16.dp) ?: 124.dp)
-                            .padding(start = 8.dp),
-                        text = player.nameAbbr,
-                        textAlign = TextAlign.Start,
-                        fontSize = 16.sp,
-                        color = MaterialTheme.colors.secondary.copy(if (player.status == PlayerActiveStatus.ACTIVE) 1f else 0.5f),
-                        maxLines = 1,
-                        softWrap = false
-                    )
-                    Text(
-                        modifier = Modifier.width(16.dp),
-                        text = if (player.starter) player.position.last().toString() else "",
-                        textAlign = TextAlign.End,
-                        fontSize = 16.sp,
-                        color = MaterialTheme.colors.secondary
-                    )
-                    if (player.status == PlayerActiveStatus.INACTIVE) {
+                    itemsIndexed(players) { index, player ->
                         Text(
-                            modifier = Modifier.width(72.dp),
-                            text = "DNP",
-                            textAlign = TextAlign.Center,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 8.dp, start = 8.dp),
+                            text = player.nameAbbr,
+                            textAlign = TextAlign.Start,
                             fontSize = 16.sp,
-                            color = MaterialTheme.colors.secondary.copy(0.5f)
+                            color = MaterialTheme.colors.secondary.copy(if (player.status == PlayerActiveStatus.ACTIVE) 1f else 0.5f),
+                            maxLines = 1,
+                            softWrap = false
                         )
-                        Text(
-                            modifier = Modifier.padding(start = 16.dp),
-                            text = player.notPlayingReason ?: "",
-                            fontSize = 16.sp,
-                            color = MaterialTheme.colors.secondary.copy(0.5f)
-                        )
-                    } else if (player.status == PlayerActiveStatus.ACTIVE && statistics != null) {
-                        (1 until labels.size).forEach { index ->
-                            val label = labels[index]
-                            Text(
-                                modifier = Modifier
-                                    .width(label.width)
-                                    .padding(horizontal = 8.dp),
-                                text = when (label.text) {
-                                    "MIN" -> player.statistics.minutes
-                                    "FGM-A" -> "${statistics.fieldGoalsMade}-${statistics.fieldGoalsAttempted}"
-                                    "3PM-A" -> "${statistics.threePointersMade}-${statistics.threePointersAttempted}"
-                                    "FTM-A" -> "${statistics.freeThrowsMade}-${statistics.freeThrowsAttempted}"
-                                    "+/-" -> statistics.plusMinusPoints.toString()
-                                    "OR" -> statistics.reboundsOffensive.toString()
-                                    "DR" -> statistics.reboundsDefensive.toString()
-                                    "TR" -> statistics.reboundsTotal.toString()
-                                    "AS" -> statistics.assists.toString()
-                                    "PF" -> statistics.foulsPersonal.toString()
-                                    "ST" -> statistics.steals.toString()
-                                    "TO" -> statistics.turnovers.toString()
-                                    "BS" -> statistics.blocks.toString()
-                                    "BA" -> statistics.blocksReceived.toString()
-                                    "PTS" -> statistics.points.toString()
-                                    "EFF" -> statistics.efficiency.toString()
-                                    else -> ""
-                                },
-                                textAlign = label.textAlign,
-                                fontSize = 16.sp,
-                                color = MaterialTheme.colors.secondary
+                        Spacer(modifier = Modifier.height(8.dp))
+                        if (index < players.size - 1) {
+                            Divider(
+                                modifier = Modifier.fillMaxWidth(),
+                                color = MaterialTheme.colors.dividerSecondary(),
+                                thickness = 1.dp
                             )
                         }
                     }
                 }
-                Spacer(modifier = Modifier.height(8.dp))
-                if (index < players.size - 1) {
-                    Divider(
-                        modifier = Modifier.width(dividerWidth.px2Dp()),
-                        color = MaterialTheme.colors.dividerSecondary(),
-                        thickness = 1.dp
+            }
+        }
+        Column(modifier = modifier.horizontalScroll(horizontalScrollState)) {
+            Row(
+                modifier = Modifier
+                    .onSizeChanged {
+                        dividerWidth = max(dividerWidth, it.width)
+                    }
+                    .fillMaxWidth()
+                    .padding(start = 16.dp)
+                    .wrapContentHeight()
+            ) {
+                labels.forEach { label ->
+                    Text(
+                        modifier = Modifier
+                            .width(label.width)
+                            .height(40.dp)
+                            .padding(8.dp),
+                        text = label.text,
+                        textAlign = label.textAlign,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colors.secondary
                     )
                 }
             }
+            Divider(
+                modifier = Modifier.width(dividerWidth.px2Dp()),
+                color = MaterialTheme.colors.dividerSecondary(),
+                thickness = 3.dp
+            )
+            CompositionLocalProvider(
+                LocalOverscrollConfiguration provides null
+            ) {
+                LazyColumn(
+                    modifier = Modifier
+                        .heightIn(max = (LocalConfiguration.current.screenHeightDp * 0.7f).dp)
+                        .fillMaxWidth(),
+                    state = statisticsState
+                ) {
+                    itemsIndexed(players) { index, player ->
+                        val statistics = player.statistics
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 8.dp)
+                        ) {
+                            Text(
+                                modifier = Modifier.width(16.dp),
+                                text = if (player.starter) player.position.last()
+                                    .toString() else "",
+                                textAlign = TextAlign.End,
+                                fontSize = 16.sp,
+                                color = MaterialTheme.colors.secondary
+                            )
+                            if (player.status == PlayerActiveStatus.INACTIVE) {
+                                Text(
+                                    modifier = Modifier.width(72.dp),
+                                    text = "DNP",
+                                    textAlign = TextAlign.Center,
+                                    fontSize = 16.sp,
+                                    color = MaterialTheme.colors.secondary.copy(0.5f)
+                                )
+                                Text(
+                                    modifier = Modifier.padding(start = 16.dp),
+                                    text = player.notPlayingReason ?: "",
+                                    fontSize = 16.sp,
+                                    color = MaterialTheme.colors.secondary.copy(0.5f)
+                                )
+                            } else if (player.status == PlayerActiveStatus.ACTIVE && statistics != null) {
+                                labels.forEach { label ->
+                                    Text(
+                                        modifier = Modifier
+                                            .width(label.width)
+                                            .padding(horizontal = 8.dp),
+                                        text = when (label.text) {
+                                            "MIN" -> player.statistics.minutes
+                                            "FGM-A" -> "${statistics.fieldGoalsMade}-${statistics.fieldGoalsAttempted}"
+                                            "3PM-A" -> "${statistics.threePointersMade}-${statistics.threePointersAttempted}"
+                                            "FTM-A" -> "${statistics.freeThrowsMade}-${statistics.freeThrowsAttempted}"
+                                            "+/-" -> statistics.plusMinusPoints.toString()
+                                            "OR" -> statistics.reboundsOffensive.toString()
+                                            "DR" -> statistics.reboundsDefensive.toString()
+                                            "TR" -> statistics.reboundsTotal.toString()
+                                            "AS" -> statistics.assists.toString()
+                                            "PF" -> statistics.foulsPersonal.toString()
+                                            "ST" -> statistics.steals.toString()
+                                            "TO" -> statistics.turnovers.toString()
+                                            "BS" -> statistics.blocks.toString()
+                                            "BA" -> statistics.blocksReceived.toString()
+                                            "PTS" -> statistics.points.toString()
+                                            "EFF" -> statistics.efficiency.toString()
+                                            else -> ""
+                                        },
+                                        textAlign = label.textAlign,
+                                        fontSize = 16.sp,
+                                        color = MaterialTheme.colors.secondary
+                                    )
+                                }
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        if (index < players.size - 1) {
+                            Divider(
+                                modifier = Modifier.width(dividerWidth.px2Dp()),
+                                color = MaterialTheme.colors.dividerSecondary(),
+                                thickness = 1.dp
+                            )
+                        }
+                    }
+                }
+            }
         }
+    }
+    LaunchedEffect(stateStatisticsOffset, stateStatisticsIndex) {
+        playerState.scrollToItem(stateStatisticsIndex, stateStatisticsOffset)
+    }
+    LaunchedEffect(statePlayerOffset, statePlayerIndex) {
+        statisticsState.scrollToItem(statePlayerIndex, statePlayerOffset)
     }
 }
 

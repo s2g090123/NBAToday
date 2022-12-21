@@ -38,7 +38,6 @@ class BoxScoreViewModel(
 
     val scoreLabel = derivedStateOf {
         listOf(
-            ScoreLabel(140.dp, "PLAYER", TextAlign.Start),
             ScoreLabel(72.dp, "MIN", TextAlign.Center),
             ScoreLabel(72.dp, "FGM-A", TextAlign.End),
             ScoreLabel(72.dp, "3PM-A", TextAlign.End),
