@@ -10,5 +10,25 @@
     <string name="box_score_total_abbr">T</string>
     <string name="box_score_tab_statistics">Statistics</string>
     <string name="box_score_label_player">PLAYER</string>
+    <string name="box_score_team_statistics_title">隊伍統計資料</string>
+    <string name="box_score_team_statistics_points">得分</string>
+    <string name="box_score_team_statistics_fieldGoal">投籃次數(%)</string>
+    <string name="box_score_team_statistics_twoPoints">二分球數(%)</string>
+    <string name="box_score_team_statistics_threePoints">三分球數(%)</string>
+    <string name="box_score_team_statistics_freeThrows">罰球數(%)</string>
+    <string name="box_score_team_statistics_rebounds">籃板球總數</string>
+    <string name="box_score_team_statistics_reboundsDef">防守籃板球數</string>
+    <string name="box_score_team_statistics_reboundsOff">進攻籃板球數</string>
+    <string name="box_score_team_statistics_assists">助攻次數</string>
+    <string name="box_score_team_statistics_blocks">阻攻次數</string>
+    <string name="box_score_team_statistics_steals">抄截次數</string>
+    <string name="box_score_team_statistics_turnovers">失誤次數</string>
+    <string name="box_score_team_statistics_pointsFastBreak">快攻得分</string>
+    <string name="box_score_team_statistics_pointsFromTurnOvers">因失誤得分</string>
+    <string name="box_score_team_statistics_pointsInPaint">禁區得分</string>
+    <string name="box_score_team_statistics_pointsSecondChance">二次進攻得分</string>
+    <string name="box_score_team_statistics_benchPoints">板凳得分</string>
+    <string name="box_score_team_statistics_foulsPersonal">個人犯規次數</string>
+    <string name="box_score_team_statistics_foulsTechnical">技術犯規次數</string>
     <string name="game_is_coming_soon">比賽即將開始</string>
 </resources>

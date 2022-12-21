@@ -208,7 +208,17 @@ data class GameBoxScore(
             @ColumnInfo(name = "two_pointers_made")
             val twoPointersMade: Int, // 球隊兩分進球總數
             @ColumnInfo(name = "two_pointers_percentage")
-            val twoPointersPercentage: Double // 66.6
+            val twoPointersPercentage: Double, // 66.6
+            @ColumnInfo(name = "points_fast_break")
+            val pointsFastBreak: Int, // 快攻得分, e.g. 10
+            @ColumnInfo(name = "points_from_turnovers")
+            val pointsFromTurnovers: Int, // 因對方失誤得分, e.g 10
+            @ColumnInfo(name = "points_in_the_paint")
+            val pointsInThePaint: Int, // 禁區得分, e.g. 10
+            @ColumnInfo(name = "points_second_chance")
+            val pointsSecondChance: Int, // 二次進攻得分, e.g. 10
+            @ColumnInfo(name = "bench_points")
+            val benchPoints: Int, // 板凳得分, e.g. 10
         )
     }
 }

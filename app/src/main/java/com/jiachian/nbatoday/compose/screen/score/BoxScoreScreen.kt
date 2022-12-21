@@ -368,6 +368,16 @@ private fun ScoreDetail(
                         players = score.awayTeam.players
                     )
                 }
+                index == 2 -> {
+                    TeamStatistics(
+                        modifier = Modifier
+                            .heightIn(max = (LocalConfiguration.current.screenHeightDp * 0.7f).dp)
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                        homeTeam = score.homeTeam,
+                        awayTeam = score.awayTeam
+                    )
+                }
             }
         }
     }
@@ -561,6 +571,621 @@ private fun PlayerStatistics(
     }
     LaunchedEffect(statePlayerOffset, statePlayerIndex) {
         statisticsState.scrollToItem(statePlayerIndex, statePlayerOffset)
+    }
+}
+
+@Composable
+private fun TeamStatistics(
+    modifier: Modifier = Modifier,
+    homeTeam: GameBoxScore.BoxScoreTeam?,
+    awayTeam: GameBoxScore.BoxScoreTeam?
+) {
+    LazyColumn(modifier = modifier) {
+        item {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp)
+            ) {
+                AsyncImage(
+                    modifier = Modifier
+                        .size(56.dp)
+                        .align(Alignment.TopStart),
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(NbaUtils.getTeamLogoUrlById(homeTeam?.teamId ?: 0))
+                        .decoderFactory(SvgDecoder.Factory())
+                        .build(),
+                    error = painterResource(NbaUtils.getTeamLogoResById(homeTeam?.teamId ?: 0)),
+                    placeholder = painterResource(
+                        NbaUtils.getTeamLogoResById(homeTeam?.teamId ?: 0)
+                    ),
+                    contentDescription = null
+                )
+                Text(
+                    modifier = Modifier.align(Alignment.Center),
+                    text = stringResource(R.string.box_score_team_statistics_title),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+                AsyncImage(
+                    modifier = Modifier
+                        .size(56.dp)
+                        .align(Alignment.TopEnd),
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(NbaUtils.getTeamLogoUrlById(awayTeam?.teamId ?: 0))
+                        .decoderFactory(SvgDecoder.Factory())
+                        .build(),
+                    error = painterResource(NbaUtils.getTeamLogoResById(awayTeam?.teamId ?: 0)),
+                    placeholder = painterResource(
+                        NbaUtils.getTeamLogoResById(awayTeam?.teamId ?: 0)
+                    ),
+                    contentDescription = null
+                )
+            }
+        }
+        item {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp, start = 4.dp, end = 4.dp)
+            ) {
+                Text(
+                    modifier = Modifier.align(Alignment.TopStart),
+                    text = homeTeam?.statistics?.points?.toString() ?: "0",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+                Text(
+                    modifier = Modifier.align(Alignment.Center),
+                    text = stringResource(R.string.box_score_team_statistics_points),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+                Text(
+                    modifier = Modifier.align(Alignment.TopEnd),
+                    text = awayTeam?.statistics?.points?.toString() ?: "0",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+            }
+        }
+        item {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp, start = 4.dp, end = 4.dp)
+            ) {
+                Text(
+                    modifier = Modifier.align(Alignment.TopStart),
+                    text = "${homeTeam?.statistics?.fieldGoalsMade ?: 0}/${homeTeam?.statistics?.fieldGoalsAttempted ?: 0}(${homeTeam?.statistics?.fieldGoalsPercentage ?: 0}%)",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+                Text(
+                    modifier = Modifier.align(Alignment.Center),
+                    text = stringResource(R.string.box_score_team_statistics_fieldGoal),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+                Text(
+                    modifier = Modifier.align(Alignment.TopEnd),
+                    text = "${awayTeam?.statistics?.fieldGoalsMade ?: 0}/${awayTeam?.statistics?.fieldGoalsAttempted ?: 0}(${awayTeam?.statistics?.fieldGoalsPercentage ?: 0}%)",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+            }
+        }
+        item {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp, start = 4.dp, end = 4.dp)
+            ) {
+                Text(
+                    modifier = Modifier.align(Alignment.TopStart),
+                    text = "${homeTeam?.statistics?.twoPointersMade ?: 0}/${homeTeam?.statistics?.twoPointersAttempted ?: 0}(${homeTeam?.statistics?.twoPointersPercentage ?: 0}%)",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+                Text(
+                    modifier = Modifier.align(Alignment.Center),
+                    text = stringResource(R.string.box_score_team_statistics_twoPoints),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+                Text(
+                    modifier = Modifier.align(Alignment.TopEnd),
+                    text = "${awayTeam?.statistics?.twoPointersMade ?: 0}/${awayTeam?.statistics?.twoPointersAttempted ?: 0}(${awayTeam?.statistics?.twoPointersPercentage ?: 0}%)",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+            }
+        }
+        item {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp, start = 4.dp, end = 4.dp)
+            ) {
+                Text(
+                    modifier = Modifier.align(Alignment.TopStart),
+                    text = "${homeTeam?.statistics?.threePointersMade ?: 0}/${homeTeam?.statistics?.threePointersAttempted ?: 0}(${homeTeam?.statistics?.threePointersPercentage ?: 0}%)",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+                Text(
+                    modifier = Modifier.align(Alignment.Center),
+                    text = stringResource(R.string.box_score_team_statistics_threePoints),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+                Text(
+                    modifier = Modifier.align(Alignment.TopEnd),
+                    text = "${awayTeam?.statistics?.threePointersMade ?: 0}/${awayTeam?.statistics?.threePointersAttempted ?: 0}(${awayTeam?.statistics?.threePointersPercentage ?: 0}%)",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+            }
+        }
+        item {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp, start = 4.dp, end = 4.dp)
+            ) {
+                Text(
+                    modifier = Modifier.align(Alignment.TopStart),
+                    text = "${homeTeam?.statistics?.freeThrowsMade ?: 0}/${homeTeam?.statistics?.freeThrowsAttempted ?: 0}(${homeTeam?.statistics?.freeThrowsPercentage ?: 0}%)",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+                Text(
+                    modifier = Modifier.align(Alignment.Center),
+                    text = stringResource(R.string.box_score_team_statistics_freeThrows),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+                Text(
+                    modifier = Modifier.align(Alignment.TopEnd),
+                    text = "${awayTeam?.statistics?.freeThrowsMade ?: 0}/${awayTeam?.statistics?.freeThrowsAttempted ?: 0}(${awayTeam?.statistics?.freeThrowsPercentage ?: 0}%)",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+            }
+        }
+        item {
+            Divider(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 12.dp),
+                color = MaterialTheme.colors.dividerSecondary()
+            )
+        }
+        item {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 12.dp, start = 4.dp, end = 4.dp)
+            ) {
+                Text(
+                    modifier = Modifier.align(Alignment.TopStart),
+                    text = homeTeam?.statistics?.reboundsPersonal?.toString() ?: "0",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+                Text(
+                    modifier = Modifier.align(Alignment.Center),
+                    text = stringResource(R.string.box_score_team_statistics_rebounds),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+                Text(
+                    modifier = Modifier.align(Alignment.TopEnd),
+                    text = awayTeam?.statistics?.reboundsPersonal?.toString() ?: "0",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+            }
+        }
+        item {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 4.dp, end = 4.dp)
+            ) {
+                Text(
+                    modifier = Modifier.align(Alignment.TopStart),
+                    text = homeTeam?.statistics?.reboundsDefensive?.toString() ?: "0",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+                Text(
+                    modifier = Modifier.align(Alignment.Center),
+                    text = stringResource(R.string.box_score_team_statistics_reboundsDef),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+                Text(
+                    modifier = Modifier.align(Alignment.TopEnd),
+                    text = awayTeam?.statistics?.reboundsDefensive?.toString() ?: "0",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+            }
+        }
+        item {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 4.dp, end = 4.dp)
+            ) {
+                Text(
+                    modifier = Modifier.align(Alignment.TopStart),
+                    text = homeTeam?.statistics?.reboundsOffensive?.toString() ?: "0",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+                Text(
+                    modifier = Modifier.align(Alignment.Center),
+                    text = stringResource(R.string.box_score_team_statistics_reboundsOff),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+                Text(
+                    modifier = Modifier.align(Alignment.TopEnd),
+                    text = awayTeam?.statistics?.reboundsOffensive?.toString() ?: "0",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+            }
+        }
+        item {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp, start = 4.dp, end = 4.dp)
+            ) {
+                Text(
+                    modifier = Modifier.align(Alignment.TopStart),
+                    text = homeTeam?.statistics?.assists?.toString() ?: "0",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+                Text(
+                    modifier = Modifier.align(Alignment.Center),
+                    text = stringResource(R.string.box_score_team_statistics_assists),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+                Text(
+                    modifier = Modifier.align(Alignment.TopEnd),
+                    text = awayTeam?.statistics?.assists?.toString() ?: "0",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+            }
+        }
+        item {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp, start = 4.dp, end = 4.dp)
+            ) {
+                Text(
+                    modifier = Modifier.align(Alignment.TopStart),
+                    text = homeTeam?.statistics?.blocks?.toString() ?: "0",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+                Text(
+                    modifier = Modifier.align(Alignment.Center),
+                    text = stringResource(R.string.box_score_team_statistics_blocks),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+                Text(
+                    modifier = Modifier.align(Alignment.TopEnd),
+                    text = awayTeam?.statistics?.blocks?.toString() ?: "0",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+            }
+        }
+        item {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp, start = 4.dp, end = 4.dp)
+            ) {
+                Text(
+                    modifier = Modifier.align(Alignment.TopStart),
+                    text = homeTeam?.statistics?.steals?.toString() ?: "0",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+                Text(
+                    modifier = Modifier.align(Alignment.Center),
+                    text = stringResource(R.string.box_score_team_statistics_steals),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+                Text(
+                    modifier = Modifier.align(Alignment.TopEnd),
+                    text = awayTeam?.statistics?.steals?.toString() ?: "0",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+            }
+        }
+        item {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp, start = 4.dp, end = 4.dp)
+            ) {
+                Text(
+                    modifier = Modifier.align(Alignment.TopStart),
+                    text = homeTeam?.statistics?.turnoversTotal?.toString() ?: "0",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+                Text(
+                    modifier = Modifier.align(Alignment.Center),
+                    text = stringResource(R.string.box_score_team_statistics_turnovers),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+                Text(
+                    modifier = Modifier.align(Alignment.TopEnd),
+                    text = awayTeam?.statistics?.turnoversTotal?.toString() ?: "0",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+            }
+        }
+        item {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp, start = 4.dp, end = 4.dp)
+            ) {
+                Text(
+                    modifier = Modifier.align(Alignment.TopStart),
+                    text = homeTeam?.statistics?.pointsFastBreak?.toString() ?: "0",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+                Text(
+                    modifier = Modifier.align(Alignment.Center),
+                    text = stringResource(R.string.box_score_team_statistics_pointsFastBreak),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+                Text(
+                    modifier = Modifier.align(Alignment.TopEnd),
+                    text = awayTeam?.statistics?.pointsFastBreak?.toString() ?: "0",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+            }
+        }
+        item {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 4.dp, end = 4.dp)
+            ) {
+                Text(
+                    modifier = Modifier.align(Alignment.TopStart),
+                    text = homeTeam?.statistics?.pointsFromTurnovers?.toString() ?: "0",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+                Text(
+                    modifier = Modifier.align(Alignment.Center),
+                    text = stringResource(R.string.box_score_team_statistics_pointsFromTurnOvers),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+                Text(
+                    modifier = Modifier.align(Alignment.TopEnd),
+                    text = awayTeam?.statistics?.pointsFromTurnovers?.toString() ?: "0",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+            }
+        }
+        item {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 4.dp, end = 4.dp)
+            ) {
+                Text(
+                    modifier = Modifier.align(Alignment.TopStart),
+                    text = homeTeam?.statistics?.pointsInThePaint?.toString() ?: "0",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+                Text(
+                    modifier = Modifier.align(Alignment.Center),
+                    text = stringResource(R.string.box_score_team_statistics_pointsInPaint),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+                Text(
+                    modifier = Modifier.align(Alignment.TopEnd),
+                    text = awayTeam?.statistics?.pointsInThePaint?.toString() ?: "0",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+            }
+        }
+        item {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 4.dp, end = 4.dp)
+            ) {
+                Text(
+                    modifier = Modifier.align(Alignment.TopStart),
+                    text = homeTeam?.statistics?.pointsSecondChance?.toString() ?: "0",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+                Text(
+                    modifier = Modifier.align(Alignment.Center),
+                    text = stringResource(R.string.box_score_team_statistics_pointsSecondChance),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+                Text(
+                    modifier = Modifier.align(Alignment.TopEnd),
+                    text = awayTeam?.statistics?.pointsSecondChance?.toString() ?: "0",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+            }
+        }
+        item {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 4.dp, end = 4.dp)
+            ) {
+                Text(
+                    modifier = Modifier.align(Alignment.TopStart),
+                    text = homeTeam?.statistics?.benchPoints?.toString() ?: "0",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+                Text(
+                    modifier = Modifier.align(Alignment.Center),
+                    text = stringResource(R.string.box_score_team_statistics_benchPoints),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+                Text(
+                    modifier = Modifier.align(Alignment.TopEnd),
+                    text = awayTeam?.statistics?.benchPoints?.toString() ?: "0",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+            }
+        }
+        item {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp, start = 4.dp, end = 4.dp)
+            ) {
+                Text(
+                    modifier = Modifier.align(Alignment.TopStart),
+                    text = homeTeam?.statistics?.foulsPersonal?.toString() ?: "0",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+                Text(
+                    modifier = Modifier.align(Alignment.Center),
+                    text = stringResource(R.string.box_score_team_statistics_foulsPersonal),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+                Text(
+                    modifier = Modifier.align(Alignment.TopEnd),
+                    text = awayTeam?.statistics?.foulsPersonal?.toString() ?: "0",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+            }
+        }
+        item {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 4.dp, end = 4.dp)
+            ) {
+                Text(
+                    modifier = Modifier.align(Alignment.TopStart),
+                    text = homeTeam?.statistics?.foulsTechnical?.toString() ?: "0",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+                Text(
+                    modifier = Modifier.align(Alignment.Center),
+                    text = stringResource(R.string.box_score_team_statistics_foulsTechnical),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+                Text(
+                    modifier = Modifier.align(Alignment.TopEnd),
+                    text = awayTeam?.statistics?.foulsTechnical?.toString() ?: "0",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+            }
+        }
+        item {
+            Spacer(modifier = Modifier.height(8.dp))
+        }
     }
 }
 

@@ -192,7 +192,12 @@ data class RemoteGameBoxScore(
                 val turnoversTotal: Int?,
                 val twoPointersAttempted: Int?,
                 val twoPointersMade: Int?,
-                val twoPointersPercentage: Double?
+                val twoPointersPercentage: Double?,
+                val pointsFastBreak: Int?,
+                val pointsFromTurnovers: Int?,
+                val pointsInThePaint: Int?,
+                val pointsSecondChance: Int?,
+                val benchPoints: Int?
             ) {
                 fun toLocal(): GameBoxScore.BoxScoreTeam.Statistics {
                     return GameBoxScore.BoxScoreTeam.Statistics(
@@ -224,7 +229,12 @@ data class RemoteGameBoxScore(
                         turnoversTotal ?: 0,
                         twoPointersAttempted ?: 0,
                         twoPointersMade ?: 0,
-                        twoPointersPercentage?.times(1000)?.toInt()?.div(10.0) ?: 0.0
+                        twoPointersPercentage?.times(1000)?.toInt()?.div(10.0) ?: 0.0,
+                        pointsFastBreak ?: 0,
+                        pointsFromTurnovers ?: 0,
+                        pointsInThePaint ?: 0,
+                        pointsSecondChance ?: 0,
+                        benchPoints ?: 0
                     )
                 }
             }
