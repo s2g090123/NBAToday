@@ -32,13 +32,17 @@ private val LightColorPalette = lightColors(
 
 private class NBAColors(
     primary: Color,
-    secondary: Color
+    secondary: Color,
+    extra1: Color,
+    extra2: Color
 ) {
     var primary by mutableStateOf(primary)
     var secondary by mutableStateOf(secondary)
+    var extra1 by mutableStateOf(extra1)
+    var extra2 by mutableStateOf(extra2)
 }
 
-private val NBAColorPalette = NBAColors(LakersMain, LakersSub)
+private val NBAColorPalette = NBAColors(LakersMain, LakersSub, LakersExtra1, LakersExtra2)
 
 @Composable
 fun NBATodayTheme(content: @Composable () -> Unit) {
@@ -50,11 +54,21 @@ fun NBATodayTheme(content: @Composable () -> Unit) {
         targetValue = NBAColorPalette.secondary,
         animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
     )
+    val extraColor1 by animateColorAsState(
+        targetValue = NBAColorPalette.extra1,
+        animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
+    )
+    val extraColor2 by animateColorAsState(
+        targetValue = NBAColorPalette.extra2,
+        animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
+    )
     val colors by remember(primaryColor, secondaryColor) {
         derivedStateOf {
             darkColors(
                 primary = primaryColor,
-                secondary = secondaryColor
+                primaryVariant = extraColor1,
+                secondary = secondaryColor,
+                secondaryVariant = extraColor2
             )
         }
     }
@@ -67,7 +81,9 @@ fun NBATodayTheme(content: @Composable () -> Unit) {
     )
 }
 
-fun updateColors(primary: Color, secondary: Color) {
+fun updateColors(primary: Color, secondary: Color, extra1: Color, extra2: Color) {
     NBAColorPalette.primary = primary
     NBAColorPalette.secondary = secondary
+    NBAColorPalette.extra1 = extra1
+    NBAColorPalette.extra2 = extra2
 }
