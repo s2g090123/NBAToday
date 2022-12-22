@@ -6,10 +6,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -19,6 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Popup
 import androidx.constraintlayout.compose.ConstraintLayout
 import coil.compose.AsyncImage
 import coil.decode.SvgDecoder
@@ -29,10 +33,7 @@ import com.google.accompanist.pager.rememberPagerState
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.data.local.score.GameBoxScore
 import com.jiachian.nbatoday.data.remote.score.PlayerActiveStatus
-import com.jiachian.nbatoday.utils.NbaUtils
-import com.jiachian.nbatoday.utils.dividerSecondary
-import com.jiachian.nbatoday.utils.noRippleClickable
-import com.jiachian.nbatoday.utils.px2Dp
+import com.jiachian.nbatoday.utils.*
 import kotlin.math.max
 
 @Composable
@@ -429,6 +430,7 @@ private fun PlayerStatistics(
     val stateStatisticsIndex by remember { derivedStateOf { statisticsState.firstVisibleItemIndex } }
     val statePlayerOffset by remember { derivedStateOf { playerState.firstVisibleItemScrollOffset } }
     val statePlayerIndex by remember { derivedStateOf { playerState.firstVisibleItemIndex } }
+    var isPopupVisible by remember { mutableStateOf<String?>(null) }
 
     Row(modifier = modifier) {
         Column(modifier = Modifier.width(124.dp)) {
@@ -492,17 +494,45 @@ private fun PlayerStatistics(
                     .wrapContentHeight()
             ) {
                 labels.forEach { label ->
-                    Text(
+                    Box(
                         modifier = Modifier
                             .width(label.width)
                             .height(40.dp)
-                            .padding(8.dp),
-                        text = label.text,
-                        textAlign = label.textAlign,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = MaterialTheme.colors.secondary
-                    )
+                            .rippleClickable { isPopupVisible = label.text }
+                            .padding(8.dp)
+                    ) {
+                        Text(
+                            text = label.text,
+                            textAlign = label.textAlign,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = MaterialTheme.colors.secondary
+                        )
+                        if (isPopupVisible == label.text) {
+                            LabelAboutPopup(
+                                text = when (label.text) {
+                                    "MIN" -> stringResource(R.string.box_score_about_min)
+                                    "FGM-A" -> stringResource(R.string.box_score_about_FGMA)
+                                    "3PM-A" -> stringResource(R.string.box_score_about_3PMA)
+                                    "FTM-A" -> stringResource(R.string.box_score_about_FTMA)
+                                    "+/-" -> stringResource(R.string.box_score_about_plusMinus)
+                                    "OR" -> stringResource(R.string.box_score_about_OR)
+                                    "DR" -> stringResource(R.string.box_score_about_DR)
+                                    "TR" -> stringResource(R.string.box_score_about_TR)
+                                    "AS" -> stringResource(R.string.box_score_about_AS)
+                                    "PF" -> stringResource(R.string.box_score_about_PF)
+                                    "ST" -> stringResource(R.string.box_score_about_ST)
+                                    "TO" -> stringResource(R.string.box_score_about_TO)
+                                    "BS" -> stringResource(R.string.box_score_about_BS)
+                                    "BA" -> stringResource(R.string.box_score_about_BA)
+                                    "PTS" -> stringResource(R.string.box_score_about_PTS)
+                                    "EFF" -> stringResource(R.string.box_score_about_EFF)
+                                    else -> ""
+                                },
+                                onDismiss = { isPopupVisible = null }
+                            )
+                        }
+                    }
                 }
             }
             Divider(
@@ -1802,6 +1832,31 @@ private fun LeaderStatistics(
         }
         item {
             Spacer(modifier = Modifier.height(8.dp))
+        }
+    }
+}
+
+@Composable
+private fun LabelAboutPopup(
+    text: String,
+    onDismiss: () -> Unit
+) {
+    Popup(
+        onDismissRequest = onDismiss
+    ) {
+        Box(
+            modifier = Modifier
+                .shadow(8.dp)
+                .wrapContentSize()
+                .clip(RoundedCornerShape(8.dp))
+                .background(MaterialTheme.colors.secondaryVariant),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                modifier = Modifier.padding(8.dp),
+                text = text,
+                color = MaterialTheme.colors.primaryVariant
+            )
         }
     }
 }

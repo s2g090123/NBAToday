@@ -36,5 +36,21 @@
     <string name="box_score_leader_statistics_position">位置</string>
     <string name="box_score_leader_statistics_time">上場時間</string>
     <string name="box_score_leader_statistics_plusMinusPoints">+/-</string>
+    <string name="box_score_about_min">MIN：球員上場時間(分:秒)</string>
+    <string name="box_score_about_FGMA">FGM-A(FGM-FGA)：投籃命中數-投籃出手數</string>
+    <string name="box_score_about_3PMA">3PM-A(3FGM-3FGA)：三分球命中數-三分球出手數</string>
+    <string name="box_score_about_FTMA">FTM-A(FTM-FTA)：罰球命中數-罰球出手數</string>
+    <string name="box_score_about_plusMinus">+/-：球員上場期間，球隊比分增減情況</string>
+    <string name="box_score_about_OR">OR：進攻籃板球數</string>
+    <string name="box_score_about_DR">DR：防守籃板球數</string>
+    <string name="box_score_about_TR">TR：籃板球總數</string>
+    <string name="box_score_about_AS">AS：助攻次數</string>
+    <string name="box_score_about_PF">PF：個人犯規次數</string>
+    <string name="box_score_about_ST">ST：抄截次數</string>
+    <string name="box_score_about_TO">TO：失誤次數</string>
+    <string name="box_score_about_BS">BS：阻攻次數</string>
+    <string name="box_score_about_BA">BA：被阻攻次數</string>
+    <string name="box_score_about_PTS">PTS：得分</string>
+    <string name="box_score_about_EFF">EFF：效率\n(得分 + 籃板 + 助攻 + 抄截 + 阻攻) − ((投籃出手數 − 投籃命中數) + (罰球出手數 − 罰球命中數) + 失誤)</string>
     <string name="game_is_coming_soon">比賽即將開始</string>
 </resources>
