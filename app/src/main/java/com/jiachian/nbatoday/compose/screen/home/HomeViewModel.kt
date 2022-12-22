@@ -6,6 +6,7 @@ import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.compose.screen.score.BoxScoreViewModel
 import com.jiachian.nbatoday.compose.state.NbaState
 import com.jiachian.nbatoday.data.BaseRepository
+import com.jiachian.nbatoday.data.local.NbaGame
 import com.jiachian.nbatoday.utils.NbaUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -109,7 +110,7 @@ class HomeViewModel(
         }
     }
 
-    fun openGameBoxScore(gameId: String) {
-        openScreen(NbaState.BoxScore(BoxScoreViewModel(gameId, repository, coroutineScope)))
+    fun openGameBoxScore(game: NbaGame) {
+        openScreen(NbaState.BoxScore(BoxScoreViewModel(game, repository, coroutineScope)))
     }
 }

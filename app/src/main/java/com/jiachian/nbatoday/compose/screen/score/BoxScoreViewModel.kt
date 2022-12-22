@@ -6,12 +6,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.data.BaseRepository
+import com.jiachian.nbatoday.data.local.NbaGame
+import com.jiachian.nbatoday.data.remote.game.GameStatusCode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -22,16 +21,35 @@ data class ScoreLabel(
 )
 
 class BoxScoreViewModel(
-    private val gameId: String,
+    game: NbaGame,
     private val repository: BaseRepository,
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined)
 ) : ComposeViewModel() {
+
+    private val gameId = game.gameId
 
     private val isRefreshingImp = MutableStateFlow(false)
     val isRefreshing = isRefreshingImp.asStateFlow()
 
     val boxScore = repository.getGameBoxScore(gameId)
         .stateIn(coroutineScope, SharingStarted.Eagerly, null)
+
+    val homeLeader = boxScore.map {
+        val personId = if (game.gameStatus == GameStatusCode.FINAL) {
+            game.gameLeaders?.homeLeaders?.personId
+        } else {
+            game.teamLeaders?.homeLeaders?.personId
+        }
+        it?.homeTeam?.players?.firstOrNull { player -> player.personId == personId }
+    }.stateIn(coroutineScope, SharingStarted.Eagerly, null)
+    val awayLeader = boxScore.map {
+        val personId = if (game.gameStatus == GameStatusCode.FINAL) {
+            game.gameLeaders?.awayLeaders?.personId
+        } else {
+            game.teamLeaders?.awayLeaders?.personId
+        }
+        it?.awayTeam?.players?.firstOrNull { player -> player.personId == personId }
+    }.stateIn(coroutineScope, SharingStarted.Eagerly, null)
 
     private val selectIndexImp = MutableStateFlow(0)
     val selectIndex = selectIndexImp.asStateFlow()
@@ -72,6 +90,6 @@ class BoxScoreViewModel(
     }
 
     fun updateSelectIndex(index: Int) {
-        selectIndexImp.value = index.coerceIn(0, 2)
+        selectIndexImp.value = index.coerceIn(0, 3)
     }
 }

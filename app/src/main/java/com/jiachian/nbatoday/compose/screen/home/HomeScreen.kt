@@ -154,7 +154,7 @@ private fun SchedulePage(
                                                 )
                                                 .show()
                                         } else {
-                                            viewModel.openGameBoxScore(game.gameId)
+                                            viewModel.openGameBoxScore(game)
                                         }
                                     },
                                 game = game
