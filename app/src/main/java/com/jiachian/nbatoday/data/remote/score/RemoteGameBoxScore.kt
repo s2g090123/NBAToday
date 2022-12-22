@@ -142,6 +142,7 @@ data class RemoteGameBoxScore(
                         "INACTIVE_COACH" -> "Coach's Decision"
                         "INACTIVE_NOT_WITH_TEAM" -> "Not With Team"
                         "INACTIVE_GLEAGUE_ON_ASSIGNMENT" -> "G League On Assignment"
+                        "INACTIVE_HEALTH_AND_SAFETY_PROTOCOLS" -> "Health And Safety Protocols"
                         else -> notPlayingReason
                     }
                     return GameBoxScore.BoxScoreTeam.Player(
