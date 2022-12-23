@@ -34,8 +34,8 @@ class HomeViewModel(
         it.set(Calendar.MINUTE, 0)
         it.set(Calendar.SECOND, 0)
         repository.getGamesDuring(
-            it.timeInMillis - DateUtils.DAY_IN_MILLIS * SCHEDULE_DATE_RANGE,
-            it.timeInMillis + DateUtils.DAY_IN_MILLIS * (SCHEDULE_DATE_RANGE + 1)
+            it.timeInMillis - DateUtils.DAY_IN_MILLIS * (SCHEDULE_DATE_RANGE + 1),
+            it.timeInMillis + DateUtils.DAY_IN_MILLIS * (SCHEDULE_DATE_RANGE)
         )
     }
     val scheduleGames = scheduleGamesImp.map {
@@ -98,6 +98,7 @@ class HomeViewModel(
 
     fun updateTodaySchedule() {
         val cal = NbaUtils.getCalendar()
+        cal.add(Calendar.DAY_OF_MONTH, -1)
         val year = cal.get(Calendar.YEAR)
         val month = cal.get(Calendar.MONTH)
         val day = cal.get(Calendar.DAY_OF_MONTH)

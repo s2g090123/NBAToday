@@ -37,7 +37,7 @@ class NbaRepository(
         val record = NbaUtils.parseDate(dataStore.recordScheduleToday.first())?.time ?: 0L
         val betweenDays = TimeUnit.DAYS.convert(today - record, TimeUnit.MILLISECONDS)
         val offset = betweenDays.toInt().coerceAtMost(SCHEDULE_DATE_RANGE)
-        cal.add(Calendar.DAY_OF_MONTH, -offset)
+        cal.add(Calendar.DAY_OF_MONTH, -offset - 1)
         repeat(offset + SCHEDULE_DATE_RANGE + 1) {
             val year = cal.get(Calendar.YEAR)
             val month = cal.get(Calendar.MONTH) + 1
