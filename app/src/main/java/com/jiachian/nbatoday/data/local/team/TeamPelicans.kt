@@ -7,5 +7,7 @@ data class TeamPelicans(
     override val abbreviation: String = "NOP",
     override val teamName: String = "Pelicans",
     override val location: String = "New Orleans",
-    override val logoRes: Int = R.drawable.ic_team_logo_pelicans
+    override val logoRes: Int = R.drawable.ic_team_logo_pelicans,
+    override val conference: Conference = Conference.WEST,
+    override val division: Division = Division.SOUTHWEST,
 ) : DefaultTeam()

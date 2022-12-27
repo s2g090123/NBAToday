@@ -6,6 +6,7 @@ import com.jiachian.nbatoday.STATS_BASE_URL
 import com.jiachian.nbatoday.data.remote.game.GameScoreboard
 import com.jiachian.nbatoday.data.remote.game.Schedule
 import com.jiachian.nbatoday.data.remote.score.RemoteGameBoxScore
+import com.jiachian.nbatoday.data.remote.team.RemoteTeamStats
 import com.jiachian.nbatoday.service.CdnNbaService
 import com.jiachian.nbatoday.service.StatsNbaService
 import kotlinx.coroutines.runBlocking
@@ -47,6 +48,14 @@ class NbaRemoteDataSource : RemoteDataSource() {
 
     override suspend fun getGameBoxScore(gameId: String): RemoteGameBoxScore? {
         return cdnService.getGameBoxScore(gameId)
+    }
+
+    override suspend fun getTeamStats(): RemoteTeamStats? {
+        return statsService.getTeamStats("2022-23")
+    }
+
+    override suspend fun getTeamStats(teamId: Int): RemoteTeamStats? {
+        return statsService.getTeamStats(season = "2022-23", teamId = teamId)
     }
 
     private fun buildStatsOkHttpClient(): OkHttpClient {

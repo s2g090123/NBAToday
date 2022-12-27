@@ -7,5 +7,7 @@ data class TeamPacers(
     override val abbreviation: String = "IND",
     override val teamName: String = "Pacers",
     override val location: String = "Indiana",
-    override val logoRes: Int = R.drawable.ic_team_logo_pacers
+    override val logoRes: Int = R.drawable.ic_team_logo_pacers,
+    override val conference: Conference = Conference.EAST,
+    override val division: Division = Division.CENTRAL
 ) : DefaultTeam()

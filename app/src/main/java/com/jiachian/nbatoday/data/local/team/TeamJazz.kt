@@ -7,5 +7,7 @@ data class TeamJazz(
     override val abbreviation: String = "UTA",
     override val teamName: String = "Jazz",
     override val location: String = "Utah",
-    override val logoRes: Int = R.drawable.ic_team_logo_jazz
+    override val logoRes: Int = R.drawable.ic_team_logo_jazz,
+    override val conference: Conference = Conference.WEST,
+    override val division: Division = Division.NORTHWEST
 ) : DefaultTeam()

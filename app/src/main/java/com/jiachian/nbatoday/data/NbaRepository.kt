@@ -6,6 +6,7 @@ import com.jiachian.nbatoday.data.datastore.NbaDataStore
 import com.jiachian.nbatoday.data.local.LocalDataSource
 import com.jiachian.nbatoday.data.local.NbaGame
 import com.jiachian.nbatoday.data.local.score.GameBoxScore
+import com.jiachian.nbatoday.data.local.team.TeamStats
 import com.jiachian.nbatoday.data.remote.RemoteDataSource
 import com.jiachian.nbatoday.utils.NbaUtils
 import kotlinx.coroutines.flow.Flow
@@ -72,11 +73,31 @@ class NbaRepository(
         }
     }
 
+    override suspend fun refreshTeamStats() {
+        val stats = remoteDataSource.getTeamStats()
+        if (stats != null) {
+            val teamStats = stats.toLocal()
+            localDataSource.updateTeamStats(teamStats)
+        }
+    }
+
+    override suspend fun refreshTeamStats(teamId: Int) {
+        val stats = remoteDataSource.getTeamStats(teamId = teamId)
+        if (stats != null) {
+            val teamStats = stats.toLocal()
+            localDataSource.updateTeamStats(teamStats)
+        }
+    }
+
     override fun getGamesDuring(from: Long, to: Long): Flow<List<NbaGame>> {
         return localDataSource.getGamesDuring(from, to)
     }
 
     override fun getGameBoxScore(gameId: String): Flow<GameBoxScore?> {
         return localDataSource.getGameBoxScore(gameId)
+    }
+
+    override fun getTeamStats(): Flow<List<TeamStats>> {
+        return localDataSource.getTeamStats()
     }
 }

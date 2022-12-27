@@ -2,6 +2,7 @@ package com.jiachian.nbatoday.data.local
 
 import androidx.room.*
 import com.jiachian.nbatoday.data.local.score.GameBoxScore
+import com.jiachian.nbatoday.data.local.team.TeamStats
 import com.jiachian.nbatoday.data.remote.game.GameUpdateData
 import kotlinx.coroutines.flow.Flow
 import java.util.*
@@ -34,4 +35,14 @@ interface NbaDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertGameBoxScore(boxScore: GameBoxScore)
+
+    /** Team Stats */
+    @Query("SELECT * FROM nba_team_stats")
+    fun getTeamStats(): Flow<List<TeamStats>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun updateTeamStats(stats: List<TeamStats>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun updateTeamStats(stats: TeamStats)
 }

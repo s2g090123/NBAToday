@@ -4,8 +4,7 @@ import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandIn
 import androidx.compose.animation.shrinkOut
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -23,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -42,9 +42,13 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.data.local.NbaGame
+import com.jiachian.nbatoday.data.local.team.DefaultTeam
+import com.jiachian.nbatoday.data.local.team.TeamStats
 import com.jiachian.nbatoday.data.remote.game.GameStatusCode
 import com.jiachian.nbatoday.data.remote.leader.GameLeaders
 import com.jiachian.nbatoday.utils.*
+import kotlin.math.max
+import kotlin.math.pow
 
 @Composable
 fun HomeScreen(
@@ -63,6 +67,7 @@ fun HomeScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp)
+                .noRippleClickable { }
                 .background(MaterialTheme.colors.secondary),
             viewModel = viewModel
         )
@@ -85,6 +90,14 @@ private fun HomeBody(
     ) {
         item {
             SchedulePage(
+                modifier = Modifier
+                    .width(screenWidth)
+                    .fillMaxHeight(),
+                viewModel = viewModel
+            )
+        }
+        item {
+            StandingPage(
                 modifier = Modifier
                     .width(screenWidth)
                     .fillMaxHeight(),
@@ -194,23 +207,280 @@ private fun SchedulePage(
     }
 }
 
+@OptIn(ExperimentalPagerApi::class, ExperimentalMaterialApi::class)
+@Composable
+private fun StandingPage(
+    modifier: Modifier = Modifier,
+    viewModel: HomeViewModel
+) {
+    val teamStats by viewModel.teamStats.collectAsState()
+    val selectIndex by viewModel.standingIndex.collectAsState()
+    val isRefreshing by viewModel.isRefreshingTeamStats.collectAsState()
+    val pagerState = rememberPagerState()
+    val pullRefreshState = rememberPullRefreshState(
+        refreshing = isRefreshing,
+        onRefresh = { viewModel.updateTeamStats() }
+    )
+
+    Box(
+        modifier = modifier
+    ) {
+        HorizontalPager(
+            modifier = Modifier
+                .padding(top = 48.dp)
+                .fillMaxSize(),
+            state = pagerState,
+            count = 2,
+            userScrollEnabled = false
+        ) { page ->
+            val stats =
+                if (page == 0) teamStats[DefaultTeam.Conference.EAST] else teamStats[DefaultTeam.Conference.WEST]
+            if (stats != null) {
+                TeamStanding(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .pullRefresh(pullRefreshState),
+                    viewModel = viewModel,
+                    teamStats = stats
+                )
+            }
+        }
+        PullRefreshIndicator(
+            modifier = Modifier.align(Alignment.TopCenter),
+            refreshing = isRefreshing,
+            state = pullRefreshState
+        )
+        TabRow(
+            selectedTabIndex = selectIndex,
+            backgroundColor = MaterialTheme.colors.secondary
+        ) {
+            repeat(2) { index ->
+                Tab(
+                    text = {
+                        Text(
+                            text = stringResource(if (index == 0) R.string.standing_conference_east else R.string.standing_conference_west),
+                            color = MaterialTheme.colors.primary,
+                            fontSize = 14.sp
+                        )
+                    },
+                    selected = selectIndex == index,
+                    onClick = { viewModel.updateStandingIndex(index) }
+                )
+            }
+        }
+    }
+    LaunchedEffect(selectIndex) {
+        pagerState.scrollToPage(selectIndex)
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun TeamStanding(
+    modifier: Modifier = Modifier,
+    viewModel: HomeViewModel,
+    teamStats: List<TeamStats>
+) {
+    val teamState = rememberLazyListState()
+    val statsState = rememberLazyListState()
+    val horizontalScrollState = rememberScrollState()
+    var dividerWidth by remember { mutableStateOf(0) }
+    var teamNameWidth by remember { mutableStateOf(0) }
+    val stateTeamOffset by remember { derivedStateOf { teamState.firstVisibleItemScrollOffset } }
+    val stateTeamIndex by remember { derivedStateOf { teamState.firstVisibleItemIndex } }
+    val stateStatsOffset by remember { derivedStateOf { statsState.firstVisibleItemScrollOffset } }
+    val stateStatsIndex by remember { derivedStateOf { statsState.firstVisibleItemIndex } }
+    val labels by viewModel.standingLabel
+
+    Box(modifier = modifier) {
+        Row(modifier = Modifier.fillMaxSize()) {
+            Column {
+                Spacer(
+                    modifier = Modifier
+                        .width(teamNameWidth.px2Dp())
+                        .height(40.dp)
+                )
+                Divider(
+                    modifier = Modifier.width(teamNameWidth.px2Dp()),
+                    color = MaterialTheme.colors.dividerSecondary(),
+                    thickness = 3.dp
+                )
+                CompositionLocalProvider(
+                    LocalOverscrollConfiguration provides null
+                ) {
+                    LazyColumn(state = teamState) {
+                        itemsIndexed(teamStats) { index, stat ->
+                            Row(
+                                modifier = Modifier
+                                    .onSizeChanged {
+                                        teamNameWidth = max(it.width, teamNameWidth)
+                                    }
+                                    .padding(top = 8.dp)
+                                    .height(24.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    modifier = Modifier
+                                        .padding(start = 8.dp)
+                                        .width(24.dp),
+                                    text = (index + 1).toString(),
+                                    textAlign = TextAlign.Start,
+                                    fontSize = 16.sp,
+                                    color = MaterialTheme.colors.secondary,
+                                    maxLines = 1
+                                )
+                                AsyncImage(
+                                    modifier = Modifier
+                                        .fillMaxHeight()
+                                        .aspectRatio(1f),
+                                    model = ImageRequest.Builder(LocalContext.current)
+                                        .data(NbaUtils.getTeamLogoUrlById(stat.teamId))
+                                        .decoderFactory(SvgDecoder.Factory())
+                                        .build(),
+                                    error = painterResource(NbaUtils.getTeamLogoResById(stat.teamId)),
+                                    placeholder = painterResource(NbaUtils.getTeamLogoResById(stat.teamId)),
+                                    contentDescription = null
+                                )
+                                Text(
+                                    modifier = Modifier.padding(start = 4.dp),
+                                    text = stat.teamName,
+                                    textAlign = TextAlign.Start,
+                                    fontSize = 16.sp,
+                                    color = MaterialTheme.colors.secondary,
+                                    maxLines = 1
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(8.dp))
+                            if (index < teamStats.size - 1) {
+                                Divider(
+                                    modifier = Modifier.width(teamNameWidth.px2Dp()),
+                                    color = MaterialTheme.colors.dividerSecondary(),
+                                    thickness = if (index == 9) 3.dp else 1.dp
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+            Column(modifier = modifier.horizontalScroll(horizontalScrollState)) {
+                Row(
+                    modifier = Modifier
+                        .onSizeChanged {
+                            dividerWidth = max(dividerWidth, it.width)
+                        }
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                ) {
+                    labels.forEach { label ->
+                        Box(
+                            modifier = Modifier
+                                .width(label.width)
+                                .height(40.dp)
+                                .rippleClickable { }
+                                .padding(8.dp)
+                        ) {
+                            Text(
+                                modifier = Modifier.fillMaxSize(),
+                                text = label.text,
+                                textAlign = label.textAlign,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = MaterialTheme.colors.secondary
+                            )
+                        }
+                    }
+                }
+                Divider(
+                    modifier = Modifier.width(dividerWidth.px2Dp()),
+                    color = MaterialTheme.colors.dividerSecondary(),
+                    thickness = 3.dp
+                )
+                CompositionLocalProvider(
+                    LocalOverscrollConfiguration provides null
+                ) {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .fillMaxWidth(),
+                        state = statsState
+                    ) {
+                        itemsIndexed(teamStats) { index, stats ->
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 8.dp)
+                                    .height(24.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                labels.forEach { label ->
+                                    Text(
+                                        modifier = Modifier
+                                            .width(label.width)
+                                            .padding(horizontal = 8.dp),
+                                        text = when (label.text) {
+                                            "GP" -> stats.gamePlayed.toString()
+                                            "W" -> stats.win.toString()
+                                            "L" -> stats.lose.toString()
+                                            "WIN%" -> stats.winPercentage.decimalFormat()
+                                            "PTS" -> (stats.points.toDouble() / stats.gamePlayed).decimalFormat()
+                                            "FGM" -> (stats.fieldGoalsMade.toDouble() / stats.gamePlayed).decimalFormat()
+                                            "FGA" -> (stats.fieldGoalsAttempted.toDouble() / stats.gamePlayed).decimalFormat()
+                                            "FG%" -> stats.fieldGoalsPercentage.decimalFormat()
+                                            "3PM" -> (stats.threePointersMade.toDouble() / stats.gamePlayed).decimalFormat()
+                                            "3PA" -> (stats.threePointersAttempted.toDouble() / stats.gamePlayed).decimalFormat()
+                                            "3P%" -> stats.threePointersPercentage.decimalFormat()
+                                            "FTM" -> (stats.freeThrowsMade.toDouble() / stats.gamePlayed).decimalFormat()
+                                            "FTA" -> (stats.freeThrowsAttempted.toDouble() / stats.gamePlayed).decimalFormat()
+                                            "FT%" -> stats.freeThrowsPercentage.decimalFormat()
+                                            "OREB" -> (stats.reboundsOffensive.toDouble() / stats.gamePlayed).decimalFormat()
+                                            "DREB" -> (stats.reboundsDefensive.toDouble() / stats.gamePlayed).decimalFormat()
+                                            "REB" -> (stats.reboundsTotal.toDouble() / stats.gamePlayed).decimalFormat()
+                                            "AST" -> (stats.assists.toDouble() / stats.gamePlayed).decimalFormat()
+                                            "TOV" -> (stats.turnovers.toDouble() / stats.gamePlayed).decimalFormat()
+                                            "STL" -> (stats.steals.toDouble() / stats.gamePlayed).decimalFormat()
+                                            "BLK" -> (stats.blocks.toDouble() / stats.gamePlayed).decimalFormat()
+                                            "PF" -> (stats.foulsPersonal.toDouble() / stats.gamePlayed).decimalFormat()
+                                            else -> ""
+                                        },
+                                        textAlign = label.textAlign,
+                                        fontSize = 16.sp,
+                                        color = MaterialTheme.colors.secondary
+                                    )
+                                }
+                            }
+                            Spacer(modifier = Modifier.height(8.dp))
+                            if (index < teamStats.size - 1) {
+                                Divider(
+                                    modifier = Modifier.width(dividerWidth.px2Dp()),
+                                    color = MaterialTheme.colors.dividerSecondary(),
+                                    thickness = if (index == 9) 3.dp else 1.dp
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    LaunchedEffect(stateTeamOffset, stateTeamIndex) {
+        statsState.scrollToItem(stateTeamIndex, stateTeamOffset)
+    }
+    LaunchedEffect(stateStatsOffset, stateStatsIndex) {
+        teamState.scrollToItem(stateStatsIndex, stateStatsOffset)
+    }
+}
+
 @Composable
 private fun HomeBottom(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel
 ) {
-    FocusableConstraintLayout(
+    Row(
         modifier = modifier
     ) {
-        val (scheduleBtn) = createRefs()
-
         Column(
             modifier = Modifier
-                .constrainAs(scheduleBtn) {
-                    linkTo(parent.top, parent.bottom)
-                    linkTo(parent.start, parent.end)
-                }
-                .defaultMinSize(minWidth = 88.dp)
+                .weight(1f)
                 .fillMaxHeight()
                 .rippleClickable { viewModel.updateHomeIndex(0) }
                 .padding(horizontal = 12.dp, vertical = 4.dp),
@@ -224,6 +494,27 @@ private fun HomeBottom(
             )
             Text(
                 text = stringResource(R.string.home_bottom_schedule),
+                color = MaterialTheme.colors.primary,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Medium
+            )
+        }
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight()
+                .rippleClickable { viewModel.updateHomeIndex(1) }
+                .padding(horizontal = 12.dp, vertical = 4.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(
+                painter = painterResource(R.drawable.ic_black_ranking),
+                contentDescription = null,
+                colorFilter = ColorFilter.tint(MaterialTheme.colors.primary)
+            )
+            Text(
+                text = stringResource(R.string.home_bottom_standings),
                 color = MaterialTheme.colors.primary,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Medium
@@ -545,4 +836,9 @@ private fun LeaderInfo(
             }
         }
     }
+}
+
+private fun Double.decimalFormat(radix: Int = 1): String {
+    val value = (this * 10.0.pow(radix)).toInt() / 10.0.pow(radix)
+    return if (value < 1) value.toString().replaceBefore(".", "") else value.toString()
 }

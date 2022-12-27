@@ -27,20 +27,24 @@ class MainViewModel(
         eventManager.send(this)
     }
 
-    private val initState: NbaState = NbaState.Home(
-        HomeViewModel(
-            repository = repository,
-            openScreen = this::updateState
+    private val initState: NbaState by lazy {
+        NbaState.Home(
+            HomeViewModel(
+                repository = repository,
+                openScreen = this::updateState
+            )
         )
-    )
+    }
 
     private val isLoadingAppImp = MutableStateFlow(true)
     val isLoadingApp = isLoadingAppImp.asStateFlow()
 
-    private val stateStackImp = MutableStateFlow(listOf(initState))
-    val stateStack = stateStackImp.asStateFlow()
-    val currentState = stateStack.map { it.last() }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, initState)
+    private val stateStackImp by lazy { MutableStateFlow(listOf(initState)) }
+    val stateStack by lazy { stateStackImp.asStateFlow() }
+    val currentState by lazy {
+        stateStack.map { it.last() }
+            .stateIn(viewModelScope, SharingStarted.Eagerly, initState)
+    }
 
     init {
         viewModelScope.launch {

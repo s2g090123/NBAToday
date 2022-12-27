@@ -7,5 +7,7 @@ data class TeamClippers(
     override val abbreviation: String = "LAC",
     override val teamName: String = "Clippers",
     override val location: String = "Los Angeles",
-    override val logoRes: Int = R.drawable.ic_team_logo_clippers
+    override val logoRes: Int = R.drawable.ic_team_logo_clippers,
+    override val conference: Conference = Conference.WEST,
+    override val division: Division = Division.PACIFIC
 ) : DefaultTeam()

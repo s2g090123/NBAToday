@@ -7,5 +7,7 @@ data class TeamKnicks(
     override val abbreviation: String = "NYK",
     override val teamName: String = "Knicks",
     override val location: String = "New York",
-    override val logoRes: Int = R.drawable.ic_team_logo_knicks
+    override val logoRes: Int = R.drawable.ic_team_logo_knicks,
+    override val conference: Conference = Conference.EAST,
+    override val division: Division = Division.ATLANTIC
 ) : DefaultTeam()

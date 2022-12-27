@@ -1,6 +1,7 @@
 package com.jiachian.nbatoday.data.local
 
 import com.jiachian.nbatoday.data.local.score.GameBoxScore
+import com.jiachian.nbatoday.data.local.team.TeamStats
 import com.jiachian.nbatoday.data.remote.game.GameUpdateData
 import kotlinx.coroutines.flow.Flow
 import java.util.*
@@ -21,4 +22,8 @@ abstract class LocalDataSource {
 
     abstract fun getGameBoxScore(gameId: String): Flow<GameBoxScore?>
     abstract suspend fun insertGameBoxScore(boxScore: GameBoxScore)
+
+    abstract fun getTeamStats(): Flow<List<TeamStats>>
+    abstract suspend fun updateTeamStats(stats: TeamStats)
+    abstract suspend fun updateTeamStats(stats: List<TeamStats>)
 }

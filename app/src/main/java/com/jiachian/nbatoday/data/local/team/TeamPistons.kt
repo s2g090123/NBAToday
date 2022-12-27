@@ -7,5 +7,7 @@ data class TeamPistons(
     override val abbreviation: String = "DET",
     override val teamName: String = "Pistons",
     override val location: String = "Detroit",
-    override val logoRes: Int = R.drawable.ic_team_logo_pistons
+    override val logoRes: Int = R.drawable.ic_team_logo_pistons,
+    override val conference: Conference = Conference.EAST,
+    override val division: Division = Division.CENTRAL
 ) : DefaultTeam()

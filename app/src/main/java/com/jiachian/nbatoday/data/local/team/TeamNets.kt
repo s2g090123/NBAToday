@@ -7,5 +7,7 @@ data class TeamNets(
     override val abbreviation: String = "BKN",
     override val teamName: String = "Nets",
     override val location: String = "Brooklyn",
-    override val logoRes: Int = R.drawable.ic_team_logo_nets
+    override val logoRes: Int = R.drawable.ic_team_logo_nets,
+    override val conference: Conference = Conference.EAST,
+    override val division: Division = Division.ATLANTIC
 ) : DefaultTeam()

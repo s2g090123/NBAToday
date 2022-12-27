@@ -7,9 +7,10 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.jiachian.nbatoday.data.local.converter.*
 import com.jiachian.nbatoday.data.local.score.GameBoxScore
+import com.jiachian.nbatoday.data.local.team.TeamStats
 
 @Database(
-    entities = [NbaGame::class, GameBoxScore::class],
+    entities = [NbaGame::class, GameBoxScore::class, TeamStats::class],
     version = 1
 )
 @TypeConverters(
@@ -17,6 +18,8 @@ import com.jiachian.nbatoday.data.local.score.GameBoxScore
     PointsLeaderConverter::class,
     GameLeadersConverter::class,
     BoxScoreTeamConverter::class,
+    TeamConferenceConverter::class,
+    TeamDivisionConverter::class,
     DateConverter::class
 )
 abstract class NbaDatabase : RoomDatabase() {

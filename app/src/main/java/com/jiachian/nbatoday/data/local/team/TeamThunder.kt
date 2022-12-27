@@ -7,5 +7,7 @@ data class TeamThunder(
     override val abbreviation: String = "OKC",
     override val teamName: String = "Thunder",
     override val location: String = "Oklahoma City",
-    override val logoRes: Int = R.drawable.ic_team_logo_thunder
+    override val logoRes: Int = R.drawable.ic_team_logo_thunder,
+    override val conference: Conference = Conference.WEST,
+    override val division: Division = Division.NORTHWEST
 ) : DefaultTeam()

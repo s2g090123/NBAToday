@@ -7,5 +7,7 @@ data class TeamMavericks(
     override val abbreviation: String = "DAL",
     override val teamName: String = "Mavericks",
     override val location: String = "Dallas",
-    override val logoRes: Int = R.drawable.ic_team_logo_mavericks
+    override val logoRes: Int = R.drawable.ic_team_logo_mavericks,
+    override val conference: Conference = Conference.WEST,
+    override val division: Division = Division.SOUTHWEST
 ) : DefaultTeam()

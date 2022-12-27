@@ -502,6 +502,7 @@ private fun PlayerStatistics(
                             .padding(8.dp)
                     ) {
                         Text(
+                            modifier = Modifier.fillMaxSize(),
                             text = label.text,
                             textAlign = label.textAlign,
                             fontSize = 16.sp,

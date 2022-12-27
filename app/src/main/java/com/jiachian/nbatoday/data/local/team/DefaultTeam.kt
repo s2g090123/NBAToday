@@ -44,9 +44,20 @@ abstract class DefaultTeam {
                     override val teamName: String = "Unknown"
                     override val location: String = "Unknown"
                     override val logoRes: Int = R.drawable.ic_logo_nba
+                    override val conference: Conference = Conference.EAST
+                    override val division: Division = Division.ATLANTIC
                 }
             }
         }
+    }
+
+    enum class Conference {
+        EAST, WEST
+    }
+
+    enum class Division {
+        ATLANTIC, CENTRAL, SOUTHEAST,
+        NORTHWEST, PACIFIC, SOUTHWEST
     }
 
     abstract val teamId: Int // e.g. 1610612747
@@ -54,4 +65,6 @@ abstract class DefaultTeam {
     abstract val teamName: String // e.g. Lakers
     abstract val location: String // e.g. Los Angeles
     abstract val logoRes: Int // Team logo drawable resource
+    abstract val conference: Conference
+    abstract val division: Division
 }

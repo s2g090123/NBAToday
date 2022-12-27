@@ -1,6 +1,10 @@
 package com.jiachian.nbatoday.compose.screen.home
 
 import android.text.format.DateUtils
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.jiachian.nbatoday.SCHEDULE_DATE_RANGE
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.compose.screen.score.BoxScoreViewModel
@@ -14,6 +18,12 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
+
+data class StandingLabel(
+    val width: Dp,
+    val text: String,
+    val textAlign: TextAlign
+)
 
 class HomeViewModel(
     private val repository: BaseRepository,
@@ -51,6 +61,49 @@ class HomeViewModel(
     }.stateIn(coroutineScope, SharingStarted.Eagerly, mapOf())
     private val isRefreshingScheduleImp = MutableStateFlow(false)
     val isRefreshingSchedule = isRefreshingScheduleImp.asStateFlow()
+
+    // Standing
+    val teamStats = repository.getTeamStats().map {
+        it.sortedByDescending { stats ->
+            stats.winPercentage
+        }.groupBy { stats ->
+            stats.teamConference
+        }
+    }.stateIn(coroutineScope, SharingStarted.Eagerly, mapOf())
+    private val isRefreshingTeamStatsImp = MutableStateFlow(false)
+    val isRefreshingTeamStats = isRefreshingTeamStatsImp.asStateFlow()
+    private val standingIndexImp = MutableStateFlow(0)
+    val standingIndex = standingIndexImp.asStateFlow()
+    val standingLabel = derivedStateOf {
+        listOf(
+            StandingLabel(40.dp, "GP", TextAlign.End),
+            StandingLabel(40.dp, "W", TextAlign.End),
+            StandingLabel(40.dp, "L", TextAlign.End),
+            StandingLabel(64.dp, "WIN%", TextAlign.End),
+            StandingLabel(64.dp, "PTS", TextAlign.End),
+            StandingLabel(64.dp, "FGM", TextAlign.End),
+            StandingLabel(64.dp, "FGA", TextAlign.End),
+            StandingLabel(64.dp, "FG%", TextAlign.End),
+            StandingLabel(64.dp, "3PM", TextAlign.End),
+            StandingLabel(64.dp, "3PA", TextAlign.End),
+            StandingLabel(64.dp, "3P%", TextAlign.End),
+            StandingLabel(64.dp, "FTM", TextAlign.End),
+            StandingLabel(64.dp, "FTA", TextAlign.End),
+            StandingLabel(64.dp, "FT%", TextAlign.End),
+            StandingLabel(48.dp, "OREB", TextAlign.End),
+            StandingLabel(48.dp, "DREB", TextAlign.End),
+            StandingLabel(48.dp, "REB", TextAlign.End),
+            StandingLabel(48.dp, "AST", TextAlign.End),
+            StandingLabel(48.dp, "TOV", TextAlign.End),
+            StandingLabel(48.dp, "STL", TextAlign.End),
+            StandingLabel(48.dp, "BLK", TextAlign.End),
+            StandingLabel(48.dp, "PF", TextAlign.End)
+        )
+    }
+
+    init {
+        updateTeamStats()
+    }
 
     fun updateHomeIndex(index: Int) {
         homeIndexImp.value = index.coerceIn(0, 2)
@@ -97,6 +150,7 @@ class HomeViewModel(
     }
 
     fun updateTodaySchedule() {
+        if (isRefreshingSchedule.value) return
         val cal = NbaUtils.getCalendar()
         cal.add(Calendar.DAY_OF_MONTH, -1)
         val year = cal.get(Calendar.YEAR)
@@ -113,5 +167,20 @@ class HomeViewModel(
 
     fun openGameBoxScore(game: NbaGame) {
         openScreen(NbaState.BoxScore(BoxScoreViewModel(game, repository, coroutineScope)))
+    }
+
+    fun updateTeamStats() {
+        if (isRefreshingTeamStats.value) return
+        coroutineScope.launch {
+            isRefreshingTeamStatsImp.value = true
+            withContext(Dispatchers.IO) {
+                repository.refreshTeamStats()
+            }
+            isRefreshingTeamStatsImp.value = false
+        }
+    }
+
+    fun updateStandingIndex(index: Int) {
+        standingIndexImp.value = index.coerceIn(0, 1)
     }
 }
