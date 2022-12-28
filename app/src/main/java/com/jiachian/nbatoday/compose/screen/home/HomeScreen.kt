@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
@@ -291,6 +292,7 @@ private fun TeamStanding(
     val stateStatsOffset by remember { derivedStateOf { statsState.firstVisibleItemScrollOffset } }
     val stateStatsIndex by remember { derivedStateOf { statsState.firstVisibleItemIndex } }
     val labels by viewModel.standingLabel
+    val sort by viewModel.standingSort.collectAsState()
 
     Box(modifier = modifier) {
         Row(modifier = Modifier.fillMaxSize()) {
@@ -376,13 +378,22 @@ private fun TeamStanding(
                             modifier = Modifier
                                 .width(label.width)
                                 .height(40.dp)
-                                .rippleClickable { }
+                                .background(
+                                    if (label.sort == sort) {
+                                        MaterialTheme.colors.secondary.copy(0.25f)
+                                    } else {
+                                        Color.Transparent
+                                    }
+                                )
+                                .rippleClickable {
+                                    viewModel.updateStandingSort(label)
+                                }
                                 .padding(8.dp)
                         ) {
                             Text(
                                 modifier = Modifier.fillMaxSize(),
                                 text = label.text,
-                                textAlign = label.textAlign,
+                                textAlign = if (label.sort == sort) TextAlign.Center else label.textAlign,
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Medium,
                                 color = MaterialTheme.colors.secondary
@@ -406,17 +417,22 @@ private fun TeamStanding(
                     ) {
                         itemsIndexed(teamStats) { index, stats ->
                             Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(top = 8.dp)
-                                    .height(24.dp),
+                                modifier = Modifier.fillMaxWidth(),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 labels.forEach { label ->
                                     Text(
                                         modifier = Modifier
                                             .width(label.width)
-                                            .padding(horizontal = 8.dp),
+                                            .height(40.dp)
+                                            .background(
+                                                if (label.sort == sort) {
+                                                    MaterialTheme.colors.secondary.copy(0.25f)
+                                                } else {
+                                                    Color.Transparent
+                                                }
+                                            )
+                                            .padding(8.dp),
                                         text = when (label.text) {
                                             "GP" -> stats.gamePlayed.toString()
                                             "W" -> stats.win.toString()
@@ -442,13 +458,12 @@ private fun TeamStanding(
                                             "PF" -> (stats.foulsPersonal.toDouble() / stats.gamePlayed).decimalFormat()
                                             else -> ""
                                         },
-                                        textAlign = label.textAlign,
+                                        textAlign = if (label.sort == sort) TextAlign.Center else label.textAlign,
                                         fontSize = 16.sp,
                                         color = MaterialTheme.colors.secondary
                                     )
                                 }
                             }
-                            Spacer(modifier = Modifier.height(8.dp))
                             if (index < teamStats.size - 1) {
                                 Divider(
                                     modifier = Modifier.width(dividerWidth.px2Dp()),

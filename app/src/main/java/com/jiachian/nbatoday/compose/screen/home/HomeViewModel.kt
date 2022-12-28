@@ -11,6 +11,7 @@ import com.jiachian.nbatoday.compose.screen.score.BoxScoreViewModel
 import com.jiachian.nbatoday.compose.state.NbaState
 import com.jiachian.nbatoday.data.BaseRepository
 import com.jiachian.nbatoday.data.local.NbaGame
+import com.jiachian.nbatoday.data.local.team.TeamStats
 import com.jiachian.nbatoday.utils.NbaUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,7 +23,8 @@ import java.util.*
 data class StandingLabel(
     val width: Dp,
     val text: String,
-    val textAlign: TextAlign
+    val textAlign: TextAlign,
+    val sort: StandingSort
 )
 
 class HomeViewModel(
@@ -63,11 +65,37 @@ class HomeViewModel(
     val isRefreshingSchedule = isRefreshingScheduleImp.asStateFlow()
 
     // Standing
-    val teamStats = repository.getTeamStats().map {
-        it.sortedByDescending { stats ->
-            stats.winPercentage
-        }.groupBy { stats ->
-            stats.teamConference
+    private val standingSortImp = MutableStateFlow(StandingSort.GP)
+    val standingSort = standingSortImp.asStateFlow()
+    val teamStats = combine(
+        repository.getTeamStats(),
+        standingSort
+    ) { teamStats, sort ->
+        when (sort) {
+            StandingSort.GP -> teamStats.sortedWith(compareByDescending<TeamStats> { it.gamePlayed }.thenByDescending { it.winPercentage })
+            StandingSort.W -> teamStats.sortedWith(compareByDescending<TeamStats> { it.win }.thenByDescending { it.winPercentage })
+            StandingSort.L -> teamStats.sortedWith(compareBy<TeamStats> { it.lose }.thenByDescending { it.winPercentage })
+            StandingSort.WINP -> teamStats.sortedWith(compareByDescending<TeamStats> { it.winPercentage }.thenByDescending { it.winPercentage })
+            StandingSort.PTS -> teamStats.sortedWith(compareByDescending<TeamStats> { it.points }.thenByDescending { it.winPercentage })
+            StandingSort.FGM -> teamStats.sortedWith(compareByDescending<TeamStats> { it.fieldGoalsMade }.thenByDescending { it.winPercentage })
+            StandingSort.FGA -> teamStats.sortedWith(compareByDescending<TeamStats> { it.fieldGoalsAttempted }.thenByDescending { it.winPercentage })
+            StandingSort.FGP -> teamStats.sortedWith(compareByDescending<TeamStats> { it.fieldGoalsPercentage }.thenByDescending { it.winPercentage })
+            StandingSort.PM3 -> teamStats.sortedWith(compareByDescending<TeamStats> { it.threePointersMade }.thenByDescending { it.winPercentage })
+            StandingSort.PA3 -> teamStats.sortedWith(compareByDescending<TeamStats> { it.threePointersAttempted }.thenByDescending { it.winPercentage })
+            StandingSort.PP3 -> teamStats.sortedWith(compareByDescending<TeamStats> { it.threePointersPercentage }.thenByDescending { it.winPercentage })
+            StandingSort.FTM -> teamStats.sortedWith(compareByDescending<TeamStats> { it.freeThrowsMade }.thenByDescending { it.winPercentage })
+            StandingSort.FTA -> teamStats.sortedWith(compareByDescending<TeamStats> { it.freeThrowsAttempted }.thenByDescending { it.winPercentage })
+            StandingSort.FTP -> teamStats.sortedWith(compareByDescending<TeamStats> { it.freeThrowsPercentage }.thenByDescending { it.winPercentage })
+            StandingSort.OREB -> teamStats.sortedWith(compareByDescending<TeamStats> { it.reboundsOffensive }.thenByDescending { it.winPercentage })
+            StandingSort.DREB -> teamStats.sortedWith(compareByDescending<TeamStats> { it.reboundsDefensive }.thenByDescending { it.winPercentage })
+            StandingSort.REB -> teamStats.sortedWith(compareByDescending<TeamStats> { it.reboundsTotal }.thenByDescending { it.winPercentage })
+            StandingSort.AST -> teamStats.sortedWith(compareByDescending<TeamStats> { it.assists }.thenByDescending { it.winPercentage })
+            StandingSort.TOV -> teamStats.sortedWith(compareBy<TeamStats> { it.turnovers }.thenByDescending { it.winPercentage })
+            StandingSort.STL -> teamStats.sortedWith(compareByDescending<TeamStats> { it.steals }.thenByDescending { it.winPercentage })
+            StandingSort.BLK -> teamStats.sortedWith(compareByDescending<TeamStats> { it.blocks }.thenByDescending { it.winPercentage })
+            StandingSort.PF -> teamStats.sortedWith(compareBy<TeamStats> { it.foulsPersonal }.thenByDescending { it.winPercentage })
+        }.groupBy {
+            it.teamConference
         }
     }.stateIn(coroutineScope, SharingStarted.Eagerly, mapOf())
     private val isRefreshingTeamStatsImp = MutableStateFlow(false)
@@ -76,28 +104,28 @@ class HomeViewModel(
     val standingIndex = standingIndexImp.asStateFlow()
     val standingLabel = derivedStateOf {
         listOf(
-            StandingLabel(40.dp, "GP", TextAlign.End),
-            StandingLabel(40.dp, "W", TextAlign.End),
-            StandingLabel(40.dp, "L", TextAlign.End),
-            StandingLabel(64.dp, "WIN%", TextAlign.End),
-            StandingLabel(64.dp, "PTS", TextAlign.End),
-            StandingLabel(64.dp, "FGM", TextAlign.End),
-            StandingLabel(64.dp, "FGA", TextAlign.End),
-            StandingLabel(64.dp, "FG%", TextAlign.End),
-            StandingLabel(64.dp, "3PM", TextAlign.End),
-            StandingLabel(64.dp, "3PA", TextAlign.End),
-            StandingLabel(64.dp, "3P%", TextAlign.End),
-            StandingLabel(64.dp, "FTM", TextAlign.End),
-            StandingLabel(64.dp, "FTA", TextAlign.End),
-            StandingLabel(64.dp, "FT%", TextAlign.End),
-            StandingLabel(48.dp, "OREB", TextAlign.End),
-            StandingLabel(48.dp, "DREB", TextAlign.End),
-            StandingLabel(48.dp, "REB", TextAlign.End),
-            StandingLabel(48.dp, "AST", TextAlign.End),
-            StandingLabel(48.dp, "TOV", TextAlign.End),
-            StandingLabel(48.dp, "STL", TextAlign.End),
-            StandingLabel(48.dp, "BLK", TextAlign.End),
-            StandingLabel(48.dp, "PF", TextAlign.End)
+            StandingLabel(40.dp, "GP", TextAlign.End, StandingSort.GP),
+            StandingLabel(40.dp, "W", TextAlign.End, StandingSort.W),
+            StandingLabel(40.dp, "L", TextAlign.End, StandingSort.L),
+            StandingLabel(64.dp, "WIN%", TextAlign.End, StandingSort.WINP),
+            StandingLabel(64.dp, "PTS", TextAlign.End, StandingSort.PTS),
+            StandingLabel(64.dp, "FGM", TextAlign.End, StandingSort.FGM),
+            StandingLabel(64.dp, "FGA", TextAlign.End, StandingSort.FGA),
+            StandingLabel(64.dp, "FG%", TextAlign.End, StandingSort.FGP),
+            StandingLabel(64.dp, "3PM", TextAlign.End, StandingSort.PM3),
+            StandingLabel(64.dp, "3PA", TextAlign.End, StandingSort.PA3),
+            StandingLabel(64.dp, "3P%", TextAlign.End, StandingSort.PP3),
+            StandingLabel(64.dp, "FTM", TextAlign.End, StandingSort.FTM),
+            StandingLabel(64.dp, "FTA", TextAlign.End, StandingSort.FTA),
+            StandingLabel(64.dp, "FT%", TextAlign.End, StandingSort.FTP),
+            StandingLabel(48.dp, "OREB", TextAlign.End, StandingSort.OREB),
+            StandingLabel(48.dp, "DREB", TextAlign.End, StandingSort.DREB),
+            StandingLabel(48.dp, "REB", TextAlign.End, StandingSort.REB),
+            StandingLabel(48.dp, "AST", TextAlign.End, StandingSort.AST),
+            StandingLabel(48.dp, "TOV", TextAlign.End, StandingSort.TOV),
+            StandingLabel(48.dp, "STL", TextAlign.End, StandingSort.STL),
+            StandingLabel(48.dp, "BLK", TextAlign.End, StandingSort.BLK),
+            StandingLabel(48.dp, "PF", TextAlign.End, StandingSort.PF)
         )
     }
 
@@ -182,5 +210,9 @@ class HomeViewModel(
 
     fun updateStandingIndex(index: Int) {
         standingIndexImp.value = index.coerceIn(0, 1)
+    }
+
+    fun updateStandingSort(label: StandingLabel) {
+        standingSortImp.value = label.sort
     }
 }

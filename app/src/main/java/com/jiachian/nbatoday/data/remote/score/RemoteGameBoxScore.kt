@@ -151,7 +151,7 @@ data class RemoteGameBoxScore(
                         order ?: 0,
                         personId ?: 0,
                         jerseyNum ?: "0",
-                        position ?: "",
+                        position ?: "Bench",
                         starter?.takeIf { it == "1" }?.let { true } ?: false,
                         oncourt?.takeIf { it == "1" }?.let { true } ?: false,
                         played?.takeIf { it == "1" }?.let { true } ?: false,
