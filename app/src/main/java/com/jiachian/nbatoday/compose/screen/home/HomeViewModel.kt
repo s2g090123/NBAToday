@@ -65,7 +65,7 @@ class HomeViewModel(
     val isRefreshingSchedule = isRefreshingScheduleImp.asStateFlow()
 
     // Standing
-    private val standingSortImp = MutableStateFlow(StandingSort.GP)
+    private val standingSortImp = MutableStateFlow(StandingSort.WINP)
     val standingSort = standingSortImp.asStateFlow()
     val teamStats = combine(
         repository.getTeamStats(),
@@ -76,24 +76,24 @@ class HomeViewModel(
             StandingSort.W -> teamStats.sortedWith(compareByDescending<TeamStats> { it.win }.thenByDescending { it.winPercentage })
             StandingSort.L -> teamStats.sortedWith(compareBy<TeamStats> { it.lose }.thenByDescending { it.winPercentage })
             StandingSort.WINP -> teamStats.sortedWith(compareByDescending<TeamStats> { it.winPercentage }.thenByDescending { it.winPercentage })
-            StandingSort.PTS -> teamStats.sortedWith(compareByDescending<TeamStats> { it.points }.thenByDescending { it.winPercentage })
-            StandingSort.FGM -> teamStats.sortedWith(compareByDescending<TeamStats> { it.fieldGoalsMade }.thenByDescending { it.winPercentage })
-            StandingSort.FGA -> teamStats.sortedWith(compareByDescending<TeamStats> { it.fieldGoalsAttempted }.thenByDescending { it.winPercentage })
+            StandingSort.PTS -> teamStats.sortedWith(compareByDescending<TeamStats> { it.points.toDouble() / it.gamePlayed }.thenByDescending { it.winPercentage })
+            StandingSort.FGM -> teamStats.sortedWith(compareByDescending<TeamStats> { it.fieldGoalsMade.toDouble() / it.gamePlayed }.thenByDescending { it.winPercentage })
+            StandingSort.FGA -> teamStats.sortedWith(compareByDescending<TeamStats> { it.fieldGoalsAttempted.toDouble() / it.gamePlayed }.thenByDescending { it.winPercentage })
             StandingSort.FGP -> teamStats.sortedWith(compareByDescending<TeamStats> { it.fieldGoalsPercentage }.thenByDescending { it.winPercentage })
-            StandingSort.PM3 -> teamStats.sortedWith(compareByDescending<TeamStats> { it.threePointersMade }.thenByDescending { it.winPercentage })
-            StandingSort.PA3 -> teamStats.sortedWith(compareByDescending<TeamStats> { it.threePointersAttempted }.thenByDescending { it.winPercentage })
+            StandingSort.PM3 -> teamStats.sortedWith(compareByDescending<TeamStats> { it.threePointersMade.toDouble() / it.gamePlayed }.thenByDescending { it.winPercentage })
+            StandingSort.PA3 -> teamStats.sortedWith(compareByDescending<TeamStats> { it.threePointersAttempted.toDouble() / it.gamePlayed }.thenByDescending { it.winPercentage })
             StandingSort.PP3 -> teamStats.sortedWith(compareByDescending<TeamStats> { it.threePointersPercentage }.thenByDescending { it.winPercentage })
-            StandingSort.FTM -> teamStats.sortedWith(compareByDescending<TeamStats> { it.freeThrowsMade }.thenByDescending { it.winPercentage })
-            StandingSort.FTA -> teamStats.sortedWith(compareByDescending<TeamStats> { it.freeThrowsAttempted }.thenByDescending { it.winPercentage })
+            StandingSort.FTM -> teamStats.sortedWith(compareByDescending<TeamStats> { it.freeThrowsMade.toDouble() / it.gamePlayed }.thenByDescending { it.winPercentage })
+            StandingSort.FTA -> teamStats.sortedWith(compareByDescending<TeamStats> { it.freeThrowsAttempted.toDouble() / it.gamePlayed }.thenByDescending { it.winPercentage })
             StandingSort.FTP -> teamStats.sortedWith(compareByDescending<TeamStats> { it.freeThrowsPercentage }.thenByDescending { it.winPercentage })
-            StandingSort.OREB -> teamStats.sortedWith(compareByDescending<TeamStats> { it.reboundsOffensive }.thenByDescending { it.winPercentage })
-            StandingSort.DREB -> teamStats.sortedWith(compareByDescending<TeamStats> { it.reboundsDefensive }.thenByDescending { it.winPercentage })
-            StandingSort.REB -> teamStats.sortedWith(compareByDescending<TeamStats> { it.reboundsTotal }.thenByDescending { it.winPercentage })
-            StandingSort.AST -> teamStats.sortedWith(compareByDescending<TeamStats> { it.assists }.thenByDescending { it.winPercentage })
-            StandingSort.TOV -> teamStats.sortedWith(compareBy<TeamStats> { it.turnovers }.thenByDescending { it.winPercentage })
-            StandingSort.STL -> teamStats.sortedWith(compareByDescending<TeamStats> { it.steals }.thenByDescending { it.winPercentage })
-            StandingSort.BLK -> teamStats.sortedWith(compareByDescending<TeamStats> { it.blocks }.thenByDescending { it.winPercentage })
-            StandingSort.PF -> teamStats.sortedWith(compareBy<TeamStats> { it.foulsPersonal }.thenByDescending { it.winPercentage })
+            StandingSort.OREB -> teamStats.sortedWith(compareByDescending<TeamStats> { it.reboundsOffensive.toDouble() / it.gamePlayed }.thenByDescending { it.winPercentage })
+            StandingSort.DREB -> teamStats.sortedWith(compareByDescending<TeamStats> { it.reboundsDefensive.toDouble() / it.gamePlayed }.thenByDescending { it.winPercentage })
+            StandingSort.REB -> teamStats.sortedWith(compareByDescending<TeamStats> { it.reboundsTotal.toDouble() / it.gamePlayed }.thenByDescending { it.winPercentage })
+            StandingSort.AST -> teamStats.sortedWith(compareByDescending<TeamStats> { it.assists.toDouble() / it.gamePlayed }.thenByDescending { it.winPercentage })
+            StandingSort.TOV -> teamStats.sortedWith(compareBy<TeamStats> { it.turnovers.toDouble() / it.gamePlayed }.thenByDescending { it.winPercentage })
+            StandingSort.STL -> teamStats.sortedWith(compareByDescending<TeamStats> { it.steals.toDouble() / it.gamePlayed }.thenByDescending { it.winPercentage })
+            StandingSort.BLK -> teamStats.sortedWith(compareByDescending<TeamStats> { it.blocks.toDouble() / it.gamePlayed }.thenByDescending { it.winPercentage })
+            StandingSort.PF -> teamStats.sortedWith(compareBy<TeamStats> { it.foulsPersonal.toDouble() / it.gamePlayed }.thenByDescending { it.winPercentage })
         }.groupBy {
             it.teamConference
         }

@@ -297,11 +297,7 @@ private fun TeamStanding(
     Box(modifier = modifier) {
         Row(modifier = Modifier.fillMaxSize()) {
             Column {
-                Spacer(
-                    modifier = Modifier
-                        .width(teamNameWidth.px2Dp())
-                        .height(40.dp)
-                )
+                Spacer(modifier = Modifier.height(40.dp))
                 Divider(
                     modifier = Modifier.width(teamNameWidth.px2Dp()),
                     color = MaterialTheme.colors.dividerSecondary(),
@@ -312,53 +308,63 @@ private fun TeamStanding(
                 ) {
                     LazyColumn(state = teamState) {
                         itemsIndexed(teamStats) { index, stat ->
-                            Row(
+                            Column(
                                 modifier = Modifier
-                                    .onSizeChanged {
-                                        teamNameWidth = max(it.width, teamNameWidth)
-                                    }
-                                    .padding(top = 8.dp)
-                                    .height(24.dp),
-                                verticalAlignment = Alignment.CenterVertically
+                                    .wrapContentWidth()
+                                    .rippleClickable { viewModel.openTeamStats(stat.teamId) }
                             ) {
-                                Text(
+                                Row(
                                     modifier = Modifier
-                                        .padding(start = 8.dp)
-                                        .width(24.dp),
-                                    text = (index + 1).toString(),
-                                    textAlign = TextAlign.Start,
-                                    fontSize = 16.sp,
-                                    color = MaterialTheme.colors.secondary,
-                                    maxLines = 1
-                                )
-                                AsyncImage(
-                                    modifier = Modifier
-                                        .fillMaxHeight()
-                                        .aspectRatio(1f),
-                                    model = ImageRequest.Builder(LocalContext.current)
-                                        .data(NbaUtils.getTeamLogoUrlById(stat.teamId))
-                                        .decoderFactory(SvgDecoder.Factory())
-                                        .build(),
-                                    error = painterResource(NbaUtils.getTeamLogoResById(stat.teamId)),
-                                    placeholder = painterResource(NbaUtils.getTeamLogoResById(stat.teamId)),
-                                    contentDescription = null
-                                )
-                                Text(
-                                    modifier = Modifier.padding(start = 4.dp),
-                                    text = stat.teamName,
-                                    textAlign = TextAlign.Start,
-                                    fontSize = 16.sp,
-                                    color = MaterialTheme.colors.secondary,
-                                    maxLines = 1
-                                )
-                            }
-                            Spacer(modifier = Modifier.height(8.dp))
-                            if (index < teamStats.size - 1) {
-                                Divider(
-                                    modifier = Modifier.width(teamNameWidth.px2Dp()),
-                                    color = MaterialTheme.colors.dividerSecondary(),
-                                    thickness = if (index == 9) 3.dp else 1.dp
-                                )
+                                        .onSizeChanged {
+                                            teamNameWidth = max(it.width, teamNameWidth)
+                                        }
+                                        .padding(top = 8.dp)
+                                        .height(24.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        modifier = Modifier
+                                            .padding(start = 8.dp)
+                                            .width(24.dp),
+                                        text = (index + 1).toString(),
+                                        textAlign = TextAlign.Start,
+                                        fontSize = 16.sp,
+                                        color = MaterialTheme.colors.secondary,
+                                        maxLines = 1
+                                    )
+                                    AsyncImage(
+                                        modifier = Modifier
+                                            .fillMaxHeight()
+                                            .aspectRatio(1f),
+                                        model = ImageRequest.Builder(LocalContext.current)
+                                            .data(NbaUtils.getTeamLogoUrlById(stat.teamId))
+                                            .decoderFactory(SvgDecoder.Factory())
+                                            .build(),
+                                        error = painterResource(NbaUtils.getTeamLogoResById(stat.teamId)),
+                                        placeholder = painterResource(
+                                            NbaUtils.getTeamLogoResById(
+                                                stat.teamId
+                                            )
+                                        ),
+                                        contentDescription = null
+                                    )
+                                    Text(
+                                        modifier = Modifier.padding(start = 4.dp),
+                                        text = stat.teamName,
+                                        textAlign = TextAlign.Start,
+                                        fontSize = 16.sp,
+                                        color = MaterialTheme.colors.secondary,
+                                        maxLines = 1
+                                    )
+                                }
+                                Spacer(modifier = Modifier.height(8.dp))
+                                if (index < teamStats.size - 1) {
+                                    Divider(
+                                        modifier = Modifier.width(teamNameWidth.px2Dp()),
+                                        color = MaterialTheme.colors.dividerSecondary(),
+                                        thickness = if (index == 9) 3.dp else 1.dp
+                                    )
+                                }
                             }
                         }
                     }
