@@ -258,15 +258,14 @@ data class RemoteGameBoxScore(
 
         @SuppressLint("SimpleDateFormat")
         fun toLocal(): GameBoxScore {
-            val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").apply {
-                timeZone = TimeZone.getTimeZone("EST")
-            }
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
             return GameBoxScore(
                 gameId ?: "",
                 gameEt?.substringBeforeLast("-")?.let {
                     try {
                         dateFormat.parse(it)?.let { date ->
                             val cal = NbaUtils.getCalendar()
+                            cal.timeZone = TimeZone.getTimeZone("EST")
                             cal.time = date
                             NbaUtils.formatScoreboardGameDate(
                                 cal.get(Calendar.YEAR),

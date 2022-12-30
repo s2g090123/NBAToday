@@ -192,7 +192,7 @@ private fun SchedulePage(
                 Tab(
                     text = {
                         Text(
-                            text = date,
+                            text = date.substringAfter("/"),
                             color = MaterialTheme.colors.primary,
                             fontSize = 14.sp
                         )

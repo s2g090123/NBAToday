@@ -3,6 +3,7 @@ package com.jiachian.nbatoday.data.local
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.jiachian.nbatoday.data.remote.game.GameScoreUpdateData
 import com.jiachian.nbatoday.data.remote.game.GameStatusCode
 import com.jiachian.nbatoday.data.remote.leader.GameLeaders
 import com.jiachian.nbatoday.data.remote.team.GameTeam
@@ -59,4 +60,15 @@ data class NbaGame(
         @ColumnInfo(name = "team_tri_code")
         val teamTricode: String // 球員所屬球隊縮寫名稱, e.g. OKC
     )
+
+    fun toGameScoreUpdateData(): GameScoreUpdateData {
+        return GameScoreUpdateData(
+            gameId,
+            gameStatus,
+            gameStatusText,
+            homeTeam,
+            awayTeam,
+            pointsLeaders
+        )
+    }
 }

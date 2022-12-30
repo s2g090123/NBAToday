@@ -37,13 +37,17 @@ object NbaUtils {
 
     @SuppressLint("SimpleDateFormat")
     fun parseDate(year: Int, month: Int, day: Int): Date? {
-        val sdf = SimpleDateFormat("yyyy-MM-dd")
+        val sdf = SimpleDateFormat("yyyy-MM-dd").apply {
+            timeZone = TimeZone.getTimeZone("EST")
+        }
         return sdf.parse(formatDate(year, month, day))
     }
 
     @SuppressLint("SimpleDateFormat")
     fun parseDate(dateInFormat: String): Date? {
-        val sdf = SimpleDateFormat("yyyy-MM-dd")
+        val sdf = SimpleDateFormat("yyyy-MM-dd").apply {
+            timeZone = TimeZone.getTimeZone("EST")
+        }
         return sdf.parse(dateInFormat)
     }
 }

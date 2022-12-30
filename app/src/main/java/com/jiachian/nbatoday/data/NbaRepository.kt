@@ -26,19 +26,38 @@ class NbaRepository(
     override suspend fun refreshSchedule() {
         val schedule = remoteDataSource.getSchedule() ?: return
         val leagueSchedule = schedule.leagueSchedule ?: return
-        if (!localDataSource.existsData()) {
-            val nbaGames = leagueSchedule.toNbaGames()
-            localDataSource.insertGames(nbaGames)
-        }
+        val nbaGames = leagueSchedule.toNbaGames()
+
         val cal = NbaUtils.getCalendar()
+        cal.timeZone = TimeZone.getTimeZone("EST")
         val todayYear = cal.get(Calendar.YEAR)
-        val todayMonth = cal.get(Calendar.MONTH)
+        val todayMonth = cal.get(Calendar.MONTH) + 1
         val todayDay = cal.get(Calendar.DAY_OF_MONTH)
         val today = NbaUtils.parseDate(todayYear, todayMonth, todayDay)?.time ?: 0L
-        val record = NbaUtils.parseDate(dataStore.recordScheduleToday.first())?.time ?: 0L
+        val recordDay = NbaUtils.parseDate(dataStore.recordScheduleToday.first())
+        val record = recordDay?.time ?: 0L
         val betweenDays = TimeUnit.DAYS.convert(today - record, TimeUnit.MILLISECONDS)
         val offset = betweenDays.toInt().coerceAtMost(SCHEDULE_DATE_RANGE)
-        cal.add(Calendar.DAY_OF_MONTH, -offset - 1)
+        cal.add(Calendar.DAY_OF_MONTH, -offset)
+
+        if (!localDataSource.existsData()) {
+            localDataSource.insertGames(nbaGames)
+        } else {
+            val filterGames = if (recordDay == null) {
+                nbaGames
+            } else {
+                cal.add(Calendar.DAY_OF_MONTH, -1)
+                val current = cal.time
+                cal.add(Calendar.DAY_OF_MONTH, 1)
+                nbaGames.filter {
+                    val gameDate = it.gameDateTime
+                    gameDate.after(recordDay) && gameDate.before(current)
+                }
+            }
+            val updateGames = filterGames.map { it.toGameScoreUpdateData() }
+            localDataSource.updateGamesScore(updateGames)
+        }
+
         repeat(offset + SCHEDULE_DATE_RANGE + 1) {
             val year = cal.get(Calendar.YEAR)
             val month = cal.get(Calendar.MONTH) + 1
@@ -47,7 +66,7 @@ class NbaRepository(
             val scoreboard = remoteDataSource.getScoreboard(NBA_LEAGUE_ID, gameDate)
             val updateData = scoreboard?.toGameUpdateData()
             if (updateData != null) {
-                localDataSource.updateGame(updateData)
+                localDataSource.updateGames(updateData)
             }
             cal.add(Calendar.DAY_OF_MONTH, 1)
         }
@@ -59,7 +78,7 @@ class NbaRepository(
         val scoreboard = remoteDataSource.getScoreboard(NBA_LEAGUE_ID, gameDate)
         val updateData = scoreboard?.toGameUpdateData()
         if (updateData != null) {
-            localDataSource.updateGame(updateData)
+            localDataSource.updateGames(updateData)
         }
     }
 

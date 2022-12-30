@@ -42,6 +42,7 @@ class HomeViewModel(
     private val scheduleIndexImp = MutableStateFlow(scheduleDates.size / 2)
     val scheduleIndex = scheduleIndexImp.asStateFlow()
     private val scheduleGamesImp = NbaUtils.getCalendar().let {
+        it.timeZone = TimeZone.getTimeZone("EST")
         it.set(Calendar.HOUR, 0)
         it.set(Calendar.MINUTE, 0)
         it.set(Calendar.SECOND, 0)
@@ -52,10 +53,12 @@ class HomeViewModel(
     }
     val scheduleGames = scheduleGamesImp.map {
         val calendar = NbaUtils.getCalendar()
+        calendar.timeZone = TimeZone.getTimeZone("EST")
         it.groupBy { game ->
             calendar.time = game.gameDateTime
             String.format(
-                "%d/%d",
+                "%d/%d/%d",
+                calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH) + 1,
                 calendar.get(Calendar.DAY_OF_MONTH)
             )
@@ -144,13 +147,15 @@ class HomeViewModel(
     private fun getDateStrings(): List<String> {
         val dateStrings = mutableListOf<String>()
         val calendar = NbaUtils.getCalendar()
+        calendar.timeZone = TimeZone.getTimeZone("EST")
         val currentTime = calendar.time
         repeat(SCHEDULE_DATE_RANGE) {
             calendar.add(Calendar.DAY_OF_MONTH, -1)
             dateStrings.add(
                 0,
                 String.format(
-                    "%d/%d",
+                    "%d/%d/%d",
+                    calendar.get(Calendar.YEAR),
                     calendar.get(Calendar.MONTH) + 1,
                     calendar.get(Calendar.DAY_OF_MONTH)
                 )
@@ -159,7 +164,8 @@ class HomeViewModel(
         calendar.time = currentTime
         dateStrings.add(
             String.format(
-                "%d/%d",
+                "%d/%d/%d",
+                calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH) + 1,
                 calendar.get(Calendar.DAY_OF_MONTH)
             )
@@ -168,7 +174,8 @@ class HomeViewModel(
             calendar.add(Calendar.DAY_OF_MONTH, 1)
             dateStrings.add(
                 String.format(
-                    "%d/%d",
+                    "%d/%d/%d",
+                    calendar.get(Calendar.YEAR),
                     calendar.get(Calendar.MONTH) + 1,
                     calendar.get(Calendar.DAY_OF_MONTH)
                 )
@@ -179,11 +186,11 @@ class HomeViewModel(
 
     fun updateTodaySchedule() {
         if (isRefreshingSchedule.value) return
-        val cal = NbaUtils.getCalendar()
-        cal.add(Calendar.DAY_OF_MONTH, -1)
-        val year = cal.get(Calendar.YEAR)
-        val month = cal.get(Calendar.MONTH)
-        val day = cal.get(Calendar.DAY_OF_MONTH)
+        val dateString = scheduleDates.getOrNull(scheduleIndex.value) ?: return
+        val dates = dateString.split("/")
+        val year = dates.getOrNull(0)?.toInt() ?: return
+        val month = dates.getOrNull(1)?.toInt() ?: return
+        val day = dates.getOrNull(2)?.toInt() ?: return
         coroutineScope.launch {
             isRefreshingScheduleImp.value = true
             withContext(Dispatchers.IO) {
