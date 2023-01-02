@@ -1,17 +1,15 @@
-package com.jiachian.nbatoday.data.local.team
+package com.jiachian.nbatoday.data.local.player
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "nba_team_stats")
-data class TeamStats(
-    @ColumnInfo(name = "team_id") @PrimaryKey val teamId: Int,
-    @ColumnInfo(name = "team_full_name") val teamFullName: String, // Boston Celtics
-    @ColumnInfo(name = "team_name") val teamName: String, // Celtics
-    @ColumnInfo(name = "team_abbr") val teamAbbr: String, // BOS
-    @ColumnInfo(name = "team_conference") val teamConference: DefaultTeam.Conference,
-    @ColumnInfo(name = "team_division") val teamDivision: DefaultTeam.Division,
+@Entity(tableName = "nba_player_stats")
+data class PlayerStats(
+    @ColumnInfo(name = "player_id") @PrimaryKey val playerId: Int,
+    @ColumnInfo(name = "team_id") val teamId: Int,
+    @ColumnInfo(name = "player_name") val playerName: String, // A.J. Lawson
+    @ColumnInfo(name = "player_nick_name") val playerNickName: String, // A.J.
     @ColumnInfo(name = "game_played") val gamePlayed: Int, // 目前打了幾場比賽
     @ColumnInfo(name = "win") val win: Int,
     @ColumnInfo(name = "lose") val lose: Int,

@@ -1,6 +1,8 @@
 package com.jiachian.nbatoday.data.local
 
+import com.jiachian.nbatoday.data.local.player.PlayerStats
 import com.jiachian.nbatoday.data.local.score.GameBoxScore
+import com.jiachian.nbatoday.data.local.team.DefaultTeam
 import com.jiachian.nbatoday.data.local.team.TeamStats
 import com.jiachian.nbatoday.data.remote.game.GameScoreUpdateData
 import com.jiachian.nbatoday.data.remote.game.GameUpdateData
@@ -16,6 +18,14 @@ class NbaLocalDataSource(
 
     override fun getGamesDuring(from: Long, to: Long): Flow<List<NbaGame>> {
         return dao.getGamesDuring(from, to)
+    }
+
+    override fun getGamesBefore(from: Long): Flow<List<NbaGame>> {
+        return dao.getGamesBefore(from)
+    }
+
+    override fun getGamesAfter(from: Long): Flow<List<NbaGame>> {
+        return dao.getGamesAfter(from)
     }
 
     override suspend fun existsData(): Boolean {
@@ -46,11 +56,39 @@ class NbaLocalDataSource(
         return dao.getTeamStats()
     }
 
+    override fun getTeamAndPlayersStats(teamId: Int): Flow<TeamAndPlayers?> {
+        return dao.getTeamAndPlayerStats(teamId)
+    }
+
+    override fun getTeamRank(teamId: Int, conference: DefaultTeam.Conference): Flow<Int> {
+        return dao.getRank(teamId, conference)
+    }
+
+    override fun getTeamPointsRank(teamId: Int): Flow<Int> {
+        return dao.getPointsRank(teamId)
+    }
+
+    override fun getTeamReboundsRank(teamId: Int): Flow<Int> {
+        return dao.getReboundsRank(teamId)
+    }
+
+    override fun getTeamAssistsRank(teamId: Int): Flow<Int> {
+        return dao.getAssistsRank(teamId)
+    }
+
+    override fun getTeamPlusMinusRank(teamId: Int): Flow<Int> {
+        return dao.getPlusMinusRank(teamId)
+    }
+
     override suspend fun updateTeamStats(stats: TeamStats) {
         dao.updateTeamStats(stats)
     }
 
     override suspend fun updateTeamStats(stats: List<TeamStats>) {
         dao.updateTeamStats(stats)
+    }
+
+    override suspend fun updatePlayerStats(stats: List<PlayerStats>) {
+        dao.updatePlayerStats(stats)
     }
 }

@@ -6,11 +6,12 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.jiachian.nbatoday.data.local.converter.*
+import com.jiachian.nbatoday.data.local.player.PlayerStats
 import com.jiachian.nbatoday.data.local.score.GameBoxScore
 import com.jiachian.nbatoday.data.local.team.TeamStats
 
 @Database(
-    entities = [NbaGame::class, GameBoxScore::class, TeamStats::class],
+    entities = [NbaGame::class, GameBoxScore::class, TeamStats::class, PlayerStats::class],
     version = 1
 )
 @TypeConverters(

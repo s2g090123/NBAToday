@@ -8,6 +8,7 @@ import androidx.compose.ui.unit.dp
 import com.jiachian.nbatoday.SCHEDULE_DATE_RANGE
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.compose.screen.score.BoxScoreViewModel
+import com.jiachian.nbatoday.compose.screen.team.TeamViewModel
 import com.jiachian.nbatoday.compose.state.NbaState
 import com.jiachian.nbatoday.data.BaseRepository
 import com.jiachian.nbatoday.data.local.NbaGame
@@ -221,5 +222,9 @@ class HomeViewModel(
 
     fun updateStandingSort(label: StandingLabel) {
         standingSortImp.value = label.sort
+    }
+
+    fun openTeamStats(teamId: Int) {
+        openScreen(NbaState.Team(TeamViewModel(teamId, repository, openScreen, coroutineScope)))
     }
 }

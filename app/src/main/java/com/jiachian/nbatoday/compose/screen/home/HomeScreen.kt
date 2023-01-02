@@ -294,189 +294,187 @@ private fun TeamStanding(
     val labels by viewModel.standingLabel
     val sort by viewModel.standingSort.collectAsState()
 
-    Box(modifier = modifier) {
-        Row(modifier = Modifier.fillMaxSize()) {
-            Column {
-                Spacer(modifier = Modifier.height(40.dp))
-                Divider(
-                    modifier = Modifier.width(teamNameWidth.px2Dp()),
-                    color = MaterialTheme.colors.dividerSecondary(),
-                    thickness = 3.dp
-                )
-                CompositionLocalProvider(
-                    LocalOverscrollConfiguration provides null
-                ) {
-                    LazyColumn(state = teamState) {
-                        itemsIndexed(teamStats) { index, stat ->
-                            Column(
+    Row(modifier = modifier) {
+        Column {
+            Spacer(modifier = Modifier.height(40.dp))
+            Divider(
+                modifier = Modifier.width(teamNameWidth.px2Dp()),
+                color = MaterialTheme.colors.dividerSecondary(),
+                thickness = 3.dp
+            )
+            CompositionLocalProvider(
+                LocalOverscrollConfiguration provides null
+            ) {
+                LazyColumn(state = teamState) {
+                    itemsIndexed(teamStats) { index, stat ->
+                        Column(
+                            modifier = Modifier
+                                .wrapContentWidth()
+                                .rippleClickable { viewModel.openTeamStats(stat.teamId) }
+                        ) {
+                            Row(
                                 modifier = Modifier
-                                    .wrapContentWidth()
-                                    .rippleClickable { viewModel.openTeamStats(stat.teamId) }
+                                    .onSizeChanged {
+                                        teamNameWidth = max(it.width, teamNameWidth)
+                                    }
+                                    .padding(top = 8.dp)
+                                    .height(24.dp),
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Row(
+                                Text(
                                     modifier = Modifier
-                                        .onSizeChanged {
-                                            teamNameWidth = max(it.width, teamNameWidth)
-                                        }
-                                        .padding(top = 8.dp)
-                                        .height(24.dp),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Text(
-                                        modifier = Modifier
-                                            .padding(start = 8.dp)
-                                            .width(24.dp),
-                                        text = (index + 1).toString(),
-                                        textAlign = TextAlign.Start,
-                                        fontSize = 16.sp,
-                                        color = MaterialTheme.colors.secondary,
-                                        maxLines = 1
-                                    )
-                                    AsyncImage(
-                                        modifier = Modifier
-                                            .fillMaxHeight()
-                                            .aspectRatio(1f),
-                                        model = ImageRequest.Builder(LocalContext.current)
-                                            .data(NbaUtils.getTeamLogoUrlById(stat.teamId))
-                                            .decoderFactory(SvgDecoder.Factory())
-                                            .build(),
-                                        error = painterResource(NbaUtils.getTeamLogoResById(stat.teamId)),
-                                        placeholder = painterResource(
-                                            NbaUtils.getTeamLogoResById(
-                                                stat.teamId
-                                            )
-                                        ),
-                                        contentDescription = null
-                                    )
-                                    Text(
-                                        modifier = Modifier.padding(start = 4.dp),
-                                        text = stat.teamName,
-                                        textAlign = TextAlign.Start,
-                                        fontSize = 16.sp,
-                                        color = MaterialTheme.colors.secondary,
-                                        maxLines = 1
-                                    )
-                                }
-                                Spacer(modifier = Modifier.height(8.dp))
-                                if (index < teamStats.size - 1) {
-                                    Divider(
-                                        modifier = Modifier.width(teamNameWidth.px2Dp()),
-                                        color = MaterialTheme.colors.dividerSecondary(),
-                                        thickness = if (index == 9) 3.dp else 1.dp
-                                    )
-                                }
+                                        .padding(start = 8.dp)
+                                        .width(24.dp),
+                                    text = (index + 1).toString(),
+                                    textAlign = TextAlign.Start,
+                                    fontSize = 16.sp,
+                                    color = MaterialTheme.colors.secondary,
+                                    maxLines = 1
+                                )
+                                AsyncImage(
+                                    modifier = Modifier
+                                        .fillMaxHeight()
+                                        .aspectRatio(1f),
+                                    model = ImageRequest.Builder(LocalContext.current)
+                                        .data(NbaUtils.getTeamLogoUrlById(stat.teamId))
+                                        .decoderFactory(SvgDecoder.Factory())
+                                        .build(),
+                                    error = painterResource(NbaUtils.getTeamLogoResById(stat.teamId)),
+                                    placeholder = painterResource(
+                                        NbaUtils.getTeamLogoResById(
+                                            stat.teamId
+                                        )
+                                    ),
+                                    contentDescription = null
+                                )
+                                Text(
+                                    modifier = Modifier.padding(start = 4.dp),
+                                    text = stat.teamName,
+                                    textAlign = TextAlign.Start,
+                                    fontSize = 16.sp,
+                                    color = MaterialTheme.colors.secondary,
+                                    maxLines = 1
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(8.dp))
+                            if (index < teamStats.size - 1) {
+                                Divider(
+                                    modifier = Modifier.width(teamNameWidth.px2Dp()),
+                                    color = MaterialTheme.colors.dividerSecondary(),
+                                    thickness = if (index == 9) 3.dp else 1.dp
+                                )
                             }
                         }
                     }
                 }
             }
-            Column(modifier = modifier.horizontalScroll(horizontalScrollState)) {
-                Row(
-                    modifier = Modifier
-                        .onSizeChanged {
-                            dividerWidth = max(dividerWidth, it.width)
-                        }
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-                ) {
-                    labels.forEach { label ->
-                        Box(
-                            modifier = Modifier
-                                .width(label.width)
-                                .height(40.dp)
-                                .background(
-                                    if (label.sort == sort) {
-                                        MaterialTheme.colors.secondary.copy(0.25f)
-                                    } else {
-                                        Color.Transparent
-                                    }
-                                )
-                                .rippleClickable {
-                                    viewModel.updateStandingSort(label)
+        }
+        Column(modifier = modifier.horizontalScroll(horizontalScrollState)) {
+            Row(
+                modifier = Modifier
+                    .onSizeChanged {
+                        dividerWidth = max(dividerWidth, it.width)
+                    }
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+            ) {
+                labels.forEach { label ->
+                    Box(
+                        modifier = Modifier
+                            .width(label.width)
+                            .height(40.dp)
+                            .background(
+                                if (label.sort == sort) {
+                                    MaterialTheme.colors.secondary.copy(0.25f)
+                                } else {
+                                    Color.Transparent
                                 }
-                                .padding(8.dp)
-                        ) {
-                            Text(
-                                modifier = Modifier.fillMaxSize(),
-                                text = label.text,
-                                textAlign = if (label.sort == sort) TextAlign.Center else label.textAlign,
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Medium,
-                                color = MaterialTheme.colors.secondary
                             )
-                        }
+                            .rippleClickable {
+                                viewModel.updateStandingSort(label)
+                            }
+                            .padding(8.dp)
+                    ) {
+                        Text(
+                            modifier = Modifier.fillMaxSize(),
+                            text = label.text,
+                            textAlign = if (label.sort == sort) TextAlign.Center else label.textAlign,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = MaterialTheme.colors.secondary
+                        )
                     }
                 }
-                Divider(
-                    modifier = Modifier.width(dividerWidth.px2Dp()),
-                    color = MaterialTheme.colors.dividerSecondary(),
-                    thickness = 3.dp
-                )
-                CompositionLocalProvider(
-                    LocalOverscrollConfiguration provides null
+            }
+            Divider(
+                modifier = Modifier.width(dividerWidth.px2Dp()),
+                color = MaterialTheme.colors.dividerSecondary(),
+                thickness = 3.dp
+            )
+            CompositionLocalProvider(
+                LocalOverscrollConfiguration provides null
+            ) {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .fillMaxWidth(),
+                    state = statsState
                 ) {
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .fillMaxWidth(),
-                        state = statsState
-                    ) {
-                        itemsIndexed(teamStats) { index, stats ->
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                labels.forEach { label ->
-                                    Text(
-                                        modifier = Modifier
-                                            .width(label.width)
-                                            .height(40.dp)
-                                            .background(
-                                                if (label.sort == sort) {
-                                                    MaterialTheme.colors.secondary.copy(0.25f)
-                                                } else {
-                                                    Color.Transparent
-                                                }
-                                            )
-                                            .padding(8.dp),
-                                        text = when (label.text) {
-                                            "GP" -> stats.gamePlayed.toString()
-                                            "W" -> stats.win.toString()
-                                            "L" -> stats.lose.toString()
-                                            "WIN%" -> stats.winPercentage.decimalFormat()
-                                            "PTS" -> (stats.points.toDouble() / stats.gamePlayed).decimalFormat()
-                                            "FGM" -> (stats.fieldGoalsMade.toDouble() / stats.gamePlayed).decimalFormat()
-                                            "FGA" -> (stats.fieldGoalsAttempted.toDouble() / stats.gamePlayed).decimalFormat()
-                                            "FG%" -> stats.fieldGoalsPercentage.decimalFormat()
-                                            "3PM" -> (stats.threePointersMade.toDouble() / stats.gamePlayed).decimalFormat()
-                                            "3PA" -> (stats.threePointersAttempted.toDouble() / stats.gamePlayed).decimalFormat()
-                                            "3P%" -> stats.threePointersPercentage.decimalFormat()
-                                            "FTM" -> (stats.freeThrowsMade.toDouble() / stats.gamePlayed).decimalFormat()
-                                            "FTA" -> (stats.freeThrowsAttempted.toDouble() / stats.gamePlayed).decimalFormat()
-                                            "FT%" -> stats.freeThrowsPercentage.decimalFormat()
-                                            "OREB" -> (stats.reboundsOffensive.toDouble() / stats.gamePlayed).decimalFormat()
-                                            "DREB" -> (stats.reboundsDefensive.toDouble() / stats.gamePlayed).decimalFormat()
-                                            "REB" -> (stats.reboundsTotal.toDouble() / stats.gamePlayed).decimalFormat()
-                                            "AST" -> (stats.assists.toDouble() / stats.gamePlayed).decimalFormat()
-                                            "TOV" -> (stats.turnovers.toDouble() / stats.gamePlayed).decimalFormat()
-                                            "STL" -> (stats.steals.toDouble() / stats.gamePlayed).decimalFormat()
-                                            "BLK" -> (stats.blocks.toDouble() / stats.gamePlayed).decimalFormat()
-                                            "PF" -> (stats.foulsPersonal.toDouble() / stats.gamePlayed).decimalFormat()
-                                            else -> ""
-                                        },
-                                        textAlign = if (label.sort == sort) TextAlign.Center else label.textAlign,
-                                        fontSize = 16.sp,
-                                        color = MaterialTheme.colors.secondary
-                                    )
-                                }
-                            }
-                            if (index < teamStats.size - 1) {
-                                Divider(
-                                    modifier = Modifier.width(dividerWidth.px2Dp()),
-                                    color = MaterialTheme.colors.dividerSecondary(),
-                                    thickness = if (index == 9) 3.dp else 1.dp
+                    itemsIndexed(teamStats) { index, stats ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            labels.forEach { label ->
+                                Text(
+                                    modifier = Modifier
+                                        .width(label.width)
+                                        .height(40.dp)
+                                        .background(
+                                            if (label.sort == sort) {
+                                                MaterialTheme.colors.secondary.copy(0.25f)
+                                            } else {
+                                                Color.Transparent
+                                            }
+                                        )
+                                        .padding(8.dp),
+                                    text = when (label.text) {
+                                        "GP" -> stats.gamePlayed.toString()
+                                        "W" -> stats.win.toString()
+                                        "L" -> stats.lose.toString()
+                                        "WIN%" -> stats.winPercentage.decimalFormat()
+                                        "PTS" -> (stats.points.toDouble() / stats.gamePlayed).decimalFormat()
+                                        "FGM" -> (stats.fieldGoalsMade.toDouble() / stats.gamePlayed).decimalFormat()
+                                        "FGA" -> (stats.fieldGoalsAttempted.toDouble() / stats.gamePlayed).decimalFormat()
+                                        "FG%" -> stats.fieldGoalsPercentage.decimalFormat()
+                                        "3PM" -> (stats.threePointersMade.toDouble() / stats.gamePlayed).decimalFormat()
+                                        "3PA" -> (stats.threePointersAttempted.toDouble() / stats.gamePlayed).decimalFormat()
+                                        "3P%" -> stats.threePointersPercentage.decimalFormat()
+                                        "FTM" -> (stats.freeThrowsMade.toDouble() / stats.gamePlayed).decimalFormat()
+                                        "FTA" -> (stats.freeThrowsAttempted.toDouble() / stats.gamePlayed).decimalFormat()
+                                        "FT%" -> stats.freeThrowsPercentage.decimalFormat()
+                                        "OREB" -> (stats.reboundsOffensive.toDouble() / stats.gamePlayed).decimalFormat()
+                                        "DREB" -> (stats.reboundsDefensive.toDouble() / stats.gamePlayed).decimalFormat()
+                                        "REB" -> (stats.reboundsTotal.toDouble() / stats.gamePlayed).decimalFormat()
+                                        "AST" -> (stats.assists.toDouble() / stats.gamePlayed).decimalFormat()
+                                        "TOV" -> (stats.turnovers.toDouble() / stats.gamePlayed).decimalFormat()
+                                        "STL" -> (stats.steals.toDouble() / stats.gamePlayed).decimalFormat()
+                                        "BLK" -> (stats.blocks.toDouble() / stats.gamePlayed).decimalFormat()
+                                        "PF" -> (stats.foulsPersonal.toDouble() / stats.gamePlayed).decimalFormat()
+                                        else -> ""
+                                    },
+                                    textAlign = if (label.sort == sort) TextAlign.Center else label.textAlign,
+                                    fontSize = 16.sp,
+                                    color = MaterialTheme.colors.secondary
                                 )
                             }
+                        }
+                        if (index < teamStats.size - 1) {
+                            Divider(
+                                modifier = Modifier.width(dividerWidth.px2Dp()),
+                                color = MaterialTheme.colors.dividerSecondary(),
+                                thickness = if (index == 9) 3.dp else 1.dp
+                            )
                         }
                     }
                 }
@@ -861,5 +859,5 @@ private fun LeaderInfo(
 
 private fun Double.decimalFormat(radix: Int = 1): String {
     val value = (this * 10.0.pow(radix)).toInt() / 10.0.pow(radix)
-    return if (value < 1) value.toString().replaceBefore(".", "") else value.toString()
+    return value.toString()
 }

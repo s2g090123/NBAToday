@@ -1,6 +1,8 @@
 package com.jiachian.nbatoday.data.local.team
 
 import com.jiachian.nbatoday.R
+import com.jiachian.nbatoday.compose.theme.LakersColors
+import com.jiachian.nbatoday.compose.theme.NBAColors
 
 /** Offline Data */
 abstract class DefaultTeam {
@@ -49,10 +51,24 @@ abstract class DefaultTeam {
                 }
             }
         }
+
+        fun getColorsById(teamId: Int): NBAColors {
+            return when (teamId) {
+                1610612747 -> LakersColors
+                else -> LakersColors
+            }
+        }
     }
 
     enum class Conference {
-        EAST, WEST
+        EAST, WEST;
+
+        override fun toString(): String {
+            return when (this) {
+                EAST -> "Eastern"
+                WEST -> "Western"
+            }
+        }
     }
 
     enum class Division {
@@ -67,4 +83,6 @@ abstract class DefaultTeam {
     abstract val logoRes: Int // Team logo drawable resource
     abstract val conference: Conference
     abstract val division: Division
+    val teamFullName: String // e.g. Los Angeles Lakers
+        get() = "$location $teamName"
 }

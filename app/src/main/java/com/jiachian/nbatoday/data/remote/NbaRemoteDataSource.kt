@@ -5,6 +5,7 @@ import com.jiachian.nbatoday.CDN_BASE_URL
 import com.jiachian.nbatoday.STATS_BASE_URL
 import com.jiachian.nbatoday.data.remote.game.GameScoreboard
 import com.jiachian.nbatoday.data.remote.game.Schedule
+import com.jiachian.nbatoday.data.remote.player.RemoteTeamPlayerStats
 import com.jiachian.nbatoday.data.remote.score.RemoteGameBoxScore
 import com.jiachian.nbatoday.data.remote.team.RemoteTeamStats
 import com.jiachian.nbatoday.service.CdnNbaService
@@ -56,6 +57,10 @@ class NbaRemoteDataSource : RemoteDataSource() {
 
     override suspend fun getTeamStats(teamId: Int): RemoteTeamStats? {
         return statsService.getTeamStats(season = "2022-23", teamId = teamId)
+    }
+
+    override suspend fun getTeamPlayersStats(teamId: Int): RemoteTeamPlayerStats? {
+        return statsService.getTeamPlayerStats(season = "2022-23", teamId = teamId)
     }
 
     private fun buildStatsOkHttpClient(): OkHttpClient {

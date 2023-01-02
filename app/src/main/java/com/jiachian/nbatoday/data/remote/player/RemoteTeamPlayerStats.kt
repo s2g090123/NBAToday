@@ -1,34 +1,35 @@
-package com.jiachian.nbatoday.data.remote.team
+package com.jiachian.nbatoday.data.remote.player
 
 import com.google.gson.annotations.SerializedName
-import com.jiachian.nbatoday.data.local.team.DefaultTeam
-import com.jiachian.nbatoday.data.local.team.TeamStats
+import com.jiachian.nbatoday.data.local.player.PlayerStats
 
-data class RemoteTeamStats(
+data class RemoteTeamPlayerStats(
+    @SerializedName("parameters") val parameters: Parameters?,
     @SerializedName("resultSets") val data: List<Data>?
 ) {
+    data class Parameters(
+        @SerializedName("TeamID") val teamId: Int?
+    )
+
     data class Data(
         @SerializedName("name") val name: String?,
         @SerializedName("headers") val headers: List<String>?,
         @SerializedName("rowSet") val rowData: List<List<String>>?
     )
 
-    fun toLocal(): List<TeamStats> {
-        val target = data?.firstOrNull { it.name == "LeagueDashTeamStats" } ?: return emptyList()
+    fun toLocal(): List<PlayerStats> {
+        val teamId = parameters?.teamId ?: return emptyList()
+        val target = data?.firstOrNull { it.name == "PlayersSeasonTotals" } ?: return emptyList()
         val headers = target.headers ?: return emptyList()
         val rowData = target.rowData ?: return emptyList()
-        val output = mutableListOf<TeamStats>()
+        val output = mutableListOf<PlayerStats>()
         rowData.forEach { data ->
-            val teamId = data.getOrNull(headers.indexOf("TEAM_ID"))?.toIntOrNull() ?: return@forEach
-            val team = DefaultTeam.getTeamById(teamId)
             output.add(
-                TeamStats(
+                PlayerStats(
+                    data.getOrNull(headers.indexOf("PLAYER_ID"))?.toIntOrNull() ?: return@forEach,
                     teamId,
-                    team.teamFullName,
-                    team.teamName,
-                    team.abbreviation,
-                    team.conference,
-                    team.division,
+                    data.getOrNull(headers.indexOf("PLAYER_NAME")) ?: return@forEach,
+                    data.getOrNull(headers.indexOf("NICKNAME")) ?: return@forEach,
                     data.getOrNull(headers.indexOf("GP"))?.toIntOrNull() ?: return@forEach,
                     data.getOrNull(headers.indexOf("W"))?.toIntOrNull() ?: return@forEach,
                     data.getOrNull(headers.indexOf("L"))?.toIntOrNull() ?: return@forEach,

@@ -30,7 +30,7 @@ private val LightColorPalette = lightColors(
     */
 )
 
-private class NBAColors(
+class NBAColors(
     primary: Color,
     secondary: Color,
     extra1: Color,
@@ -43,6 +43,15 @@ private class NBAColors(
 }
 
 private val NBAColorPalette = NBAColors(LakersMain, LakersSub, LakersExtra1, LakersExtra2)
+
+private var ColorPalette by mutableStateOf(
+    NBAColors(
+        LakersMain,
+        LakersSub,
+        LakersExtra1,
+        LakersExtra2
+    )
+)
 
 @Composable
 fun NBATodayTheme(content: @Composable () -> Unit) {
@@ -86,4 +95,8 @@ fun updateColors(primary: Color, secondary: Color, extra1: Color, extra2: Color)
     NBAColorPalette.secondary = secondary
     NBAColorPalette.extra1 = extra1
     NBAColorPalette.extra2 = extra2
+}
+
+fun updateColors2(primary: Color, secondary: Color, extra1: Color, extra2: Color) {
+    ColorPalette = NBAColors(primary, secondary, extra1, extra2)
 }

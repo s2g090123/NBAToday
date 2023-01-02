@@ -56,4 +56,13 @@
     <string name="game_is_coming_soon">比賽即將開始</string>
     <string name="standing_conference_east">東區</string>
     <string name="standing_conference_west">西區</string>
+    <string name="team_rank_points_abbr">PPG</string>
+    <string name="team_rank_rebounds_abbr">RPG</string>
+    <string name="team_rank_assists_abbr">APG</string>
+    <string name="team_rank_plusMinus_abbr">+/-</string>
+    <string name="team_page_tab_player">Players</string>
+    <string name="team_page_tab_before_game">Before</string>
+    <string name="team_page_tab_next_game">Next</string>
+    <string name="team_game_status_win">Win</string>
+    <string name="team_game_status_lose">Lose</string>
 </resources>

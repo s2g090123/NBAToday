@@ -5,7 +5,9 @@ import com.jiachian.nbatoday.SCHEDULE_DATE_RANGE
 import com.jiachian.nbatoday.data.datastore.NbaDataStore
 import com.jiachian.nbatoday.data.local.LocalDataSource
 import com.jiachian.nbatoday.data.local.NbaGame
+import com.jiachian.nbatoday.data.local.TeamAndPlayers
 import com.jiachian.nbatoday.data.local.score.GameBoxScore
+import com.jiachian.nbatoday.data.local.team.DefaultTeam
 import com.jiachian.nbatoday.data.local.team.TeamStats
 import com.jiachian.nbatoday.data.remote.RemoteDataSource
 import com.jiachian.nbatoday.utils.NbaUtils
@@ -108,8 +110,24 @@ class NbaRepository(
         }
     }
 
+    override suspend fun refreshPlayerStats(teamId: Int) {
+        val stats = remoteDataSource.getTeamPlayersStats(teamId = teamId)
+        if (stats != null) {
+            val playersStats = stats.toLocal()
+            localDataSource.updatePlayerStats(playersStats)
+        }
+    }
+
     override fun getGamesDuring(from: Long, to: Long): Flow<List<NbaGame>> {
         return localDataSource.getGamesDuring(from, to)
+    }
+
+    override fun getGamesBefore(from: Long): Flow<List<NbaGame>> {
+        return localDataSource.getGamesBefore(from)
+    }
+
+    override fun getGamesAfter(from: Long): Flow<List<NbaGame>> {
+        return localDataSource.getGamesAfter(from)
     }
 
     override fun getGameBoxScore(gameId: String): Flow<GameBoxScore?> {
@@ -118,5 +136,29 @@ class NbaRepository(
 
     override fun getTeamStats(): Flow<List<TeamStats>> {
         return localDataSource.getTeamStats()
+    }
+
+    override fun getTeamAndPlayersStats(teamId: Int): Flow<TeamAndPlayers?> {
+        return localDataSource.getTeamAndPlayersStats(teamId)
+    }
+
+    override fun getTeamRank(teamId: Int, conference: DefaultTeam.Conference): Flow<Int> {
+        return localDataSource.getTeamRank(teamId, conference)
+    }
+
+    override fun getTeamPointsRank(teamId: Int): Flow<Int> {
+        return localDataSource.getTeamPointsRank(teamId)
+    }
+
+    override fun getTeamReboundsRank(teamId: Int): Flow<Int> {
+        return localDataSource.getTeamReboundsRank(teamId)
+    }
+
+    override fun getTeamAssistsRank(teamId: Int): Flow<Int> {
+        return localDataSource.getTeamAssistsRank(teamId)
+    }
+
+    override fun getTeamPlusMinusRank(teamId: Int): Flow<Int> {
+        return localDataSource.getTeamPlusMinusRank(teamId)
     }
 }

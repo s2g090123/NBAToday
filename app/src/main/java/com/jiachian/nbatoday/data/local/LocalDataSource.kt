@@ -1,7 +1,10 @@
 package com.jiachian.nbatoday.data.local
 
+import com.jiachian.nbatoday.data.local.player.PlayerStats
 import com.jiachian.nbatoday.data.local.score.GameBoxScore
+import com.jiachian.nbatoday.data.local.team.DefaultTeam
 import com.jiachian.nbatoday.data.local.team.TeamStats
+import com.jiachian.nbatoday.data.remote.game.GameScoreUpdateData
 import com.jiachian.nbatoday.data.remote.game.GameUpdateData
 import kotlinx.coroutines.flow.Flow
 import java.util.*
@@ -13,17 +16,27 @@ abstract class LocalDataSource {
     abstract val games: Flow<List<NbaGame>>
 
     abstract fun getGamesDuring(from: Long, to: Long): Flow<List<NbaGame>>
+    abstract fun getGamesBefore(from: Long): Flow<List<NbaGame>>
+    abstract fun getGamesAfter(from: Long): Flow<List<NbaGame>>
 
     abstract suspend fun existsData(): Boolean
 
     abstract suspend fun insertGames(games: List<NbaGame>)
 
-    abstract suspend fun updateGame(status: List<GameUpdateData>)
+    abstract suspend fun updateGames(games: List<GameUpdateData>)
+    abstract suspend fun updateGamesScore(games: List<GameScoreUpdateData>)
 
     abstract fun getGameBoxScore(gameId: String): Flow<GameBoxScore?>
     abstract suspend fun insertGameBoxScore(boxScore: GameBoxScore)
 
     abstract fun getTeamStats(): Flow<List<TeamStats>>
+    abstract fun getTeamAndPlayersStats(teamId: Int): Flow<TeamAndPlayers?>
+    abstract fun getTeamRank(teamId: Int, conference: DefaultTeam.Conference): Flow<Int>
+    abstract fun getTeamPointsRank(teamId: Int): Flow<Int>
+    abstract fun getTeamReboundsRank(teamId: Int): Flow<Int>
+    abstract fun getTeamAssistsRank(teamId: Int): Flow<Int>
+    abstract fun getTeamPlusMinusRank(teamId: Int): Flow<Int>
     abstract suspend fun updateTeamStats(stats: TeamStats)
     abstract suspend fun updateTeamStats(stats: List<TeamStats>)
+    abstract suspend fun updatePlayerStats(stats: List<PlayerStats>)
 }
