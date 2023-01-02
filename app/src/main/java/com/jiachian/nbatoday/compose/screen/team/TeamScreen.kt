@@ -38,7 +38,10 @@ import com.jiachian.nbatoday.data.local.NbaGame
 import com.jiachian.nbatoday.data.local.player.PlayerStats
 import com.jiachian.nbatoday.data.local.team.TeamStats
 import com.jiachian.nbatoday.data.remote.game.GameStatusCode
-import com.jiachian.nbatoday.utils.*
+import com.jiachian.nbatoday.utils.NbaUtils
+import com.jiachian.nbatoday.utils.noRippleClickable
+import com.jiachian.nbatoday.utils.px2Dp
+import com.jiachian.nbatoday.utils.rippleClickable
 import java.util.*
 import kotlin.math.max
 import kotlin.math.pow
@@ -55,8 +58,9 @@ fun TeamScreen(
             RefreshScreen(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(MaterialTheme.colors.primary)
+                    .background(viewModel.colors.primary)
                     .noRippleClickable { },
+                viewModel = viewModel,
                 onBack = onBack
             )
         }
@@ -64,7 +68,7 @@ fun TeamScreen(
             TeamDetailScreen(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(MaterialTheme.colors.primary)
+                    .background(viewModel.colors.primary)
                     .noRippleClickable { }
                     .verticalScroll(rememberScrollState()),
                 viewModel = viewModel,
@@ -93,7 +97,7 @@ private fun TeamDetailScreen(
             Icon(
                 painter = painterResource(R.drawable.ic_black_back),
                 contentDescription = null,
-                tint = MaterialTheme.colors.secondary
+                tint = viewModel.colors.extra2
             )
         }
         teamStats?.let {
@@ -304,7 +308,7 @@ private fun TeamStatsScreen(
     Column(modifier = modifier) {
         TabRow(
             selectedTabIndex = selectIndex,
-            backgroundColor = MaterialTheme.colors.secondary
+            backgroundColor = viewModel.colors.secondary
         ) {
             repeat(3) { index ->
                 Tab(
@@ -317,7 +321,7 @@ private fun TeamStatsScreen(
                                     else -> R.string.team_page_tab_next_game
                                 }
                             ),
-                            color = MaterialTheme.colors.primary,
+                            color = viewModel.colors.extra1,
                             fontSize = 14.sp
                         )
                     },
@@ -387,7 +391,7 @@ private fun PlayerStatistics(
             Spacer(modifier = Modifier.height(40.dp))
             Divider(
                 modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colors.dividerSecondary(),
+                color = viewModel.colors.secondary.copy(0.25f),
                 thickness = 3.dp
             )
             CompositionLocalProvider(
@@ -407,7 +411,7 @@ private fun PlayerStatistics(
                                 text = stat.playerName,
                                 textAlign = TextAlign.Start,
                                 fontSize = 16.sp,
-                                color = MaterialTheme.colors.secondary,
+                                color = viewModel.colors.secondary,
                                 maxLines = 1,
                                 softWrap = false
                             )
@@ -415,7 +419,7 @@ private fun PlayerStatistics(
                             if (index < players.size - 1) {
                                 Divider(
                                     modifier = Modifier.fillMaxWidth(),
-                                    color = MaterialTheme.colors.dividerSecondary(),
+                                    color = viewModel.colors.secondary.copy(0.25f),
                                     thickness = 1.dp
                                 )
                             }
@@ -440,7 +444,7 @@ private fun PlayerStatistics(
                             .height(40.dp)
                             .background(
                                 if (label.sort == sort) {
-                                    MaterialTheme.colors.secondary.copy(0.25f)
+                                    viewModel.colors.secondary.copy(0.25f)
                                 } else {
                                     Color.Transparent
                                 }
@@ -456,14 +460,14 @@ private fun PlayerStatistics(
                             textAlign = if (label.sort == sort) TextAlign.Center else label.textAlign,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Medium,
-                            color = MaterialTheme.colors.secondary
+                            color = viewModel.colors.secondary
                         )
                     }
                 }
             }
             Divider(
                 modifier = Modifier.width(dividerWidth.px2Dp()),
-                color = MaterialTheme.colors.dividerSecondary(),
+                color = viewModel.colors.secondary.copy(0.25f),
                 thickness = 3.dp
             )
             CompositionLocalProvider(
@@ -487,7 +491,7 @@ private fun PlayerStatistics(
                                         .height(40.dp)
                                         .background(
                                             if (label.sort == sort) {
-                                                MaterialTheme.colors.secondary.copy(0.25f)
+                                                viewModel.colors.secondary.copy(0.25f)
                                             } else {
                                                 Color.Transparent
                                             }
@@ -521,14 +525,14 @@ private fun PlayerStatistics(
                                     },
                                     textAlign = if (label.sort == sort) TextAlign.Center else label.textAlign,
                                     fontSize = 16.sp,
-                                    color = MaterialTheme.colors.secondary
+                                    color = viewModel.colors.secondary
                                 )
                             }
                         }
                         if (index < players.size - 1) {
                             Divider(
                                 modifier = Modifier.width(dividerWidth.px2Dp()),
-                                color = MaterialTheme.colors.dividerSecondary(),
+                                color = viewModel.colors.secondary.copy(0.25f),
                                 thickness = 1.dp
                             )
                         }
@@ -571,7 +575,7 @@ private fun GamesPage(
                     .shadow(8.dp)
                     .fillMaxWidth()
                     .wrapContentHeight()
-                    .background(MaterialTheme.colors.secondary)
+                    .background(viewModel.colors.secondary)
                     .rippleClickable {
                         if (game.gameStatus == GameStatusCode.COMING_SOON) {
                             Toast
@@ -586,6 +590,7 @@ private fun GamesPage(
                         }
                     }
                     .padding(bottom = 8.dp),
+                viewModel = viewModel,
                 teamId = viewModel.teamId,
                 game = game
             )
@@ -596,6 +601,7 @@ private fun GamesPage(
 @Composable
 private fun GameStatusCard(
     modifier: Modifier = Modifier,
+    viewModel: TeamViewModel,
     teamId: Int,
     game: NbaGame
 ) {
@@ -615,7 +621,7 @@ private fun GameStatusCard(
                     linkTo(homeLogo.start, homeLogo.end)
                 },
             text = game.homeTeam.teamTricode,
-            color = MaterialTheme.colors.primary,
+            color = viewModel.colors.primary,
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold
         )
@@ -641,7 +647,7 @@ private fun GameStatusCard(
                     linkTo(homeLogo.start, homeLogo.end)
                 },
             text = game.homeTeam.score.toString(),
-            color = MaterialTheme.colors.primary,
+            color = viewModel.colors.primary,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold
         )
@@ -652,7 +658,7 @@ private fun GameStatusCard(
                     linkTo(awayLogo.start, awayLogo.end)
                 },
             text = game.awayTeam.teamTricode,
-            color = MaterialTheme.colors.primary,
+            color = viewModel.colors.primary,
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold
         )
@@ -678,7 +684,7 @@ private fun GameStatusCard(
                     linkTo(awayLogo.start, awayLogo.end)
                 },
             text = game.awayTeam.score.toString(),
-            color = MaterialTheme.colors.primary,
+            color = viewModel.colors.primary,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold
         )
@@ -690,7 +696,7 @@ private fun GameStatusCard(
                 },
             text = game.getStatusText(teamId),
             textAlign = TextAlign.Center,
-            color = MaterialTheme.colors.primary,
+            color = viewModel.colors.primary,
             fontSize = 16.sp,
             fontStyle = FontStyle.Italic
         )
@@ -700,6 +706,7 @@ private fun GameStatusCard(
 @Composable
 private fun RefreshScreen(
     modifier: Modifier = Modifier,
+    viewModel: TeamViewModel,
     onBack: () -> Unit
 ) {
     Box(modifier = modifier) {
@@ -712,12 +719,12 @@ private fun RefreshScreen(
             Icon(
                 painter = painterResource(R.drawable.ic_black_back),
                 contentDescription = null,
-                tint = MaterialTheme.colors.secondary
+                tint = viewModel.colors.extra2
             )
         }
         CircularProgressIndicator(
             modifier = Modifier.align(Alignment.Center),
-            color = MaterialTheme.colors.secondary
+            color = viewModel.colors.secondary
         )
     }
 }

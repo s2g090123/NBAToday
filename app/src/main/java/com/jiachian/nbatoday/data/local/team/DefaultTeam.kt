@@ -1,8 +1,7 @@
 package com.jiachian.nbatoday.data.local.team
 
 import com.jiachian.nbatoday.R
-import com.jiachian.nbatoday.compose.theme.LakersColors
-import com.jiachian.nbatoday.compose.theme.NBAColors
+import com.jiachian.nbatoday.compose.theme.*
 
 /** Offline Data */
 abstract class DefaultTeam {
@@ -54,8 +53,37 @@ abstract class DefaultTeam {
 
         fun getColorsById(teamId: Int): NBAColors {
             return when (teamId) {
+                1610612737 -> HawksColors
+                1610612738 -> CelticsColors
+                1610612751 -> NetsColors
+                1610612766 -> HornetsColors
+                1610612741 -> BullsColors
+                1610612739 -> CavaliersColors
+                1610612742 -> MavericksColors
+                1610612743 -> NuggetsColors
+                1610612765 -> PistonsColors
+                1610612744 -> WarriorsColors
+                1610612745 -> RocketsColors
+                1610612754 -> PacersColors
+                1610612746 -> ClippersColors
                 1610612747 -> LakersColors
-                else -> LakersColors
+                1610612763 -> GrizzliesColors
+                1610612748 -> HeatColors
+                1610612749 -> BucksColors
+                1610612750 -> TimberwolvesColors
+                1610612740 -> PelicansColors
+                1610612752 -> KnicksColors
+                1610612760 -> ThunderColors
+                1610612753 -> MagicColors
+                1610612755 -> p76ersColors
+                1610612756 -> SunsColors
+                1610612757 -> BlazersColors
+                1610612758 -> KingsColors
+                1610612759 -> SpursColors
+                1610612761 -> RaptorsColors
+                1610612762 -> JazzColors
+                1610612764 -> WizardsColors
+                else -> OfficialColors
             }
         }
     }
