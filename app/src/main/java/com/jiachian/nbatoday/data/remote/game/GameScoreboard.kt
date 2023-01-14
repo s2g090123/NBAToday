@@ -43,6 +43,7 @@ data class GameScoreboard(
             val gameId = game.gameId ?: return@mapNotNull null
             val gameStatus = when (game.gameStatus) {
                 GameStatusCode.COMING_SOON.status -> GameStatusCode.COMING_SOON
+                GameStatusCode.PLAYING.status -> GameStatusCode.PLAYING
                 GameStatusCode.FINAL.status -> GameStatusCode.FINAL
                 else -> null
             } ?: return@mapNotNull null

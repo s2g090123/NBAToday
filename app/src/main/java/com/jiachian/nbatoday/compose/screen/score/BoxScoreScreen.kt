@@ -18,6 +18,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -32,6 +33,7 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.data.local.score.GameBoxScore
+import com.jiachian.nbatoday.data.remote.game.GameStatusCode
 import com.jiachian.nbatoday.data.remote.score.PlayerActiveStatus
 import com.jiachian.nbatoday.utils.*
 import kotlin.math.max
@@ -156,17 +158,33 @@ private fun ScoreTotal(
     ConstraintLayout(modifier = modifier) {
         val (
             homeImage, homeNameText, scoreText,
-            awayImage, awyNameText
+            awayImage, awyNameText, isFinalText
         ) = createRefs()
 
         Text(
             modifier = Modifier
                 .constrainAs(scoreText) {
-                    linkTo(homeImage.top, homeImage.bottom)
+                    linkTo(homeImage.top, isFinalText.top)
                     linkTo(parent.start, parent.end)
                 },
             text = "${score.homeTeam?.score} - ${score.awayTeam?.score}",
             fontWeight = FontWeight.Bold,
+            fontSize = 24.sp,
+            color = MaterialTheme.colors.secondary
+        )
+        Text(
+            modifier = Modifier
+                .constrainAs(isFinalText) {
+                    linkTo(scoreText.bottom, homeImage.bottom)
+                    linkTo(parent.start, parent.end)
+                },
+            text = if (score.gameStatus != GameStatusCode.COMING_SOON) {
+                score.gameStatusText
+            } else {
+                score.gameStatusText.replace(" ", "\n")
+            }.trim(),
+            fontWeight = FontWeight.Bold,
+            fontStyle = FontStyle.Italic,
             fontSize = 24.sp,
             color = MaterialTheme.colors.secondary
         )

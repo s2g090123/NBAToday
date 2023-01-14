@@ -35,7 +35,7 @@ class BoxScoreViewModel(
         .stateIn(coroutineScope, SharingStarted.Eagerly, null)
 
     val homeLeader = boxScore.map {
-        val personId = if (game.gameStatus == GameStatusCode.FINAL) {
+        val personId = if (game.gameStatus != GameStatusCode.COMING_SOON) {
             game.gameLeaders?.homeLeaders?.personId
         } else {
             game.teamLeaders?.homeLeaders?.personId
@@ -43,7 +43,7 @@ class BoxScoreViewModel(
         it?.homeTeam?.players?.firstOrNull { player -> player.personId == personId }
     }.stateIn(coroutineScope, SharingStarted.Eagerly, null)
     val awayLeader = boxScore.map {
-        val personId = if (game.gameStatus == GameStatusCode.FINAL) {
+        val personId = if (game.gameStatus != GameStatusCode.COMING_SOON) {
             game.gameLeaders?.awayLeaders?.personId
         } else {
             game.teamLeaders?.awayLeaders?.personId

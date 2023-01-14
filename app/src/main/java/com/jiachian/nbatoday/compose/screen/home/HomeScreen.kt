@@ -555,7 +555,7 @@ private fun GameStatusCard(
         val (
             homeTeamText, homeLogo, homeScoreText,
             awayTeamText, awayLogo, awayScoreText,
-            gameStatusText, expandBtn, playersDetail, collapseBtn
+            gameStatusText, expandBtn, playersDetail
         ) = createRefs()
 
         Text(
@@ -638,7 +638,11 @@ private fun GameStatusCard(
                     linkTo(homeLogo.top, awayLogo.bottom)
                     linkTo(homeLogo.end, awayLogo.start)
                 },
-            text = game.gameStatusText.replaceFirst(" ", "\n"),
+            text = if (game.gameStatus == GameStatusCode.COMING_SOON) {
+                game.gameStatusText.replaceFirst(" ", "\n")
+            } else {
+                game.gameStatusText
+            }.trim(),
             textAlign = TextAlign.Center,
             color = MaterialTheme.colors.primary,
             fontSize = 16.sp,
@@ -677,8 +681,8 @@ private fun GameStatusCard(
             exit = shrinkOut()
         ) {
             Column {
-                val isFinal = game.gameStatus == GameStatusCode.FINAL
-                val leaders = if (isFinal) game.gameLeaders else game.teamLeaders
+                val isComingSoon = game.gameStatus == GameStatusCode.COMING_SOON
+                val leaders = if (isComingSoon) game.teamLeaders else game.gameLeaders
                 val homeLeader = leaders?.homeLeaders
                 val awayLeader = leaders?.awayLeaders
                 if (homeLeader != null && awayLeader != null) {
@@ -687,7 +691,7 @@ private fun GameStatusCard(
                             .padding(top = 8.dp)
                             .fillMaxWidth()
                             .wrapContentHeight(),
-                        isGameFinal = isFinal,
+                        isGameFinal = !isComingSoon,
                         homeLeader = homeLeader,
                         awayLeader = awayLeader
                     )
