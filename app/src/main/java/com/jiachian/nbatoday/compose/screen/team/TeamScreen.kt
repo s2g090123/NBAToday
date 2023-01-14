@@ -310,11 +310,11 @@ private fun TeamStatsScreen(
         TabRow(
             selectedTabIndex = selectIndex,
             backgroundColor = viewModel.colors.secondary,
-            contentColor = MaterialTheme.colors.primaryVariant,
+            contentColor = viewModel.colors.extra1,
             indicator = @Composable { tabPositions ->
                 TabRowDefaults.Indicator(
                     modifier = Modifier.tabIndicatorOffset(tabPositions[pagerState.currentPage]),
-                    color = MaterialTheme.colors.primaryVariant
+                    color = viewModel.colors.extra1
                 )
             }
         ) {
