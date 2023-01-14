@@ -41,9 +41,9 @@ abstract class DefaultTeam {
                 1610612764 -> TeamWizards()
                 else -> object : DefaultTeam() {
                     override val teamId: Int = teamId
-                    override val abbreviation: String = "UNK"
-                    override val teamName: String = "Unknown"
-                    override val location: String = "Unknown"
+                    override val abbreviation: String = "NBA"
+                    override val teamName: String = "NBA"
+                    override val location: String = ""
                     override val logoRes: Int = R.drawable.ic_logo_nba
                     override val conference: Conference = Conference.EAST
                     override val division: Division = Division.ATLANTIC

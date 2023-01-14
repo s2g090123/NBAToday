@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jiachian.nbatoday.compose.screen.home.HomeViewModel
 import com.jiachian.nbatoday.compose.state.NbaState
+import com.jiachian.nbatoday.compose.theme.updateColors
 import com.jiachian.nbatoday.data.BaseRepository
 import com.jiachian.nbatoday.data.datastore.NbaDataStore
 import com.jiachian.nbatoday.event.EventBroadcaster
@@ -31,6 +32,7 @@ class MainViewModel(
         NbaState.Home(
             HomeViewModel(
                 repository = repository,
+                dataStore = dataStore,
                 openScreen = this::updateState
             )
         )
@@ -54,13 +56,9 @@ class MainViewModel(
             }
             isLoadingAppImp.value = false
         }
-    }
-
-    fun refreshSchedule() {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                repository.refreshSchedule()
-            }
+        viewModelScope.launch(Dispatchers.IO) {
+            val colors = dataStore.themeColors.first()
+            updateColors(colors)
         }
     }
 

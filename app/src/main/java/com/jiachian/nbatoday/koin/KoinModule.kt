@@ -14,7 +14,7 @@ import org.koin.dsl.module
 val module = module {
 
     factory { (get() as NbaDatabase).getNbaDao() }
-    factory { NbaRemoteDataSource() }
+    factory { NbaRemoteDataSource(get()) }
     factory { NbaLocalDataSource(get()) }
 
     single { NbaDatabase.getInstance(androidContext()) }

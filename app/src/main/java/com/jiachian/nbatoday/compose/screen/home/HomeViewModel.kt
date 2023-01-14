@@ -10,7 +10,10 @@ import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.compose.screen.score.BoxScoreViewModel
 import com.jiachian.nbatoday.compose.screen.team.TeamViewModel
 import com.jiachian.nbatoday.compose.state.NbaState
+import com.jiachian.nbatoday.compose.theme.NBAColors
+import com.jiachian.nbatoday.compose.theme.updateColors
 import com.jiachian.nbatoday.data.BaseRepository
+import com.jiachian.nbatoday.data.datastore.NbaDataStore
 import com.jiachian.nbatoday.data.local.NbaGame
 import com.jiachian.nbatoday.data.local.team.TeamStats
 import com.jiachian.nbatoday.utils.NbaUtils
@@ -30,6 +33,7 @@ data class StandingLabel(
 
 class HomeViewModel(
     private val repository: BaseRepository,
+    private val dataStore: NbaDataStore,
     private val openScreen: (state: NbaState) -> Unit
 ) : ComposeViewModel() {
 
@@ -138,7 +142,7 @@ class HomeViewModel(
     }
 
     fun updateHomeIndex(index: Int) {
-        homeIndexImp.value = index.coerceIn(0, 2)
+        homeIndexImp.value = index.coerceIn(0, 3)
     }
 
     fun updateScheduleIndex(index: Int) {
@@ -226,5 +230,12 @@ class HomeViewModel(
 
     fun openTeamStats(teamId: Int) {
         openScreen(NbaState.Team(TeamViewModel(teamId, repository, openScreen, coroutineScope)))
+    }
+
+    fun updateTheme(teamId: Int, color: NBAColors) {
+        updateColors(color)
+        coroutineScope.launch(Dispatchers.IO) {
+            dataStore.updateThemeColor(teamId)
+        }
     }
 }

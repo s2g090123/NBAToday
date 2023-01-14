@@ -8,10 +8,14 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
@@ -42,6 +46,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.jiachian.nbatoday.R
+import com.jiachian.nbatoday.compose.theme.*
 import com.jiachian.nbatoday.data.local.NbaGame
 import com.jiachian.nbatoday.data.local.team.DefaultTeam
 import com.jiachian.nbatoday.data.local.team.TeamStats
@@ -99,6 +104,14 @@ private fun HomeBody(
         }
         item {
             StandingPage(
+                modifier = Modifier
+                    .width(screenWidth)
+                    .fillMaxHeight(),
+                viewModel = viewModel
+            )
+        }
+        item {
+            ThemePage(
                 modifier = Modifier
                     .width(screenWidth)
                     .fillMaxHeight(),
@@ -185,8 +198,15 @@ private fun SchedulePage(
         }
         ScrollableTabRow(
             selectedTabIndex = pagerState.currentPage,
+            contentColor = MaterialTheme.colors.primaryVariant,
             backgroundColor = MaterialTheme.colors.secondary,
-            edgePadding = 0.dp
+            edgePadding = 0.dp,
+            indicator = @Composable { tabPositions ->
+                TabRowDefaults.Indicator(
+                    modifier = Modifier.tabIndicatorOffset(tabPositions[pagerState.currentPage]),
+                    color = MaterialTheme.colors.secondaryVariant
+                )
+            }
         ) {
             dateStrings.forEachIndexed { dateIndex, date ->
                 Tab(
@@ -253,7 +273,14 @@ private fun StandingPage(
         )
         TabRow(
             selectedTabIndex = selectIndex,
-            backgroundColor = MaterialTheme.colors.secondary
+            backgroundColor = MaterialTheme.colors.secondary,
+            contentColor = MaterialTheme.colors.primaryVariant,
+            indicator = @Composable { tabPositions ->
+                TabRowDefaults.Indicator(
+                    modifier = Modifier.tabIndicatorOffset(tabPositions[pagerState.currentPage]),
+                    color = MaterialTheme.colors.secondaryVariant
+                )
+            }
         ) {
             repeat(2) { index ->
                 Tab(
@@ -272,6 +299,171 @@ private fun StandingPage(
     }
     LaunchedEffect(selectIndex) {
         pagerState.scrollToPage(selectIndex)
+    }
+}
+
+@Composable
+private fun ThemePage(
+    modifier: Modifier,
+    viewModel: HomeViewModel
+) {
+    val isPhone = isPhone()
+    val isPortrait = isPortrait()
+
+    LazyVerticalGrid(
+        modifier = modifier,
+        columns = GridCells.Fixed(
+            when {
+                isPhone && isPortrait -> 2
+                isPhone && !isPortrait -> 3
+                !isPhone && isPortrait -> 4
+                else -> 6
+            }
+        ),
+        contentPadding = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        items(31) { index ->
+            val (teamId, color) = when (index) {
+                1 -> 1610612757 to BlazersColors
+                2 -> 1610612749 to BucksColors
+                3 -> 1610612741 to BullsColors
+                4 -> 1610612739 to CavaliersColors
+                5 -> 1610612738 to CelticsColors
+                6 -> 1610612746 to ClippersColors
+                7 -> 1610612763 to GrizzliesColors
+                8 -> 1610612737 to HawksColors
+                9 -> 1610612748 to HeatColors
+                10 -> 1610612766 to HornetsColors
+                11 -> 1610612762 to JazzColors
+                12 -> 1610612758 to KingsColors
+                13 -> 1610612752 to KnicksColors
+                14 -> 1610612747 to LakersColors
+                15 -> 1610612753 to MagicColors
+                16 -> 1610612742 to MavericksColors
+                17 -> 1610612751 to NetsColors
+                18 -> 1610612743 to NuggetsColors
+                19 -> 1610612754 to PacersColors
+                20 -> 1610612740 to PelicansColors
+                21 -> 1610612765 to PistonsColors
+                22 -> 1610612761 to RaptorsColors
+                23 -> 1610612745 to RocketsColors
+                24 -> 1610612759 to SpursColors
+                25 -> 1610612755 to p76ersColors
+                26 -> 1610612756 to SunsColors
+                27 -> 1610612760 to ThunderColors
+                28 -> 1610612750 to TimberwolvesColors
+                29 -> 1610612744 to WarriorsColors
+                30 -> 1610612764 to WizardsColors
+                else -> 0 to OfficialColors
+            }
+            ThemeCard(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .border(1.dp, Color.White, RoundedCornerShape(8.dp))
+                    .clip(RoundedCornerShape(7.dp))
+                    .background(MaterialTheme.colors.secondary)
+                    .rippleClickable {
+                        viewModel.updateTheme(teamId, color)
+                    }
+                    .padding(bottom = 8.dp),
+                team = DefaultTeam.getTeamById(teamId),
+                firstColor = color.primary,
+                secondColor = color.secondary,
+                thirdColor = color.extra1,
+                forthColor = color.extra2
+            )
+        }
+    }
+}
+
+@Composable
+private fun ThemeCard(
+    modifier: Modifier = Modifier,
+    team: DefaultTeam,
+    firstColor: Color,
+    secondColor: Color,
+    thirdColor: Color,
+    forthColor: Color
+) {
+    ConstraintLayout(
+        modifier = modifier
+    ) {
+        val (teamImage, nameText, color1, color2, color3, color4) = createRefs()
+
+        AsyncImage(
+            modifier = Modifier
+                .constrainAs(teamImage) {
+                    top.linkTo(parent.top, 8.dp)
+                    start.linkTo(parent.start, 8.dp)
+                }
+                .size(48.dp),
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(NbaUtils.getTeamLogoUrlById(team.teamId))
+                .decoderFactory(SvgDecoder.Factory())
+                .build(),
+            error = painterResource(NbaUtils.getTeamLogoResById(team.teamId)),
+            placeholder = painterResource(NbaUtils.getTeamLogoResById(team.teamId)),
+            contentDescription = null
+        )
+        Text(
+            modifier = Modifier
+                .constrainAs(nameText) {
+                    top.linkTo(parent.top, 8.dp)
+                    linkTo(teamImage.end, parent.end, 8.dp)
+                    width = Dimension.fillToConstraints
+                },
+            text = team.teamName,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Medium,
+            color = MaterialTheme.colors.primaryVariant
+        )
+        Box(
+            modifier = Modifier
+                .constrainAs(color1) {
+                    top.linkTo(nameText.bottom, 8.dp)
+                    start.linkTo(teamImage.end, 8.dp)
+                }
+                .size(18.dp)
+                .border(1.dp, Color.White, CircleShape)
+                .clip(CircleShape)
+                .background(firstColor)
+        )
+        Box(
+            modifier = Modifier
+                .constrainAs(color2) {
+                    top.linkTo(nameText.bottom, 8.dp)
+                    start.linkTo(color1.end, 8.dp)
+                }
+                .size(18.dp)
+                .border(1.dp, Color.White, CircleShape)
+                .clip(CircleShape)
+                .background(secondColor)
+        )
+        Box(
+            modifier = Modifier
+                .constrainAs(color3) {
+                    top.linkTo(nameText.bottom, 8.dp)
+                    start.linkTo(color2.end, 8.dp)
+                }
+                .size(18.dp)
+                .border(1.dp, Color.White, CircleShape)
+                .clip(CircleShape)
+                .background(thirdColor)
+        )
+        Box(
+            modifier = Modifier
+                .constrainAs(color4) {
+                    top.linkTo(nameText.bottom, 8.dp)
+                    start.linkTo(color3.end, 8.dp)
+                }
+                .size(18.dp)
+                .border(1.dp, Color.White, CircleShape)
+                .clip(CircleShape)
+                .background(forthColor)
+        )
     }
 }
 
@@ -534,6 +726,27 @@ private fun HomeBottom(
             )
             Text(
                 text = stringResource(R.string.home_bottom_standings),
+                color = MaterialTheme.colors.primary,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Medium
+            )
+        }
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight()
+                .rippleClickable { viewModel.updateHomeIndex(2) }
+                .padding(horizontal = 12.dp, vertical = 4.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(
+                painter = painterResource(R.drawable.ic_black_palette),
+                contentDescription = null,
+                colorFilter = ColorFilter.tint(MaterialTheme.colors.primary)
+            )
+            Text(
+                text = stringResource(R.string.home_bottom_theme),
                 color = MaterialTheme.colors.primary,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Medium
