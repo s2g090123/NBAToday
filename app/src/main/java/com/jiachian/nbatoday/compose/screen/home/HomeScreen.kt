@@ -2,6 +2,7 @@ package com.jiachian.nbatoday.compose.screen.home
 
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.expandIn
 import androidx.compose.animation.shrinkOut
 import androidx.compose.foundation.*
@@ -24,6 +25,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -686,6 +688,11 @@ private fun HomeBottom(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel
 ) {
+    val selectIndex by viewModel.homeIndex.collectAsState()
+    val scheduleScale by animateFloatAsState(targetValue = if (selectIndex == 0) 1.2f else 1f)
+    val standingScale by animateFloatAsState(targetValue = if (selectIndex == 1) 1.2f else 1f)
+    val themeScale by animateFloatAsState(targetValue = if (selectIndex == 2) 1.2f else 1f)
+
     Row(
         modifier = modifier
     ) {
@@ -693,6 +700,7 @@ private fun HomeBottom(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxHeight()
+                .scale(scheduleScale)
                 .rippleClickable { viewModel.updateHomeIndex(0) }
                 .padding(horizontal = 12.dp, vertical = 4.dp),
             verticalArrangement = Arrangement.Center,
@@ -714,6 +722,7 @@ private fun HomeBottom(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxHeight()
+                .scale(standingScale)
                 .rippleClickable { viewModel.updateHomeIndex(1) }
                 .padding(horizontal = 12.dp, vertical = 4.dp),
             verticalArrangement = Arrangement.Center,
@@ -735,6 +744,7 @@ private fun HomeBottom(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxHeight()
+                .scale(themeScale)
                 .rippleClickable { viewModel.updateHomeIndex(2) }
                 .padding(horizontal = 12.dp, vertical = 4.dp),
             verticalArrangement = Arrangement.Center,

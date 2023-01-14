@@ -62,7 +62,7 @@
     <string name="team_rank_assists_abbr">APG</string>
     <string name="team_rank_plusMinus_abbr">+/-</string>
     <string name="team_page_tab_player">Players</string>
-    <string name="team_page_tab_before_game">Before</string>
+    <string name="team_page_tab_before_game">Previous</string>
     <string name="team_page_tab_next_game">Next</string>
     <string name="team_game_status_win">Win</string>
     <string name="team_game_status_lose">Lose</string>
