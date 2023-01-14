@@ -30,8 +30,8 @@ val CelticsColors = NBAColors(CelticsMain, CelticsSub, CelticsExtra1, CelticsExt
 
 val NetsMain = Color(0xFF000000)
 val NetsSub = Color(0xFFFFFFFF)
-val NetsExtra1 = Color(0xFF000000)
-val NetsExtra2 = Color(0xFFFFFFFF)
+val NetsExtra1 = Color(0x9C000000)
+val NetsExtra2 = Color(0x9CFFFFFF)
 val NetsColors = NBAColors(NetsMain, NetsSub, NetsExtra1, NetsExtra2)
 
 val HornetsMain = Color(0xFF1D1160)
@@ -43,7 +43,7 @@ val HornetsColors = NBAColors(HornetsMain, HornetsSub, HornetsExtra1, HornetsExt
 val BullsMain = Color(0xFFCE1141)
 val BullsSub = Color(0xFF000000)
 val BullsExtra1 = Color(0xFFFFFFFF)
-val BullsExtra2 = Color(0xFF000000)
+val BullsExtra2 = Color(0x9C000000)
 val BullsColors = NBAColors(BullsMain, BullsSub, BullsExtra1, BullsExtra2)
 
 val CavaliersMain = Color(0xFF860038)
@@ -158,7 +158,7 @@ val SunsColors = NBAColors(SunsMain, SunsSub, SunsExtra1, SunsExtra2)
 val BlazersMain = Color(0xFFE03A3E)
 val BlazersSub = Color(0xFF000000)
 val BlazersExtra1 = Color(0xFFFFFFFF)
-val BlazersExtra2 = Color(0xFF000000)
+val BlazersExtra2 = Color(0x9C000000)
 val BlazersColors = NBAColors(BlazersMain, BlazersSub, BlazersExtra1, BlazersExtra2)
 
 val KingsMain = Color(0xFF5A2D81)
@@ -170,7 +170,7 @@ val KingsColors = NBAColors(KingsMain, KingsSub, KingsExtra1, KingsExtra2)
 val SpursMain = Color(0xFFC4CED4)
 val SpursSub = Color(0xFF000000)
 val SpursExtra1 = Color(0xFFFFFFFF)
-val SpursExtra2 = Color(0xFF000000)
+val SpursExtra2 = Color(0x9C000000)
 val SpursColors = NBAColors(SpursMain, SpursSub, SpursExtra1, SpursExtra2)
 
 val RaptorsMain = Color(0xFFCE1141)

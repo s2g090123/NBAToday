@@ -314,7 +314,7 @@ private fun TeamStatsScreen(
             indicator = @Composable { tabPositions ->
                 TabRowDefaults.Indicator(
                     modifier = Modifier.tabIndicatorOffset(tabPositions[pagerState.currentPage]),
-                    color = MaterialTheme.colors.secondaryVariant
+                    color = MaterialTheme.colors.primaryVariant
                 )
             }
         ) {

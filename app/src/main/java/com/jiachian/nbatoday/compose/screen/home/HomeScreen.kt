@@ -206,7 +206,7 @@ private fun SchedulePage(
             indicator = @Composable { tabPositions ->
                 TabRowDefaults.Indicator(
                     modifier = Modifier.tabIndicatorOffset(tabPositions[pagerState.currentPage]),
-                    color = MaterialTheme.colors.secondaryVariant
+                    color = MaterialTheme.colors.primaryVariant
                 )
             }
         ) {
@@ -280,7 +280,7 @@ private fun StandingPage(
             indicator = @Composable { tabPositions ->
                 TabRowDefaults.Indicator(
                     modifier = Modifier.tabIndicatorOffset(tabPositions[pagerState.currentPage]),
-                    color = MaterialTheme.colors.secondaryVariant
+                    color = MaterialTheme.colors.primaryVariant
                 )
             }
         ) {
@@ -430,7 +430,7 @@ private fun ThemeCard(
                 }
                 .size(18.dp)
                 .border(1.dp, Color.White, CircleShape)
-                .clip(CircleShape)
+                .shadow(4.dp, CircleShape)
                 .background(firstColor)
         )
         Box(
@@ -441,7 +441,7 @@ private fun ThemeCard(
                 }
                 .size(18.dp)
                 .border(1.dp, Color.White, CircleShape)
-                .clip(CircleShape)
+                .shadow(4.dp, CircleShape)
                 .background(secondColor)
         )
         Box(
@@ -452,7 +452,7 @@ private fun ThemeCard(
                 }
                 .size(18.dp)
                 .border(1.dp, Color.White, CircleShape)
-                .clip(CircleShape)
+                .shadow(4.dp, CircleShape)
                 .background(thirdColor)
         )
         Box(
@@ -463,7 +463,7 @@ private fun ThemeCard(
                 }
                 .size(18.dp)
                 .border(1.dp, Color.White, CircleShape)
-                .clip(CircleShape)
+                .shadow(4.dp, CircleShape)
                 .background(forthColor)
         )
     }
