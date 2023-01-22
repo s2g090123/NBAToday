@@ -1,6 +1,5 @@
 package com.jiachian.nbatoday.compose.screen.home
 
-import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.expandIn
@@ -175,13 +174,7 @@ private fun SchedulePage(
                                     .background(MaterialTheme.colors.secondary)
                                     .rippleClickable {
                                         if (game.gameStatus == GameStatusCode.COMING_SOON) {
-                                            Toast
-                                                .makeText(
-                                                    context,
-                                                    context.getString(R.string.game_is_coming_soon),
-                                                    Toast.LENGTH_SHORT
-                                                )
-                                                .show()
+                                            viewModel.openTeamStats(game.homeTeam.teamId)
                                         } else {
                                             viewModel.openGameBoxScore(game)
                                         }
