@@ -118,19 +118,37 @@ private fun PlayerCareerInfo(
                 contentDescription = null
             )
         }
-        Text(
-            modifier = Modifier.padding(top = 8.dp, start = 16.dp, end = 16.dp),
-            text = "${playerCareer.info.teamCity} ${playerCareer.info.teamName} | #${playerCareer.info.jersey} | ${playerCareer.info.position}",
-            fontSize = 16.sp,
-            color = MaterialTheme.colors.secondaryVariant
-        )
-        Text(
-            modifier = Modifier.padding(horizontal = 16.dp),
-            text = playerCareer.info.playerName,
-            fontSize = 24.sp,
-            color = MaterialTheme.colors.secondaryVariant,
-            fontWeight = FontWeight.Bold
-        )
+        Row(
+            modifier = Modifier
+                .padding(top = 8.dp)
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(end = 8.dp)
+                    .weight(1f)
+            ) {
+                Text(
+                    text = "${playerCareer.info.teamCity} ${playerCareer.info.teamName} | #${playerCareer.info.jersey} | ${playerCareer.info.position}",
+                    fontSize = 16.sp,
+                    color = MaterialTheme.colors.secondaryVariant
+                )
+                Text(
+                    text = playerCareer.info.playerName,
+                    fontSize = 24.sp,
+                    color = MaterialTheme.colors.secondaryVariant,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+            if (playerCareer.info.isGreatest75) {
+                Image(
+                    modifier = Modifier.size(58.dp, 48.dp),
+                    painter = painterResource(R.drawable.ic_nba_75th_logo),
+                    contentDescription = null
+                )
+            }
+        }
         Divider(
             modifier = Modifier
                 .padding(top = 16.dp)
@@ -532,33 +550,26 @@ private fun PlayerCareerStats(
                 CompositionLocalProvider(
                     LocalOverscrollConfiguration provides null
                 ) {
-                    labels.firstOrNull()?.let { label ->
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(40.dp)
-                                .background(
-                                    if (label.sort == sort) {
-                                        MaterialTheme.colors.secondary.copy(0.25f)
-                                    } else {
-                                        Color.Transparent
-                                    }
-                                )
-                                .rippleClickable {
-                                    viewModel.updateStatsSort(CareerStatsSort.TIME_FRAME)
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(40.dp)
+                            .background(
+                                if (sort == CareerStatsSort.TIME_FRAME) {
+                                    MaterialTheme.colors.secondary.copy(0.25f)
+                                } else {
+                                    Color.Transparent
                                 }
-                                .padding(8.dp),
-                            contentAlignment = Alignment.CenterStart
-                        ) {
-                            Text(
-                                modifier = Modifier.fillMaxSize(),
-                                text = label.text,
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Medium,
-                                color = MaterialTheme.colors.secondary
                             )
-                        }
-                    }
+                            .rippleClickable {
+                                viewModel.updateStatsSort(CareerStatsSort.TIME_FRAME)
+                            }
+                            .padding(8.dp),
+                        text = "By Year",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colors.secondary
+                    )
                     Divider(
                         modifier = Modifier.fillMaxWidth(),
                         color = MaterialTheme.colors.dividerSecondary(),
@@ -571,7 +582,7 @@ private fun PlayerCareerStats(
                     ) {
                         items(careerStats) { stat ->
                             Column {
-                                Text(
+                                Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .height(40.dp)
@@ -582,14 +593,29 @@ private fun PlayerCareerStats(
                                                 Color.Transparent
                                             }
                                         )
-                                        .padding(vertical = 8.dp, horizontal = 8.dp),
-                                    text = stat.timeFrame,
-                                    textAlign = TextAlign.Start,
-                                    fontSize = 16.sp,
-                                    color = MaterialTheme.colors.secondary,
-                                    maxLines = 1,
-                                    softWrap = false
-                                )
+                                ) {
+                                    Text(
+                                        modifier = Modifier
+                                            .padding(start = 8.dp, top = 8.dp, bottom = 8.dp)
+                                            .weight(1f),
+                                        text = stat.timeFrame,
+                                        textAlign = TextAlign.Start,
+                                        fontSize = 16.sp,
+                                        color = MaterialTheme.colors.secondary,
+                                        maxLines = 1,
+                                        softWrap = false
+                                    )
+                                    Text(
+                                        modifier = Modifier
+                                            .padding(end = 8.dp, top = 8.dp, bottom = 8.dp),
+                                        text = stat.teamNameAbbr,
+                                        textAlign = TextAlign.Start,
+                                        fontSize = 16.sp,
+                                        color = MaterialTheme.colors.secondary,
+                                        maxLines = 1,
+                                        softWrap = false
+                                    )
+                                }
                                 Divider(
                                     modifier = Modifier.fillMaxWidth(),
                                     color = MaterialTheme.colors.dividerSecondary(),
@@ -609,39 +635,37 @@ private fun PlayerCareerStats(
                         .fillMaxWidth()
                         .wrapContentHeight()
                 ) {
-                    labels.forEachIndexed { index, label ->
-                        if (index != 0) {
-                            Box(
-                                modifier = Modifier
-                                    .width(label.width)
-                                    .height(40.dp)
-                                    .background(
-                                        if (label.sort == sort) {
-                                            MaterialTheme.colors.secondary.copy(0.25f)
-                                        } else {
-                                            Color.Transparent
-                                        }
-                                    )
-                                    .modifyIf(
-                                        label.sort != null
-                                    ) {
-                                        rippleClickable {
-                                            if (label.sort != null) {
-                                                viewModel.updateStatsSort(label.sort)
-                                            }
+                    labels.forEach { label ->
+                        Box(
+                            modifier = Modifier
+                                .width(label.width)
+                                .height(40.dp)
+                                .background(
+                                    if (label.sort == sort) {
+                                        MaterialTheme.colors.secondary.copy(0.25f)
+                                    } else {
+                                        Color.Transparent
+                                    }
+                                )
+                                .modifyIf(
+                                    label.sort != null
+                                ) {
+                                    rippleClickable {
+                                        if (label.sort != null) {
+                                            viewModel.updateStatsSort(label.sort)
                                         }
                                     }
-                                    .padding(8.dp)
-                            ) {
-                                Text(
-                                    modifier = Modifier.fillMaxSize(),
-                                    text = label.text,
-                                    textAlign = if (label.sort == sort) TextAlign.Center else label.textAlign,
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Medium,
-                                    color = MaterialTheme.colors.secondary
-                                )
-                            }
+                                }
+                                .padding(8.dp)
+                        ) {
+                            Text(
+                                modifier = Modifier.fillMaxSize(),
+                                text = label.text,
+                                textAlign = if (label.sort == sort) TextAlign.Center else label.textAlign,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Medium,
+                                color = MaterialTheme.colors.secondary
+                            )
                         }
                     }
                 }
@@ -664,52 +688,49 @@ private fun PlayerCareerStats(
                                 modifier = Modifier.fillMaxWidth(),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                labels.forEachIndexed { index, label ->
-                                    if (index != 0) {
-                                        Text(
-                                            modifier = Modifier
-                                                .width(label.width)
-                                                .height(40.dp)
-                                                .background(
-                                                    if (label.sort == sort) {
-                                                        MaterialTheme.colors.secondary.copy(0.25f)
-                                                    } else {
-                                                        Color.Transparent
-                                                    }
-                                                )
-                                                .padding(8.dp),
-                                            text = when (label.text) {
-                                                "Team" -> stats.teamNameAbbr
-                                                "GP" -> stats.gamePlayed.toString()
-                                                "W" -> stats.win.toString()
-                                                "L" -> stats.lose.toString()
-                                                "WIN%" -> stats.winPercentage.decimalFormat()
-                                                "PTS" -> (stats.points.toDouble() / stats.gamePlayed).decimalFormat()
-                                                "FGM" -> (stats.fieldGoalsMade.toDouble() / stats.gamePlayed).decimalFormat()
-                                                "FGA" -> (stats.fieldGoalsAttempted.toDouble() / stats.gamePlayed).decimalFormat()
-                                                "FG%" -> stats.fieldGoalsPercentage.decimalFormat()
-                                                "3PM" -> (stats.threePointersMade.toDouble() / stats.gamePlayed).decimalFormat()
-                                                "3PA" -> (stats.threePointersAttempted.toDouble() / stats.gamePlayed).decimalFormat()
-                                                "3P%" -> stats.threePointersPercentage.decimalFormat()
-                                                "FTM" -> (stats.freeThrowsMade.toDouble() / stats.gamePlayed).decimalFormat()
-                                                "FTA" -> (stats.freeThrowsAttempted.toDouble() / stats.gamePlayed).decimalFormat()
-                                                "FT%" -> stats.freeThrowsPercentage.decimalFormat()
-                                                "OREB" -> (stats.reboundsOffensive.toDouble() / stats.gamePlayed).decimalFormat()
-                                                "DREB" -> (stats.reboundsDefensive.toDouble() / stats.gamePlayed).decimalFormat()
-                                                "REB" -> (stats.reboundsTotal.toDouble() / stats.gamePlayed).decimalFormat()
-                                                "AST" -> (stats.assists.toDouble() / stats.gamePlayed).decimalFormat()
-                                                "TOV" -> (stats.turnovers.toDouble() / stats.gamePlayed).decimalFormat()
-                                                "STL" -> (stats.steals.toDouble() / stats.gamePlayed).decimalFormat()
-                                                "BLK" -> (stats.blocks.toDouble() / stats.gamePlayed).decimalFormat()
-                                                "PF" -> (stats.foulsPersonal.toDouble() / stats.gamePlayed).decimalFormat()
-                                                "+/-" -> stats.plusMinus.toString()
-                                                else -> ""
-                                            },
-                                            textAlign = if (label.sort == sort) TextAlign.Center else label.textAlign,
-                                            fontSize = 16.sp,
-                                            color = MaterialTheme.colors.secondary
-                                        )
-                                    }
+                                labels.forEach { label ->
+                                    Text(
+                                        modifier = Modifier
+                                            .width(label.width)
+                                            .height(40.dp)
+                                            .background(
+                                                if (label.sort == sort) {
+                                                    MaterialTheme.colors.secondary.copy(0.25f)
+                                                } else {
+                                                    Color.Transparent
+                                                }
+                                            )
+                                            .padding(8.dp),
+                                        text = when (label.text) {
+                                            "GP" -> stats.gamePlayed.toString()
+                                            "W" -> stats.win.toString()
+                                            "L" -> stats.lose.toString()
+                                            "WIN%" -> stats.winPercentage.decimalFormat()
+                                            "PTS" -> (stats.points.toDouble() / stats.gamePlayed).decimalFormat()
+                                            "FGM" -> (stats.fieldGoalsMade.toDouble() / stats.gamePlayed).decimalFormat()
+                                            "FGA" -> (stats.fieldGoalsAttempted.toDouble() / stats.gamePlayed).decimalFormat()
+                                            "FG%" -> stats.fieldGoalsPercentage.decimalFormat()
+                                            "3PM" -> (stats.threePointersMade.toDouble() / stats.gamePlayed).decimalFormat()
+                                            "3PA" -> (stats.threePointersAttempted.toDouble() / stats.gamePlayed).decimalFormat()
+                                            "3P%" -> stats.threePointersPercentage.decimalFormat()
+                                            "FTM" -> (stats.freeThrowsMade.toDouble() / stats.gamePlayed).decimalFormat()
+                                            "FTA" -> (stats.freeThrowsAttempted.toDouble() / stats.gamePlayed).decimalFormat()
+                                            "FT%" -> stats.freeThrowsPercentage.decimalFormat()
+                                            "OREB" -> (stats.reboundsOffensive.toDouble() / stats.gamePlayed).decimalFormat()
+                                            "DREB" -> (stats.reboundsDefensive.toDouble() / stats.gamePlayed).decimalFormat()
+                                            "REB" -> (stats.reboundsTotal.toDouble() / stats.gamePlayed).decimalFormat()
+                                            "AST" -> (stats.assists.toDouble() / stats.gamePlayed).decimalFormat()
+                                            "TOV" -> (stats.turnovers.toDouble() / stats.gamePlayed).decimalFormat()
+                                            "STL" -> (stats.steals.toDouble() / stats.gamePlayed).decimalFormat()
+                                            "BLK" -> (stats.blocks.toDouble() / stats.gamePlayed).decimalFormat()
+                                            "PF" -> (stats.foulsPersonal.toDouble() / stats.gamePlayed).decimalFormat()
+                                            "+/-" -> stats.plusMinus.toString()
+                                            else -> ""
+                                        },
+                                        textAlign = if (label.sort == sort) TextAlign.Center else label.textAlign,
+                                        fontSize = 16.sp,
+                                        color = MaterialTheme.colors.secondary
+                                    )
                                 }
                             }
                             Divider(

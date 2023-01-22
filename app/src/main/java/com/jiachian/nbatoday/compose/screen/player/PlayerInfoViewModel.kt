@@ -34,8 +34,6 @@ class PlayerInfoViewModel(
 
     val statsLabels = derivedStateOf {
         listOf(
-            CareerStatsLabel(80.dp, "By Year", TextAlign.Start, CareerStatsSort.TIME_FRAME),
-            CareerStatsLabel(64.dp, "Team", TextAlign.End, null),
             CareerStatsLabel(40.dp, "GP", TextAlign.End, CareerStatsSort.GP),
             CareerStatsLabel(40.dp, "W", TextAlign.End, CareerStatsSort.W),
             CareerStatsLabel(40.dp, "L", TextAlign.End, CareerStatsSort.L),
