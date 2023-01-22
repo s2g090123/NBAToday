@@ -1,5 +1,8 @@
 package com.jiachian.nbatoday.data.local
 
+import com.jiachian.nbatoday.data.local.player.PlayerCareer
+import com.jiachian.nbatoday.data.local.player.PlayerCareerInfoUpdate
+import com.jiachian.nbatoday.data.local.player.PlayerCareerStatsUpdate
 import com.jiachian.nbatoday.data.local.player.PlayerStats
 import com.jiachian.nbatoday.data.local.score.GameBoxScore
 import com.jiachian.nbatoday.data.local.team.DefaultTeam
@@ -28,8 +31,8 @@ class NbaLocalDataSource(
         return dao.getGamesAfter(from)
     }
 
-    override suspend fun existsData(): Boolean {
-        return dao.exitsData()
+    override suspend fun existsGame(): Boolean {
+        return dao.exitsGames()
     }
 
     override suspend fun insertGames(games: List<NbaGame>) {
@@ -90,5 +93,25 @@ class NbaLocalDataSource(
 
     override suspend fun updatePlayerStats(stats: List<PlayerStats>) {
         dao.updatePlayerStats(stats)
+    }
+
+    override suspend fun insertPlayerStats(stats: PlayerCareer) {
+        dao.insertPlayerStats(stats)
+    }
+
+    override suspend fun updatePlayerStats(stats: PlayerCareerStatsUpdate) {
+        dao.updatePlayerStats(stats)
+    }
+
+    override suspend fun updatePlayerInfo(info: PlayerCareerInfoUpdate) {
+        dao.updatePlayerInfo(info)
+    }
+
+    override fun getPlayerCareer(playerId: Int): Flow<PlayerCareer?> {
+        return dao.getPlayerCareer(playerId)
+    }
+
+    override suspend fun existPlayer(playerId: Int): Boolean {
+        return dao.exitsPlayer(playerId)
     }
 }

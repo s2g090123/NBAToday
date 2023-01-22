@@ -5,6 +5,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
+import com.jiachian.nbatoday.compose.screen.player.PlayerInfoViewModel
 import com.jiachian.nbatoday.compose.screen.score.BoxScoreViewModel
 import com.jiachian.nbatoday.compose.state.NbaState
 import com.jiachian.nbatoday.data.BaseRepository
@@ -147,7 +148,7 @@ class TeamViewModel(
             isRefreshingImp.value = true
             withContext(Dispatchers.IO) {
                 repository.refreshTeamStats()
-                repository.refreshPlayerStats(teamId)
+                repository.refreshTeamPlayersStats(teamId)
             }
             isRefreshingImp.value = false
         }
@@ -162,6 +163,21 @@ class TeamViewModel(
     }
 
     fun openGameBoxScore(game: NbaGame) {
-        openScreen(NbaState.BoxScore(BoxScoreViewModel(game, repository, coroutineScope)))
+        openScreen(
+            NbaState.BoxScore(
+                BoxScoreViewModel(
+                    game = game,
+                    repository = repository,
+                    showPlayerCareer = this::openPlayerInfo,
+                    coroutineScope = coroutineScope
+                )
+            )
+        )
+    }
+
+    fun openPlayerInfo(playerId: Int) {
+        openScreen(
+            NbaState.Player(PlayerInfoViewModel(playerId, repository, coroutineScope))
+        )
     }
 }

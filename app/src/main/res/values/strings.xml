@@ -66,4 +66,20 @@
     <string name="team_page_tab_next_game">Next</string>
     <string name="team_game_status_win">Win</string>
     <string name="team_game_status_lose">Lose</string>
+    <string name="player_career_not_found">查無此人</string>
+    <string name="player_career_info_ppg">PPG</string>
+    <string name="player_career_info_rpg">RPG</string>
+    <string name="player_career_info_apg">APG</string>
+    <string name="player_career_info_pie">PIE</string>
+    <string name="player_career_info_height">HEIGHT</string>
+    <string name="player_career_info_weight">WEIGHT</string>
+    <string name="player_career_info_country">COUNTRY</string>
+    <string name="player_career_info_attended">LAST ATTENDED</string>
+    <string name="player_career_info_age">AGE</string>
+    <string name="player_career_info_birth">BIRTHDATE</string>
+    <string name="player_career_info_draft">DRAFT</string>
+    <string name="player_career_info_experience">EXPERIENCE</string>
+    <string name="player_career_stats_split">STATS SPLIT</string>
+    <string name="player_career_rank_split">RANK SPLIT</string>
+    <string name="player_career_info_draft_format">%d R%d Pick %d</string>
 </resources>

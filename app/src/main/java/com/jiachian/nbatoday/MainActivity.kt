@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Observer
 import androidx.lifecycle.asLiveData
 import com.jiachian.nbatoday.compose.screen.home.HomeScreen
+import com.jiachian.nbatoday.compose.screen.player.PlayerCareerScreen
 import com.jiachian.nbatoday.compose.screen.score.BoxScoreScreen
 import com.jiachian.nbatoday.compose.screen.team.TeamScreen
 import com.jiachian.nbatoday.compose.state.NbaState
@@ -117,6 +118,12 @@ private fun MainScreen(
                 }
                 is NbaState.Team -> {
                     TeamScreen(
+                        viewModel = state.viewModel,
+                        onBack = { viewModel.backState() }
+                    )
+                }
+                is NbaState.Player -> {
+                    PlayerCareerScreen(
                         viewModel = state.viewModel,
                         onBack = { viewModel.backState() }
                     )

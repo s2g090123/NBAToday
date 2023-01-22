@@ -2,6 +2,7 @@ package com.jiachian.nbatoday.data
 
 import com.jiachian.nbatoday.data.local.NbaGame
 import com.jiachian.nbatoday.data.local.TeamAndPlayers
+import com.jiachian.nbatoday.data.local.player.PlayerCareer
 import com.jiachian.nbatoday.data.local.score.GameBoxScore
 import com.jiachian.nbatoday.data.local.team.DefaultTeam
 import com.jiachian.nbatoday.data.local.team.TeamStats
@@ -19,7 +20,8 @@ interface BaseRepository {
     suspend fun refreshGameBoxScore(gameId: String)
     suspend fun refreshTeamStats()
     suspend fun refreshTeamStats(teamId: Int)
-    suspend fun refreshPlayerStats(teamId: Int)
+    suspend fun refreshTeamPlayersStats(teamId: Int)
+    suspend fun refreshPlayerStats(playerId: Int)
 
     fun getGamesDuring(from: Long, to: Long): Flow<List<NbaGame>>
     fun getGamesBefore(from: Long): Flow<List<NbaGame>>
@@ -36,4 +38,6 @@ interface BaseRepository {
     fun getTeamReboundsRank(teamId: Int): Flow<Int>
     fun getTeamAssistsRank(teamId: Int): Flow<Int>
     fun getTeamPlusMinusRank(teamId: Int): Flow<Int>
+
+    fun getPlayerCareer(playerId: Int): Flow<PlayerCareer?>
 }

@@ -1,6 +1,9 @@
 package com.jiachian.nbatoday.data.local
 
 import androidx.room.*
+import com.jiachian.nbatoday.data.local.player.PlayerCareer
+import com.jiachian.nbatoday.data.local.player.PlayerCareerInfoUpdate
+import com.jiachian.nbatoday.data.local.player.PlayerCareerStatsUpdate
 import com.jiachian.nbatoday.data.local.player.PlayerStats
 import com.jiachian.nbatoday.data.local.score.GameBoxScore
 import com.jiachian.nbatoday.data.local.team.DefaultTeam
@@ -30,7 +33,7 @@ interface NbaDao {
     fun getDates(): Flow<List<Date>>
 
     @Query("SELECT EXISTS (SELECT 1 FROM nba_game)")
-    fun exitsData(): Boolean
+    fun exitsGames(): Boolean
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertGames(games: List<NbaGame>)
@@ -150,4 +153,20 @@ interface NbaDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updatePlayerStats(stats: List<PlayerStats>)
+
+    /** Player */
+    @Query("SELECT EXISTS (SELECT 1 FROM nba_player_career_stats WHERE person_id == :playerId)")
+    fun exitsPlayer(playerId: Int): Boolean
+
+    @Query("SELECT * FROM nba_player_career_stats WHERE person_id == :playerId")
+    fun getPlayerCareer(playerId: Int): Flow<PlayerCareer?>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertPlayerStats(stats: PlayerCareer)
+
+    @Update(entity = PlayerCareer::class, onConflict = OnConflictStrategy.REPLACE)
+    suspend fun updatePlayerInfo(info: PlayerCareerInfoUpdate)
+
+    @Update(entity = PlayerCareer::class, onConflict = OnConflictStrategy.REPLACE)
+    suspend fun updatePlayerStats(stats: PlayerCareerStatsUpdate)
 }

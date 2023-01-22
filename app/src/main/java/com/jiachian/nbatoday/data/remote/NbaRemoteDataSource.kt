@@ -3,13 +3,17 @@ package com.jiachian.nbatoday.data.remote
 import com.google.gson.GsonBuilder
 import com.jiachian.nbatoday.CDN_BASE_URL
 import com.jiachian.nbatoday.STATS_BASE_URL
+import com.jiachian.nbatoday.data.datastore.NbaDataStore
 import com.jiachian.nbatoday.data.remote.game.GameScoreboard
 import com.jiachian.nbatoday.data.remote.game.Schedule
+import com.jiachian.nbatoday.data.remote.player.RemotePlayerInfo
+import com.jiachian.nbatoday.data.remote.player.RemotePlayerStats
 import com.jiachian.nbatoday.data.remote.player.RemoteTeamPlayerStats
 import com.jiachian.nbatoday.data.remote.score.RemoteGameBoxScore
 import com.jiachian.nbatoday.data.remote.team.RemoteTeamStats
 import com.jiachian.nbatoday.service.CdnNbaService
 import com.jiachian.nbatoday.service.StatsNbaService
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -63,6 +67,14 @@ class NbaRemoteDataSource : RemoteDataSource() {
         return statsService.getTeamPlayerStats(season = "2022-23", teamId = teamId)
     }
 
+    override suspend fun getPlayerInfo(playerId: Int): RemotePlayerInfo? {
+        return statsService.getPlayerInfo(playerId)
+    }
+
+    override suspend fun getPlayerCareerStats(playerId: Int): RemotePlayerStats? {
+        return statsService.getPlayerCareerStats(season = "2022-23", playerId = playerId)
+    }
+
     private fun buildStatsOkHttpClient(): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(
@@ -83,7 +95,7 @@ class NbaRemoteDataSource : RemoteDataSource() {
                 }
             )
             .connectTimeout(5, TimeUnit.SECONDS)
-            .readTimeout(60, TimeUnit.SECONDS)
+            .readTimeout(10, TimeUnit.SECONDS)
             .build()
     }
 }

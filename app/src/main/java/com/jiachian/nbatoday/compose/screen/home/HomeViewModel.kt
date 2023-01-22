@@ -7,6 +7,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.jiachian.nbatoday.SCHEDULE_DATE_RANGE
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
+import com.jiachian.nbatoday.compose.screen.player.PlayerInfoViewModel
 import com.jiachian.nbatoday.compose.screen.score.BoxScoreViewModel
 import com.jiachian.nbatoday.compose.screen.team.TeamViewModel
 import com.jiachian.nbatoday.compose.state.NbaState
@@ -206,7 +207,22 @@ class HomeViewModel(
     }
 
     fun openGameBoxScore(game: NbaGame) {
-        openScreen(NbaState.BoxScore(BoxScoreViewModel(game, repository, coroutineScope)))
+        openScreen(
+            NbaState.BoxScore(
+                BoxScoreViewModel(
+                    game = game,
+                    repository = repository,
+                    showPlayerCareer = { playerId ->
+                        openScreen(
+                            NbaState.Player(
+                                PlayerInfoViewModel(playerId, repository, coroutineScope)
+                            )
+                        )
+                    },
+                    coroutineScope = coroutineScope
+                )
+            )
+        )
     }
 
     fun updateTeamStats() {

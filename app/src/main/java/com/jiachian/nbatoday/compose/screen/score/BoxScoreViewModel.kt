@@ -23,6 +23,7 @@ data class ScoreLabel(
 class BoxScoreViewModel(
     game: NbaGame,
     private val repository: BaseRepository,
+    val showPlayerCareer: (playerId: Int) -> Unit,
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined)
 ) : ComposeViewModel() {
 

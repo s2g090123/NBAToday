@@ -347,9 +347,7 @@ private fun TeamStatsScreen(
             when (index) {
                 0 -> {
                     PlayerStatistics(
-                        modifier = Modifier
-                            .heightIn(max = (LocalConfiguration.current.screenHeightDp * 0.7f).dp)
-                            .fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth(),
                         viewModel = viewModel,
                         players = players
                     )
@@ -405,12 +403,18 @@ private fun PlayerStatistics(
             CompositionLocalProvider(
                 LocalOverscrollConfiguration provides null
             ) {
-                LazyColumn(state = playerState) {
+                LazyColumn(
+                    modifier = Modifier
+                        .heightIn(max = (LocalConfiguration.current.screenHeightDp * 0.7f).dp),
+                    state = playerState
+                ) {
                     itemsIndexed(players) { index, stat ->
                         Column(
                             modifier = Modifier
                                 .wrapContentWidth()
-                                .rippleClickable { }
+                                .rippleClickable {
+                                    viewModel.openPlayerInfo(stat.playerId)
+                                }
                         ) {
                             Text(
                                 modifier = Modifier
@@ -483,7 +487,7 @@ private fun PlayerStatistics(
             ) {
                 LazyColumn(
                     modifier = Modifier
-                        .fillMaxHeight()
+                        .heightIn(max = (LocalConfiguration.current.screenHeightDp * 0.7f).dp)
                         .fillMaxWidth(),
                     state = statsState
                 ) {

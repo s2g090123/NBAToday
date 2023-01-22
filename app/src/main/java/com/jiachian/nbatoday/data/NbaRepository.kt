@@ -6,6 +6,7 @@ import com.jiachian.nbatoday.data.datastore.NbaDataStore
 import com.jiachian.nbatoday.data.local.LocalDataSource
 import com.jiachian.nbatoday.data.local.NbaGame
 import com.jiachian.nbatoday.data.local.TeamAndPlayers
+import com.jiachian.nbatoday.data.local.player.PlayerCareer
 import com.jiachian.nbatoday.data.local.score.GameBoxScore
 import com.jiachian.nbatoday.data.local.team.DefaultTeam
 import com.jiachian.nbatoday.data.local.team.TeamStats
@@ -42,7 +43,7 @@ class NbaRepository(
         val offset = betweenDays.toInt().coerceAtMost(SCHEDULE_DATE_RANGE)
         cal.add(Calendar.DAY_OF_MONTH, -offset)
 
-        if (!localDataSource.existsData()) {
+        if (!localDataSource.existsGame()) {
             localDataSource.insertGames(nbaGames)
         } else {
             val filterGames = if (recordDay == null) {
@@ -110,11 +111,36 @@ class NbaRepository(
         }
     }
 
-    override suspend fun refreshPlayerStats(teamId: Int) {
+    override suspend fun refreshTeamPlayersStats(teamId: Int) {
         val stats = remoteDataSource.getTeamPlayersStats(teamId = teamId)
         if (stats != null) {
             val playersStats = stats.toLocal()
             localDataSource.updatePlayerStats(playersStats)
+        }
+    }
+
+    override suspend fun refreshPlayerStats(playerId: Int) {
+        val info = remoteDataSource.getPlayerInfo(playerId)
+        val stats = remoteDataSource.getPlayerCareerStats(playerId)
+        if (localDataSource.existPlayer(playerId)) {
+            if (info != null) {
+                info.toUpdateData()?.also {
+                    localDataSource.updatePlayerInfo(it)
+                }
+            }
+            if (stats != null) {
+                stats.toLocal()?.also {
+                    localDataSource.updatePlayerStats(it)
+                }
+            }
+        } else if (info != null && stats != null) {
+            val infoData = info.toUpdateData()?.info
+            val statsData = stats.toLocal()?.stats
+            if (infoData != null && statsData != null) {
+                localDataSource.insertPlayerStats(
+                    PlayerCareer(playerId, infoData, statsData)
+                )
+            }
         }
     }
 
@@ -160,5 +186,9 @@ class NbaRepository(
 
     override fun getTeamPlusMinusRank(teamId: Int): Flow<Int> {
         return localDataSource.getTeamPlusMinusRank(teamId)
+    }
+
+    override fun getPlayerCareer(playerId: Int): Flow<PlayerCareer?> {
+        return localDataSource.getPlayerCareer(playerId)
     }
 }

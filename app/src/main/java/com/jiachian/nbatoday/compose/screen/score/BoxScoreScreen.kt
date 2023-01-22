@@ -396,18 +396,14 @@ private fun ScoreDetail(
             when {
                 index == 0 && score.homeTeam != null -> {
                     PlayerStatistics(
-                        modifier = Modifier
-                            .heightIn(max = (LocalConfiguration.current.screenHeightDp * 0.7f).dp)
-                            .fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth(),
                         viewModel = viewModel,
                         players = score.homeTeam.players
                     )
                 }
                 index == 1 && score.awayTeam != null -> {
                     PlayerStatistics(
-                        modifier = Modifier
-                            .heightIn(max = (LocalConfiguration.current.screenHeightDp * 0.7f).dp)
-                            .fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth(),
                         viewModel = viewModel,
                         players = score.awayTeam.players
                     )
@@ -481,29 +477,37 @@ private fun PlayerStatistics(
             ) {
                 LazyColumn(
                     modifier = Modifier
-                        .fillMaxHeight()
+                        .heightIn(max = (LocalConfiguration.current.screenHeightDp * 0.7f).dp)
                         .fillMaxWidth(),
                     state = playerState
                 ) {
                     itemsIndexed(players) { index, player ->
-                        Text(
+                        Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(top = 8.dp, start = 8.dp),
-                            text = player.nameAbbr,
-                            textAlign = TextAlign.Start,
-                            fontSize = 16.sp,
-                            color = MaterialTheme.colors.secondary.copy(if (player.status == PlayerActiveStatus.ACTIVE) 1f else 0.5f),
-                            maxLines = 1,
-                            softWrap = false
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        if (index < players.size - 1) {
-                            Divider(
-                                modifier = Modifier.fillMaxWidth(),
-                                color = MaterialTheme.colors.dividerSecondary(),
-                                thickness = 1.dp
+                                .rippleClickable {
+                                    viewModel.showPlayerCareer(player.personId)
+                                }
+                        ) {
+                            Text(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 8.dp, start = 8.dp),
+                                text = player.nameAbbr,
+                                textAlign = TextAlign.Start,
+                                fontSize = 16.sp,
+                                color = MaterialTheme.colors.secondary.copy(if (player.status == PlayerActiveStatus.ACTIVE) 1f else 0.5f),
+                                maxLines = 1,
+                                softWrap = false
                             )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            if (index < players.size - 1) {
+                                Divider(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    color = MaterialTheme.colors.dividerSecondary(),
+                                    thickness = 1.dp
+                                )
+                            }
                         }
                     }
                 }
@@ -572,7 +576,7 @@ private fun PlayerStatistics(
             ) {
                 LazyColumn(
                     modifier = Modifier
-                        .fillMaxHeight()
+                        .heightIn(max = (LocalConfiguration.current.screenHeightDp * 0.7f).dp)
                         .fillMaxWidth(),
                     state = statisticsState
                 ) {

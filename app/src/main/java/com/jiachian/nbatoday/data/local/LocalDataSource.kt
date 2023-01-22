@@ -1,5 +1,8 @@
 package com.jiachian.nbatoday.data.local
 
+import com.jiachian.nbatoday.data.local.player.PlayerCareer
+import com.jiachian.nbatoday.data.local.player.PlayerCareerInfoUpdate
+import com.jiachian.nbatoday.data.local.player.PlayerCareerStatsUpdate
 import com.jiachian.nbatoday.data.local.player.PlayerStats
 import com.jiachian.nbatoday.data.local.score.GameBoxScore
 import com.jiachian.nbatoday.data.local.team.DefaultTeam
@@ -19,7 +22,7 @@ abstract class LocalDataSource {
     abstract fun getGamesBefore(from: Long): Flow<List<NbaGame>>
     abstract fun getGamesAfter(from: Long): Flow<List<NbaGame>>
 
-    abstract suspend fun existsData(): Boolean
+    abstract suspend fun existsGame(): Boolean
 
     abstract suspend fun insertGames(games: List<NbaGame>)
 
@@ -39,4 +42,11 @@ abstract class LocalDataSource {
     abstract suspend fun updateTeamStats(stats: TeamStats)
     abstract suspend fun updateTeamStats(stats: List<TeamStats>)
     abstract suspend fun updatePlayerStats(stats: List<PlayerStats>)
+
+    abstract suspend fun existPlayer(playerId: Int): Boolean
+    abstract suspend fun insertPlayerStats(stats: PlayerCareer)
+    abstract suspend fun updatePlayerInfo(info: PlayerCareerInfoUpdate)
+    abstract suspend fun updatePlayerStats(stats: PlayerCareerStatsUpdate)
+
+    abstract fun getPlayerCareer(playerId: Int): Flow<PlayerCareer?>
 }
