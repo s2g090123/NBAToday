@@ -5,6 +5,7 @@ import com.jiachian.nbatoday.data.remote.score.RemoteGameBoxScore
 import retrofit2.http.GET
 import retrofit2.http.Path
 
+@Deprecated("Replace with NbaService", ReplaceWith("NbaService"))
 interface CdnNbaService {
     @GET("static/json/staticData/scheduleLeagueV2_32.json")
     suspend fun getScheduleLeague(): Schedule?

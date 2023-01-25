@@ -8,6 +8,7 @@ import com.jiachian.nbatoday.data.remote.team.RemoteTeamStats
 import retrofit2.http.GET
 import retrofit2.http.Query
 
+@Deprecated("Replace with NbaService", ReplaceWith("NbaService"))
 interface StatsNbaService {
     @GET("scoreboardv3")
     suspend fun getScoreboard(
