@@ -347,7 +347,9 @@ private fun TeamStatsScreen(
             when (index) {
                 0 -> {
                     PlayerStatistics(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .heightIn(max = (LocalConfiguration.current.screenHeightDp * 0.7f).dp)
+                            .fillMaxWidth(),
                         viewModel = viewModel,
                         players = players
                     )

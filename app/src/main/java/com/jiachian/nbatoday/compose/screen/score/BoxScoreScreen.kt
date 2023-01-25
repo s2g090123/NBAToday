@@ -396,14 +396,18 @@ private fun ScoreDetail(
             when {
                 index == 0 && score.homeTeam != null -> {
                     PlayerStatistics(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .heightIn(max = (LocalConfiguration.current.screenHeightDp * 0.7f).dp)
+                            .fillMaxWidth(),
                         viewModel = viewModel,
                         players = score.homeTeam.players
                     )
                 }
                 index == 1 && score.awayTeam != null -> {
                     PlayerStatistics(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .heightIn(max = (LocalConfiguration.current.screenHeightDp * 0.7f).dp)
+                            .fillMaxWidth(),
                         viewModel = viewModel,
                         players = score.awayTeam.players
                     )
