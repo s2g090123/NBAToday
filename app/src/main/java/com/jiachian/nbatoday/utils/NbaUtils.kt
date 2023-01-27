@@ -9,6 +9,7 @@ import java.util.*
 object NbaUtils {
     fun getCalendar(): Calendar {
         val cal = Calendar.getInstance()
+        cal.timeZone = TimeZone.getTimeZone("EST")
         cal.time = Date()
         return cal
     }
@@ -20,6 +21,10 @@ object NbaUtils {
     // returns svg
     fun getTeamLogoUrlById(teamId: Int): String {
         return "${CDN_BASE_URL}logos/nba/$teamId/global/L/logo.svg"
+    }
+
+    fun getTeamSmallLogoUrlById(teamId: Int): String {
+        return "${CDN_BASE_URL}logos/nba/$teamId/primary/L/logo.svg"
     }
 
     // returns svg

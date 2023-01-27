@@ -20,6 +20,9 @@ interface NbaDao {
     @Query("SELECT * FROM nba_game")
     fun getGames(): Flow<List<NbaGame>>
 
+    @Query("SELECT * FROM nba_game WHERE game_date == :date")
+    suspend fun getGamesAt(date: Long): List<NbaGame>
+
     @Query("SELECT * FROM nba_game WHERE game_date >= :from AND game_date <= :to")
     fun getGamesDuring(from: Long, to: Long): Flow<List<NbaGame>>
 

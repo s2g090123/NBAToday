@@ -265,7 +265,6 @@ data class RemoteGameBoxScore(
                     try {
                         dateFormat.parse(it)?.let { date ->
                             val cal = NbaUtils.getCalendar()
-                            cal.timeZone = TimeZone.getTimeZone("EST")
                             cal.time = date
                             NbaUtils.formatScoreboardGameDate(
                                 cal.get(Calendar.YEAR),

@@ -19,6 +19,10 @@ class NbaLocalDataSource(
 
     override val games = dao.getGames()
 
+    override suspend fun getGamesAt(date: Long): List<NbaGame> {
+        return dao.getGamesAt(date)
+    }
+
     override fun getGamesDuring(from: Long, to: Long): Flow<List<NbaGame>> {
         return dao.getGamesDuring(from, to)
     }

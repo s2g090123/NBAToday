@@ -745,9 +745,7 @@ private fun RefreshScreen(
 
 @Composable
 private fun NbaGame.getStatusText(targetTeamId: Int): String {
-    val cal = NbaUtils.getCalendar().apply {
-        timeZone = TimeZone.getTimeZone("EST")
-    }
+    val cal = NbaUtils.getCalendar()
     cal.time = gameDate
     val dateString =
         "${cal.get(Calendar.YEAR)}-${cal.get(Calendar.MONTH) + 1}-${cal.get(Calendar.DAY_OF_MONTH)}"

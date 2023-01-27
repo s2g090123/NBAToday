@@ -1,5 +1,6 @@
 package com.jiachian.nbatoday.compose.screen.home
 
+import android.annotation.SuppressLint
 import android.text.format.DateUtils
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.ui.text.style.TextAlign
@@ -7,6 +8,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.jiachian.nbatoday.SCHEDULE_DATE_RANGE
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
+import com.jiachian.nbatoday.compose.screen.calendar.GameCalendarViewModel
 import com.jiachian.nbatoday.compose.screen.player.PlayerInfoViewModel
 import com.jiachian.nbatoday.compose.screen.score.BoxScoreViewModel
 import com.jiachian.nbatoday.compose.screen.team.TeamViewModel
@@ -23,6 +25,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
 import java.util.*
 
 data class StandingLabel(
@@ -48,7 +51,6 @@ class HomeViewModel(
     private val scheduleIndexImp = MutableStateFlow(scheduleDates.size / 2)
     val scheduleIndex = scheduleIndexImp.asStateFlow()
     private val scheduleGamesImp = NbaUtils.getCalendar().let {
-        it.timeZone = TimeZone.getTimeZone("EST")
         it.set(Calendar.HOUR, 0)
         it.set(Calendar.MINUTE, 0)
         it.set(Calendar.SECOND, 0)
@@ -59,7 +61,6 @@ class HomeViewModel(
     }
     val scheduleGames = scheduleGamesImp.map {
         val calendar = NbaUtils.getCalendar()
-        calendar.timeZone = TimeZone.getTimeZone("EST")
         it.groupBy { game ->
             calendar.time = game.gameDateTime
             String.format(
@@ -153,7 +154,6 @@ class HomeViewModel(
     private fun getDateStrings(): List<String> {
         val dateStrings = mutableListOf<String>()
         val calendar = NbaUtils.getCalendar()
-        calendar.timeZone = TimeZone.getTimeZone("EST")
         val currentTime = calendar.time
         repeat(SCHEDULE_DATE_RANGE) {
             calendar.add(Calendar.DAY_OF_MONTH, -1)
@@ -253,5 +253,23 @@ class HomeViewModel(
         coroutineScope.launch(Dispatchers.IO) {
             dataStore.updateThemeColor(teamId)
         }
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    fun openCalendar(dateString: String) {
+        val format = SimpleDateFormat("yyyy/MM/dd").apply {
+            timeZone = TimeZone.getTimeZone("EST")
+        }
+        val date = format.parse(dateString) ?: return
+        openScreen(
+            NbaState.Calendar(
+                GameCalendarViewModel(
+                    date,
+                    repository,
+                    openScreen,
+                    coroutineScope
+                )
+            )
+        )
     }
 }

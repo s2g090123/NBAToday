@@ -30,9 +30,9 @@ data class NbaGame(
     @ColumnInfo(name = "home_team")
     val homeTeam: GameTeam,
     @ColumnInfo(name = "game_date")
-    val gameDate: Date, // 比賽開始日期(固定為00:00), e.g. 2022-11-20T00:00:00Z
+    val gameDate: Date, // 比賽開始日期(固定為13:00), e.g. 2022-11-20T13:00:00Z (GMT+8)
     @ColumnInfo(name = "game_date_time")
-    val gameDateTime: Date, // 比賽開始時間, e.g. 2022-11-20T15:30:00Z
+    val gameDateTime: Date, // 比賽開始時間, e.g. 2022-11-20T15:30:00Z (GMT+8)
     @ColumnInfo(name = "month_num")
     val monthNum: Int, // 月份, e.g. 10
     @ColumnInfo(name = "points_leader")

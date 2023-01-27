@@ -132,7 +132,6 @@ private fun SchedulePage(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel
 ) {
-    val context = LocalContext.current
     val pagerState = rememberPagerState()
     val dateStrings = viewModel.scheduleDates
     val index by viewModel.scheduleIndex.collectAsState()
@@ -158,11 +157,28 @@ private fun SchedulePage(
                 if (dateString != null) {
                     LazyColumn(modifier = Modifier.fillMaxSize()) {
                         val games = scheduleGames[dateString] ?: listOf()
+                        item {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.End
+                            ) {
+                                IconButton(
+                                    modifier = Modifier.padding(top = 8.dp, end = 4.dp),
+                                    onClick = { viewModel.openCalendar(dateString) }
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.ic_black_calendar),
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colors.secondary
+                                    )
+                                }
+                            }
+                        }
                         itemsIndexed(games) { index, game ->
                             GameStatusCard(
                                 modifier = Modifier
                                     .padding(
-                                        top = 16.dp,
+                                        top = if (index == 0) 8.dp else 16.dp,
                                         bottom = if (index >= games.size - 1) 16.dp else 0.dp,
                                         start = 16.dp,
                                         end = 16.dp

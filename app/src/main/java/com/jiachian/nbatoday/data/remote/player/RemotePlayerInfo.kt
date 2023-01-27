@@ -102,7 +102,9 @@ data class RemotePlayerInfo(
 
     @SuppressLint("SimpleDateFormat")
     private fun formatBirthDate(birthdate: Date): String {
-        val format = SimpleDateFormat("MMM dd, yyyy")
+        val format = SimpleDateFormat("MMM dd, yyyy").apply {
+            timeZone = TimeZone.getTimeZone("EST")
+        }
         return format.format(birthdate)
     }
 

@@ -64,6 +64,7 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
     implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
     implementation "com.google.accompanist:accompanist-pager:0.27.0"
+    implementation "com.google.accompanist:accompanist-flowlayout:0.28.0"
 
     // lifecycle
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"

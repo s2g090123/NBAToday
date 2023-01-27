@@ -23,6 +23,7 @@ interface BaseRepository {
     suspend fun refreshTeamPlayersStats(teamId: Int)
     suspend fun refreshPlayerStats(playerId: Int)
 
+    suspend fun getGamesAt(date: Long): List<NbaGame>
     fun getGamesDuring(from: Long, to: Long): Flow<List<NbaGame>>
     fun getGamesBefore(from: Long): Flow<List<NbaGame>>
     fun getGamesAfter(from: Long): Flow<List<NbaGame>>

@@ -32,7 +32,6 @@ class NbaRepository(
         val nbaGames = leagueSchedule.toNbaGames()
 
         val cal = NbaUtils.getCalendar()
-        cal.timeZone = TimeZone.getTimeZone("EST")
         val todayYear = cal.get(Calendar.YEAR)
         val todayMonth = cal.get(Calendar.MONTH) + 1
         val todayDay = cal.get(Calendar.DAY_OF_MONTH)
@@ -142,6 +141,10 @@ class NbaRepository(
                 )
             }
         }
+    }
+
+    override suspend fun getGamesAt(date: Long): List<NbaGame> {
+        return localDataSource.getGamesAt(date)
     }
 
     override fun getGamesDuring(from: Long, to: Long): Flow<List<NbaGame>> {

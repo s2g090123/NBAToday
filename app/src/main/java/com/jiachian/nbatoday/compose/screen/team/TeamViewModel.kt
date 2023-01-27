@@ -18,7 +18,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.*
 
 data class PlayerLabel(
     val width: Dp,
@@ -42,17 +41,13 @@ class TeamViewModel(
     val gamesBefore = games.map { games ->
         games.filter {
             (it.homeTeam.teamId == teamId || it.awayTeam.teamId == teamId) &&
-                    it.gameDateTime.time <= NbaUtils.getCalendar().apply {
-                timeZone = TimeZone.getTimeZone("EST")
-            }.timeInMillis
+                    it.gameDateTime.time <= NbaUtils.getCalendar().timeInMillis
         }
     }.stateIn(coroutineScope, SharingStarted.Eagerly, emptyList())
     val gamesAfter = games.map { games ->
         games.filter {
             (it.homeTeam.teamId == teamId || it.awayTeam.teamId == teamId) &&
-                    it.gameDateTime.time > NbaUtils.getCalendar().apply {
-                timeZone = TimeZone.getTimeZone("EST")
-            }.timeInMillis
+                    it.gameDateTime.time > NbaUtils.getCalendar().timeInMillis
         }
     }.stateIn(coroutineScope, SharingStarted.Eagerly, emptyList())
     private val teamAndPlayersStats = repository.getTeamAndPlayersStats(teamId)

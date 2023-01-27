@@ -18,6 +18,7 @@ abstract class LocalDataSource {
 
     abstract val games: Flow<List<NbaGame>>
 
+    abstract suspend fun getGamesAt(date: Long): List<NbaGame>
     abstract fun getGamesDuring(from: Long, to: Long): Flow<List<NbaGame>>
     abstract fun getGamesBefore(from: Long): Flow<List<NbaGame>>
     abstract fun getGamesAfter(from: Long): Flow<List<NbaGame>>
