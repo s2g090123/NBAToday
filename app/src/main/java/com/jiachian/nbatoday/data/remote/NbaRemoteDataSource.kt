@@ -60,6 +60,16 @@ class NbaRemoteDataSource(private val dataStore: NbaDataStore) : RemoteDataSourc
         return nbaService.getScoreboard(leagueId, gameDate)
     }
 
+    override suspend fun getScoreboard(
+        leagueId: String,
+        year: Int,
+        month: Int,
+        day: Int,
+        offset: Int
+    ): List<GameScoreboard>? {
+        return nbaService.getScoreboards(leagueId, year, month, day, offset)
+    }
+
     override suspend fun getGameBoxScore(gameId: String): RemoteGameBoxScore? {
         return nbaService.getGameBoxScore(gameId)
     }

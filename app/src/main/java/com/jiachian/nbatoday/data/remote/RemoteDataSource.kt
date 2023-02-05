@@ -11,6 +11,14 @@ import com.jiachian.nbatoday.data.remote.team.RemoteTeamStats
 abstract class RemoteDataSource {
     abstract suspend fun getSchedule(): Schedule?
     abstract suspend fun getScoreboard(leagueId: String, gameDate: String): GameScoreboard?
+    abstract suspend fun getScoreboard(
+        leagueId: String,
+        year: Int,
+        month: Int,
+        day: Int,
+        offset: Int
+    ): List<GameScoreboard>?
+
     abstract suspend fun getGameBoxScore(gameId: String): RemoteGameBoxScore?
     abstract suspend fun getTeamStats(): RemoteTeamStats?
     abstract suspend fun getTeamStats(teamId: Int): RemoteTeamStats?

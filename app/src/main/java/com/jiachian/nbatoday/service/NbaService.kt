@@ -47,6 +47,15 @@ interface NbaService {
         @Query("gameDate") gameDate: String
     ): GameScoreboard?
 
+    @GET("game/scoreboards")
+    suspend fun getScoreboards(
+        @Query("leagueID") leagueID: String,
+        @Query("year") year: Int,
+        @Query("month") month: Int,
+        @Query("day") day: Int,
+        @Query("total") total: Int
+    ): List<GameScoreboard>?
+
     @GET("game/schedule")
     suspend fun getSchedule(): Schedule?
 

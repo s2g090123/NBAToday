@@ -60,17 +60,21 @@ class NbaRepository(
             localDataSource.updateGamesScore(updateGames)
         }
 
-        repeat(offset + SCHEDULE_DATE_RANGE + 1) {
-            val year = cal.get(Calendar.YEAR)
-            val month = cal.get(Calendar.MONTH) + 1
-            val day = cal.get(Calendar.DAY_OF_MONTH)
-            val gameDate = NbaUtils.formatScoreboardGameDate(year, month, day)
-            val scoreboard = remoteDataSource.getScoreboard(NBA_LEAGUE_ID, gameDate)
-            val updateData = scoreboard?.toGameUpdateData()
-            if (updateData != null) {
-                localDataSource.updateGames(updateData)
+        val year = cal.get(Calendar.YEAR)
+        val month = cal.get(Calendar.MONTH) + 1
+        val day = cal.get(Calendar.DAY_OF_MONTH)
+        val scoreboards = remoteDataSource.getScoreboard(
+            NBA_LEAGUE_ID,
+            year,
+            month,
+            day,
+            offset + SCHEDULE_DATE_RANGE + 1
+        )
+        if (scoreboards != null) {
+            val update = scoreboards.map { it.toGameUpdateData() }
+            update.forEach {
+                localDataSource.updateGames(it)
             }
-            cal.add(Calendar.DAY_OF_MONTH, 1)
         }
         dataStore.updateRecordScheduleToday(todayYear, todayMonth, todayDay)
     }
