@@ -13,11 +13,8 @@ import com.jiachian.nbatoday.data.local.NbaGame
 import com.jiachian.nbatoday.data.local.player.PlayerStats
 import com.jiachian.nbatoday.data.local.team.DefaultTeam
 import com.jiachian.nbatoday.utils.NbaUtils
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 
 data class PlayerLabel(
     val width: Dp,
@@ -141,10 +138,12 @@ class TeamViewModel(
     fun updateStats() {
         coroutineScope.launch {
             isRefreshingImp.value = true
-            val deferred1 = async(Dispatchers.IO) { repository.refreshTeamStats() }
-            val deferred2 = async(Dispatchers.IO) { repository.refreshTeamPlayersStats(teamId) }
-            deferred1.await()
-            deferred2.await()
+            withContext(Dispatchers.IO) {
+                val deferred1 = async { repository.refreshTeamStats() }
+                val deferred2 = async { repository.refreshTeamPlayersStats(teamId) }
+                deferred1.await()
+                deferred2.await()
+            }
             isRefreshingImp.value = false
         }
     }
