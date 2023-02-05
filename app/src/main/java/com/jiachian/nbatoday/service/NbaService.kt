@@ -2,6 +2,7 @@ package com.jiachian.nbatoday.service
 
 import com.jiachian.nbatoday.data.remote.game.GameScoreboard
 import com.jiachian.nbatoday.data.remote.game.Schedule
+import com.jiachian.nbatoday.data.remote.player.RemotePlayerDetail
 import com.jiachian.nbatoday.data.remote.player.RemotePlayerInfo
 import com.jiachian.nbatoday.data.remote.player.RemotePlayerStats
 import com.jiachian.nbatoday.data.remote.player.RemoteTeamPlayerStats
@@ -12,6 +13,12 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface NbaService {
+
+    @GET("player/detail")
+    suspend fun getPlayerDetail(
+        @Query("season") season: String,
+        @Query("id") playerId: Int
+    ): RemotePlayerDetail?
 
     @GET("player/stats")
     suspend fun getPlayerStats(

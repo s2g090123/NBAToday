@@ -7,6 +7,7 @@ import com.jiachian.nbatoday.STATS_BASE_URL
 import com.jiachian.nbatoday.data.datastore.NbaDataStore
 import com.jiachian.nbatoday.data.remote.game.GameScoreboard
 import com.jiachian.nbatoday.data.remote.game.Schedule
+import com.jiachian.nbatoday.data.remote.player.RemotePlayerDetail
 import com.jiachian.nbatoday.data.remote.player.RemotePlayerInfo
 import com.jiachian.nbatoday.data.remote.player.RemotePlayerStats
 import com.jiachian.nbatoday.data.remote.player.RemoteTeamPlayerStats
@@ -92,6 +93,10 @@ class NbaRemoteDataSource(private val dataStore: NbaDataStore) : RemoteDataSourc
 
     override suspend fun getPlayerCareerStats(playerId: Int): RemotePlayerStats? {
         return nbaService.getPlayerStats(season = "2022-23", playerId = playerId)
+    }
+
+    override suspend fun getPlayerDetail(playerId: Int): RemotePlayerDetail? {
+        return nbaService.getPlayerDetail(season = "2022-23", playerId = playerId)
     }
 
     private fun buildStatsOkHttpClient(): OkHttpClient {

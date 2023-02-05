@@ -123,8 +123,9 @@ class NbaRepository(
     }
 
     override suspend fun refreshPlayerStats(playerId: Int) {
-        val info = remoteDataSource.getPlayerInfo(playerId)
-        val stats = remoteDataSource.getPlayerCareerStats(playerId)
+        val detail = remoteDataSource.getPlayerDetail(playerId)
+        val info = detail?.info
+        val stats = detail?.stats
         if (localDataSource.existPlayer(playerId)) {
             if (info != null) {
                 info.toUpdateData()?.also {
