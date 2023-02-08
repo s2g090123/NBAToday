@@ -1311,7 +1311,8 @@ private fun AccountInfo(
                 .padding(start = 16.dp)
                 .size(48.dp),
             painter = painterResource(R.drawable.ic_black_person),
-            contentDescription = null
+            contentDescription = null,
+            colorFilter = ColorFilter.tint(MaterialTheme.colors.primaryVariant)
         )
         Column(
             modifier = Modifier
@@ -1335,7 +1336,7 @@ private fun AccountInfo(
                 Icon(
                     painter = painterResource(R.drawable.ic_black_logout),
                     contentDescription = null,
-                    tint = MaterialTheme.colors.secondaryVariant
+                    tint = MaterialTheme.colors.primaryVariant
                 )
             }
         }
