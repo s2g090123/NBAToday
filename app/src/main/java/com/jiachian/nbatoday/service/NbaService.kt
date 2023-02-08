@@ -8,9 +8,11 @@ import com.jiachian.nbatoday.data.remote.player.RemotePlayerStats
 import com.jiachian.nbatoday.data.remote.player.RemoteTeamPlayerStats
 import com.jiachian.nbatoday.data.remote.score.RemoteGameBoxScore
 import com.jiachian.nbatoday.data.remote.team.RemoteTeamStats
-import retrofit2.http.GET
-import retrofit2.http.Path
-import retrofit2.http.Query
+import com.jiachian.nbatoday.data.remote.user.LoginBody
+import com.jiachian.nbatoday.data.remote.user.UpdatePasswordBody
+import com.jiachian.nbatoday.data.remote.user.UpdatePointBody
+import com.jiachian.nbatoday.data.remote.user.User
+import retrofit2.http.*
 
 interface NbaService {
 
@@ -70,4 +72,25 @@ interface NbaService {
     suspend fun getGameBoxScore(
         @Path("gameId") gameId: String
     ): RemoteGameBoxScore?
+
+    /** User */
+    @POST("user/login")
+    suspend fun login(
+        @Body loginBody: LoginBody
+    ): User?
+
+    @POST("user/register")
+    suspend fun register(
+        @Body loginBody: LoginBody
+    ): User?
+
+    @POST("user/password")
+    suspend fun updatePassword(
+        @Body updatePasswordBody: UpdatePasswordBody
+    ): String?
+
+    @POST("user/points")
+    suspend fun updatePoints(
+        @Body updatePointBody: UpdatePointBody
+    ): String?
 }

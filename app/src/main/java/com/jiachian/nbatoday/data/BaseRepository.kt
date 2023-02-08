@@ -6,6 +6,7 @@ import com.jiachian.nbatoday.data.local.player.PlayerCareer
 import com.jiachian.nbatoday.data.local.score.GameBoxScore
 import com.jiachian.nbatoday.data.local.team.DefaultTeam
 import com.jiachian.nbatoday.data.local.team.TeamStats
+import com.jiachian.nbatoday.data.remote.user.User
 import kotlinx.coroutines.flow.Flow
 import java.util.*
 
@@ -14,6 +15,8 @@ interface BaseRepository {
     val dates: Flow<List<Date>>
 
     val games: Flow<List<NbaGame>>
+
+    val user: Flow<User?>
 
     suspend fun refreshSchedule()
     suspend fun refreshSchedule(year: Int, month: Int, day: Int)
@@ -41,4 +44,11 @@ interface BaseRepository {
     fun getTeamPlusMinusRank(teamId: Int): Flow<Int>
 
     fun getPlayerCareer(playerId: Int): Flow<PlayerCareer?>
+
+    /** User */
+    suspend fun login(account: String, password: String)
+    suspend fun logout()
+    suspend fun register(account: String, password: String)
+    suspend fun updatePassword(password: String)
+    suspend fun updatePoints(points: Long)
 }

@@ -43,6 +43,9 @@ class HomeViewModel(
 
     private val coroutineScope = CoroutineScope(Dispatchers.Unconfined)
 
+    val user = repository.user
+        .stateIn(coroutineScope, SharingStarted.Eagerly, null)
+
     private val homeIndexImp = MutableStateFlow(0)
     val homeIndex = homeIndexImp.asStateFlow()
 
@@ -138,6 +141,10 @@ class HomeViewModel(
             StandingLabel(48.dp, "PF", TextAlign.End, StandingSort.PF)
         )
     }
+
+    // User
+    private val isUserRefreshingImp = MutableStateFlow(false)
+    val isUserRefreshing = isUserRefreshingImp.asStateFlow()
 
     init {
         updateTeamStats()
@@ -271,5 +278,35 @@ class HomeViewModel(
                 )
             )
         )
+    }
+
+    fun login(account: String, password: String) {
+        coroutineScope.launch {
+            isUserRefreshingImp.value = true
+            withContext(Dispatchers.IO) {
+                repository.login(account, password)
+            }
+            isUserRefreshingImp.value = false
+        }
+    }
+
+    fun logout() {
+        coroutineScope.launch {
+            isUserRefreshingImp.value = true
+            withContext(Dispatchers.IO) {
+                repository.logout()
+            }
+            isUserRefreshingImp.value = false
+        }
+    }
+
+    fun register(account: String, password: String) {
+        coroutineScope.launch {
+            isUserRefreshingImp.value = true
+            withContext(Dispatchers.IO) {
+                repository.register(account, password)
+            }
+            isUserRefreshingImp.value = false
+        }
     }
 }

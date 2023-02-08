@@ -11,9 +11,11 @@ import com.jiachian.nbatoday.data.local.score.GameBoxScore
 import com.jiachian.nbatoday.data.local.team.DefaultTeam
 import com.jiachian.nbatoday.data.local.team.TeamStats
 import com.jiachian.nbatoday.data.remote.RemoteDataSource
+import com.jiachian.nbatoday.data.remote.user.User
 import com.jiachian.nbatoday.utils.NbaUtils
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -25,6 +27,7 @@ class NbaRepository(
 
     override val dates: Flow<List<Date>> = localDataSource.dates
     override val games: Flow<List<NbaGame>> = localDataSource.games
+    override val user: Flow<User?> = dataStore.userData
 
     override suspend fun refreshSchedule() {
         val schedule = remoteDataSource.getSchedule() ?: return
@@ -38,7 +41,7 @@ class NbaRepository(
         val today = NbaUtils.parseDate(todayYear, todayMonth, todayDay)?.time ?: 0L
         val recordDay = NbaUtils.parseDate(dataStore.recordScheduleToday.first())
         val record = recordDay?.time ?: 0L
-        val betweenDays = TimeUnit.DAYS.convert(today - record, TimeUnit.MILLISECONDS)
+        val betweenDays = TimeUnit.DAYS.convert(today - record, TimeUnit.MILLISECONDS) + 1
         val offset = betweenDays.toInt().coerceAtMost(SCHEDULE_DATE_RANGE)
         cal.add(Calendar.DAY_OF_MONTH, -offset)
 
@@ -198,5 +201,51 @@ class NbaRepository(
 
     override fun getPlayerCareer(playerId: Int): Flow<PlayerCareer?> {
         return localDataSource.getPlayerCareer(playerId)
+    }
+
+    override suspend fun login(account: String, password: String) {
+        val userData = remoteDataSource.login(account, password) ?: return
+        dataStore.updateUser(userData)
+    }
+
+    override suspend fun logout() {
+        dataStore.updateUser(null)
+    }
+
+    override suspend fun register(account: String, password: String) {
+        val userData = remoteDataSource.register(account, password) ?: return
+        dataStore.updateUser(userData)
+    }
+
+    override suspend fun updatePassword(password: String) {
+        val user = user.firstOrNull() ?: return
+        val account = user.account ?: return
+        val token = user.token ?: return
+        remoteDataSource.updatePassword(account, password, token)
+        dataStore.updateUser(
+            User(
+                account = account,
+                name = user.name,
+                points = user.points,
+                password = password,
+                token = token
+            )
+        )
+    }
+
+    override suspend fun updatePoints(points: Long) {
+        val user = user.firstOrNull() ?: return
+        val account = user.account ?: return
+        val token = user.token ?: return
+        remoteDataSource.updatePoints(account, points, token)
+        dataStore.updateUser(
+            User(
+                account = account,
+                name = user.name,
+                points = points,
+                password = user.password,
+                token = token
+            )
+        )
     }
 }

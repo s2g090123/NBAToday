@@ -1,5 +1,6 @@
 package com.jiachian.nbatoday.compose.screen.home
 
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.expandIn
@@ -14,6 +15,8 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
@@ -33,11 +36,15 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import coil.compose.AsyncImage
@@ -320,72 +327,129 @@ private fun ThemePage(
 ) {
     val isPhone = isPhone()
     val isPortrait = isPortrait()
+    val isRefreshing by viewModel.isUserRefreshing.collectAsState()
+    val user by viewModel.user.collectAsState()
+    var showLoginDialog by remember { mutableStateOf(false) }
 
-    LazyVerticalGrid(
-        modifier = modifier,
-        columns = GridCells.Fixed(
-            when {
-                isPhone && isPortrait -> 2
-                isPhone && !isPortrait -> 3
-                !isPhone && isPortrait -> 4
-                else -> 6
+    if (isRefreshing) {
+        Box(modifier = modifier) {
+            CircularProgressIndicator(
+                modifier = Modifier.align(Alignment.Center),
+                color = MaterialTheme.colors.secondary
+            )
+        }
+    } else if (user == null) {
+        Box(modifier = modifier) {
+            Column(
+                modifier = Modifier.align(Alignment.Center),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = stringResource(R.string.user_login_hint),
+                    fontSize = 18.sp,
+                    color = MaterialTheme.colors.secondaryVariant,
+                    fontWeight = FontWeight.Medium
+                )
+                Button(
+                    modifier = Modifier.padding(top = 8.dp),
+                    onClick = { showLoginDialog = true },
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = MaterialTheme.colors.secondary
+                    )
+                ) {
+                    Text(
+                        text = stringResource(R.string.user_login),
+                        color = MaterialTheme.colors.secondaryVariant
+                    )
+                }
             }
-        ),
-        contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        items(31) { index ->
-            val (teamId, color) = when (index) {
-                1 -> 1610612757 to BlazersColors
-                2 -> 1610612749 to BucksColors
-                3 -> 1610612741 to BullsColors
-                4 -> 1610612739 to CavaliersColors
-                5 -> 1610612738 to CelticsColors
-                6 -> 1610612746 to ClippersColors
-                7 -> 1610612763 to GrizzliesColors
-                8 -> 1610612737 to HawksColors
-                9 -> 1610612748 to HeatColors
-                10 -> 1610612766 to HornetsColors
-                11 -> 1610612762 to JazzColors
-                12 -> 1610612758 to KingsColors
-                13 -> 1610612752 to KnicksColors
-                14 -> 1610612747 to LakersColors
-                15 -> 1610612753 to MagicColors
-                16 -> 1610612742 to MavericksColors
-                17 -> 1610612751 to NetsColors
-                18 -> 1610612743 to NuggetsColors
-                19 -> 1610612754 to PacersColors
-                20 -> 1610612740 to PelicansColors
-                21 -> 1610612765 to PistonsColors
-                22 -> 1610612761 to RaptorsColors
-                23 -> 1610612745 to RocketsColors
-                24 -> 1610612759 to SpursColors
-                25 -> 1610612755 to p76ersColors
-                26 -> 1610612756 to SunsColors
-                27 -> 1610612760 to ThunderColors
-                28 -> 1610612750 to TimberwolvesColors
-                29 -> 1610612744 to WarriorsColors
-                30 -> 1610612764 to WizardsColors
-                else -> 0 to OfficialColors
-            }
-            ThemeCard(
+        }
+        if (showLoginDialog) {
+            LoginDialog(
+                onLogin = { account, password -> viewModel.login(account, password) },
+                onRegister = { account, password -> viewModel.register(account, password) },
+                onDismiss = { showLoginDialog = false }
+            )
+        }
+    } else {
+        Column(
+            modifier = modifier
+        ) {
+            AccountInfo(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .wrapContentHeight()
-                    .border(1.dp, Color.White, RoundedCornerShape(8.dp))
-                    .clip(RoundedCornerShape(7.dp))
-                    .background(MaterialTheme.colors.secondary)
-                    .rippleClickable {
-                        viewModel.updateTheme(teamId, color)
-                    }
-                    .padding(bottom = 8.dp),
-                team = DefaultTeam.getTeamById(teamId),
-                firstColor = color.primary,
-                secondColor = color.secondary,
-                thirdColor = color.extra1,
-                forthColor = color.extra2
+                    .background(MaterialTheme.colors.secondary),
+                name = user?.name ?: "",
+                points = user?.points ?: 0,
+                onLogoutClick = { viewModel.logout() }
             )
+            LazyVerticalGrid(
+                modifier = Modifier.fillMaxSize(),
+                columns = GridCells.Fixed(
+                    when {
+                        isPhone && isPortrait -> 2
+                        isPhone && !isPortrait -> 3
+                        !isPhone && isPortrait -> 4
+                        else -> 6
+                    }
+                ),
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(31) { index ->
+                    val (teamId, color) = when (index) {
+                        1 -> 1610612757 to BlazersColors
+                        2 -> 1610612749 to BucksColors
+                        3 -> 1610612741 to BullsColors
+                        4 -> 1610612739 to CavaliersColors
+                        5 -> 1610612738 to CelticsColors
+                        6 -> 1610612746 to ClippersColors
+                        7 -> 1610612763 to GrizzliesColors
+                        8 -> 1610612737 to HawksColors
+                        9 -> 1610612748 to HeatColors
+                        10 -> 1610612766 to HornetsColors
+                        11 -> 1610612762 to JazzColors
+                        12 -> 1610612758 to KingsColors
+                        13 -> 1610612752 to KnicksColors
+                        14 -> 1610612747 to LakersColors
+                        15 -> 1610612753 to MagicColors
+                        16 -> 1610612742 to MavericksColors
+                        17 -> 1610612751 to NetsColors
+                        18 -> 1610612743 to NuggetsColors
+                        19 -> 1610612754 to PacersColors
+                        20 -> 1610612740 to PelicansColors
+                        21 -> 1610612765 to PistonsColors
+                        22 -> 1610612761 to RaptorsColors
+                        23 -> 1610612745 to RocketsColors
+                        24 -> 1610612759 to SpursColors
+                        25 -> 1610612755 to p76ersColors
+                        26 -> 1610612756 to SunsColors
+                        27 -> 1610612760 to ThunderColors
+                        28 -> 1610612750 to TimberwolvesColors
+                        29 -> 1610612744 to WarriorsColors
+                        30 -> 1610612764 to WizardsColors
+                        else -> 0 to OfficialColors
+                    }
+                    ThemeCard(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight()
+                            .border(1.dp, Color.White, RoundedCornerShape(8.dp))
+                            .clip(RoundedCornerShape(7.dp))
+                            .background(MaterialTheme.colors.secondary)
+                            .rippleClickable {
+                                viewModel.updateTheme(teamId, color)
+                            }
+                            .padding(bottom = 8.dp),
+                        team = DefaultTeam.getTeamById(teamId),
+                        firstColor = color.primary,
+                        secondColor = color.secondary,
+                        thirdColor = color.extra1,
+                        forthColor = color.extra2
+                    )
+                }
+            }
         }
     }
 }
@@ -760,12 +824,12 @@ private fun HomeBottom(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
-                painter = painterResource(R.drawable.ic_black_palette),
+                painter = painterResource(R.drawable.ic_black_person),
                 contentDescription = null,
                 colorFilter = ColorFilter.tint(MaterialTheme.colors.primary)
             )
             Text(
-                text = stringResource(R.string.home_bottom_theme),
+                text = stringResource(R.string.home_bottom_user),
                 color = MaterialTheme.colors.primary,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Medium
@@ -1088,6 +1152,191 @@ private fun LeaderInfo(
                         fontWeight = FontWeight.Bold
                     )
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun LoginDialog(
+    onLogin: (account: String, password: String) -> Unit,
+    onRegister: (account: String, password: String) -> Unit,
+    onDismiss: () -> Unit
+) {
+    val context = LocalContext.current
+    var account by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+
+    Dialog(onDismissRequest = onDismiss) {
+        Column(
+            modifier = Modifier
+                .clip(RoundedCornerShape(8.dp))
+                .width(IntrinsicSize.Min)
+                .background(Color.White),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            BasicTextField(
+                modifier = Modifier
+                    .padding(top = 24.dp, start = 16.dp, end = 16.dp)
+                    .fillMaxWidth(),
+                value = account,
+                onValueChange = { account = it },
+                singleLine = true,
+                maxLines = 1,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                textStyle = TextStyle(
+                    color = "#de000000".color,
+                    fontSize = 18.sp,
+                    textAlign = TextAlign.Start
+                ),
+                decorationBox = { innerTextField ->
+                    if (account.isEmpty()) {
+                        Text(
+                            text = stringResource(R.string.user_login_account_hint),
+                            color = "#40000000".color,
+                            fontSize = 18.sp
+                        )
+                    }
+                    innerTextField()
+                }
+            )
+            Box(
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background("#de000000".color)
+            )
+            BasicTextField(
+                modifier = Modifier
+                    .padding(top = 16.dp, start = 16.dp, end = 16.dp)
+                    .fillMaxWidth(),
+                value = password,
+                onValueChange = { password = it },
+                singleLine = true,
+                maxLines = 1,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                textStyle = TextStyle(
+                    color = "#de000000".color,
+                    fontSize = 18.sp,
+                    fontFamily = FontFamily.SansSerif,
+                    textAlign = TextAlign.Start
+                ),
+                decorationBox = { innerTextField ->
+                    if (account.isEmpty()) {
+                        Text(
+                            text = stringResource(R.string.user_login_password_hint),
+                            color = "#40000000".color,
+                            fontSize = 18.sp
+                        )
+                    }
+                    innerTextField()
+                }
+            )
+            Box(
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background("#de000000".color)
+            )
+            Row {
+                Button(
+                    modifier = Modifier
+                        .padding(top = 16.dp, bottom = 16.dp, start = 16.dp)
+                        .width(120.dp),
+                    onClick = {
+                        if (account.isBlank() || password.isBlank()) {
+                            Toast.makeText(
+                                context,
+                                context.getString(R.string.user_login_warning),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        } else {
+                            onRegister(account, password)
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = MaterialTheme.colors.primary
+                    )
+                ) {
+                    Text(
+                        text = stringResource(R.string.user_register),
+                        color = MaterialTheme.colors.primaryVariant
+                    )
+                }
+                Button(
+                    modifier = Modifier
+                        .padding(top = 16.dp, bottom = 16.dp, start = 16.dp, end = 16.dp)
+                        .width(120.dp),
+                    onClick = {
+                        if (account.isBlank() || password.isBlank()) {
+                            Toast.makeText(
+                                context,
+                                context.getString(R.string.user_login_warning),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        } else {
+                            onLogin(account, password)
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = MaterialTheme.colors.secondary
+                    )
+                ) {
+                    Text(
+                        text = stringResource(R.string.user_login),
+                        color = MaterialTheme.colors.secondaryVariant
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun AccountInfo(
+    modifier: Modifier = Modifier,
+    name: String,
+    points: Long,
+    onLogoutClick: () -> Unit
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceAround
+    ) {
+        Image(
+            modifier = Modifier
+                .padding(start = 16.dp)
+                .size(48.dp),
+            painter = painterResource(R.drawable.ic_black_person),
+            contentDescription = null
+        )
+        Column(
+            modifier = Modifier
+                .padding(horizontal = 16.dp)
+                .weight(1f)
+        ) {
+            Text(
+                text = name,
+                fontSize = 16.sp,
+                color = MaterialTheme.colors.primaryVariant,
+                fontWeight = FontWeight.Medium
+            )
+            Text(
+                text = stringResource(R.string.user_points, points),
+                fontSize = 16.sp,
+                color = MaterialTheme.colors.primaryVariant
+            )
+        }
+        Row {
+            IconButton(onClick = onLogoutClick) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_black_logout),
+                    contentDescription = null,
+                    tint = MaterialTheme.colors.secondaryVariant
+                )
             }
         }
     }

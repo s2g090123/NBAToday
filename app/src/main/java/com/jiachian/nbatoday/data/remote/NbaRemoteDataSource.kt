@@ -13,6 +13,10 @@ import com.jiachian.nbatoday.data.remote.player.RemotePlayerStats
 import com.jiachian.nbatoday.data.remote.player.RemoteTeamPlayerStats
 import com.jiachian.nbatoday.data.remote.score.RemoteGameBoxScore
 import com.jiachian.nbatoday.data.remote.team.RemoteTeamStats
+import com.jiachian.nbatoday.data.remote.user.LoginBody
+import com.jiachian.nbatoday.data.remote.user.UpdatePasswordBody
+import com.jiachian.nbatoday.data.remote.user.UpdatePointBody
+import com.jiachian.nbatoday.data.remote.user.User
 import com.jiachian.nbatoday.service.CdnNbaService
 import com.jiachian.nbatoday.service.NbaService
 import com.jiachian.nbatoday.service.StatsNbaService
@@ -97,6 +101,24 @@ class NbaRemoteDataSource(private val dataStore: NbaDataStore) : RemoteDataSourc
 
     override suspend fun getPlayerDetail(playerId: Int): RemotePlayerDetail? {
         return nbaService.getPlayerDetail(season = "2022-23", playerId = playerId)
+    }
+
+    override suspend fun login(account: String, password: String): User? {
+        return nbaService.login(LoginBody(account, password))
+    }
+
+    override suspend fun register(account: String, password: String): User? {
+        return nbaService.register(LoginBody(account, password))
+    }
+
+    override suspend fun updatePassword(account: String, password: String, token: String) {
+        val message = nbaService.updatePassword(UpdatePasswordBody(account, token, password))
+        println("Test $message")
+    }
+
+    override suspend fun updatePoints(account: String, points: Long, token: String) {
+        val message = nbaService.updatePoints(UpdatePointBody(account, token, points))
+        println("Test $message")
     }
 
     private fun buildStatsOkHttpClient(): OkHttpClient {
