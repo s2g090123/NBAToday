@@ -1,6 +1,7 @@
 package com.jiachian.nbatoday.data
 
 import com.jiachian.nbatoday.data.local.NbaGame
+import com.jiachian.nbatoday.data.local.NbaGameAndBet
 import com.jiachian.nbatoday.data.local.TeamAndPlayers
 import com.jiachian.nbatoday.data.local.player.PlayerCareer
 import com.jiachian.nbatoday.data.local.score.GameBoxScore
@@ -16,6 +17,8 @@ interface BaseRepository {
 
     val games: Flow<List<NbaGame>>
 
+    val gamesAndBets: Flow<List<NbaGameAndBet>>
+
     val user: Flow<User?>
 
     suspend fun refreshSchedule()
@@ -28,6 +31,7 @@ interface BaseRepository {
 
     suspend fun getGamesAt(date: Long): List<NbaGame>
     fun getGamesDuring(from: Long, to: Long): Flow<List<NbaGame>>
+    fun getGamesAndBetsDuring(from: Long, to: Long): Flow<List<NbaGameAndBet>>
     fun getGamesBefore(from: Long): Flow<List<NbaGame>>
     fun getGamesAfter(from: Long): Flow<List<NbaGame>>
 
@@ -51,4 +55,5 @@ interface BaseRepository {
     suspend fun register(account: String, password: String)
     suspend fun updatePassword(password: String)
     suspend fun updatePoints(points: Long)
+    suspend fun bet(gameId: String, homePoints: Long, awayPoints: Long)
 }

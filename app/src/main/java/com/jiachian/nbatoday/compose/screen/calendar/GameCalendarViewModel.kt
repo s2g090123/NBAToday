@@ -7,10 +7,12 @@ import com.jiachian.nbatoday.compose.screen.team.TeamViewModel
 import com.jiachian.nbatoday.compose.state.NbaState
 import com.jiachian.nbatoday.data.BaseRepository
 import com.jiachian.nbatoday.data.local.NbaGame
+import com.jiachian.nbatoday.data.local.NbaGameAndBet
 import com.jiachian.nbatoday.utils.NbaUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
 
@@ -28,11 +30,16 @@ class GameCalendarViewModel(
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined)
 ) : ComposeViewModel() {
 
-    private val games = repository.games
+    private val games = repository.gamesAndBets
+    val user = repository.user
+        .stateIn(coroutineScope, SharingStarted.Eagerly, null)
 
     private val currentYear: MutableStateFlow<Int>
     private val currentMonth: MutableStateFlow<Int>
     private val currentDay: MutableStateFlow<Int>
+
+    private val isRefreshingImp = MutableStateFlow(false)
+    val isRefreshing = isRefreshingImp.asStateFlow()
 
     val currentDate: Date
         get() {
@@ -54,11 +61,11 @@ class GameCalendarViewModel(
 
     private val lastDate = games.map {
         val cal = NbaUtils.getCalendar()
-        it.lastOrNull()?.gameDateTime ?: cal.time
+        it.lastOrNull()?.game?.gameDateTime ?: cal.time
     }.stateIn(coroutineScope, SharingStarted.Eagerly, NbaUtils.getCalendar().time)
     private val firstDate = games.map {
         val cal = NbaUtils.getCalendar()
-        it.firstOrNull()?.gameDate ?: cal.time
+        it.firstOrNull()?.game?.gameDate ?: cal.time
     }.stateIn(coroutineScope, SharingStarted.Eagerly, NbaUtils.getCalendar().time)
 
     val currentDateString = combine(
@@ -92,7 +99,7 @@ class GameCalendarViewModel(
     }.stateIn(coroutineScope, SharingStarted.Eagerly, false)
 
     private val calendarMap = mutableMapOf<String, List<DateData>>()
-    private val gamesMap = mutableMapOf<String, List<List<NbaGame>>>()
+    private val gamesMap = mutableMapOf<String, List<List<NbaGameAndBet>>>()
     val calendarData = combine(
         currentYear, currentMonth
     ) { year, month ->
@@ -120,7 +127,7 @@ class GameCalendarViewModel(
         gamesData
     ) { date, data ->
         withContext(Dispatchers.IO) {
-            data.firstOrNull { it.firstOrNull()?.gameDate == date }
+            data.firstOrNull { it.firstOrNull()?.game?.gameDate == date }
         }
     }.stateIn(coroutineScope, SharingStarted.Eagerly, null)
 
@@ -185,7 +192,11 @@ class GameCalendarViewModel(
         }
     }
 
-    private suspend fun getGames(games: List<NbaGame>, year: Int, month: Int): List<List<NbaGame>> {
+    private suspend fun getGames(
+        games: List<NbaGameAndBet>,
+        year: Int,
+        month: Int
+    ): List<List<NbaGameAndBet>> {
         return withContext(Dispatchers.IO) {
             val key = "$year-$month"
             if (gamesMap.containsKey(key)) return@withContext gamesMap[key] ?: emptyList()
@@ -200,10 +211,10 @@ class GameCalendarViewModel(
                 set(Calendar.MILLISECOND, 0)
                 add(Calendar.DATE, -(get(Calendar.DAY_OF_WEEK) - 1))
             }
-            val data = mutableListOf<List<NbaGame>>()
+            val data = mutableListOf<List<NbaGameAndBet>>()
             while (cal.get(Calendar.YEAR) <= year && cal.get(Calendar.MONTH) + 1 <= month) {
                 repeat(7) {
-                    data.add(games.filter { it.gameDate.time == cal.timeInMillis })
+                    data.add(games.filter { it.game.gameDate.time == cal.timeInMillis })
                     cal.add(Calendar.DAY_OF_MONTH, 1)
                 }
             }
@@ -254,5 +265,35 @@ class GameCalendarViewModel(
                 )
             )
         )
+    }
+
+    fun login(account: String, password: String) {
+        coroutineScope.launch {
+            isRefreshingImp.value = true
+            withContext(Dispatchers.IO) {
+                repository.login(account, password)
+            }
+            isRefreshingImp.value = false
+        }
+    }
+
+    fun register(account: String, password: String) {
+        coroutineScope.launch {
+            isRefreshingImp.value = true
+            withContext(Dispatchers.IO) {
+                repository.register(account, password)
+            }
+            isRefreshingImp.value = false
+        }
+    }
+
+    fun bet(gameId: String, homePoints: Long, awayPoints: Long) {
+        coroutineScope.launch {
+            isRefreshingImp.value = true
+            withContext(Dispatchers.IO) {
+                repository.bet(gameId, homePoints, awayPoints)
+            }
+            isRefreshingImp.value = false
+        }
     }
 }

@@ -41,6 +41,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -55,11 +56,15 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.theme.*
+import com.jiachian.nbatoday.compose.widget.CustomOutlinedTextField
+import com.jiachian.nbatoday.compose.widget.RefreshingScreen
 import com.jiachian.nbatoday.data.local.NbaGame
+import com.jiachian.nbatoday.data.local.NbaGameAndBet
 import com.jiachian.nbatoday.data.local.team.DefaultTeam
 import com.jiachian.nbatoday.data.local.team.TeamStats
 import com.jiachian.nbatoday.data.remote.game.GameStatusCode
 import com.jiachian.nbatoday.data.remote.leader.GameLeaders
+import com.jiachian.nbatoday.data.remote.user.User
 import com.jiachian.nbatoday.utils.*
 import kotlin.math.max
 import kotlin.math.pow
@@ -68,6 +73,8 @@ import kotlin.math.pow
 fun HomeScreen(
     viewModel: HomeViewModel
 ) {
+    val isRefreshing by viewModel.isRefreshing.collectAsState()
+
     FocusableColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -84,6 +91,12 @@ fun HomeScreen(
                 .noRippleClickable { }
                 .background(MaterialTheme.colors.secondary),
             viewModel = viewModel
+        )
+    }
+    if (isRefreshing) {
+        RefreshingScreen(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colors.secondary
         )
     }
 }
@@ -119,7 +132,7 @@ private fun HomeBody(
             )
         }
         item {
-            ThemePage(
+            UserPage(
                 modifier = Modifier
                     .width(screenWidth)
                     .fillMaxHeight(),
@@ -144,6 +157,7 @@ private fun SchedulePage(
     val index by viewModel.scheduleIndex.collectAsState()
     val scheduleGames by viewModel.scheduleGames.collectAsState()
     val isRefreshing by viewModel.isRefreshingSchedule.collectAsState()
+    val user by viewModel.user.collectAsState()
     val pullRefreshState = rememberPullRefreshState(
         refreshing = isRefreshing,
         onRefresh = { viewModel.updateTodaySchedule() }
@@ -182,7 +196,7 @@ private fun SchedulePage(
                             }
                         }
                         itemsIndexed(games) { index, game ->
-                            GameStatusCard(
+                            GameStatusCard2(
                                 modifier = Modifier
                                     .padding(
                                         top = if (index == 0) 8.dp else 16.dp,
@@ -196,15 +210,19 @@ private fun SchedulePage(
                                     .wrapContentHeight()
                                     .background(MaterialTheme.colors.secondary)
                                     .rippleClickable {
-                                        if (game.gameStatus == GameStatusCode.COMING_SOON) {
-                                            viewModel.openTeamStats(game.homeTeam.teamId)
+                                        if (game.game.gameStatus == GameStatusCode.COMING_SOON) {
+                                            viewModel.openTeamStats(game.game.homeTeam.teamId)
                                         } else {
-                                            viewModel.openGameBoxScore(game)
+                                            viewModel.openGameBoxScore(game.game)
                                         }
                                     },
-                                game = game,
+                                userData = user,
+                                gameAndBet = game,
                                 color = MaterialTheme.colors.primary,
-                                expandable = true
+                                expandable = true,
+                                onLogin = viewModel::login,
+                                onRegister = viewModel::register,
+                                onConfirm = viewModel::bet
                             )
                         }
                     }
@@ -323,24 +341,16 @@ private fun StandingPage(
 }
 
 @Composable
-private fun ThemePage(
+private fun UserPage(
     modifier: Modifier,
     viewModel: HomeViewModel
 ) {
     val isPhone = isPhone()
     val isPortrait = isPortrait()
-    val isRefreshing by viewModel.isUserRefreshing.collectAsState()
     val user by viewModel.user.collectAsState()
     var showLoginDialog by remember { mutableStateOf(false) }
 
-    if (isRefreshing) {
-        Box(modifier = modifier) {
-            CircularProgressIndicator(
-                modifier = Modifier.align(Alignment.Center),
-                color = MaterialTheme.colors.secondary
-            )
-        }
-    } else if (user == null) {
+    if (user == null) {
         Box(modifier = modifier) {
             Column(
                 modifier = Modifier.align(Alignment.Center),
@@ -1016,6 +1026,225 @@ fun GameStatusCard(
 }
 
 @Composable
+fun GameStatusCard2(
+    modifier: Modifier = Modifier,
+    gameAndBet: NbaGameAndBet,
+    userData: User?,
+    color: Color,
+    expandable: Boolean,
+    onLogin: (account: String, password: String) -> Unit,
+    onRegister: (account: String, password: String) -> Unit,
+    onConfirm: (gameId: String, homePoints: Long, awayPoints: Long) -> Unit
+) {
+    var isExpand by rememberSaveable { mutableStateOf(false) }
+    val canBet by remember(gameAndBet) {
+        derivedStateOf {
+            gameAndBet.game.gameStatus == GameStatusCode.COMING_SOON && gameAndBet.bets == null
+        }
+    }
+    var showBetsDialog by rememberSaveable { mutableStateOf(false) }
+
+    ConstraintLayout(
+        modifier = modifier
+    ) {
+        val (
+            homeTeamText, homeLogo, homeScoreText,
+            awayTeamText, awayLogo, awayScoreText,
+            gameStatusText, expandBtn, playersDetail,
+            coinsBtn
+        ) = createRefs()
+
+        Text(
+            modifier = Modifier
+                .constrainAs(homeTeamText) {
+                    top.linkTo(parent.top, 16.dp)
+                    linkTo(homeLogo.start, homeLogo.end)
+                },
+            text = gameAndBet.game.homeTeam.teamTricode,
+            color = color,
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold
+        )
+        AsyncImage(
+            modifier = Modifier
+                .constrainAs(homeLogo) {
+                    top.linkTo(homeTeamText.bottom, 8.dp)
+                    start.linkTo(parent.start, 16.dp)
+                }
+                .size(100.dp),
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(NbaUtils.getTeamLogoUrlById(gameAndBet.game.homeTeam.teamId))
+                .decoderFactory(SvgDecoder.Factory())
+                .build(),
+            error = painterResource(NbaUtils.getTeamLogoResById(gameAndBet.game.homeTeam.teamId)),
+            placeholder = painterResource(NbaUtils.getTeamLogoResById(gameAndBet.game.homeTeam.teamId)),
+            contentDescription = null
+        )
+        Text(
+            modifier = Modifier
+                .constrainAs(homeScoreText) {
+                    top.linkTo(homeLogo.bottom, 8.dp)
+                    linkTo(homeLogo.start, homeLogo.end)
+                },
+            text = gameAndBet.game.homeTeam.score.toString(),
+            color = color,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold
+        )
+        Text(
+            modifier = Modifier
+                .constrainAs(awayTeamText) {
+                    top.linkTo(parent.top, 16.dp)
+                    linkTo(awayLogo.start, awayLogo.end)
+                },
+            text = gameAndBet.game.awayTeam.teamTricode,
+            color = color,
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold
+        )
+        AsyncImage(
+            modifier = Modifier
+                .constrainAs(awayLogo) {
+                    top.linkTo(awayTeamText.bottom, 8.dp)
+                    end.linkTo(parent.end, 16.dp)
+                }
+                .size(100.dp),
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(NbaUtils.getTeamLogoUrlById(gameAndBet.game.awayTeam.teamId))
+                .decoderFactory(SvgDecoder.Factory())
+                .build(),
+            error = painterResource(NbaUtils.getTeamLogoResById(gameAndBet.game.awayTeam.teamId)),
+            placeholder = painterResource(NbaUtils.getTeamLogoResById(gameAndBet.game.awayTeam.teamId)),
+            contentDescription = null
+        )
+        Text(
+            modifier = Modifier
+                .constrainAs(awayScoreText) {
+                    top.linkTo(awayLogo.bottom, 8.dp)
+                    linkTo(awayLogo.start, awayLogo.end)
+                },
+            text = gameAndBet.game.awayTeam.score.toString(),
+            color = color,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold
+        )
+        Text(
+            modifier = Modifier
+                .constrainAs(gameStatusText) {
+                    if (canBet) {
+                        linkTo(homeLogo.top, coinsBtn.top, 24.dp)
+                    } else {
+                        linkTo(homeLogo.top, awayLogo.bottom)
+                    }
+                    linkTo(homeLogo.end, awayLogo.start)
+                },
+            text = if (gameAndBet.game.gameStatus == GameStatusCode.COMING_SOON) {
+                gameAndBet.game.gameStatusText.replaceFirst(" ", "\n")
+            } else {
+                gameAndBet.game.gameStatusText
+            }.trim(),
+            textAlign = TextAlign.Center,
+            color = color,
+            fontSize = 16.sp,
+            fontStyle = FontStyle.Italic
+        )
+        if (canBet) {
+            IconButton(
+                modifier = Modifier
+                    .constrainAs(coinsBtn) {
+                        linkTo(gameStatusText.bottom, homeLogo.bottom)
+                        linkTo(homeLogo.end, awayLogo.start)
+                    }
+                    .size(48.dp)
+                    .padding(12.dp),
+                onClick = { showBetsDialog = true }
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_black_coin),
+                    contentDescription = null,
+                    tint = color
+                )
+            }
+        }
+        if (expandable) {
+            AnimatedVisibility(
+                modifier = Modifier
+                    .constrainAs(expandBtn) {
+                        top.linkTo(homeScoreText.bottom)
+                        linkTo(parent.start, parent.end)
+                        width = Dimension.fillToConstraints
+                    }
+                    .height(24.dp)
+                    .rippleClickable { isExpand = true }
+                    .padding(vertical = 2.dp),
+                visible = !isExpand,
+                enter = expandIn(),
+                exit = shrinkOut()
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.ic_black_expand_more),
+                    alpha = 0.6f,
+                    colorFilter = ColorFilter.tint(color),
+                    contentDescription = null
+                )
+            }
+            AnimatedVisibility(
+                modifier = Modifier
+                    .constrainAs(playersDetail) {
+                        linkTo(parent.start, parent.end, 24.dp, 24.dp)
+                        top.linkTo(homeScoreText.bottom)
+                        width = Dimension.fillToConstraints
+                    },
+                visible = isExpand,
+                enter = expandIn(),
+                exit = shrinkOut()
+            ) {
+                Column {
+                    val isComingSoon = gameAndBet.game.gameStatus == GameStatusCode.COMING_SOON
+                    val leaders =
+                        if (isComingSoon) gameAndBet.game.teamLeaders else gameAndBet.game.gameLeaders
+                    val homeLeader = leaders?.homeLeaders
+                    val awayLeader = leaders?.awayLeaders
+                    if (homeLeader != null && awayLeader != null) {
+                        LeaderInfo(
+                            modifier = Modifier
+                                .padding(top = 8.dp)
+                                .fillMaxWidth()
+                                .wrapContentHeight(),
+                            isGameFinal = !isComingSoon,
+                            homeLeader = homeLeader,
+                            awayLeader = awayLeader,
+                            color = color
+                        )
+                    }
+                    Image(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(24.dp)
+                            .rippleClickable { isExpand = false }
+                            .padding(vertical = 2.dp),
+                        painter = painterResource(R.drawable.ic_black_collpase_more),
+                        alpha = 0.6f,
+                        colorFilter = ColorFilter.tint(color),
+                        contentDescription = null
+                    )
+                }
+            }
+        }
+    }
+    if (showBetsDialog) {
+        BetDialog(
+            userData = userData,
+            gameAndBet = gameAndBet,
+            onLogin = onLogin,
+            onRegister = onRegister,
+            onConfirm = onConfirm,
+            onDismiss = { showBetsDialog = false }
+        )
+    }
+}
+
+@Composable
 private fun LeaderInfo(
     modifier: Modifier = Modifier,
     isGameFinal: Boolean,
@@ -1347,6 +1576,282 @@ private fun AccountInfo(
                     tint = MaterialTheme.colors.primaryVariant
                 )
             }
+        }
+    }
+}
+
+@Composable
+private fun BetDialog(
+    userData: User?,
+    gameAndBet: NbaGameAndBet,
+    onLogin: (account: String, password: String) -> Unit,
+    onRegister: (account: String, password: String) -> Unit,
+    onConfirm: (gameId: String, homePoints: Long, awayPoints: Long) -> Unit,
+    onDismiss: () -> Unit
+) {
+    if (userData == null) {
+        LoginDialog(
+            onLogin = onLogin,
+            onRegister = onRegister,
+            onDismiss = onDismiss
+        )
+    } else {
+        val context = LocalContext.current
+        var homePoints by rememberSaveable { mutableStateOf("") }
+        var awayPoints by rememberSaveable { mutableStateOf("") }
+        var showWarning by rememberSaveable { mutableStateOf(false) }
+        val remainPoints by remember(userData, homePoints, awayPoints) {
+            derivedStateOf {
+                val points = userData.points ?: 0
+                points - (homePoints.toLongOrNull() ?: 0) - (awayPoints.toLongOrNull() ?: 0)
+            }
+        }
+
+        Dialog(
+            onDismissRequest = onDismiss
+        ) {
+            ConstraintLayout(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(MaterialTheme.colors.secondary)
+            ) {
+                val (
+                    vsText, remainPointText, oddText,
+                    homeLogo, awayLogo, homeRecordText, awayRecordText,
+                    homeTextFiled, awayTextField, confirmBtn
+                ) = createRefs()
+
+                Text(
+                    modifier = Modifier
+                        .constrainAs(homeRecordText) {
+                            top.linkTo(parent.top, 16.dp)
+                            linkTo(homeLogo.start, homeLogo.end)
+                        },
+                    text = "(${gameAndBet.game.homeTeam.wins}/${gameAndBet.game.homeTeam.losses})",
+                    color = MaterialTheme.colors.primary,
+                    fontSize = 20.sp
+                )
+                Text(
+                    modifier = Modifier
+                        .constrainAs(awayRecordText) {
+                            top.linkTo(parent.top, 16.dp)
+                            linkTo(awayLogo.start, awayLogo.end)
+                        },
+                    text = "(${gameAndBet.game.awayTeam.wins}/${gameAndBet.game.awayTeam.losses})",
+                    color = MaterialTheme.colors.primary,
+                    fontSize = 20.sp
+                )
+                AsyncImage(
+                    modifier = Modifier
+                        .constrainAs(homeLogo) {
+                            top.linkTo(homeRecordText.bottom, 8.dp)
+                            start.linkTo(parent.start, 16.dp)
+                        }
+                        .size(100.dp),
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(NbaUtils.getTeamLogoUrlById(gameAndBet.game.homeTeam.teamId))
+                        .decoderFactory(SvgDecoder.Factory())
+                        .build(),
+                    error = painterResource(NbaUtils.getTeamLogoResById(gameAndBet.game.homeTeam.teamId)),
+                    placeholder = painterResource(NbaUtils.getTeamLogoResById(gameAndBet.game.homeTeam.teamId)),
+                    contentDescription = null
+                )
+                AsyncImage(
+                    modifier = Modifier
+                        .constrainAs(awayLogo) {
+                            top.linkTo(awayRecordText.bottom, 8.dp)
+                            end.linkTo(parent.end, 16.dp)
+                        }
+                        .size(100.dp),
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(NbaUtils.getTeamLogoUrlById(gameAndBet.game.awayTeam.teamId))
+                        .decoderFactory(SvgDecoder.Factory())
+                        .build(),
+                    error = painterResource(NbaUtils.getTeamLogoResById(gameAndBet.game.awayTeam.teamId)),
+                    placeholder = painterResource(NbaUtils.getTeamLogoResById(gameAndBet.game.awayTeam.teamId)),
+                    contentDescription = null
+                )
+                Text(
+                    modifier = Modifier
+                        .constrainAs(vsText) {
+                            linkTo(homeLogo.top, awayLogo.bottom)
+                            linkTo(homeLogo.end, awayLogo.start, 16.dp, 16.dp)
+                        },
+                    text = stringResource(R.string.bet_vs),
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colors.primary,
+                    fontSize = 16.sp,
+                    fontStyle = FontStyle.Italic
+                )
+                Text(
+                    modifier = Modifier
+                        .constrainAs(oddText) {
+                            top.linkTo(vsText.bottom)
+                            linkTo(homeLogo.end, awayLogo.start, 16.dp, 16.dp)
+                        },
+                    text = "1:1",
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colors.primary,
+                    fontSize = 16.sp
+                )
+                CustomOutlinedTextField(
+                    modifier = Modifier
+                        .constrainAs(homeTextFiled) {
+                            linkTo(homeLogo.start, homeLogo.end)
+                            top.linkTo(homeLogo.bottom, 8.dp)
+                            width = Dimension.fillToConstraints
+                        }
+                        .height(32.dp),
+                    value = homePoints,
+                    onValueChange = {
+                        homePoints = if (it.isEmpty()) {
+                            it
+                        } else {
+                            it.toLongOrNull()?.coerceIn(0, Long.MAX_VALUE)?.toString() ?: homePoints
+                        }
+                    },
+                    textStyle = TextStyle(
+                        color = MaterialTheme.colors.primary,
+                        textAlign = TextAlign.Center
+                    ),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    singleLine = true,
+                    maxLines = 1
+                )
+                CustomOutlinedTextField(
+                    modifier = Modifier
+                        .constrainAs(awayTextField) {
+                            linkTo(awayLogo.start, awayLogo.end)
+                            top.linkTo(awayLogo.bottom, 8.dp)
+                            width = Dimension.fillToConstraints
+                        }
+                        .height(32.dp),
+                    value = awayPoints,
+                    onValueChange = {
+                        awayPoints = if (it.isEmpty()) {
+                            it
+                        } else {
+                            it.toLongOrNull()?.coerceIn(0, Long.MAX_VALUE)?.toString() ?: awayPoints
+                        }
+                    },
+                    textStyle = TextStyle(
+                        color = MaterialTheme.colors.primary,
+                        textAlign = TextAlign.Center
+                    ),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    singleLine = true,
+                    maxLines = 1
+                )
+                Text(
+                    modifier = Modifier
+                        .constrainAs(remainPointText) {
+                            top.linkTo(homeTextFiled.bottom, 8.dp)
+                            linkTo(parent.start, parent.end, 16.dp, 16.dp)
+                        },
+                    text = stringResource(R.string.bet_remain, remainPoints),
+                    color = MaterialTheme.colors.primary,
+                    fontSize = 12.sp,
+                )
+                Text(
+                    modifier = Modifier
+                        .constrainAs(confirmBtn) {
+                            top.linkTo(remainPointText.bottom, 8.dp)
+                            end.linkTo(parent.end, 8.dp)
+                        }
+                        .padding(bottom = 8.dp)
+                        .wrapContentSize()
+                        .rippleClickable {
+                            if (remainPoints < 0) {
+                                Toast
+                                    .makeText(
+                                        context,
+                                        context.getString(R.string.bet_not_enough),
+                                        Toast.LENGTH_SHORT
+                                    )
+                                    .show()
+                            } else if ((homePoints.toLongOrNull()
+                                    ?: 0) <= 0 && (awayPoints.toLongOrNull() ?: 0) <= 0
+                            ) {
+                                Toast
+                                    .makeText(
+                                        context,
+                                        context.getString(R.string.bet_point_require),
+                                        Toast.LENGTH_SHORT
+                                    )
+                                    .show()
+                            } else {
+                                showWarning = true
+                            }
+                        }
+                        .padding(10.dp),
+                    text = stringResource(R.string.bet_confirm),
+                    color = MaterialTheme.colors.primary,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+        }
+        if (showWarning) {
+            AlertDialog(
+                onDismissRequest = { showWarning = false },
+                title = {
+                    Text(
+                        text = stringResource(R.string.bet_warning_title),
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colors.primary
+                    )
+                },
+                text = {
+                    Text(
+                        text = stringResource(R.string.bet_warning_text),
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colors.primary
+                    )
+                },
+                buttons = {
+                    Column(
+                        modifier = Modifier
+                            .padding(horizontal = 8.dp)
+                            .fillMaxWidth(),
+                        horizontalAlignment = Alignment.End
+                    ) {
+                        Text(
+                            modifier = Modifier
+                                .padding(bottom = 8.dp)
+                                .wrapContentSize()
+                                .rippleClickable {
+                                    onConfirm(
+                                        gameAndBet.game.gameId,
+                                        homePoints.toLongOrNull() ?: 0,
+                                        awayPoints.toLongOrNull() ?: 0
+                                    )
+                                    onDismiss()
+                                }
+                                .padding(10.dp),
+                            text = stringResource(R.string.bet_warning_confirm),
+                            color = MaterialTheme.colors.primary,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                        Text(
+                            modifier = Modifier
+                                .padding(bottom = 8.dp)
+                                .wrapContentSize()
+                                .rippleClickable {
+                                    showWarning = false
+                                }
+                                .padding(10.dp),
+                            text = stringResource(R.string.bet_warning_cancel),
+                            color = MaterialTheme.colors.primary,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
+                },
+                shape = RoundedCornerShape(8.dp),
+                backgroundColor = MaterialTheme.colors.secondary
+            )
         }
     }
 }

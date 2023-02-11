@@ -46,6 +46,9 @@ class HomeViewModel(
     val user = repository.user
         .stateIn(coroutineScope, SharingStarted.Eagerly, null)
 
+    private val isRefreshingImp = MutableStateFlow(false)
+    val isRefreshing = isRefreshingImp.asStateFlow()
+
     private val homeIndexImp = MutableStateFlow(0)
     val homeIndex = homeIndexImp.asStateFlow()
 
@@ -57,7 +60,7 @@ class HomeViewModel(
         it.set(Calendar.HOUR, 0)
         it.set(Calendar.MINUTE, 0)
         it.set(Calendar.SECOND, 0)
-        repository.getGamesDuring(
+        repository.getGamesAndBetsDuring(
             it.timeInMillis - DateUtils.DAY_IN_MILLIS * (SCHEDULE_DATE_RANGE + 1),
             it.timeInMillis + DateUtils.DAY_IN_MILLIS * (SCHEDULE_DATE_RANGE)
         )
@@ -65,7 +68,7 @@ class HomeViewModel(
     val scheduleGames = scheduleGamesImp.map {
         val calendar = NbaUtils.getCalendar()
         it.groupBy { game ->
-            calendar.time = game.gameDateTime
+            calendar.time = game.game.gameDateTime
             String.format(
                 "%d/%d/%d",
                 calendar.get(Calendar.YEAR),
@@ -141,10 +144,6 @@ class HomeViewModel(
             StandingLabel(48.dp, "PF", TextAlign.End, StandingSort.PF)
         )
     }
-
-    // User
-    private val isUserRefreshingImp = MutableStateFlow(false)
-    val isUserRefreshing = isUserRefreshingImp.asStateFlow()
 
     init {
         updateTeamStats()
@@ -282,31 +281,41 @@ class HomeViewModel(
 
     fun login(account: String, password: String) {
         coroutineScope.launch {
-            isUserRefreshingImp.value = true
+            isRefreshingImp.value = true
             withContext(Dispatchers.IO) {
                 repository.login(account, password)
             }
-            isUserRefreshingImp.value = false
+            isRefreshingImp.value = false
         }
     }
 
     fun logout() {
         coroutineScope.launch {
-            isUserRefreshingImp.value = true
+            isRefreshingImp.value = true
             withContext(Dispatchers.IO) {
                 repository.logout()
             }
-            isUserRefreshingImp.value = false
+            isRefreshingImp.value = false
         }
     }
 
     fun register(account: String, password: String) {
         coroutineScope.launch {
-            isUserRefreshingImp.value = true
+            isRefreshingImp.value = true
             withContext(Dispatchers.IO) {
                 repository.register(account, password)
             }
-            isUserRefreshingImp.value = false
+            isRefreshingImp.value = false
+        }
+    }
+
+    fun bet(gameId: String, homePoints: Long, awayPoints: Long) {
+        coroutineScope.launch {
+            isRefreshingImp.value = true
+            withContext(Dispatchers.IO) {
+                repository.bet(gameId, homePoints, awayPoints)
+            }
+            isRefreshingImp.value = false
         }
     }
 }

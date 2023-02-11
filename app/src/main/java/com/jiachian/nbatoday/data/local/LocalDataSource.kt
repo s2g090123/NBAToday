@@ -18,8 +18,11 @@ abstract class LocalDataSource {
 
     abstract val games: Flow<List<NbaGame>>
 
+    abstract val gamesAndBets: Flow<List<NbaGameAndBet>>
+
     abstract suspend fun getGamesAt(date: Long): List<NbaGame>
     abstract fun getGamesDuring(from: Long, to: Long): Flow<List<NbaGame>>
+    abstract fun getGamesAndBetsDuring(from: Long, to: Long): Flow<List<NbaGameAndBet>>
     abstract fun getGamesBefore(from: Long): Flow<List<NbaGame>>
     abstract fun getGamesAfter(from: Long): Flow<List<NbaGame>>
 
@@ -51,4 +54,6 @@ abstract class LocalDataSource {
     abstract suspend fun updatePlayerStats(stats: PlayerCareerStatsUpdate)
 
     abstract fun getPlayerCareer(playerId: Int): Flow<PlayerCareer?>
+
+    abstract suspend fun insertBet(gameId: String, homePoints: Long, awayPoints: Long)
 }

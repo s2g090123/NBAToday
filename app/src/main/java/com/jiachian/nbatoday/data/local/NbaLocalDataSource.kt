@@ -1,5 +1,6 @@
 package com.jiachian.nbatoday.data.local
 
+import com.jiachian.nbatoday.data.local.bet.Bets
 import com.jiachian.nbatoday.data.local.player.PlayerCareer
 import com.jiachian.nbatoday.data.local.player.PlayerCareerInfoUpdate
 import com.jiachian.nbatoday.data.local.player.PlayerCareerStatsUpdate
@@ -19,12 +20,18 @@ class NbaLocalDataSource(
 
     override val games = dao.getGames()
 
+    override val gamesAndBets = dao.getGamesAndBets()
+
     override suspend fun getGamesAt(date: Long): List<NbaGame> {
         return dao.getGamesAt(date)
     }
 
     override fun getGamesDuring(from: Long, to: Long): Flow<List<NbaGame>> {
         return dao.getGamesDuring(from, to)
+    }
+
+    override fun getGamesAndBetsDuring(from: Long, to: Long): Flow<List<NbaGameAndBet>> {
+        return dao.getGamesAndBetsDuring(from, to)
     }
 
     override fun getGamesBefore(from: Long): Flow<List<NbaGame>> {
@@ -117,6 +124,11 @@ class NbaLocalDataSource(
 
     override fun getPlayerCareer(playerId: Int): Flow<PlayerCareer?> {
         return dao.getPlayerCareer(playerId)
+    }
+
+    override suspend fun insertBet(gameId: String, homePoints: Long, awayPoints: Long) {
+        val bets = Bets(gameId = gameId, homePoints = homePoints, awayPoints = awayPoints)
+        dao.insertBet(bets)
     }
 
     override suspend fun existPlayer(playerId: Int): Boolean {

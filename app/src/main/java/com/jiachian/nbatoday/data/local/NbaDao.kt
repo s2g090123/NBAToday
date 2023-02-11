@@ -1,6 +1,7 @@
 package com.jiachian.nbatoday.data.local
 
 import androidx.room.*
+import com.jiachian.nbatoday.data.local.bet.Bets
 import com.jiachian.nbatoday.data.local.player.PlayerCareer
 import com.jiachian.nbatoday.data.local.player.PlayerCareerInfoUpdate
 import com.jiachian.nbatoday.data.local.player.PlayerCareerStatsUpdate
@@ -20,11 +21,20 @@ interface NbaDao {
     @Query("SELECT * FROM nba_game")
     fun getGames(): Flow<List<NbaGame>>
 
+    @Query("SELECT * FROM nba_game")
+    fun getGamesAndBets(): Flow<List<NbaGameAndBet>>
+
+    @Query("SELECT * FROM nba_game_bets")
+    fun getBetsAndGames(): Flow<List<BetAndNbaGame>>
+
     @Query("SELECT * FROM nba_game WHERE game_date == :date")
     suspend fun getGamesAt(date: Long): List<NbaGame>
 
     @Query("SELECT * FROM nba_game WHERE game_date >= :from AND game_date <= :to")
     fun getGamesDuring(from: Long, to: Long): Flow<List<NbaGame>>
+
+    @Query("SELECT * FROM nba_game WHERE game_date >= :from AND game_date <= :to")
+    fun getGamesAndBetsDuring(from: Long, to: Long): Flow<List<NbaGameAndBet>>
 
     @Query("SELECT * FROM nba_game WHERE game_date <= :from")
     fun getGamesBefore(from: Long): Flow<List<NbaGame>>
@@ -175,4 +185,8 @@ interface NbaDao {
 
     @Update(entity = PlayerCareer::class, onConflict = OnConflictStrategy.REPLACE)
     suspend fun updatePlayerStats(stats: PlayerCareerStatsUpdate)
+
+    /** Bet */
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertBet(bet: Bets)
 }

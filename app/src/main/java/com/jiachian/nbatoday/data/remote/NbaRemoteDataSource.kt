@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit
 
 class NbaRemoteDataSource(private val dataStore: NbaDataStore) : RemoteDataSource() {
 
-    private val gson = GsonBuilder().create()
+    private val gson = GsonBuilder().setLenient().create()
 
     private val cdnRetrofit = Retrofit.Builder()
         .baseUrl(CDN_BASE_URL)
@@ -112,13 +112,11 @@ class NbaRemoteDataSource(private val dataStore: NbaDataStore) : RemoteDataSourc
     }
 
     override suspend fun updatePassword(account: String, password: String, token: String) {
-        val message = nbaService.updatePassword(UpdatePasswordBody(account, token, password))
-        println("Test $message")
+        nbaService.updatePassword(UpdatePasswordBody(account, token, password))
     }
 
     override suspend fun updatePoints(account: String, points: Long, token: String) {
-        val message = nbaService.updatePoints(UpdatePointBody(account, token, points))
-        println("Test $message")
+        nbaService.updatePoints(UpdatePointBody(account, token, points))
     }
 
     private fun buildStatsOkHttpClient(): OkHttpClient {

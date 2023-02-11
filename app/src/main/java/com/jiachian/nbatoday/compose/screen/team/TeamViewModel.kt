@@ -30,21 +30,24 @@ class TeamViewModel(
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined)
 ) : ComposeViewModel() {
 
+    val user = repository.user
+        .stateIn(coroutineScope, SharingStarted.Eagerly, null)
+
     private val team = DefaultTeam.getTeamById(teamId)
 
     val colors = DefaultTeam.getColorsById(teamId)
 
-    private val games = repository.games
+    private val games = repository.gamesAndBets
     val gamesBefore = games.map { games ->
         games.filter {
-            (it.homeTeam.teamId == teamId || it.awayTeam.teamId == teamId) &&
-                    it.gameDateTime.time <= NbaUtils.getCalendar().timeInMillis
+            (it.game.homeTeam.teamId == teamId || it.game.awayTeam.teamId == teamId) &&
+                    it.game.gameDateTime.time <= NbaUtils.getCalendar().timeInMillis
         }
     }.stateIn(coroutineScope, SharingStarted.Eagerly, emptyList())
     val gamesAfter = games.map { games ->
         games.filter {
-            (it.homeTeam.teamId == teamId || it.awayTeam.teamId == teamId) &&
-                    it.gameDateTime.time > NbaUtils.getCalendar().timeInMillis
+            (it.game.homeTeam.teamId == teamId || it.game.awayTeam.teamId == teamId) &&
+                    it.game.gameDateTime.time > NbaUtils.getCalendar().timeInMillis
         }
     }.stateIn(coroutineScope, SharingStarted.Eagerly, emptyList())
     private val teamAndPlayersStats = repository.getTeamAndPlayersStats(teamId)
@@ -66,6 +69,8 @@ class TeamViewModel(
 
     private val isRefreshingImp = MutableStateFlow(false)
     val isRefreshing = isRefreshingImp.asStateFlow()
+    private val isTeamRefreshingImp = MutableStateFlow(false)
+    val isTeamRefreshing = isTeamRefreshingImp.asStateFlow()
     private val selectPageIndexImp = MutableStateFlow(0)
     val selectPageIndex = selectPageIndexImp.asStateFlow()
 
@@ -137,14 +142,14 @@ class TeamViewModel(
 
     fun updateStats() {
         coroutineScope.launch {
-            isRefreshingImp.value = true
+            isTeamRefreshingImp.value = true
             withContext(Dispatchers.IO) {
                 val deferred1 = async { repository.refreshTeamStats() }
                 val deferred2 = async { repository.refreshTeamPlayersStats(teamId) }
                 deferred1.await()
                 deferred2.await()
             }
-            isRefreshingImp.value = false
+            isTeamRefreshingImp.value = false
         }
     }
 
@@ -173,5 +178,35 @@ class TeamViewModel(
         openScreen(
             NbaState.Player(PlayerInfoViewModel(playerId, repository, coroutineScope))
         )
+    }
+
+    fun login(account: String, password: String) {
+        coroutineScope.launch {
+            isRefreshingImp.value = true
+            withContext(Dispatchers.IO) {
+                repository.login(account, password)
+            }
+            isRefreshingImp.value = false
+        }
+    }
+
+    fun register(account: String, password: String) {
+        coroutineScope.launch {
+            isRefreshingImp.value = true
+            withContext(Dispatchers.IO) {
+                repository.register(account, password)
+            }
+            isRefreshingImp.value = false
+        }
+    }
+
+    fun bet(gameId: String, homePoints: Long, awayPoints: Long) {
+        coroutineScope.launch {
+            isRefreshingImp.value = true
+            withContext(Dispatchers.IO) {
+                repository.bet(gameId, homePoints, awayPoints)
+            }
+            isRefreshingImp.value = false
+        }
     }
 }

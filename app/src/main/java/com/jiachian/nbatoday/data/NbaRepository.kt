@@ -5,6 +5,7 @@ import com.jiachian.nbatoday.SCHEDULE_DATE_RANGE
 import com.jiachian.nbatoday.data.datastore.NbaDataStore
 import com.jiachian.nbatoday.data.local.LocalDataSource
 import com.jiachian.nbatoday.data.local.NbaGame
+import com.jiachian.nbatoday.data.local.NbaGameAndBet
 import com.jiachian.nbatoday.data.local.TeamAndPlayers
 import com.jiachian.nbatoday.data.local.player.PlayerCareer
 import com.jiachian.nbatoday.data.local.score.GameBoxScore
@@ -27,6 +28,7 @@ class NbaRepository(
 
     override val dates: Flow<List<Date>> = localDataSource.dates
     override val games: Flow<List<NbaGame>> = localDataSource.games
+    override val gamesAndBets: Flow<List<NbaGameAndBet>> = localDataSource.gamesAndBets
     override val user: Flow<User?> = dataStore.userData
 
     override suspend fun refreshSchedule() {
@@ -165,6 +167,10 @@ class NbaRepository(
         return localDataSource.getGamesDuring(from, to)
     }
 
+    override fun getGamesAndBetsDuring(from: Long, to: Long): Flow<List<NbaGameAndBet>> {
+        return localDataSource.getGamesAndBetsDuring(from, to)
+    }
+
     override fun getGamesBefore(from: Long): Flow<List<NbaGame>> {
         return localDataSource.getGamesBefore(from)
     }
@@ -253,5 +259,13 @@ class NbaRepository(
                 token = token
             )
         )
+    }
+
+    override suspend fun bet(gameId: String, homePoints: Long, awayPoints: Long) {
+        val user = user.firstOrNull() ?: return
+        val remainPoints = (user.points ?: 0) - homePoints - awayPoints
+        if (remainPoints < 0) return
+        localDataSource.insertBet(gameId, homePoints, awayPoints)
+        updatePoints(remainPoints)
     }
 }

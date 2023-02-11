@@ -91,4 +91,13 @@
     <string name="user_login_account_hint">Account</string>
     <string name="user_login_password_hint">Password</string>
     <string name="user_points">持有點數：%d</string>
+    <string name="bet_vs">vs.</string>
+    <string name="bet_confirm">CONFIRM</string>
+    <string name="bet_remain">剩餘點數： %d</string>
+    <string name="bet_warning_title">警告</string>
+    <string name="bet_warning_text">下注後將無法撤銷或更改下注金額，是否要進行下注？</string>
+    <string name="bet_warning_confirm">CONFIRM</string>
+    <string name="bet_warning_cancel">CANCEL</string>
+    <string name="bet_not_enough">點數不足</string>
+    <string name="bet_point_require">請至少下注一隊</string>
 </resources>

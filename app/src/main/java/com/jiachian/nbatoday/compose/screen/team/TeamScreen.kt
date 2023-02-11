@@ -34,8 +34,10 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.jiachian.nbatoday.R
-import com.jiachian.nbatoday.compose.screen.home.GameStatusCard
+import com.jiachian.nbatoday.compose.screen.home.GameStatusCard2
+import com.jiachian.nbatoday.compose.widget.RefreshingScreen
 import com.jiachian.nbatoday.data.local.NbaGame
+import com.jiachian.nbatoday.data.local.NbaGameAndBet
 import com.jiachian.nbatoday.data.local.player.PlayerStats
 import com.jiachian.nbatoday.data.local.team.TeamStats
 import com.jiachian.nbatoday.data.remote.game.GameStatusCode
@@ -53,9 +55,10 @@ fun TeamScreen(
     onBack: () -> Unit
 ) {
     val isRefreshing by viewModel.isRefreshing.collectAsState()
+    val isTeamRefreshing by viewModel.isTeamRefreshing.collectAsState()
 
     when {
-        isRefreshing -> {
+        isTeamRefreshing -> {
             RefreshScreen(
                 modifier = Modifier
                     .fillMaxSize()
@@ -76,6 +79,12 @@ fun TeamScreen(
                 onBack = onBack
             )
         }
+    }
+    if (isTeamRefreshing) {
+        RefreshingScreen(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colors.secondary
+        )
     }
     BackHandler {
         onBack()
@@ -568,16 +577,17 @@ private fun PlayerStatistics(
 private fun GamesPage(
     modifier: Modifier = Modifier,
     viewModel: TeamViewModel,
-    games: List<NbaGame>
+    games: List<NbaGameAndBet>
 ) {
     val context = LocalContext.current
+    val user by viewModel.user.collectAsState()
 
     LazyColumn(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         itemsIndexed(games) { index, game ->
-            GameStatusCard(
+            GameStatusCard2(
                 modifier = Modifier
                     .padding(
                         top = 16.dp,
@@ -591,7 +601,7 @@ private fun GamesPage(
                     .wrapContentHeight()
                     .background(viewModel.colors.secondary)
                     .rippleClickable {
-                        if (game.gameStatus == GameStatusCode.COMING_SOON) {
+                        if (game.game.gameStatus == GameStatusCode.COMING_SOON) {
                             Toast
                                 .makeText(
                                     context,
@@ -600,13 +610,17 @@ private fun GamesPage(
                                 )
                                 .show()
                         } else {
-                            viewModel.openGameBoxScore(game)
+                            viewModel.openGameBoxScore(game.game)
                         }
                     }
                     .padding(bottom = 8.dp),
-                game = game,
+                gameAndBet = game,
+                userData = user,
                 expandable = false,
-                color = viewModel.colors.primary
+                color = viewModel.colors.primary,
+                onLogin = viewModel::login,
+                onRegister = viewModel::register,
+                onConfirm = viewModel::bet
             )
         }
     }

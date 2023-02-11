@@ -33,19 +33,21 @@ import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 import com.google.accompanist.flowlayout.FlowRow
 import com.jiachian.nbatoday.R
-import com.jiachian.nbatoday.compose.screen.home.GameStatusCard
-import com.jiachian.nbatoday.data.local.NbaGame
+import com.jiachian.nbatoday.compose.screen.home.GameStatusCard2
+import com.jiachian.nbatoday.compose.widget.RefreshingScreen
+import com.jiachian.nbatoday.data.local.NbaGameAndBet
 import com.jiachian.nbatoday.data.remote.game.GameStatusCode
 import com.jiachian.nbatoday.utils.NbaUtils
 import com.jiachian.nbatoday.utils.noRippleClickable
 import com.jiachian.nbatoday.utils.rippleClickable
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun GameCalendarScreen(
     viewModel: GameCalendarViewModel,
     onClose: () -> Unit
 ) {
+    val isRefreshing by viewModel.isRefreshing.collectAsState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -63,6 +65,12 @@ fun GameCalendarScreen(
                 .padding(top = 8.dp)
                 .fillMaxSize(),
             viewModel = viewModel
+        )
+    }
+    if (isRefreshing) {
+        RefreshingScreen(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colors.secondary
         )
     }
 }
@@ -228,13 +236,13 @@ private fun CalendarContent(
                                         AsyncImage(
                                             modifier = Modifier.size(12.dp),
                                             model = ImageRequest.Builder(LocalContext.current)
-                                                .data(NbaUtils.getTeamSmallLogoUrlById(it.homeTeam.teamId))
+                                                .data(NbaUtils.getTeamSmallLogoUrlById(it.game.homeTeam.teamId))
                                                 .decoderFactory(SvgDecoder.Factory())
                                                 .build(),
-                                            error = painterResource(NbaUtils.getTeamLogoResById(it.homeTeam.teamId)),
+                                            error = painterResource(NbaUtils.getTeamLogoResById(it.game.homeTeam.teamId)),
                                             placeholder = painterResource(
                                                 NbaUtils.getTeamLogoResById(
-                                                    it.homeTeam.teamId
+                                                    it.game.homeTeam.teamId
                                                 )
                                             ),
                                             contentDescription = null
@@ -263,13 +271,14 @@ private fun CalendarContent(
 private fun CalendarGames(
     modifier: Modifier = Modifier,
     viewModel: GameCalendarViewModel,
-    games: List<NbaGame>
+    games: List<NbaGameAndBet>
 ) {
+    val user by viewModel.user.collectAsState()
     LazyColumn(
         modifier = modifier
     ) {
         itemsIndexed(games) { index, game ->
-            GameStatusCard(
+            GameStatusCard2(
                 modifier = Modifier
                     .padding(
                         start = 16.dp,
@@ -283,16 +292,20 @@ private fun CalendarGames(
                     .wrapContentHeight()
                     .background(MaterialTheme.colors.secondary)
                     .rippleClickable {
-                        if (game.gameStatus == GameStatusCode.COMING_SOON) {
-                            viewModel.openTeamStats(game.homeTeam.teamId)
+                        if (game.game.gameStatus == GameStatusCode.COMING_SOON) {
+                            viewModel.openTeamStats(game.game.homeTeam.teamId)
                         } else {
-                            viewModel.openGameBoxScore(game)
+                            viewModel.openGameBoxScore(game.game)
                         }
                     }
                     .padding(bottom = 8.dp),
-                game = game,
+                gameAndBet = game,
+                userData = user,
                 expandable = false,
-                color = MaterialTheme.colors.primary
+                color = MaterialTheme.colors.primary,
+                onLogin = viewModel::login,
+                onRegister = viewModel::register,
+                onConfirm = viewModel::bet
             )
         }
     }
