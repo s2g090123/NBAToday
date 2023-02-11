@@ -202,7 +202,9 @@ private fun SchedulePage(
                                             viewModel.openGameBoxScore(game)
                                         }
                                     },
-                                game = game
+                                game = game,
+                                color = MaterialTheme.colors.primary,
+                                expandable = true
                             )
                         }
                     }
@@ -839,9 +841,11 @@ private fun HomeBottom(
 }
 
 @Composable
-private fun GameStatusCard(
+fun GameStatusCard(
     modifier: Modifier = Modifier,
-    game: NbaGame
+    game: NbaGame,
+    color: Color,
+    expandable: Boolean,
 ) {
     var isExpand by rememberSaveable { mutableStateOf(false) }
 
@@ -861,7 +865,7 @@ private fun GameStatusCard(
                     linkTo(homeLogo.start, homeLogo.end)
                 },
             text = game.homeTeam.teamTricode,
-            color = MaterialTheme.colors.primary,
+            color = color,
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold
         )
@@ -887,7 +891,7 @@ private fun GameStatusCard(
                     linkTo(homeLogo.start, homeLogo.end)
                 },
             text = game.homeTeam.score.toString(),
-            color = MaterialTheme.colors.primary,
+            color = color,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold
         )
@@ -898,7 +902,7 @@ private fun GameStatusCard(
                     linkTo(awayLogo.start, awayLogo.end)
                 },
             text = game.awayTeam.teamTricode,
-            color = MaterialTheme.colors.primary,
+            color = color,
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold
         )
@@ -924,7 +928,7 @@ private fun GameStatusCard(
                     linkTo(awayLogo.start, awayLogo.end)
                 },
             text = game.awayTeam.score.toString(),
-            color = MaterialTheme.colors.primary,
+            color = color,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold
         )
@@ -940,69 +944,72 @@ private fun GameStatusCard(
                 game.gameStatusText
             }.trim(),
             textAlign = TextAlign.Center,
-            color = MaterialTheme.colors.primary,
+            color = color,
             fontSize = 16.sp,
             fontStyle = FontStyle.Italic
         )
-        AnimatedVisibility(
-            modifier = Modifier
-                .constrainAs(expandBtn) {
-                    top.linkTo(homeScoreText.bottom)
-                    linkTo(parent.start, parent.end)
-                    width = Dimension.fillToConstraints
-                }
-                .height(24.dp)
-                .rippleClickable { isExpand = true }
-                .padding(vertical = 2.dp),
-            visible = !isExpand,
-            enter = expandIn(),
-            exit = shrinkOut()
-        ) {
-            Image(
-                painter = painterResource(R.drawable.ic_black_expand_more),
-                alpha = 0.6f,
-                colorFilter = ColorFilter.tint(MaterialTheme.colors.primary),
-                contentDescription = null
-            )
-        }
-        AnimatedVisibility(
-            modifier = Modifier
-                .constrainAs(playersDetail) {
-                    linkTo(parent.start, parent.end, 24.dp, 24.dp)
-                    top.linkTo(homeScoreText.bottom)
-                    width = Dimension.fillToConstraints
-                },
-            visible = isExpand,
-            enter = expandIn(),
-            exit = shrinkOut()
-        ) {
-            Column {
-                val isComingSoon = game.gameStatus == GameStatusCode.COMING_SOON
-                val leaders = if (isComingSoon) game.teamLeaders else game.gameLeaders
-                val homeLeader = leaders?.homeLeaders
-                val awayLeader = leaders?.awayLeaders
-                if (homeLeader != null && awayLeader != null) {
-                    LeaderInfo(
-                        modifier = Modifier
-                            .padding(top = 8.dp)
-                            .fillMaxWidth()
-                            .wrapContentHeight(),
-                        isGameFinal = !isComingSoon,
-                        homeLeader = homeLeader,
-                        awayLeader = awayLeader
-                    )
-                }
+        if (expandable) {
+            AnimatedVisibility(
+                modifier = Modifier
+                    .constrainAs(expandBtn) {
+                        top.linkTo(homeScoreText.bottom)
+                        linkTo(parent.start, parent.end)
+                        width = Dimension.fillToConstraints
+                    }
+                    .height(24.dp)
+                    .rippleClickable { isExpand = true }
+                    .padding(vertical = 2.dp),
+                visible = !isExpand,
+                enter = expandIn(),
+                exit = shrinkOut()
+            ) {
                 Image(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(24.dp)
-                        .rippleClickable { isExpand = false }
-                        .padding(vertical = 2.dp),
-                    painter = painterResource(R.drawable.ic_black_collpase_more),
+                    painter = painterResource(R.drawable.ic_black_expand_more),
                     alpha = 0.6f,
-                    colorFilter = ColorFilter.tint(MaterialTheme.colors.primary),
+                    colorFilter = ColorFilter.tint(color),
                     contentDescription = null
                 )
+            }
+            AnimatedVisibility(
+                modifier = Modifier
+                    .constrainAs(playersDetail) {
+                        linkTo(parent.start, parent.end, 24.dp, 24.dp)
+                        top.linkTo(homeScoreText.bottom)
+                        width = Dimension.fillToConstraints
+                    },
+                visible = isExpand,
+                enter = expandIn(),
+                exit = shrinkOut()
+            ) {
+                Column {
+                    val isComingSoon = game.gameStatus == GameStatusCode.COMING_SOON
+                    val leaders = if (isComingSoon) game.teamLeaders else game.gameLeaders
+                    val homeLeader = leaders?.homeLeaders
+                    val awayLeader = leaders?.awayLeaders
+                    if (homeLeader != null && awayLeader != null) {
+                        LeaderInfo(
+                            modifier = Modifier
+                                .padding(top = 8.dp)
+                                .fillMaxWidth()
+                                .wrapContentHeight(),
+                            isGameFinal = !isComingSoon,
+                            homeLeader = homeLeader,
+                            awayLeader = awayLeader,
+                            color = color
+                        )
+                    }
+                    Image(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(24.dp)
+                            .rippleClickable { isExpand = false }
+                            .padding(vertical = 2.dp),
+                        painter = painterResource(R.drawable.ic_black_collpase_more),
+                        alpha = 0.6f,
+                        colorFilter = ColorFilter.tint(color),
+                        contentDescription = null
+                    )
+                }
             }
         }
     }
@@ -1013,7 +1020,8 @@ private fun LeaderInfo(
     modifier: Modifier = Modifier,
     isGameFinal: Boolean,
     homeLeader: GameLeaders.GameLeader,
-    awayLeader: GameLeaders.GameLeader
+    awayLeader: GameLeaders.GameLeader,
+    color: Color,
 ) {
     ConstraintLayout(modifier = modifier) {
         val (divider, leaderGroup, ptsTitle, ptsText, rebTitle, rebText, astTitle, astText) = createRefs()
@@ -1027,7 +1035,7 @@ private fun LeaderInfo(
                 .width(36.dp),
             text = stringResource(R.string.player_info_ast_abbr),
             textAlign = TextAlign.Center,
-            color = MaterialTheme.colors.primary,
+            color = color,
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold
         )
@@ -1040,7 +1048,7 @@ private fun LeaderInfo(
                 .width(36.dp),
             text = stringResource(R.string.player_info_reb_abbr),
             textAlign = TextAlign.Center,
-            color = MaterialTheme.colors.primary,
+            color = color,
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold
         )
@@ -1053,7 +1061,7 @@ private fun LeaderInfo(
                 .width(36.dp),
             text = stringResource(R.string.player_info_pts_abbr),
             textAlign = TextAlign.Center,
-            color = MaterialTheme.colors.primary,
+            color = color,
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold
         )
@@ -1099,7 +1107,7 @@ private fun LeaderInfo(
                                 linkTo(playerImage.top, playerInfoText.top)
                             },
                         text = player.name,
-                        color = MaterialTheme.colors.primary,
+                        color = color,
                         fontSize = 12.sp
                     )
                     Text(
@@ -1109,7 +1117,7 @@ private fun LeaderInfo(
                                 linkTo(playerNameText.bottom, playerImage.bottom)
                             },
                         text = player.teamTricode + " | #" + player.jerseyNum + " | " + player.position,
-                        color = MaterialTheme.colors.primary,
+                        color = color,
                         fontSize = 12.sp
                     )
                     Text(
@@ -1121,7 +1129,7 @@ private fun LeaderInfo(
                             .width(36.dp),
                         text = (if (isGameFinal) player.assists.toInt() else player.assists).toString(),
                         textAlign = TextAlign.Center,
-                        color = MaterialTheme.colors.primary,
+                        color = color,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -1134,7 +1142,7 @@ private fun LeaderInfo(
                             .width(36.dp),
                         text = (if (isGameFinal) player.rebounds.toInt() else player.rebounds).toString(),
                         textAlign = TextAlign.Center,
-                        color = MaterialTheme.colors.primary,
+                        color = color,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -1147,7 +1155,7 @@ private fun LeaderInfo(
                             .width(36.dp),
                         text = (if (isGameFinal) player.points.toInt() else player.points).toString(),
                         textAlign = TextAlign.Center,
-                        color = MaterialTheme.colors.primary,
+                        color = color,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold
                     )

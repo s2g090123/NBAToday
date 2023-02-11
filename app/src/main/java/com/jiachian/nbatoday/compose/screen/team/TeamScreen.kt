@@ -21,7 +21,6 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -35,6 +34,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.jiachian.nbatoday.R
+import com.jiachian.nbatoday.compose.screen.home.GameStatusCard
 import com.jiachian.nbatoday.data.local.NbaGame
 import com.jiachian.nbatoday.data.local.player.PlayerStats
 import com.jiachian.nbatoday.data.local.team.TeamStats
@@ -604,116 +604,11 @@ private fun GamesPage(
                         }
                     }
                     .padding(bottom = 8.dp),
-                viewModel = viewModel,
-                teamId = viewModel.teamId,
-                game = game
+                game = game,
+                expandable = false,
+                color = viewModel.colors.primary
             )
         }
-    }
-}
-
-@Composable
-private fun GameStatusCard(
-    modifier: Modifier = Modifier,
-    viewModel: TeamViewModel,
-    teamId: Int,
-    game: NbaGame
-) {
-    ConstraintLayout(
-        modifier = modifier
-    ) {
-        val (
-            homeTeamText, homeLogo, homeScoreText,
-            awayTeamText, awayLogo, awayScoreText,
-            gameStatusText
-        ) = createRefs()
-
-        Text(
-            modifier = Modifier
-                .constrainAs(homeTeamText) {
-                    top.linkTo(parent.top, 8.dp)
-                    linkTo(homeLogo.start, homeLogo.end)
-                },
-            text = game.homeTeam.teamTricode,
-            color = viewModel.colors.primary,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold
-        )
-        AsyncImage(
-            modifier = Modifier
-                .constrainAs(homeLogo) {
-                    top.linkTo(homeTeamText.bottom, 8.dp)
-                    start.linkTo(parent.start, 16.dp)
-                }
-                .size(100.dp),
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(NbaUtils.getTeamLogoUrlById(game.homeTeam.teamId))
-                .decoderFactory(SvgDecoder.Factory())
-                .build(),
-            error = painterResource(NbaUtils.getTeamLogoResById(game.homeTeam.teamId)),
-            placeholder = painterResource(NbaUtils.getTeamLogoResById(game.homeTeam.teamId)),
-            contentDescription = null
-        )
-        Text(
-            modifier = Modifier
-                .constrainAs(homeScoreText) {
-                    top.linkTo(homeLogo.bottom, 8.dp)
-                    linkTo(homeLogo.start, homeLogo.end)
-                },
-            text = game.homeTeam.score.toString(),
-            color = viewModel.colors.primary,
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold
-        )
-        Text(
-            modifier = Modifier
-                .constrainAs(awayTeamText) {
-                    top.linkTo(parent.top, 8.dp)
-                    linkTo(awayLogo.start, awayLogo.end)
-                },
-            text = game.awayTeam.teamTricode,
-            color = viewModel.colors.primary,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold
-        )
-        AsyncImage(
-            modifier = Modifier
-                .constrainAs(awayLogo) {
-                    top.linkTo(awayTeamText.bottom, 8.dp)
-                    end.linkTo(parent.end, 16.dp)
-                }
-                .size(100.dp),
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(NbaUtils.getTeamLogoUrlById(game.awayTeam.teamId))
-                .decoderFactory(SvgDecoder.Factory())
-                .build(),
-            error = painterResource(NbaUtils.getTeamLogoResById(game.awayTeam.teamId)),
-            placeholder = painterResource(NbaUtils.getTeamLogoResById(game.awayTeam.teamId)),
-            contentDescription = null
-        )
-        Text(
-            modifier = Modifier
-                .constrainAs(awayScoreText) {
-                    top.linkTo(awayLogo.bottom, 8.dp)
-                    linkTo(awayLogo.start, awayLogo.end)
-                },
-            text = game.awayTeam.score.toString(),
-            color = viewModel.colors.primary,
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold
-        )
-        Text(
-            modifier = Modifier
-                .constrainAs(gameStatusText) {
-                    linkTo(homeLogo.top, awayLogo.bottom)
-                    linkTo(homeLogo.end, awayLogo.start)
-                },
-            text = game.getStatusText(teamId),
-            textAlign = TextAlign.Center,
-            color = viewModel.colors.primary,
-            fontSize = 16.sp,
-            fontStyle = FontStyle.Italic
-        )
     }
 }
 
