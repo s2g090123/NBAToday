@@ -107,6 +107,10 @@ class NbaLocalDataSource(
         dao.updatePlayerStats(stats)
     }
 
+    override suspend fun deletePlayerStats(teamId: Int, playerIds: List<Int>) {
+        dao.deleteTeamPlayersStats(teamId, playerIds)
+    }
+
     override suspend fun updatePlayerInfo(info: PlayerCareerInfoUpdate) {
         dao.updatePlayerInfo(info)
     }

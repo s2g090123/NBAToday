@@ -43,6 +43,7 @@ abstract class LocalDataSource {
     abstract suspend fun updateTeamStats(stats: TeamStats)
     abstract suspend fun updateTeamStats(stats: List<TeamStats>)
     abstract suspend fun updatePlayerStats(stats: List<PlayerStats>)
+    abstract suspend fun deletePlayerStats(teamId: Int, playerIds: List<Int>)
 
     abstract suspend fun existPlayer(playerId: Int): Boolean
     abstract suspend fun insertPlayerStats(stats: PlayerCareer)

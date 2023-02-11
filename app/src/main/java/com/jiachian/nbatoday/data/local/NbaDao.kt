@@ -157,6 +157,9 @@ interface NbaDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updatePlayerStats(stats: List<PlayerStats>)
 
+    @Query("DELETE FROM nba_player_stats WHERE team_id == :teamId AND player_id IN (:playerIds)")
+    suspend fun deleteTeamPlayersStats(teamId: Int, playerIds: List<Int>)
+
     /** Player */
     @Query("SELECT EXISTS (SELECT 1 FROM nba_player_career_stats WHERE person_id == :playerId)")
     fun exitsPlayer(playerId: Int): Boolean

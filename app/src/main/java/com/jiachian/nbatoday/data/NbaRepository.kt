@@ -120,7 +120,13 @@ class NbaRepository(
     override suspend fun refreshTeamPlayersStats(teamId: Int) {
         val stats = remoteDataSource.getTeamPlayersStats(teamId = teamId)
         if (stats != null) {
+            val localStats = localDataSource.getTeamAndPlayersStats(teamId).firstOrNull()
             val playersStats = stats.toLocal()
+            val oldPlayerIds = localStats?.playersStats?.map { it.playerId }
+            val newPlayerIds = playersStats.map { it.playerId }
+            oldPlayerIds?.filterNot { it in newPlayerIds }?.also {
+                localDataSource.deletePlayerStats(teamId, it)
+            }
             localDataSource.updatePlayerStats(playersStats)
         }
     }
