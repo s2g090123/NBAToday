@@ -10,5 +10,5 @@ data class NbaGameAndBet(
         parentColumn = "game_id",
         entityColumn = "bets_game_id"
     )
-    val bets: Bets?
+    val bets: List<Bets>
 )

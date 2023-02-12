@@ -1044,9 +1044,10 @@ fun GameStatusCard2(
     onConfirm: (gameId: String, homePoints: Long, awayPoints: Long) -> Unit
 ) {
     var isExpand by rememberSaveable { mutableStateOf(false) }
-    val canBet by remember(gameAndBet) {
+    val canBet by remember(gameAndBet, userData) {
         derivedStateOf {
-            gameAndBet.game.gameStatus == GameStatusCode.COMING_SOON && gameAndBet.bets == null
+            gameAndBet.game.gameStatus == GameStatusCode.COMING_SOON &&
+                    (userData == null || gameAndBet.bets.find { it.account == userData.account } == null)
         }
     }
     var showBetsDialog by rememberSaveable { mutableStateOf(false) }
@@ -1603,6 +1604,8 @@ private fun BetDialog(
             onRegister = onRegister,
             onDismiss = onDismiss
         )
+    } else if (gameAndBet.bets.find { it.account == userData.account } != null) {
+        onDismiss()
     } else {
         val context = LocalContext.current
         var homePoints by rememberSaveable { mutableStateOf("") }

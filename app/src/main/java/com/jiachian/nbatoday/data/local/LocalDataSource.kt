@@ -55,5 +55,10 @@ abstract class LocalDataSource {
 
     abstract fun getPlayerCareer(playerId: Int): Flow<PlayerCareer?>
 
-    abstract suspend fun insertBet(gameId: String, homePoints: Long, awayPoints: Long)
+    abstract suspend fun insertBet(
+        account: String,
+        gameId: String,
+        homePoints: Long,
+        awayPoints: Long
+    )
 }

@@ -126,8 +126,18 @@ class NbaLocalDataSource(
         return dao.getPlayerCareer(playerId)
     }
 
-    override suspend fun insertBet(gameId: String, homePoints: Long, awayPoints: Long) {
-        val bets = Bets(gameId = gameId, homePoints = homePoints, awayPoints = awayPoints)
+    override suspend fun insertBet(
+        account: String,
+        gameId: String,
+        homePoints: Long,
+        awayPoints: Long
+    ) {
+        val bets = Bets(
+            account = account,
+            gameId = gameId,
+            homePoints = homePoints,
+            awayPoints = awayPoints
+        )
         dao.insertBet(bets)
     }
 

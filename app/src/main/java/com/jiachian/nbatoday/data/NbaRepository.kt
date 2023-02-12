@@ -263,9 +263,10 @@ class NbaRepository(
 
     override suspend fun bet(gameId: String, homePoints: Long, awayPoints: Long) {
         val user = user.firstOrNull() ?: return
+        val account = user.account ?: return
         val remainPoints = (user.points ?: 0) - homePoints - awayPoints
         if (remainPoints < 0) return
-        localDataSource.insertBet(gameId, homePoints, awayPoints)
+        localDataSource.insertBet(account, gameId, homePoints, awayPoints)
         updatePoints(remainPoints)
     }
 }
