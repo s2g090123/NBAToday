@@ -42,6 +42,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -378,8 +379,14 @@ private fun UserPage(
         }
         if (showLoginDialog) {
             LoginDialog(
-                onLogin = { account, password -> viewModel.login(account, password) },
-                onRegister = { account, password -> viewModel.register(account, password) },
+                onLogin = { account, password ->
+                    viewModel.login(account, password)
+                    showLoginDialog = false
+                },
+                onRegister = { account, password ->
+                    viewModel.register(account, password)
+                    showLoginDialog = false
+                },
                 onDismiss = { showLoginDialog = false }
             )
         }
@@ -1452,6 +1459,7 @@ private fun LoginDialog(
                 onValueChange = { password = it },
                 singleLine = true,
                 maxLines = 1,
+                visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                 textStyle = TextStyle(
                     color = "#de000000".color,
