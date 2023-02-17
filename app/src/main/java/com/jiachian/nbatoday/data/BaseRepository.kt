@@ -1,8 +1,10 @@
 package com.jiachian.nbatoday.data
 
+import com.jiachian.nbatoday.data.local.BetAndNbaGame
 import com.jiachian.nbatoday.data.local.NbaGame
 import com.jiachian.nbatoday.data.local.NbaGameAndBet
 import com.jiachian.nbatoday.data.local.TeamAndPlayers
+import com.jiachian.nbatoday.data.local.bet.Bets
 import com.jiachian.nbatoday.data.local.player.PlayerCareer
 import com.jiachian.nbatoday.data.local.score.GameBoxScore
 import com.jiachian.nbatoday.data.local.team.DefaultTeam
@@ -55,5 +57,11 @@ interface BaseRepository {
     suspend fun register(account: String, password: String)
     suspend fun updatePassword(password: String)
     suspend fun updatePoints(points: Long)
+    suspend fun addPoints(points: Long)
     suspend fun bet(gameId: String, homePoints: Long, awayPoints: Long)
+
+    /** Bets */
+    fun getBetsAndGames(): Flow<List<BetAndNbaGame>>
+    fun getBetsAndGames(account: String): Flow<List<BetAndNbaGame>>
+    suspend fun deleteBets(bets: Bets)
 }

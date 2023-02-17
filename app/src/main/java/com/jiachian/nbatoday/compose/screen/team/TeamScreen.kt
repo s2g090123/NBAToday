@@ -80,7 +80,7 @@ fun TeamScreen(
             )
         }
     }
-    if (isTeamRefreshing) {
+    if (isRefreshing) {
         RefreshingScreen(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colors.secondary

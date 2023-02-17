@@ -8,6 +8,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.jiachian.nbatoday.SCHEDULE_DATE_RANGE
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
+import com.jiachian.nbatoday.compose.screen.bet.BetViewModel
 import com.jiachian.nbatoday.compose.screen.calendar.GameCalendarViewModel
 import com.jiachian.nbatoday.compose.screen.player.PlayerInfoViewModel
 import com.jiachian.nbatoday.compose.screen.score.BoxScoreViewModel
@@ -317,5 +318,14 @@ class HomeViewModel(
             }
             isRefreshingImp.value = false
         }
+    }
+
+    fun openBetScreen() {
+        val account = user.value?.account ?: return
+        openScreen(
+            NbaState.Bet(
+                BetViewModel(account, repository, openScreen, coroutineScope)
+            )
+        )
     }
 }

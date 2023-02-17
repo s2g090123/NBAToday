@@ -141,6 +141,18 @@ class NbaLocalDataSource(
         dao.insertBet(bets)
     }
 
+    override fun getBetsAndGames(): Flow<List<BetAndNbaGame>> {
+        return dao.getBetsAndGames()
+    }
+
+    override fun getBetsAndGamesByUser(account: String): Flow<List<BetAndNbaGame>> {
+        return dao.getBetsAndGamesByUser(account)
+    }
+
+    override suspend fun deleteBets(bets: Bets) {
+        dao.deleteBet(bets)
+    }
+
     override suspend fun existPlayer(playerId: Int): Boolean {
         return dao.exitsPlayer(playerId)
     }

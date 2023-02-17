@@ -400,6 +400,7 @@ private fun UserPage(
                     .background(MaterialTheme.colors.secondary),
                 name = user?.name ?: "",
                 points = user?.points ?: 0,
+                onRewardClick = { viewModel.openBetScreen() },
                 onLogoutClick = { viewModel.logout() }
             )
             LazyVerticalGrid(
@@ -1545,6 +1546,7 @@ private fun AccountInfo(
     modifier: Modifier = Modifier,
     name: String,
     points: Long,
+    onRewardClick: () -> Unit,
     onLogoutClick: () -> Unit
 ) {
     Row(
@@ -1578,7 +1580,25 @@ private fun AccountInfo(
             )
         }
         Row {
-            IconButton(onClick = onLogoutClick) {
+            IconButton(
+                modifier = Modifier
+                    .size(48.dp)
+                    .padding(12.dp),
+                onClick = onRewardClick
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_black_coin),
+                    contentDescription = null,
+                    tint = MaterialTheme.colors.primaryVariant
+                )
+            }
+            IconButton(
+                modifier = Modifier
+                    .padding(start = 8.dp)
+                    .size(48.dp)
+                    .padding(12.dp),
+                onClick = onLogoutClick
+            ) {
                 Icon(
                     painter = painterResource(R.drawable.ic_black_logout),
                     contentDescription = null,

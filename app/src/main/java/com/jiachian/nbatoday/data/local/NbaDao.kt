@@ -27,6 +27,9 @@ interface NbaDao {
     @Query("SELECT * FROM nba_game_bets")
     fun getBetsAndGames(): Flow<List<BetAndNbaGame>>
 
+    @Query("SELECT * FROM nba_game_bets WHERE bets_account == :account")
+    fun getBetsAndGamesByUser(account: String): Flow<List<BetAndNbaGame>>
+
     @Query("SELECT * FROM nba_game WHERE game_date == :date")
     suspend fun getGamesAt(date: Long): List<NbaGame>
 
@@ -189,4 +192,7 @@ interface NbaDao {
     /** Bet */
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertBet(bet: Bets)
+
+    @Delete
+    suspend fun deleteBet(bet: Bets)
 }

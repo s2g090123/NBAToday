@@ -3,10 +3,8 @@ package com.jiachian.nbatoday.data
 import com.jiachian.nbatoday.NBA_LEAGUE_ID
 import com.jiachian.nbatoday.SCHEDULE_DATE_RANGE
 import com.jiachian.nbatoday.data.datastore.NbaDataStore
-import com.jiachian.nbatoday.data.local.LocalDataSource
-import com.jiachian.nbatoday.data.local.NbaGame
-import com.jiachian.nbatoday.data.local.NbaGameAndBet
-import com.jiachian.nbatoday.data.local.TeamAndPlayers
+import com.jiachian.nbatoday.data.local.*
+import com.jiachian.nbatoday.data.local.bet.Bets
 import com.jiachian.nbatoday.data.local.player.PlayerCareer
 import com.jiachian.nbatoday.data.local.score.GameBoxScore
 import com.jiachian.nbatoday.data.local.team.DefaultTeam
@@ -261,6 +259,24 @@ class NbaRepository(
         )
     }
 
+    override suspend fun addPoints(points: Long) {
+        val user = user.firstOrNull() ?: return
+        val account = user.account ?: return
+        val token = user.token ?: return
+        val currentPoint = user.points ?: return
+        val updatePoints = currentPoint + points
+        remoteDataSource.updatePoints(account, updatePoints, token)
+        dataStore.updateUser(
+            User(
+                account = account,
+                name = user.name,
+                points = updatePoints,
+                password = user.password,
+                token = token
+            )
+        )
+    }
+
     override suspend fun bet(gameId: String, homePoints: Long, awayPoints: Long) {
         val user = user.firstOrNull() ?: return
         val account = user.account ?: return
@@ -268,5 +284,17 @@ class NbaRepository(
         if (remainPoints < 0) return
         localDataSource.insertBet(account, gameId, homePoints, awayPoints)
         updatePoints(remainPoints)
+    }
+
+    override fun getBetsAndGames(): Flow<List<BetAndNbaGame>> {
+        return localDataSource.getBetsAndGames()
+    }
+
+    override fun getBetsAndGames(account: String): Flow<List<BetAndNbaGame>> {
+        return localDataSource.getBetsAndGamesByUser(account)
+    }
+
+    override suspend fun deleteBets(bets: Bets) {
+        localDataSource.deleteBets(bets)
     }
 }

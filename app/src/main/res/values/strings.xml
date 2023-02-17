@@ -100,4 +100,15 @@
     <string name="bet_warning_cancel">CANCEL</string>
     <string name="bet_not_enough">點數不足</string>
     <string name="bet_point_require">請至少下注一隊</string>
+    <string name="bet_no_record">沒有任何下注紀錄</string>
+    <string name="bet_ask_turn_table_title">是否使用幸運轉盤</string>
+    <string name="bet_ask_turn_table_text">您目前已贏得%d點數，損失%d點數，是否繼續下注於幸運轉盤？</string>
+    <string name="bet_ask_turn_table_continue">繼續</string>
+    <string name="bet_ask_turn_table_cancel">取消</string>
+    <string name="bet_turn_table_start">START</string>
+    <string name="bet_reward_lose_title">哭啊</string>
+    <string name="bet_reward_lose_text">您因為幸運輪盤損失%d點數</string>
+    <string name="bet_reward_win_title">爽啊</string>
+    <string name="bet_reward_win_text">您因為幸運輪盤贏得%d點數</string>
+    <string name="bet_reward_ok">確定</string>
 </resources>

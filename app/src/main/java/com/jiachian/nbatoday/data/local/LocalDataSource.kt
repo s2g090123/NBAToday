@@ -1,5 +1,6 @@
 package com.jiachian.nbatoday.data.local
 
+import com.jiachian.nbatoday.data.local.bet.Bets
 import com.jiachian.nbatoday.data.local.player.PlayerCareer
 import com.jiachian.nbatoday.data.local.player.PlayerCareerInfoUpdate
 import com.jiachian.nbatoday.data.local.player.PlayerCareerStatsUpdate
@@ -61,4 +62,8 @@ abstract class LocalDataSource {
         homePoints: Long,
         awayPoints: Long
     )
+
+    abstract fun getBetsAndGames(): Flow<List<BetAndNbaGame>>
+    abstract fun getBetsAndGamesByUser(account: String): Flow<List<BetAndNbaGame>>
+    abstract suspend fun deleteBets(bets: Bets)
 }
