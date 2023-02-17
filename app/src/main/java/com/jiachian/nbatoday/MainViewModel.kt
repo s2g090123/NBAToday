@@ -60,6 +60,12 @@ class MainViewModel(
             val colors = dataStore.themeColors.first()
             updateColors(colors)
         }
+        viewModelScope.launch(Dispatchers.IO) {
+            val user = dataStore.userData.firstOrNull() ?: return@launch
+            val account = user.account ?: return@launch
+            val password = user.password ?: return@launch
+            repository.login(account, password)
+        }
     }
 
     fun updateState(state: NbaState) {
