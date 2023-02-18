@@ -5,22 +5,23 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Observer
 import androidx.lifecycle.asLiveData
 import com.jiachian.nbatoday.compose.screen.bet.BetScreen
@@ -32,6 +33,7 @@ import com.jiachian.nbatoday.compose.screen.team.TeamScreen
 import com.jiachian.nbatoday.compose.state.NbaState
 import com.jiachian.nbatoday.compose.theme.NBATodayTheme
 import com.jiachian.nbatoday.utils.LocalActivity
+import kotlinx.coroutines.delay
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
@@ -86,16 +88,54 @@ private fun NbaScreen(viewModel: MainViewModel) {
 
 @Composable
 private fun SplashScreen() {
+    val title = remember { "NBAToday" }
+    var tick by rememberSaveable { mutableStateOf(0) }
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        CircularProgressIndicator(color = MaterialTheme.colors.secondary)
+        Row {
+            repeat(title.length) {
+                Text(
+                    text = title[it].toString(),
+                    color = animateColorAsState(
+                        targetValue = MaterialTheme.colors.secondary.copy(if (tick in it until title.length * 2 - it) 1f else 0.5f),
+                        animationSpec = tween(durationMillis = 500, easing = FastOutSlowInEasing)
+                    ).value,
+                    fontSize = 64.sp,
+                    fontWeight = FontWeight.Medium,
+                    fontFamily = FontFamily.Cursive
+                )
+                if (it == 2) {
+                    Text(
+                        text = " ",
+                        fontSize = 64.sp,
+                        fontWeight = FontWeight.Medium,
+                        fontFamily = FontFamily.Cursive
+                    )
+                }
+            }
+        }
         Text(
-            modifier = Modifier.padding(top = 12.dp),
+            modifier = Modifier.padding(top = 8.dp),
             text = stringResource(R.string.is_loading_app),
-            color = MaterialTheme.colors.secondary
+            color = animateColorAsState(
+                targetValue = MaterialTheme.colors.secondary.copy(if (tick % 2 == 0) 0.25f else 1f),
+                animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
+            ).value,
+            fontSize = 14.sp
         )
+    }
+    LaunchedEffect(Unit) {
+        val length = title.length
+        while (true) {
+            delay(333)
+            if (tick >= length * 2) {
+                tick = 0
+            } else {
+                tick += 1
+            }
+        }
     }
 }
 
