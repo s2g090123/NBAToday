@@ -2,6 +2,7 @@ package com.jiachian.nbatoday.data.remote
 
 import com.google.gson.GsonBuilder
 import com.jiachian.nbatoday.CDN_BASE_URL
+import com.jiachian.nbatoday.CURRENT_SEASON
 import com.jiachian.nbatoday.NBA_SERVER_URL
 import com.jiachian.nbatoday.STATS_BASE_URL
 import com.jiachian.nbatoday.data.datastore.NbaDataStore
@@ -58,11 +59,11 @@ class NbaRemoteDataSource(private val dataStore: NbaDataStore) : RemoteDataSourc
     }
 
     override suspend fun getSchedule(): Schedule? {
-        return nbaService.getSchedule()
+        return nbaService.getSchedule().body()
     }
 
     override suspend fun getScoreboard(leagueId: String, gameDate: String): GameScoreboard? {
-        return nbaService.getScoreboard(leagueId, gameDate)
+        return nbaService.getScoreboard(leagueId, gameDate).body()
     }
 
     override suspend fun getScoreboard(
@@ -72,43 +73,43 @@ class NbaRemoteDataSource(private val dataStore: NbaDataStore) : RemoteDataSourc
         day: Int,
         offset: Int
     ): List<GameScoreboard>? {
-        return nbaService.getScoreboards(leagueId, year, month, day, offset)
+        return nbaService.getScoreboards(leagueId, year, month, day, offset).body()
     }
 
     override suspend fun getGameBoxScore(gameId: String): RemoteGameBoxScore? {
-        return nbaService.getGameBoxScore(gameId)
+        return nbaService.getGameBoxScore(gameId).body()
     }
 
     override suspend fun getTeamStats(): RemoteTeamStats? {
-        return nbaService.getTeamStats(season = "2022-23")
+        return nbaService.getTeamStats(season = CURRENT_SEASON).body()
     }
 
     override suspend fun getTeamStats(teamId: Int): RemoteTeamStats? {
-        return nbaService.getTeamStats(season = "2022-23", teamId = teamId)
+        return nbaService.getTeamStats(season = CURRENT_SEASON, teamId = teamId).body()
     }
 
     override suspend fun getTeamPlayersStats(teamId: Int): RemoteTeamPlayerStats? {
-        return nbaService.getTeamPlayersStats(season = "2022-23", teamId = teamId)
+        return nbaService.getTeamPlayersStats(season = CURRENT_SEASON, teamId = teamId).body()
     }
 
     override suspend fun getPlayerInfo(playerId: Int): RemotePlayerInfo? {
-        return nbaService.getPlayerInfo(playerId)
+        return nbaService.getPlayerInfo(playerId).body()
     }
 
     override suspend fun getPlayerCareerStats(playerId: Int): RemotePlayerStats? {
-        return nbaService.getPlayerStats(season = "2022-23", playerId = playerId)
+        return nbaService.getPlayerStats(season = CURRENT_SEASON, playerId = playerId).body()
     }
 
     override suspend fun getPlayerDetail(playerId: Int): RemotePlayerDetail? {
-        return nbaService.getPlayerDetail(season = "2022-23", playerId = playerId)
+        return nbaService.getPlayerDetail(season = CURRENT_SEASON, playerId = playerId).body()
     }
 
     override suspend fun login(account: String, password: String): User? {
-        return nbaService.login(LoginBody(account, password))
+        return nbaService.login(LoginBody(account, password)).body()
     }
 
     override suspend fun register(account: String, password: String): User? {
-        return nbaService.register(LoginBody(account, password))
+        return nbaService.register(LoginBody(account, password)).body()
     }
 
     override suspend fun updatePassword(account: String, password: String, token: String) {

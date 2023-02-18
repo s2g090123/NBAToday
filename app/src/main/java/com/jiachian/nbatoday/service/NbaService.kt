@@ -12,6 +12,7 @@ import com.jiachian.nbatoday.data.remote.user.LoginBody
 import com.jiachian.nbatoday.data.remote.user.UpdatePasswordBody
 import com.jiachian.nbatoday.data.remote.user.UpdatePointBody
 import com.jiachian.nbatoday.data.remote.user.User
+import retrofit2.Response
 import retrofit2.http.*
 
 interface NbaService {
@@ -20,41 +21,41 @@ interface NbaService {
     suspend fun getPlayerDetail(
         @Query("season") season: String,
         @Query("id") playerId: Int
-    ): RemotePlayerDetail?
+    ): Response<RemotePlayerDetail>
 
     @GET("player/stats")
     suspend fun getPlayerStats(
         @Query("season") season: String,
         @Query("id") playerId: Int
-    ): RemotePlayerStats?
+    ): Response<RemotePlayerStats>
 
     @GET("player/info")
     suspend fun getPlayerInfo(
         @Query("id") playerId: Int
-    ): RemotePlayerInfo?
+    ): Response<RemotePlayerInfo>
 
     @GET("team/{teamId}/players")
     suspend fun getTeamPlayersStats(
         @Path("teamId") teamId: Int,
         @Query("season") season: String
-    ): RemoteTeamPlayerStats?
+    ): Response<RemoteTeamPlayerStats>
 
     @GET("team/stats")
     suspend fun getTeamStats(
         @Query("season") season: String,
         @Query("id") teamId: Int
-    ): RemoteTeamStats?
+    ): Response<RemoteTeamStats>
 
     @GET("team/stats")
     suspend fun getTeamStats(
         @Query("season") season: String
-    ): RemoteTeamStats?
+    ): Response<RemoteTeamStats>
 
     @GET("game/scoreboard")
     suspend fun getScoreboard(
         @Query("leagueID") leagueID: String,
         @Query("gameDate") gameDate: String
-    ): GameScoreboard?
+    ): Response<GameScoreboard>
 
     @GET("game/scoreboards")
     suspend fun getScoreboards(
@@ -63,34 +64,34 @@ interface NbaService {
         @Query("month") month: Int,
         @Query("day") day: Int,
         @Query("total") total: Int
-    ): List<GameScoreboard>?
+    ): Response<List<GameScoreboard>>
 
     @GET("game/schedule")
-    suspend fun getSchedule(): Schedule?
+    suspend fun getSchedule(): Response<Schedule>
 
     @GET("game/{gameId}")
     suspend fun getGameBoxScore(
         @Path("gameId") gameId: String
-    ): RemoteGameBoxScore?
+    ): Response<RemoteGameBoxScore>
 
     /** User */
     @POST("user/login")
     suspend fun login(
         @Body loginBody: LoginBody
-    ): User?
+    ): Response<User>
 
     @POST("user/register")
     suspend fun register(
         @Body loginBody: LoginBody
-    ): User?
+    ): Response<User>
 
     @POST("user/password")
     suspend fun updatePassword(
         @Body updatePasswordBody: UpdatePasswordBody
-    ): String?
+    ): Response<String>
 
     @POST("user/points")
     suspend fun updatePoints(
         @Body updatePointBody: UpdatePointBody
-    ): String?
+    ): Response<String>
 }

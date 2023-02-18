@@ -9,3 +9,5 @@ const val SCHEDULE_DATE_RANGE = 7
 const val DATA_STORE_NAME = "nba_data_store"
 
 const val NBA_LEAGUE_ID = "00"
+
+const val CURRENT_SEASON = "2022-23"
