@@ -7,7 +7,7 @@
 
     <application
         android:name="com.jiachian.nbatoday.MainApplication"
-        android:icon="@drawable/ic_nba_launcher"
+        android:icon="@drawable/ic_nba_75th_logo"
         android:label="@string/app_name"
         android:usesCleartextTraffic="true"
         android:theme="@style/Theme.NBAToday"
