@@ -88,7 +88,7 @@ private fun NbaScreen(viewModel: MainViewModel) {
 
 @Composable
 private fun SplashScreen() {
-    val title = remember { "NBAToday" }
+    val title = stringResource(R.string.app_name_splash)
     var tick by rememberSaveable { mutableStateOf(0) }
     Column(
         verticalArrangement = Arrangement.Center,
