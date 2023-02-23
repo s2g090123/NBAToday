@@ -22,6 +22,7 @@ Built with the latest in Android app development technologies! Use the **MVVM an
 Here are the key technologies I've used to create this app:
 - Jetpack Compose
 - Coroutine & Coroutine Flow
+- Compose Navigation
 - Retrofit
 - Room
 - DataStore
