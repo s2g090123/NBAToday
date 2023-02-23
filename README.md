@@ -17,7 +17,7 @@ Overall, NBA Today is the perfect companion for basketball fans.
 ## Technology
 [![](https://mermaid.ink/img/pako:eNp9kU1vwjAMQP9K5RNIoN17mDT6wTrBhWo7jHAwrRnVmrhK0yEE_Pe56eiBw3JK8p6d2L5AwSVBCF8Wm2Ow2igTyHrZKnjPlDKTiHXDLe5rmirYBfP581VBWvPpKXfoSME1WEwUfFR0WkumWsF0SLH4cyO23LnKeDUSdUOSsHJsz_-7sbgxOsxFpVGNejVIfB7NjnLubPGIU8ErLrB-oImnSx_sLB8qN6KlR69Sd072h6wUO4DUg6yPYdajn_nrt-3wxz228soOZqDJaqxK6eilFxW4I2lhoWxLtN8KlLmJh53j_GwKCJ3taAZdU0o74wplEBrCA9bteJuUfbvuZoPmU35yP5KH62GKfpi3X9lakCE?type=png)](https://mermaid.live/edit#pako:eNp9kU1vwjAMQP9K5RNIoN17mDT6wTrBhWo7jHAwrRnVmrhK0yEE_Pe56eiBw3JK8p6d2L5AwSVBCF8Wm2Ow2igTyHrZKnjPlDKTiHXDLe5rmirYBfP581VBWvPpKXfoSME1WEwUfFR0WkumWsF0SLH4cyO23LnKeDUSdUOSsHJsz_-7sbgxOsxFpVGNejVIfB7NjnLubPGIU8ErLrB-oImnSx_sLB8qN6KlR69Sd072h6wUO4DUg6yPYdajn_nrt-3wxz228soOZqDJaqxK6eilFxW4I2lhoWxLtN8KlLmJh53j_GwKCJ3taAZdU0o74wplEBrCA9bteJuUfbvuZoPmU35yP5KH62GKfpi3X9lakCE)
 
-Built with the latest in Android app development technologies! Use the **MVVM and Repository Pattern frameworks**.
+Built with the latest in Android app development technologies! Use the **MVVM and Repository Pattern**.
 
 Here are the key technologies I've used to create this app:
 - Jetpack Compose
