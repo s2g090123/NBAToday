@@ -24,6 +24,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Observer
 import androidx.lifecycle.asLiveData
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.jiachian.nbatoday.compose.screen.bet.BetScreen
 import com.jiachian.nbatoday.compose.screen.calendar.GameCalendarScreen
 import com.jiachian.nbatoday.compose.screen.home.HomeScreen
@@ -77,12 +80,25 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 private fun NbaScreen(viewModel: MainViewModel) {
+    val navController = rememberNavController()
     val isLoadingApp by viewModel.isLoadingApp.collectAsState()
 
-    if (isLoadingApp) {
-        SplashScreen()
-    } else {
-        MainScreen(viewModel)
+    NavHost(
+        modifier = Modifier.fillMaxSize(),
+        navController = navController,
+        startDestination = "splash"
+    ) {
+        composable("splash") {
+            SplashScreen()
+        }
+        composable("home") {
+            MainScreen(viewModel)
+        }
+    }
+    LaunchedEffect(isLoadingApp) {
+        if (!isLoadingApp) {
+            navController.navigate("home")
+        }
     }
 }
 
@@ -91,6 +107,7 @@ private fun SplashScreen() {
     val title = stringResource(R.string.app_name_splash)
     var tick by rememberSaveable { mutableStateOf(0) }
     Column(
+        modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
