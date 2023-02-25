@@ -31,17 +31,21 @@ Here are the key technologies I've used to create this app:
 ## Video
 https://user-images.githubusercontent.com/32809761/219942203-224beaa9-a135-439d-9e14-f51f6078b260.mp4
 
+https://user-images.githubusercontent.com/32809761/221369247-c05eee72-dfca-4f18-9c57-9c10bc025235.mp4
+
 ## Screenshot
-1. Splash Screen
+<p float="left">
 <img src="https://github.com/s2g090123/NBAToday/blob/master/image/Screenshot_1676796391.png"  width="200" height="400">
-2. Home - Schedule
 <img src="https://github.com/s2g090123/NBAToday/blob/master/image/Screenshot_1676796416.png"  width="200" height="400">
-3. Home - Standing
 <img src="https://github.com/s2g090123/NBAToday/blob/master/image/Screenshot_1676796494.png"  width="200" height="400">
-4. Home - User (Customize theme color)
-<img src="https://github.com/s2g090123/NBAToday/blob/master/image/Screenshot_1676796545.png"  width="200" height="400">
-<img src="https://github.com/s2g090123/NBAToday/blob/master/image/Screenshot_1676796556.png"  width="200" height="400">
-5. Game
-<img src="https://github.com/s2g090123/NBAToday/blob/master/image/Screenshot_1676796441.png"  width="200" height="400">
-6. Calendar
-<img src="https://github.com/s2g090123/NBAToday/blob/master/image/Screenshot_1676796475.png"  width="200" height="400">
+  <img src="https://github.com/s2g090123/NBAToday/blob/master/image/Screenshot_1676796545.png"  width="200" height="400">
+   <img src="https://github.com/s2g090123/NBAToday/blob/master/image/Screenshot_1676796556.png" width="200" height="400">
+   <img src="https://github.com/s2g090123/NBAToday/blob/master/image/Screenshot_1676796441.png"  width="200" height="400">
+   <img src="https://github.com/s2g090123/NBAToday/blob/master/image/Screenshot_1676796475.png"  width="200" height="400">
+</p>
+
+## To-do list
+- [ ] Write Unit Tests
+- [ ] Write End to End Tests
+- [ ] CI
+- [ ] Deploy NBA Today Server
