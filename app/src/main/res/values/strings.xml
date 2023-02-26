@@ -103,7 +103,7 @@
     <string name="bet_point_require">Please bet on at least one team</string>
     <string name="bet_no_record">No betting record found.</string>
     <string name="bet_ask_turn_table_title">Use Lucky Wheel</string>
-    <string name="bet_ask_turn_table_text">You have won %d points and lost %d points. Do you want to continue betting on the Lucky Whee?</string>
+    <string name="bet_ask_turn_table_text">You have won %d points and lost %d points. Do you want to continue betting on the Lucky Wheel?</string>
     <string name="bet_ask_turn_table_continue">CONTINUE</string>
     <string name="bet_ask_turn_table_cancel">CANCEL</string>
     <string name="bet_turn_table_start">START</string>
