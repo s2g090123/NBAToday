@@ -17,7 +17,7 @@ import com.jiachian.nbatoday.compose.state.NbaState
 import com.jiachian.nbatoday.compose.theme.NBAColors
 import com.jiachian.nbatoday.compose.theme.updateColors
 import com.jiachian.nbatoday.data.BaseRepository
-import com.jiachian.nbatoday.data.datastore.NbaDataStore
+import com.jiachian.nbatoday.data.datastore.BaseDataStore
 import com.jiachian.nbatoday.data.local.NbaGame
 import com.jiachian.nbatoday.data.local.team.TeamStats
 import com.jiachian.nbatoday.utils.NbaUtils
@@ -38,7 +38,7 @@ data class StandingLabel(
 
 class HomeViewModel(
     private val repository: BaseRepository,
-    private val dataStore: NbaDataStore,
+    private val dataStore: BaseDataStore,
     private val openScreen: (state: NbaState) -> Unit
 ) : ComposeViewModel() {
 

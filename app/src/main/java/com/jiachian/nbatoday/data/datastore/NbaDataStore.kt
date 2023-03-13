@@ -22,7 +22,7 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = DAT
 
 class NbaDataStore(
     private val application: Application
-) {
+) : BaseDataStore {
 
     object PreferencesKeys {
         val STATS_COOKIES = stringSetPreferencesKey("stats_cookies")
@@ -35,19 +35,19 @@ class NbaDataStore(
         application.applicationContext.dataStore
     }
 
-    val statsCookies by lazy {
+    override val statsCookies by lazy {
         dataStore.data.map { pref ->
             pref[STATS_COOKIES] ?: setOf()
         }
     }
 
-    val recordScheduleToday by lazy {
+    override val recordScheduleToday by lazy {
         dataStore.data.map { pref ->
             pref[RECORD_SCHEDULE_TODAY] ?: NbaUtils.formatDate(1990, 1, 1)
         }
     }
 
-    val themeColors by lazy {
+    override val themeColors by lazy {
         dataStore.data.map { pref ->
             val themeColorTeamId = pref[THEME_COLORS]
             themeColorTeamId?.let {
@@ -56,7 +56,7 @@ class NbaDataStore(
         }
     }
 
-    val userData by lazy {
+    override val userData by lazy {
         dataStore.data.map { pref ->
             val userData = pref[USER_DATA]
             val gson = Gson()
@@ -65,25 +65,25 @@ class NbaDataStore(
         }
     }
 
-    suspend fun updateStatsCookies(cookies: Set<String>) {
+    override suspend fun updateStatsCookies(cookies: Set<String>) {
         dataStore.edit { settings ->
             settings[STATS_COOKIES] = cookies
         }
     }
 
-    suspend fun updateRecordScheduleToday(year: Int, month: Int, day: Int) {
+    override suspend fun updateRecordScheduleToday(year: Int, month: Int, day: Int) {
         dataStore.edit { settings ->
             settings[RECORD_SCHEDULE_TODAY] = NbaUtils.formatDate(year, month, day)
         }
     }
 
-    suspend fun updateThemeColor(teamId: Int) {
+    override suspend fun updateThemeColor(teamId: Int) {
         dataStore.edit { settings ->
             settings[THEME_COLORS] = teamId
         }
     }
 
-    suspend fun updateUser(user: User?) {
+    override suspend fun updateUser(user: User?) {
         dataStore.edit { settings ->
             settings[USER_DATA] = if (user != null) {
                 val gson = Gson()

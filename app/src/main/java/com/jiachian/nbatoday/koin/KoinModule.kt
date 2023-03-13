@@ -2,6 +2,7 @@ package com.jiachian.nbatoday.koin
 
 import com.jiachian.nbatoday.MainViewModel
 import com.jiachian.nbatoday.data.NbaRepository
+import com.jiachian.nbatoday.data.datastore.BaseDataStore
 import com.jiachian.nbatoday.data.datastore.NbaDataStore
 import com.jiachian.nbatoday.data.local.NbaDatabase
 import com.jiachian.nbatoday.data.local.NbaLocalDataSource
@@ -19,7 +20,7 @@ val module = module {
 
     single { NbaDatabase.getInstance(androidContext()) }
     single { NbaRepository(get<NbaRemoteDataSource>(), get<NbaLocalDataSource>(), get()) }
-    single { NbaDataStore(androidApplication()) }
+    single { NbaDataStore(androidApplication()) as BaseDataStore }
 
     viewModel { MainViewModel(get<NbaRepository>(), get()) }
 }

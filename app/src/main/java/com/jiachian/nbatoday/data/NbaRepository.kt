@@ -2,7 +2,7 @@ package com.jiachian.nbatoday.data
 
 import com.jiachian.nbatoday.NBA_LEAGUE_ID
 import com.jiachian.nbatoday.SCHEDULE_DATE_RANGE
-import com.jiachian.nbatoday.data.datastore.NbaDataStore
+import com.jiachian.nbatoday.data.datastore.BaseDataStore
 import com.jiachian.nbatoday.data.local.*
 import com.jiachian.nbatoday.data.local.bet.Bets
 import com.jiachian.nbatoday.data.local.player.PlayerCareer
@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit
 class NbaRepository(
     private val remoteDataSource: RemoteDataSource,
     private val localDataSource: LocalDataSource,
-    private val dataStore: NbaDataStore
+    private val dataStore: BaseDataStore
 ) : BaseRepository {
 
     override val dates: Flow<List<Date>> = localDataSource.dates
