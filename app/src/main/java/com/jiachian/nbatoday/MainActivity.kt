@@ -5,17 +5,20 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.animateColor
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.*
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.ExperimentalTextApi
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDirection
@@ -36,7 +39,6 @@ import com.jiachian.nbatoday.compose.screen.team.TeamScreen
 import com.jiachian.nbatoday.compose.state.NbaState
 import com.jiachian.nbatoday.compose.theme.NBATodayTheme
 import com.jiachian.nbatoday.utils.LocalActivity
-import kotlinx.coroutines.delay
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
@@ -89,7 +91,9 @@ private fun NbaScreen(viewModel: MainViewModel) {
         startDestination = "splash"
     ) {
         composable("splash") {
-            SplashScreen()
+            SplashScreen(
+                listOf(MaterialTheme.colors.secondary.copy(0.25f), MaterialTheme.colors.secondary)
+            )
         }
         composable("home") {
             MainScreen(viewModel)
@@ -102,57 +106,63 @@ private fun NbaScreen(viewModel: MainViewModel) {
     }
 }
 
+@OptIn(ExperimentalTextApi::class)
 @Composable
-private fun SplashScreen() {
-    val title = stringResource(R.string.app_name_splash)
-    var tick by rememberSaveable { mutableStateOf(0) }
+private fun SplashScreen(
+    colors: List<Color>
+) {
+    val infiniteAnimation = rememberInfiniteTransition()
+    val colorAnimation by infiniteAnimation.animateColor(
+        initialValue = MaterialTheme.colors.secondary.copy(0.25f),
+        targetValue = MaterialTheme.colors.secondary,
+        animationSpec = InfiniteRepeatableSpec(
+            animation = tween(durationMillis = 300, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+    val offset by infiniteAnimation.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(2000, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+    val brush = remember(offset) {
+        object : ShaderBrush() {
+            override fun createShader(size: Size): Shader {
+                val widthOffset = size.width * offset
+                val heightOffset = size.height
+                return LinearGradientShader(
+                    colors = colors,
+                    from = Offset(widthOffset, heightOffset),
+                    to = Offset(widthOffset + size.width, heightOffset + size.height),
+                    tileMode = TileMode.Mirror
+                )
+            }
+        }
+    }
+
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row {
-            repeat(title.length) {
-                Text(
-                    text = title[it].toString(),
-                    color = animateColorAsState(
-                        targetValue = MaterialTheme.colors.secondary.copy(if (tick in it until title.length * 2 - it) 1f else 0.5f),
-                        animationSpec = tween(durationMillis = 500, easing = FastOutSlowInEasing)
-                    ).value,
-                    fontSize = 64.sp,
-                    fontWeight = FontWeight.Medium,
-                    fontFamily = FontFamily.Cursive
-                )
-                if (it == 2) {
-                    Text(
-                        text = " ",
-                        fontSize = 64.sp,
-                        fontWeight = FontWeight.Medium,
-                        fontFamily = FontFamily.Cursive
-                    )
-                }
-            }
+            Text(
+                text = stringResource(R.string.app_name_splash),
+                fontSize = 64.sp,
+                fontWeight = FontWeight.Medium,
+                fontFamily = FontFamily.Cursive,
+                style = TextStyle(brush = brush)
+            )
         }
         Text(
             modifier = Modifier.padding(top = 8.dp),
             text = stringResource(R.string.is_loading_app),
-            color = animateColorAsState(
-                targetValue = MaterialTheme.colors.secondary.copy(if (tick % 2 == 0) 0.25f else 1f),
-                animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
-            ).value,
+            color = colorAnimation,
             fontSize = 14.sp
         )
-    }
-    LaunchedEffect(Unit) {
-        val length = title.length
-        while (true) {
-            delay(333)
-            if (tick >= length * 2) {
-                tick = 0
-            } else {
-                tick += 1
-            }
-        }
     }
 }
 
