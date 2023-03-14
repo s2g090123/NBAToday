@@ -24,9 +24,6 @@ class NbaRepository(
     private val dataStore: BaseDataStore
 ) : BaseRepository {
 
-    override val dates: Flow<List<Date>> = localDataSource.dates
-    override val games: Flow<List<NbaGame>> = localDataSource.games
-    override val gamesAndBets: Flow<List<NbaGameAndBet>> = localDataSource.gamesAndBets
     override val user: Flow<User?> = dataStore.userData
 
     override suspend fun refreshSchedule() {
@@ -284,6 +281,10 @@ class NbaRepository(
         if (remainPoints < 0) return
         localDataSource.insertBet(account, gameId, homePoints, awayPoints)
         updatePoints(remainPoints)
+    }
+
+    override fun getGamesAndBets(): Flow<List<NbaGameAndBet>> {
+        return localDataSource.gamesAndBets
     }
 
     override fun getBetsAndGames(): Flow<List<BetAndNbaGame>> {

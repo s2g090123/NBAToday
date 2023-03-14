@@ -30,7 +30,7 @@ class GameCalendarViewModel(
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined)
 ) : ComposeViewModel() {
 
-    private val games = repository.gamesAndBets
+    private val games = repository.getGamesAndBets()
     val user = repository.user
         .stateIn(coroutineScope, SharingStarted.Eagerly, null)
 

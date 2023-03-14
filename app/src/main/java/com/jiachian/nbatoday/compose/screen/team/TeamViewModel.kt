@@ -37,7 +37,7 @@ class TeamViewModel(
 
     val colors = DefaultTeam.getColorsById(teamId)
 
-    private val games = repository.gamesAndBets
+    private val games = repository.getGamesAndBets()
     val gamesBefore = games.map { games ->
         games.filter {
             (it.game.homeTeam.teamId == teamId || it.game.awayTeam.teamId == teamId) &&

@@ -11,15 +11,8 @@ import com.jiachian.nbatoday.data.local.team.DefaultTeam
 import com.jiachian.nbatoday.data.local.team.TeamStats
 import com.jiachian.nbatoday.data.remote.user.User
 import kotlinx.coroutines.flow.Flow
-import java.util.*
 
 interface BaseRepository {
-
-    val dates: Flow<List<Date>>
-
-    val games: Flow<List<NbaGame>>
-
-    val gamesAndBets: Flow<List<NbaGameAndBet>>
 
     val user: Flow<User?>
 
@@ -61,6 +54,7 @@ interface BaseRepository {
     suspend fun bet(gameId: String, homePoints: Long, awayPoints: Long)
 
     /** Bets */
+    fun getGamesAndBets(): Flow<List<NbaGameAndBet>>
     fun getBetsAndGames(): Flow<List<BetAndNbaGame>>
     fun getBetsAndGames(account: String): Flow<List<BetAndNbaGame>>
     suspend fun deleteBets(bets: Bets)
