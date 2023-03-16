@@ -16,6 +16,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class BetViewModelTest {
 
     private var currentState: NbaState? = null
@@ -25,7 +26,6 @@ class BetViewModelTest {
     @get:Rule
     val testRule = TestScopeRule()
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Before
     fun setup() = runTest {
         viewModel = createViewModel(testRule.testDispatcher)
