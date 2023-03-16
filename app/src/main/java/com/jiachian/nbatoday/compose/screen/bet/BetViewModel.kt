@@ -7,14 +7,11 @@ import com.jiachian.nbatoday.compose.state.NbaState
 import com.jiachian.nbatoday.data.BaseRepository
 import com.jiachian.nbatoday.data.local.BetAndNbaGame
 import com.jiachian.nbatoday.data.remote.game.GameStatusCode
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 data class BetsTurnTableData(
     val winPoints: Long,
@@ -25,7 +22,8 @@ class BetViewModel(
     private val account: String,
     private val repository: BaseRepository,
     private val openScreen: (state: NbaState) -> Unit,
-    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined)
+    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined),
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) {
 
     private val isRefreshingImp = MutableStateFlow(false)
@@ -87,11 +85,9 @@ class BetViewModel(
         } else {
             betAndGame.bets.homePoints
         }
-        coroutineScope.launch {
-            withContext(Dispatchers.IO) {
-                repository.addPoints(winPoint)
-                repository.deleteBets(betAndGame.bets)
-            }
+        coroutineScope.launch(ioDispatcher) {
+            repository.addPoints(winPoint)
+            repository.deleteBets(betAndGame.bets)
         }
         askTurnTableImp.value = BetsTurnTableData(
             winPoints = winPoint,
@@ -106,7 +102,7 @@ class BetViewModel(
     fun addPoints(points: Long) {
         coroutineScope.launch {
             isRefreshingImp.value = true
-            withContext(Dispatchers.IO) {
+            withContext(ioDispatcher) {
                 repository.addPoints(points)
             }
             isRefreshingImp.value = false
