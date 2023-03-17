@@ -4,16 +4,15 @@ import com.jiachian.nbatoday.*
 import com.jiachian.nbatoday.compose.state.NbaState
 import com.jiachian.nbatoday.data.TestRepository
 import com.jiachian.nbatoday.data.remote.game.GameStatusCode
-import com.jiachian.nbatoday.rule.TestScopeRule
-import kotlinx.coroutines.CoroutineDispatcher
+import com.jiachian.nbatoday.dispatcher.DispatcherProvider
+import com.jiachian.nbatoday.rule.TestCoroutineEnvironment
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -22,18 +21,19 @@ class BetViewModelTest {
     private var currentState: NbaState? = null
     private val repository = TestRepository()
     private lateinit var viewModel: BetViewModel
-
-    @get:Rule
-    val testScopeRule = TestScopeRule()
+    private val coroutineEnvironment = TestCoroutineEnvironment()
 
     @Before
     fun setup() = runTest {
+        viewModel = createViewModel(
+            coroutineEnvironment.testScope,
+            coroutineEnvironment.testDispatcherProvider
+        )
         repository.login(USER_ACCOUNT, USER_PASSWORD)
         repository.refreshSchedule()
         repository.bet(FINAL_GAME_ID, 0, BASIC_NUMBER.toLong())
         repository.bet(PLAYING_GAME_ID, 0, BASIC_NUMBER.toLong())
         repository.bet(COMING_SOON_GAME_ID, 0, BASIC_NUMBER.toLong())
-        viewModel = createViewModel(testScopeRule.testDispatcherProvider.io)
     }
 
     @After
@@ -43,12 +43,11 @@ class BetViewModelTest {
     }
 
     @Test
-    fun bet_clickFinalGame_askTurnTable() = testScopeRule.testScope.runTest {
+    fun bet_clickFinalGame_askTurnTable() = runTest {
         val betAndGames = viewModel.betAndGame.value
         val finalGame = betAndGames.firstOrNull { it.game.gameStatus == GameStatusCode.FINAL }
         assertThat(finalGame, notNullValue())
         viewModel.clickBetAndGame(finalGame!!)
-        advanceUntilIdle()
         assertThat(viewModel.askTurnTable, notNullValue())
         val points = repository.user.value?.points
         assertThat(points, `is`(USER_POINTS + BASIC_NUMBER * 2))
@@ -94,9 +93,8 @@ class BetViewModelTest {
     }
 
     @Test
-    fun addPoints() = testScopeRule.testScope.runTest {
+    fun addPoints() = runTest {
         viewModel.addPoints(BASIC_NUMBER.toLong())
-        advanceUntilIdle()
         assertThat(
             repository.user.value?.points,
             `is`(USER_POINTS + BASIC_NUMBER)
@@ -104,7 +102,8 @@ class BetViewModelTest {
     }
 
     private fun createViewModel(
-        dispatcher: CoroutineDispatcher
+        coroutineScope: CoroutineScope,
+        dispatcherProvider: DispatcherProvider
     ): BetViewModel {
         return BetViewModel(
             account = USER_ACCOUNT,
@@ -112,7 +111,8 @@ class BetViewModelTest {
             openScreen = {
                 currentState = it
             },
-            ioDispatcher = dispatcher
+            coroutineScope = coroutineScope,
+            dispatcherProvider = dispatcherProvider
         )
     }
 }
