@@ -293,7 +293,7 @@ class TestRepository : BaseRepository {
     }
 
     override suspend fun updatePassword(password: String) {
-        if (user.value == null) return
+        user.value ?: return
         user.value = User(
             account = USER_ACCOUNT,
             name = USER_NAME,
@@ -304,7 +304,7 @@ class TestRepository : BaseRepository {
     }
 
     override suspend fun updatePoints(points: Long) {
-        if (user.value == null) return
+        user.value ?: return
         user.value = User(
             account = USER_ACCOUNT,
             name = USER_NAME,
@@ -344,9 +344,9 @@ class TestRepository : BaseRepository {
 
     override fun getGamesAndBets(): Flow<List<NbaGameAndBet>> {
         return games.combine(bets) { games, bets ->
-            bets.mapNotNull { bet ->
-                val game = games.find { it.gameId == bet.gameId } ?: return@mapNotNull null
-                NbaGameAndBet(game, listOf(bet))
+            games.map { game ->
+                val betList = bets.filter { it.gameId == game.gameId }
+                NbaGameAndBet(game, betList)
             }
         }
     }

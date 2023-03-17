@@ -24,16 +24,16 @@ class BetViewModelTest {
     private lateinit var viewModel: BetViewModel
 
     @get:Rule
-    val testRule = TestScopeRule()
+    val testScopeRule = TestScopeRule()
 
     @Before
     fun setup() = runTest {
-        viewModel = createViewModel(testRule.testDispatcher)
         repository.login(USER_ACCOUNT, USER_PASSWORD)
         repository.refreshSchedule()
         repository.bet(FINAL_GAME_ID, 0, BASIC_NUMBER.toLong())
         repository.bet(PLAYING_GAME_ID, 0, BASIC_NUMBER.toLong())
         repository.bet(COMING_SOON_GAME_ID, 0, BASIC_NUMBER.toLong())
+        viewModel = createViewModel(testScopeRule.testDispatcherProvider.io)
     }
 
     @After
@@ -43,7 +43,7 @@ class BetViewModelTest {
     }
 
     @Test
-    fun bet_clickFinalGame_askTurnTable() = testRule.testScope.runTest {
+    fun bet_clickFinalGame_askTurnTable() = testScopeRule.testScope.runTest {
         val betAndGames = viewModel.betAndGame.value
         val finalGame = betAndGames.firstOrNull { it.game.gameStatus == GameStatusCode.FINAL }
         assertThat(finalGame, notNullValue())
@@ -94,7 +94,7 @@ class BetViewModelTest {
     }
 
     @Test
-    fun addPoints() = testRule.testScope.runTest {
+    fun addPoints() = testScopeRule.testScope.runTest {
         viewModel.addPoints(BASIC_NUMBER.toLong())
         advanceUntilIdle()
         assertThat(
