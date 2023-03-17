@@ -5,6 +5,7 @@ import com.jiachian.nbatoday.compose.state.NbaState
 import com.jiachian.nbatoday.data.TestRepository
 import com.jiachian.nbatoday.data.local.NbaGameAndBet
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
+import com.jiachian.nbatoday.rule.CalendarRule
 import com.jiachian.nbatoday.rule.TestCoroutineEnvironment
 import com.jiachian.nbatoday.utils.NbaUtils
 import kotlinx.coroutines.CoroutineScope
@@ -17,6 +18,7 @@ import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import java.util.*
 
@@ -27,6 +29,9 @@ class GameCalendarViewModelTest {
     private val repository = TestRepository()
     private var currentState: NbaState? = null
     private val coroutineEnvironment = TestCoroutineEnvironment()
+
+    @get:Rule
+    val calendarRule = CalendarRule()
 
     @Before
     fun setup() = runTest {
@@ -45,9 +50,7 @@ class GameCalendarViewModelTest {
 
     @Test
     fun calendar_getCurrentDateString() {
-        val date = Date(BASIC_TIME)
         val calendar = NbaUtils.getCalendar()
-        calendar.time = date
         val year = calendar.get(Calendar.YEAR)
         val month = calendar.get(Calendar.MONTH) + 1
         val expectedKey = year * 100 + month
@@ -182,11 +185,8 @@ class GameCalendarViewModelTest {
     }
 
     private fun generateCalendarData(): List<DateData> {
-        val date = Date(BASIC_TIME)
         val data = mutableListOf<DateData>()
-        val cal = NbaUtils.getCalendar().apply {
-            time = date
-        }
+        val cal = NbaUtils.getCalendar()
         val year = cal.get(Calendar.YEAR)
         val month = cal.get(Calendar.MONTH) + 1
         while (cal.get(Calendar.YEAR) <= year && cal.get(Calendar.MONTH) + 1 <= month) {
@@ -209,10 +209,7 @@ class GameCalendarViewModelTest {
 
     private suspend fun generateGamesAndBets(): List<List<NbaGameAndBet>> {
         val games = repository.getGamesAndBets().first()
-        val date = Date(BASIC_TIME)
-        val cal = NbaUtils.getCalendar().apply {
-            time = date
-        }
+        val cal = NbaUtils.getCalendar()
         val year = cal.get(Calendar.YEAR)
         val month = cal.get(Calendar.MONTH) + 1
         cal.apply {
