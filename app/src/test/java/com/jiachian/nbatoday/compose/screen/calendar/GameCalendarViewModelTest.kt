@@ -5,7 +5,7 @@ import com.jiachian.nbatoday.compose.state.NbaState
 import com.jiachian.nbatoday.data.TestRepository
 import com.jiachian.nbatoday.data.local.NbaGameAndBet
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
-import com.jiachian.nbatoday.rule.TestScopeRule
+import com.jiachian.nbatoday.rule.TestCoroutineEnvironment
 import com.jiachian.nbatoday.utils.NbaUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -17,7 +17,6 @@ import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import java.util.*
 
@@ -27,14 +26,15 @@ class GameCalendarViewModelTest {
     private lateinit var viewModel: GameCalendarViewModel
     private val repository = TestRepository()
     private var currentState: NbaState? = null
-
-    @get:Rule
-    val testScopeRule = TestScopeRule()
+    private val coroutineEnvironment = TestCoroutineEnvironment()
 
     @Before
     fun setup() = runTest {
         repository.refreshSchedule()
-        viewModel = createViewModel(testScopeRule.testScope, testScopeRule.testDispatcherProvider)
+        viewModel = createViewModel(
+            coroutineEnvironment.testScope,
+            coroutineEnvironment.testDispatcherProvider
+        )
     }
 
     @After

@@ -6,10 +6,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineScheduler
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import org.junit.rules.TestWatcher
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class TestScopeRule : TestWatcher() {
+class TestCoroutineEnvironment {
     val testScheduler = TestCoroutineScheduler()
 
     val testDispatcherProvider = object : DispatcherProvider {
