@@ -28,8 +28,8 @@ class GameCalendarViewModel(
     val date: Date,
     private val repository: BaseRepository,
     private val openScreen: (state: NbaState) -> Unit,
-    private val coroutineScope: CoroutineScope = CoroutineScope(DefaultDispatcherProvider.unconfined),
-    private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider
+    private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
+    private val coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined),
 ) : ComposeViewModel() {
 
     private val games = repository.getGamesAndBets()

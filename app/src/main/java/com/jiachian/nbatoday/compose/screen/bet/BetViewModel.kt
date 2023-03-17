@@ -26,8 +26,8 @@ class BetViewModel(
     private val account: String,
     private val repository: BaseRepository,
     private val openScreen: (state: NbaState) -> Unit,
-    private val coroutineScope: CoroutineScope = CoroutineScope(DefaultDispatcherProvider.unconfined),
-    private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider
+    private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
+    private val coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
 ) {
 
     private val isRefreshingImp = MutableStateFlow(false)
