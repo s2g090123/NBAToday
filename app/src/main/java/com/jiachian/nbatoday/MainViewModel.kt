@@ -10,9 +10,9 @@ import com.jiachian.nbatoday.data.datastore.BaseDataStore
 import com.jiachian.nbatoday.event.EventBroadcaster
 import com.jiachian.nbatoday.event.EventManager
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class MainViewModel(
     private val repository: BaseRepository,
@@ -49,22 +49,25 @@ class MainViewModel(
     }
 
     init {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             isLoadingAppImp.value = true
-            withContext(Dispatchers.IO) {
+            val refreshScheduleDeferred = async {
                 repository.refreshSchedule()
             }
+            val updateColorsDeferred = async {
+                val colors = dataStore.themeColors.first()
+                updateColors(colors)
+            }
+            val loginDeferred = async {
+                val user = dataStore.userData.firstOrNull() ?: return@async
+                val account = user.account ?: return@async
+                val password = user.password ?: return@async
+                repository.login(account, password)
+            }
+            refreshScheduleDeferred.await()
+            updateColorsDeferred.await()
+            loginDeferred.await()
             isLoadingAppImp.value = false
-        }
-        viewModelScope.launch(Dispatchers.IO) {
-            val colors = dataStore.themeColors.first()
-            updateColors(colors)
-        }
-        viewModelScope.launch(Dispatchers.IO) {
-            val user = dataStore.userData.firstOrNull() ?: return@launch
-            val account = user.account ?: return@launch
-            val password = user.password ?: return@launch
-            repository.login(account, password)
         }
     }
 
