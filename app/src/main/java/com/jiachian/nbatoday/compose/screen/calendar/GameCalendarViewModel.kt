@@ -8,9 +8,10 @@ import com.jiachian.nbatoday.compose.state.NbaState
 import com.jiachian.nbatoday.data.BaseRepository
 import com.jiachian.nbatoday.data.local.NbaGame
 import com.jiachian.nbatoday.data.local.NbaGameAndBet
+import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
+import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.utils.NbaUtils
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -27,7 +28,8 @@ class GameCalendarViewModel(
     val date: Date,
     private val repository: BaseRepository,
     private val openScreen: (state: NbaState) -> Unit,
-    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined)
+    private val coroutineScope: CoroutineScope = CoroutineScope(DefaultDispatcherProvider.unconfined),
+    private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider
 ) : ComposeViewModel() {
 
     private val games = repository.getGamesAndBets()
@@ -40,6 +42,9 @@ class GameCalendarViewModel(
 
     private val isRefreshingImp = MutableStateFlow(false)
     val isRefreshing = isRefreshingImp.asStateFlow()
+
+    private val isLoadingGamesImp = MutableStateFlow(false)
+    val isLoadingGames = isLoadingGamesImp.asStateFlow()
 
     val currentDate: Date
         get() {
@@ -110,25 +115,20 @@ class GameCalendarViewModel(
     ) { games, year, month ->
         getGames(games, year, month)
     }.stateIn(coroutineScope, SharingStarted.Eagerly, emptyList())
-    private val isLoadingGamesImp = MutableStateFlow(false)
-    val isLoadingGames = isLoadingGamesImp.asStateFlow()
 
     private val selectDate = MutableStateFlow(date)
     val selectDateData = combine(
         selectDate,
         calendarData
     ) { date, data ->
-        withContext(Dispatchers.IO) {
-            data.firstOrNull { it.date == date }
-        }
+        data.firstOrNull { it.date == date }
     }.stateIn(coroutineScope, SharingStarted.Eagerly, null)
     val selectGames = combine(
         selectDate,
         gamesData
     ) { date, data ->
-        withContext(Dispatchers.IO) {
-            data.firstOrNull { it.firstOrNull()?.game?.gameDate == date }
-        }
+        data.flatten()
+            .filter { it.game.gameDate == date }
     }.stateIn(coroutineScope, SharingStarted.Eagerly, null)
 
     fun selectDate(date: Date) {
@@ -158,7 +158,7 @@ class GameCalendarViewModel(
     }
 
     private suspend fun getCalendar(year: Int, month: Int): List<DateData> {
-        return withContext(Dispatchers.IO) {
+        return withContext(dispatcherProvider.default) {
             val key = "$year-$month"
             if (calendarMap.containsKey(key)) return@withContext calendarMap[key] ?: emptyList()
             val cal = NbaUtils.getCalendar().apply {
@@ -197,7 +197,7 @@ class GameCalendarViewModel(
         year: Int,
         month: Int
     ): List<List<NbaGameAndBet>> {
-        return withContext(Dispatchers.IO) {
+        return withContext(dispatcherProvider.default) {
             val key = "$year-$month"
             if (gamesMap.containsKey(key)) return@withContext gamesMap[key] ?: emptyList()
             isLoadingGamesImp.value = true
@@ -270,7 +270,7 @@ class GameCalendarViewModel(
     fun login(account: String, password: String) {
         coroutineScope.launch {
             isRefreshingImp.value = true
-            withContext(Dispatchers.IO) {
+            withContext(dispatcherProvider.io) {
                 repository.login(account, password)
             }
             isRefreshingImp.value = false
@@ -280,7 +280,7 @@ class GameCalendarViewModel(
     fun register(account: String, password: String) {
         coroutineScope.launch {
             isRefreshingImp.value = true
-            withContext(Dispatchers.IO) {
+            withContext(dispatcherProvider.io) {
                 repository.register(account, password)
             }
             isRefreshingImp.value = false
@@ -290,7 +290,7 @@ class GameCalendarViewModel(
     fun bet(gameId: String, homePoints: Long, awayPoints: Long) {
         coroutineScope.launch {
             isRefreshingImp.value = true
-            withContext(Dispatchers.IO) {
+            withContext(dispatcherProvider.io) {
                 repository.bet(gameId, homePoints, awayPoints)
             }
             isRefreshingImp.value = false
