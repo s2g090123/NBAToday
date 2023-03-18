@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.text.format.DateUtils
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.jiachian.nbatoday.SCHEDULE_DATE_RANGE
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
@@ -20,6 +19,8 @@ import com.jiachian.nbatoday.data.BaseRepository
 import com.jiachian.nbatoday.data.datastore.BaseDataStore
 import com.jiachian.nbatoday.data.local.NbaGame
 import com.jiachian.nbatoday.data.local.team.TeamStats
+import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
+import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.utils.NbaUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -29,20 +30,13 @@ import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.*
 
-data class StandingLabel(
-    val width: Dp,
-    val text: String,
-    val textAlign: TextAlign,
-    val sort: StandingSort
-)
-
 class HomeViewModel(
     private val repository: BaseRepository,
     private val dataStore: BaseDataStore,
-    private val openScreen: (state: NbaState) -> Unit
+    private val openScreen: (state: NbaState) -> Unit,
+    private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
+    private val coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
 ) : ComposeViewModel() {
-
-    private val coroutineScope = CoroutineScope(Dispatchers.Unconfined)
 
     val user = repository.user
         .stateIn(coroutineScope, SharingStarted.Eagerly, null)
@@ -50,11 +44,11 @@ class HomeViewModel(
     private val isRefreshingImp = MutableStateFlow(false)
     val isRefreshing = isRefreshingImp.asStateFlow()
 
-    private val homeIndexImp = MutableStateFlow(0)
-    val homeIndex = homeIndexImp.asStateFlow()
+    private val homePageImp = MutableStateFlow(HomePage.SCHEDULE)
+    val homePage = homePageImp.asStateFlow()
 
     // Schedule
-    val scheduleDates: List<String> = getDateStrings()
+    val scheduleDates: List<DateData> = getDateData()
     private val scheduleIndexImp = MutableStateFlow(scheduleDates.size / 2)
     val scheduleIndex = scheduleIndexImp.asStateFlow()
     private val scheduleGamesImp = NbaUtils.getCalendar().let {
@@ -70,8 +64,7 @@ class HomeViewModel(
         val calendar = NbaUtils.getCalendar()
         it.groupBy { game ->
             calendar.time = game.game.gameDateTime
-            String.format(
-                "%d/%d/%d",
+            DateData(
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH) + 1,
                 calendar.get(Calendar.DAY_OF_MONTH)
@@ -150,64 +143,39 @@ class HomeViewModel(
         updateTeamStats()
     }
 
-    fun updateHomeIndex(index: Int) {
-        homeIndexImp.value = index.coerceIn(0, 3)
+    fun updateHomePage(page: HomePage) {
+        homePageImp.value = page
     }
 
     fun updateScheduleIndex(index: Int) {
+        if (index !in scheduleDates.indices) return
         scheduleIndexImp.value = index
     }
 
-    private fun getDateStrings(): List<String> {
-        val dateStrings = mutableListOf<String>()
+    private fun getDateData(): List<DateData> {
+        val output = mutableListOf<DateData>()
         val calendar = NbaUtils.getCalendar()
-        val currentTime = calendar.time
-        repeat(SCHEDULE_DATE_RANGE) {
-            calendar.add(Calendar.DAY_OF_MONTH, -1)
-            dateStrings.add(
-                0,
-                String.format(
-                    "%d/%d/%d",
+        calendar.add(Calendar.DAY_OF_MONTH, -SCHEDULE_DATE_RANGE)
+        repeat(SCHEDULE_DATE_RANGE * 2 + 1) {
+            output.add(
+                DateData(
                     calendar.get(Calendar.YEAR),
                     calendar.get(Calendar.MONTH) + 1,
                     calendar.get(Calendar.DAY_OF_MONTH)
                 )
             )
-        }
-        calendar.time = currentTime
-        dateStrings.add(
-            String.format(
-                "%d/%d/%d",
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH) + 1,
-                calendar.get(Calendar.DAY_OF_MONTH)
-            )
-        )
-        repeat(SCHEDULE_DATE_RANGE) {
             calendar.add(Calendar.DAY_OF_MONTH, 1)
-            dateStrings.add(
-                String.format(
-                    "%d/%d/%d",
-                    calendar.get(Calendar.YEAR),
-                    calendar.get(Calendar.MONTH) + 1,
-                    calendar.get(Calendar.DAY_OF_MONTH)
-                )
-            )
         }
-        return dateStrings
+        return output
     }
 
     fun updateTodaySchedule() {
         if (isRefreshingSchedule.value) return
-        val dateString = scheduleDates.getOrNull(scheduleIndex.value) ?: return
-        val dates = dateString.split("/")
-        val year = dates.getOrNull(0)?.toInt() ?: return
-        val month = dates.getOrNull(1)?.toInt() ?: return
-        val day = dates.getOrNull(2)?.toInt() ?: return
+        val dateData = scheduleDates.getOrNull(scheduleIndex.value) ?: return
         coroutineScope.launch {
             isRefreshingScheduleImp.value = true
-            withContext(Dispatchers.IO) {
-                repository.refreshSchedule(year, month, day)
+            withContext(dispatcherProvider.io) {
+                repository.refreshSchedule(dateData.year, dateData.month, dateData.day)
             }
             isRefreshingScheduleImp.value = false
         }
@@ -236,7 +204,7 @@ class HomeViewModel(
         if (isRefreshingTeamStats.value) return
         coroutineScope.launch {
             isRefreshingTeamStatsImp.value = true
-            withContext(Dispatchers.IO) {
+            withContext(dispatcherProvider.io) {
                 repository.refreshTeamStats()
             }
             isRefreshingTeamStatsImp.value = false
@@ -263,18 +231,18 @@ class HomeViewModel(
     }
 
     @SuppressLint("SimpleDateFormat")
-    fun openCalendar(dateString: String) {
+    fun openCalendar(dateData: DateData) {
         val format = SimpleDateFormat("yyyy/MM/dd").apply {
             timeZone = TimeZone.getTimeZone("EST")
         }
-        val date = format.parse(dateString) ?: return
+        val date = format.parse(dateData.dateString) ?: return
         openScreen(
             NbaState.Calendar(
                 GameCalendarViewModel(
-                    date,
-                    repository,
-                    openScreen,
-                    coroutineScope
+                    date = date,
+                    repository = repository,
+                    openScreen = openScreen,
+                    coroutineScope = coroutineScope
                 )
             )
         )
@@ -283,7 +251,7 @@ class HomeViewModel(
     fun login(account: String, password: String) {
         coroutineScope.launch {
             isRefreshingImp.value = true
-            withContext(Dispatchers.IO) {
+            withContext(dispatcherProvider.io) {
                 repository.login(account, password)
             }
             isRefreshingImp.value = false
@@ -293,7 +261,7 @@ class HomeViewModel(
     fun logout() {
         coroutineScope.launch {
             isRefreshingImp.value = true
-            withContext(Dispatchers.IO) {
+            withContext(dispatcherProvider.io) {
                 repository.logout()
             }
             isRefreshingImp.value = false
@@ -303,7 +271,7 @@ class HomeViewModel(
     fun register(account: String, password: String) {
         coroutineScope.launch {
             isRefreshingImp.value = true
-            withContext(Dispatchers.IO) {
+            withContext(dispatcherProvider.io) {
                 repository.register(account, password)
             }
             isRefreshingImp.value = false
@@ -313,7 +281,7 @@ class HomeViewModel(
     fun bet(gameId: String, homePoints: Long, awayPoints: Long) {
         coroutineScope.launch {
             isRefreshingImp.value = true
-            withContext(Dispatchers.IO) {
+            withContext(dispatcherProvider.io) {
                 repository.bet(gameId, homePoints, awayPoints)
             }
             isRefreshingImp.value = false
@@ -324,7 +292,12 @@ class HomeViewModel(
         val account = user.value?.account ?: return
         openScreen(
             NbaState.Bet(
-                BetViewModel(account, repository, openScreen, coroutineScope)
+                BetViewModel(
+                    account = account,
+                    repository = repository,
+                    openScreen = openScreen,
+                    coroutineScope = coroutineScope
+                )
             )
         )
     }

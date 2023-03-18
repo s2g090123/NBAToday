@@ -107,7 +107,7 @@ private fun HomeBody(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel
 ) {
-    val homeIndex by viewModel.homeIndex.collectAsState()
+    val homePage by viewModel.homePage.collectAsState()
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     val lazyState = rememberLazyListState()
 
@@ -142,8 +142,14 @@ private fun HomeBody(
         }
     }
 
-    LaunchedEffect(homeIndex) {
-        lazyState.animateScrollToItem(homeIndex)
+    LaunchedEffect(homePage) {
+        lazyState.animateScrollToItem(
+            when (homePage) {
+                HomePage.SCHEDULE -> 0
+                HomePage.STANDING -> 1
+                HomePage.USER -> 2
+            }
+        )
     }
 }
 
@@ -154,7 +160,7 @@ private fun SchedulePage(
     viewModel: HomeViewModel
 ) {
     val pagerState = rememberPagerState()
-    val dateStrings = viewModel.scheduleDates
+    val dateData = viewModel.scheduleDates
     val index by viewModel.scheduleIndex.collectAsState()
     val scheduleGames by viewModel.scheduleGames.collectAsState()
     val isRefreshing by viewModel.isRefreshingSchedule.collectAsState()
@@ -172,13 +178,13 @@ private fun SchedulePage(
                 .padding(top = 48.dp)
                 .fillMaxSize(),
             state = pagerState,
-            count = dateStrings.size
+            count = dateData.size
         ) { page ->
-            val dateString = dateStrings.getOrNull(page)
+            val data = dateData.getOrNull(page)
             Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
-                if (dateString != null) {
+                if (data != null) {
                     LazyColumn(modifier = Modifier.fillMaxSize()) {
-                        val games = scheduleGames[dateString] ?: listOf()
+                        val games = scheduleGames[data] ?: listOf()
                         item {
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
@@ -186,7 +192,7 @@ private fun SchedulePage(
                             ) {
                                 IconButton(
                                     modifier = Modifier.padding(top = 8.dp, end = 4.dp),
-                                    onClick = { viewModel.openCalendar(dateString) }
+                                    onClick = { viewModel.openCalendar(data) }
                                 ) {
                                     Icon(
                                         painter = painterResource(R.drawable.ic_black_calendar),
@@ -247,11 +253,11 @@ private fun SchedulePage(
                 )
             }
         ) {
-            dateStrings.forEachIndexed { dateIndex, date ->
+            dateData.forEachIndexed { dateIndex, date ->
                 Tab(
                     text = {
                         Text(
-                            text = date.substringAfter("/"),
+                            text = date.monthAndDay,
                             color = MaterialTheme.colors.primary,
                             fontSize = 14.sp
                         )
@@ -781,10 +787,10 @@ private fun HomeBottom(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel
 ) {
-    val selectIndex by viewModel.homeIndex.collectAsState()
-    val scheduleScale by animateFloatAsState(targetValue = if (selectIndex == 0) 1.2f else 1f)
-    val standingScale by animateFloatAsState(targetValue = if (selectIndex == 1) 1.2f else 1f)
-    val themeScale by animateFloatAsState(targetValue = if (selectIndex == 2) 1.2f else 1f)
+    val selectIndex by viewModel.homePage.collectAsState()
+    val scheduleScale by animateFloatAsState(targetValue = if (selectIndex == HomePage.SCHEDULE) 1.2f else 1f)
+    val standingScale by animateFloatAsState(targetValue = if (selectIndex == HomePage.STANDING) 1.2f else 1f)
+    val themeScale by animateFloatAsState(targetValue = if (selectIndex == HomePage.USER) 1.2f else 1f)
 
     Row(
         modifier = modifier
@@ -794,7 +800,7 @@ private fun HomeBottom(
                 .weight(1f)
                 .fillMaxHeight()
                 .scale(scheduleScale)
-                .rippleClickable { viewModel.updateHomeIndex(0) }
+                .rippleClickable { viewModel.updateHomePage(HomePage.SCHEDULE) }
                 .padding(horizontal = 12.dp, vertical = 4.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
@@ -816,7 +822,7 @@ private fun HomeBottom(
                 .weight(1f)
                 .fillMaxHeight()
                 .scale(standingScale)
-                .rippleClickable { viewModel.updateHomeIndex(1) }
+                .rippleClickable { viewModel.updateHomePage(HomePage.STANDING) }
                 .padding(horizontal = 12.dp, vertical = 4.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
@@ -838,7 +844,7 @@ private fun HomeBottom(
                 .weight(1f)
                 .fillMaxHeight()
                 .scale(themeScale)
-                .rippleClickable { viewModel.updateHomeIndex(2) }
+                .rippleClickable { viewModel.updateHomePage(HomePage.USER) }
                 .padding(horizontal = 12.dp, vertical = 4.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally

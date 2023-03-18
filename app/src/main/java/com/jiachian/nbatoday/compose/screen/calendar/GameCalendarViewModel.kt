@@ -17,13 +17,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
 
-data class DateData(
-    val date: Date,
-    val month: Int,
-    val day: Int,
-    val isCurrentMonth: Boolean
-)
-
 class GameCalendarViewModel(
     val date: Date,
     private val repository: BaseRepository,
@@ -103,7 +96,7 @@ class GameCalendarViewModel(
         hasPreviousMonth()
     }.stateIn(coroutineScope, SharingStarted.Eagerly, false)
 
-    private val calendarMap = mutableMapOf<String, List<DateData>>()
+    private val calendarMap = mutableMapOf<String, List<CalendarData>>()
     private val gamesMap = mutableMapOf<String, List<List<NbaGameAndBet>>>()
     val calendarData = combine(
         currentYear, currentMonth
@@ -157,7 +150,7 @@ class GameCalendarViewModel(
         }
     }
 
-    private suspend fun getCalendar(year: Int, month: Int): List<DateData> {
+    private suspend fun getCalendar(year: Int, month: Int): List<CalendarData> {
         return withContext(dispatcherProvider.default) {
             val key = "$year-$month"
             if (calendarMap.containsKey(key)) return@withContext calendarMap[key] ?: emptyList()
@@ -171,13 +164,13 @@ class GameCalendarViewModel(
                 set(Calendar.MILLISECOND, 0)
                 add(Calendar.DATE, -(get(Calendar.DAY_OF_WEEK) - 1))
             }
-            val data = mutableListOf<DateData>()
+            val data = mutableListOf<CalendarData>()
             while (cal.get(Calendar.YEAR) <= year && cal.get(Calendar.MONTH) + 1 <= month) {
                 repeat(7) {
                     val currentMonth = cal.get(Calendar.MONTH) + 1
                     val currentDay = cal.get(Calendar.DAY_OF_MONTH)
                     data.add(
-                        DateData(
+                        CalendarData(
                             cal.time,
                             currentMonth,
                             currentDay,
