@@ -18,6 +18,7 @@ import com.jiachian.nbatoday.compose.theme.updateColors
 import com.jiachian.nbatoday.data.BaseRepository
 import com.jiachian.nbatoday.data.datastore.BaseDataStore
 import com.jiachian.nbatoday.data.local.NbaGame
+import com.jiachian.nbatoday.data.local.team.DefaultTeam
 import com.jiachian.nbatoday.data.local.team.TeamStats
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
@@ -110,8 +111,8 @@ class HomeViewModel(
     }.stateIn(coroutineScope, SharingStarted.Eagerly, mapOf())
     private val isRefreshingTeamStatsImp = MutableStateFlow(false)
     val isRefreshingTeamStats = isRefreshingTeamStatsImp.asStateFlow()
-    private val standingIndexImp = MutableStateFlow(0)
-    val standingIndex = standingIndexImp.asStateFlow()
+    private val selectConferenceImp = MutableStateFlow(DefaultTeam.Conference.EAST)
+    val selectConference = selectConferenceImp.asStateFlow()
     val standingLabel = derivedStateOf {
         listOf(
             StandingLabel(40.dp, "GP", TextAlign.End, StandingSort.GP),
@@ -211,8 +212,8 @@ class HomeViewModel(
         }
     }
 
-    fun updateStandingIndex(index: Int) {
-        standingIndexImp.value = index.coerceIn(0, 1)
+    fun updateStandingConference(conference: DefaultTeam.Conference) {
+        selectConferenceImp.value = conference
     }
 
     fun updateStandingSort(label: StandingLabel) {

@@ -280,13 +280,19 @@ private fun StandingPage(
     viewModel: HomeViewModel
 ) {
     val teamStats by viewModel.teamStats.collectAsState()
-    val selectIndex by viewModel.standingIndex.collectAsState()
+    val selectConference by viewModel.selectConference.collectAsState()
     val isRefreshing by viewModel.isRefreshingTeamStats.collectAsState()
     val pagerState = rememberPagerState()
+    val conferences = remember { DefaultTeam.Conference.values() }
     val pullRefreshState = rememberPullRefreshState(
         refreshing = isRefreshing,
         onRefresh = { viewModel.updateTeamStats() }
     )
+    val selectIndex by remember(selectConference) {
+        derivedStateOf {
+            conferences.indexOf(selectConference)
+        }
+    }
 
     Box(
         modifier = modifier
@@ -296,11 +302,10 @@ private fun StandingPage(
                 .padding(top = 48.dp)
                 .fillMaxSize(),
             state = pagerState,
-            count = 2,
+            count = conferences.size,
             userScrollEnabled = false
         ) { page ->
-            val stats =
-                if (page == 0) teamStats[DefaultTeam.Conference.EAST] else teamStats[DefaultTeam.Conference.WEST]
+            val stats = teamStats[conferences[page]]
             if (stats != null) {
                 TeamStanding(
                     modifier = Modifier
@@ -327,17 +332,22 @@ private fun StandingPage(
                 )
             }
         ) {
-            repeat(2) { index ->
+            conferences.forEach {
                 Tab(
                     text = {
                         Text(
-                            text = stringResource(if (index == 0) R.string.standing_conference_east else R.string.standing_conference_west),
+                            text = stringResource(
+                                when (it) {
+                                    DefaultTeam.Conference.EAST -> R.string.standing_conference_east
+                                    DefaultTeam.Conference.WEST -> R.string.standing_conference_west
+                                }
+                            ),
                             color = MaterialTheme.colors.primary,
                             fontSize = 14.sp
                         )
                     },
-                    selected = selectIndex == index,
-                    onClick = { viewModel.updateStandingIndex(index) }
+                    selected = selectConference == it,
+                    onClick = { viewModel.updateStandingConference(it) }
                 )
             }
         }
