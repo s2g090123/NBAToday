@@ -184,8 +184,8 @@ class GameCalendarViewModelTest {
         )
     }
 
-    private fun generateCalendarData(): List<DateData> {
-        val data = mutableListOf<DateData>()
+    private fun generateCalendarData(): List<CalendarData> {
+        val data = mutableListOf<CalendarData>()
         val cal = NbaUtils.getCalendar()
         val year = cal.get(Calendar.YEAR)
         val month = cal.get(Calendar.MONTH) + 1
@@ -194,7 +194,7 @@ class GameCalendarViewModelTest {
                 val currentMonth = cal.get(Calendar.MONTH) + 1
                 val currentDay = cal.get(Calendar.DAY_OF_MONTH)
                 data.add(
-                    DateData(
+                    CalendarData(
                         cal.time,
                         currentMonth,
                         currentDay,

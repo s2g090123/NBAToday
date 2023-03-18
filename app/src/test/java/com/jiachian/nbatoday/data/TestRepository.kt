@@ -159,12 +159,10 @@ class TestRepository : BaseRepository {
         return games.combine(bets) { games, bets ->
             games.filter { game ->
                 game.gameDate.time in from..to
-            }.mapNotNull { game ->
+            }.map { game ->
                 val bet = bets.filter {
                     it.gameId == game.gameId
-                }.takeIf {
-                    it.isNotEmpty()
-                } ?: return@mapNotNull null
+                }
                 NbaGameAndBet(game, bet)
             }
         }

@@ -24,7 +24,6 @@ import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.utils.NbaUtils
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -226,7 +225,7 @@ class HomeViewModel(
 
     fun updateTheme(teamId: Int, color: NBAColors) {
         updateColors(color)
-        coroutineScope.launch(Dispatchers.IO) {
+        coroutineScope.launch(dispatcherProvider.io) {
             dataStore.updateThemeColor(teamId)
         }
     }
