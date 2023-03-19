@@ -329,7 +329,7 @@ private fun ScoreDetail(
     val selectPage by viewModel.selectPage.collectAsState()
     val homeLeader by viewModel.homeLeader.collectAsState()
     val awayLeader by viewModel.awayLeader.collectAsState()
-    val selectIndex by remember(selectPage) {
+    val selectIndex by remember {
         derivedStateOf {
             tabs.indexOf(selectPage)
         }

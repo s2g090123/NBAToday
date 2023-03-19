@@ -288,7 +288,7 @@ private fun StandingPage(
         refreshing = isRefreshing,
         onRefresh = { viewModel.updateTeamStats() }
     )
-    val selectIndex by remember(selectConference) {
+    val selectIndex by remember {
         derivedStateOf {
             conferences.indexOf(selectConference)
         }
@@ -1647,7 +1647,7 @@ private fun BetDialog(
         var homePoints by rememberSaveable { mutableStateOf("") }
         var awayPoints by rememberSaveable { mutableStateOf("") }
         var showWarning by rememberSaveable { mutableStateOf(false) }
-        val remainPoints by remember(userData, homePoints, awayPoints) {
+        val remainPoints by remember(userData) {
             derivedStateOf {
                 val points = userData.points ?: 0
                 points - (homePoints.toLongOrNull() ?: 0) - (awayPoints.toLongOrNull() ?: 0)

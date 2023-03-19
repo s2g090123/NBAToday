@@ -315,7 +315,7 @@ private fun TeamStatsScreen(
     val gamesAfter by viewModel.gamesAfter.collectAsState()
     val tabs = remember { TeamPageTab.values() }
     val selectPage by viewModel.selectPage.collectAsState()
-    val selectIndex by remember(selectPage) {
+    val selectIndex by remember {
         derivedStateOf {
             tabs.indexOf(selectPage)
         }
