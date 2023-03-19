@@ -269,7 +269,7 @@ private fun SchedulePage(
         }
     }
     LaunchedEffect(index) {
-        pagerState.scrollToPage(index)
+        pagerState.animateScrollToPage(index)
     }
 }
 
@@ -353,7 +353,7 @@ private fun StandingPage(
         }
     }
     LaunchedEffect(selectIndex) {
-        pagerState.scrollToPage(selectIndex)
+        pagerState.animateScrollToPage(selectIndex)
     }
 }
 

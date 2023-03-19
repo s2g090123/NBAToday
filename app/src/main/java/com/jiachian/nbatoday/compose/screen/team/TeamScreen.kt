@@ -313,7 +313,13 @@ private fun TeamStatsScreen(
     val players by viewModel.playersStats.collectAsState()
     val gamesBefore by viewModel.gamesBefore.collectAsState()
     val gamesAfter by viewModel.gamesAfter.collectAsState()
-    val selectIndex by viewModel.selectPageIndex.collectAsState()
+    val tabs = remember { TeamPageTab.values() }
+    val selectPage by viewModel.selectPage.collectAsState()
+    val selectIndex by remember(selectPage) {
+        derivedStateOf {
+            tabs.indexOf(selectPage)
+        }
+    }
 
     Column(modifier = modifier) {
         TabRow(
@@ -327,30 +333,30 @@ private fun TeamStatsScreen(
                 )
             }
         ) {
-            repeat(3) { index ->
+            tabs.forEach {
                 Tab(
                     text = {
                         Text(
                             text = stringResource(
-                                when (index) {
-                                    0 -> R.string.team_page_tab_player
-                                    1 -> R.string.team_page_tab_before_game
-                                    else -> R.string.team_page_tab_next_game
+                                when (it) {
+                                    TeamPageTab.PLAYERS -> R.string.team_page_tab_player
+                                    TeamPageTab.PREVIOUS -> R.string.team_page_tab_before_game
+                                    TeamPageTab.NEXT -> R.string.team_page_tab_next_game
                                 }
                             ),
                             color = viewModel.colors.extra1,
                             fontSize = 14.sp
                         )
                     },
-                    selected = selectIndex == index,
-                    onClick = { viewModel.updatePageIndex(index) }
+                    selected = selectPage == it,
+                    onClick = { viewModel.updateSelectPage(it) }
                 )
             }
         }
         HorizontalPager(
             modifier = Modifier.fillMaxWidth(),
             state = pagerState,
-            count = 3,
+            count = tabs.size,
             userScrollEnabled = false
         ) { index ->
             when (index) {
@@ -381,7 +387,7 @@ private fun TeamStatsScreen(
         }
     }
     LaunchedEffect(selectIndex) {
-        pagerState.scrollToPage(selectIndex)
+        pagerState.animateScrollToPage(selectIndex)
     }
 }
 

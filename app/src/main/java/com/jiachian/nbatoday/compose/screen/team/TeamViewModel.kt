@@ -55,22 +55,22 @@ class TeamViewModel(
     }.stateIn(coroutineScope, SharingStarted.Lazily, null)
 
     val teamRank = repository.getTeamRank(teamId, team.conference)
-        .stateIn(coroutineScope, SharingStarted.Lazily, 0)
+        .stateIn(coroutineScope, SharingStarted.Eagerly, 0)
     val teamPointsRank = repository.getTeamPointsRank(teamId)
-        .stateIn(coroutineScope, SharingStarted.Lazily, 0)
+        .stateIn(coroutineScope, SharingStarted.Eagerly, 0)
     val teamReboundsRank = repository.getTeamReboundsRank(teamId)
-        .stateIn(coroutineScope, SharingStarted.Lazily, 0)
+        .stateIn(coroutineScope, SharingStarted.Eagerly, 0)
     val teamAssistsRank = repository.getTeamAssistsRank(teamId)
-        .stateIn(coroutineScope, SharingStarted.Lazily, 0)
+        .stateIn(coroutineScope, SharingStarted.Eagerly, 0)
     val teamPlusMinusRank = repository.getTeamPlusMinusRank(teamId)
-        .stateIn(coroutineScope, SharingStarted.Lazily, 0)
+        .stateIn(coroutineScope, SharingStarted.Eagerly, 0)
 
     private val isRefreshingImp = MutableStateFlow(false)
     val isRefreshing = isRefreshingImp.asStateFlow()
     private val isTeamRefreshingImp = MutableStateFlow(false)
     val isTeamRefreshing = isTeamRefreshingImp.asStateFlow()
-    private val selectPageIndexImp = MutableStateFlow(0)
-    val selectPageIndex = selectPageIndexImp.asStateFlow()
+    private val selectPageImp = MutableStateFlow(TeamPageTab.PLAYERS)
+    val selectPage = selectPageImp.asStateFlow()
 
     private val playerSortImp = MutableStateFlow(PlayerSort.PTS)
     val playerSort = playerSortImp.asStateFlow()
@@ -151,8 +151,8 @@ class TeamViewModel(
         }
     }
 
-    fun updatePageIndex(index: Int) {
-        selectPageIndexImp.value = index.coerceIn(0, 2)
+    fun updateSelectPage(page: TeamPageTab) {
+        selectPageImp.value = page
     }
 
     fun updatePlayerSort(label: PlayerLabel) {
