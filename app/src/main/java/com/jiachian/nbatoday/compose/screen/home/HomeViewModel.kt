@@ -39,7 +39,7 @@ class HomeViewModel(
 ) : ComposeViewModel() {
 
     val user = repository.user
-        .stateIn(coroutineScope, SharingStarted.Eagerly, null)
+        .stateIn(coroutineScope, SharingStarted.WhileSubscribed(5000), null)
 
     private val isRefreshingImp = MutableStateFlow(false)
     val isRefreshing = isRefreshingImp.asStateFlow()
@@ -70,7 +70,7 @@ class HomeViewModel(
                 calendar.get(Calendar.DAY_OF_MONTH)
             )
         }
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, mapOf())
+    }.stateIn(coroutineScope, SharingStarted.Lazily, mapOf())
     private val isRefreshingScheduleImp = MutableStateFlow(false)
     val isRefreshingSchedule = isRefreshingScheduleImp.asStateFlow()
 
@@ -107,7 +107,7 @@ class HomeViewModel(
         }.groupBy {
             it.teamConference
         }
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, mapOf())
+    }.stateIn(coroutineScope, SharingStarted.Lazily, mapOf())
     private val isRefreshingTeamStatsImp = MutableStateFlow(false)
     val isRefreshingTeamStats = isRefreshingTeamStatsImp.asStateFlow()
     private val selectConferenceImp = MutableStateFlow(DefaultTeam.Conference.EAST)
@@ -190,7 +190,12 @@ class HomeViewModel(
                     showPlayerCareer = { playerId ->
                         openScreen(
                             NbaState.Player(
-                                PlayerInfoViewModel(playerId, repository, coroutineScope)
+                                PlayerInfoViewModel(
+                                    playerId,
+                                    repository,
+                                    dispatcherProvider,
+                                    coroutineScope
+                                )
                             )
                         )
                     },
@@ -220,7 +225,17 @@ class HomeViewModel(
     }
 
     fun openTeamStats(teamId: Int) {
-        openScreen(NbaState.Team(TeamViewModel(teamId, repository, openScreen, coroutineScope)))
+        openScreen(
+            NbaState.Team(
+                TeamViewModel(
+                    teamId,
+                    repository,
+                    openScreen,
+                    dispatcherProvider,
+                    coroutineScope
+                )
+            )
+        )
     }
 
     fun updateTheme(teamId: Int, color: NBAColors) {

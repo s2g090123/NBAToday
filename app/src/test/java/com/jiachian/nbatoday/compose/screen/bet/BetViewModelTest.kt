@@ -6,6 +6,7 @@ import com.jiachian.nbatoday.data.TestRepository
 import com.jiachian.nbatoday.data.remote.game.GameStatusCode
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.rule.TestCoroutineEnvironment
+import com.jiachian.nbatoday.utils.launchAndCollect
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
@@ -44,6 +45,7 @@ class BetViewModelTest {
 
     @Test
     fun bet_clickFinalGame_askTurnTable() = runTest {
+        viewModel.betAndGame.launchAndCollect(coroutineEnvironment)
         val betAndGames = viewModel.betAndGame.value
         val finalGame = betAndGames.firstOrNull { it.game.gameStatus == GameStatusCode.FINAL }
         assertThat(finalGame, notNullValue())
@@ -56,6 +58,7 @@ class BetViewModelTest {
 
     @Test
     fun bet_clickPlayingGame_openBoxScore() {
+        viewModel.betAndGame.launchAndCollect(coroutineEnvironment)
         val betAndGames = viewModel.betAndGame.value
         val playingGame = betAndGames.firstOrNull { it.game.gameStatus == GameStatusCode.PLAYING }
         assertThat(playingGame, notNullValue())
@@ -65,6 +68,7 @@ class BetViewModelTest {
 
     @Test
     fun bet_clickComingSoonGame_openTeamScreen() {
+        viewModel.betAndGame.launchAndCollect(coroutineEnvironment)
         val betAndGames = viewModel.betAndGame.value
         val comingGame =
             betAndGames.firstOrNull { it.game.gameStatus == GameStatusCode.COMING_SOON }

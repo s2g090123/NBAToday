@@ -2,35 +2,29 @@ package com.jiachian.nbatoday.compose.screen.player
 
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.data.BaseRepository
 import com.jiachian.nbatoday.data.local.player.PlayerCareer.PlayerCareerStats.Stats
+import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
+import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-data class CareerStatsLabel(
-    val width: Dp,
-    val text: String,
-    val textAlign: TextAlign,
-    val sort: CareerStatsSort?
-)
-
 class PlayerInfoViewModel(
     private val playerId: Int,
     private val repository: BaseRepository,
-    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined)
+    private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
+    coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
 ) : ComposeViewModel() {
 
     private val isRefreshingImp = MutableStateFlow(false)
     val isRefreshing = isRefreshingImp.asStateFlow()
 
     val playerCareer = repository.getPlayerCareer(playerId)
-        .stateIn(coroutineScope, SharingStarted.Eagerly, null)
+        .stateIn(coroutineScope, SharingStarted.Lazily, null)
 
     val statsLabels = derivedStateOf {
         listOf(
@@ -94,12 +88,12 @@ class PlayerInfoViewModel(
             CareerStatsSort.PF -> careerStats.sortedWith(compareBy<Stats> { it.foulsPersonal.toDouble() / it.gamePlayed }.thenByDescending { it.winPercentage })
             CareerStatsSort.PLUSMINUS -> careerStats.sortedWith(compareByDescending<Stats> { it.plusMinus }.thenByDescending { it.winPercentage })
         }
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, emptyList())
+    }.stateIn(coroutineScope, SharingStarted.Lazily, emptyList())
 
     init {
         coroutineScope.launch {
             isRefreshingImp.value = true
-            withContext(Dispatchers.IO) {
+            withContext(dispatcherProvider.io) {
                 repository.refreshPlayerStats(playerId)
             }
             isRefreshingImp.value = false

@@ -8,6 +8,7 @@ import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.rule.CalendarRule
 import com.jiachian.nbatoday.rule.TestCoroutineEnvironment
 import com.jiachian.nbatoday.utils.NbaUtils
+import com.jiachian.nbatoday.utils.launchAndCollect
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
@@ -50,6 +51,7 @@ class GameCalendarViewModelTest {
 
     @Test
     fun calendar_getCurrentDateString() {
+        viewModel.currentDateString.launchAndCollect(coroutineEnvironment)
         val calendar = NbaUtils.getCalendar()
         val year = calendar.get(Calendar.YEAR)
         val month = calendar.get(Calendar.MONTH) + 1
@@ -73,17 +75,20 @@ class GameCalendarViewModelTest {
     @Test
     fun calendar_getCalendarData() {
         val expected = generateCalendarData()
+        viewModel.calendarData.launchAndCollect(coroutineEnvironment)
         assertThat(viewModel.calendarData.value, `is`(expected))
     }
 
     @Test
     fun calendar_getGamesData() = runTest {
+        viewModel.gamesData.launchAndCollect(coroutineEnvironment)
         val expected = generateGamesAndBets()
         assertThat(viewModel.gamesData.value, `is`(expected))
     }
 
     @Test
     fun getSelectDateData() = runTest {
+        viewModel.selectDateData.launchAndCollect(coroutineEnvironment)
         val date = Date(BASIC_TIME)
         val expected = generateCalendarData().firstOrNull {
             it.date == date
@@ -93,6 +98,7 @@ class GameCalendarViewModelTest {
 
     @Test
     fun calendar_getSelectGames() = runTest {
+        viewModel.selectGames.launchAndCollect(coroutineEnvironment)
         val date = Date(BASIC_TIME)
         val expected = generateGamesAndBets()
             .flatten()
@@ -102,6 +108,7 @@ class GameCalendarViewModelTest {
 
     @Test
     fun calendar_selectDate_expectsCurrentDate() {
+        viewModel.selectDateData.launchAndCollect(coroutineEnvironment)
         val date = Date(BASIC_TIME)
         val calendarData = generateCalendarData()
         val expected = calendarData.firstOrNull { it.date == date }
@@ -111,6 +118,7 @@ class GameCalendarViewModelTest {
 
     @Test
     fun calendar_nextMonth_expectsCurrentDate() {
+        viewModel.currentDateString.launchAndCollect(coroutineEnvironment)
         viewModel.nextMonth()
         val expected = "Jan  2023"
         assertThat(viewModel.currentDateString.value.second, `is`(expected))
@@ -118,6 +126,7 @@ class GameCalendarViewModelTest {
 
     @Test
     fun calendar_previousMonth_expectsCurrentDate() {
+        viewModel.currentDateString.launchAndCollect(coroutineEnvironment)
         viewModel.nextMonth()
         val expected = "Jan  2023"
         assertThat(viewModel.currentDateString.value.second, `is`(expected))

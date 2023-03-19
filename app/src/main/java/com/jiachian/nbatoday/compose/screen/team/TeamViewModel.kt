@@ -2,7 +2,6 @@ package com.jiachian.nbatoday.compose.screen.team
 
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.compose.screen.player.PlayerInfoViewModel
@@ -12,26 +11,25 @@ import com.jiachian.nbatoday.data.BaseRepository
 import com.jiachian.nbatoday.data.local.NbaGame
 import com.jiachian.nbatoday.data.local.player.PlayerStats
 import com.jiachian.nbatoday.data.local.team.DefaultTeam
+import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
+import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.utils.NbaUtils
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.*
-
-data class PlayerLabel(
-    val width: Dp,
-    val text: String,
-    val textAlign: TextAlign,
-    val sort: PlayerSort
-)
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class TeamViewModel(
     val teamId: Int,
     private val repository: BaseRepository,
     private val openScreen: (state: NbaState) -> Unit,
-    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined)
+    private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
+    private val coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
 ) : ComposeViewModel() {
 
     val user = repository.user
-        .stateIn(coroutineScope, SharingStarted.Eagerly, null)
+        .stateIn(coroutineScope, SharingStarted.WhileSubscribed(5000L), null)
 
     private val team = DefaultTeam.getTeamById(teamId)
 
@@ -43,29 +41,29 @@ class TeamViewModel(
             (it.game.homeTeam.teamId == teamId || it.game.awayTeam.teamId == teamId) &&
                     it.game.gameDateTime.time <= NbaUtils.getCalendar().timeInMillis
         }
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, emptyList())
+    }.stateIn(coroutineScope, SharingStarted.Lazily, emptyList())
     val gamesAfter = games.map { games ->
         games.filter {
             (it.game.homeTeam.teamId == teamId || it.game.awayTeam.teamId == teamId) &&
                     it.game.gameDateTime.time > NbaUtils.getCalendar().timeInMillis
         }
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, emptyList())
+    }.stateIn(coroutineScope, SharingStarted.Lazily, emptyList())
     private val teamAndPlayersStats = repository.getTeamAndPlayersStats(teamId)
 
     val teamStats = teamAndPlayersStats.map {
         it?.teamStats
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, null)
+    }.stateIn(coroutineScope, SharingStarted.Lazily, null)
 
     val teamRank = repository.getTeamRank(teamId, team.conference)
-        .stateIn(coroutineScope, SharingStarted.Eagerly, 0)
+        .stateIn(coroutineScope, SharingStarted.Lazily, 0)
     val teamPointsRank = repository.getTeamPointsRank(teamId)
-        .stateIn(coroutineScope, SharingStarted.Eagerly, 0)
+        .stateIn(coroutineScope, SharingStarted.Lazily, 0)
     val teamReboundsRank = repository.getTeamReboundsRank(teamId)
-        .stateIn(coroutineScope, SharingStarted.Eagerly, 0)
+        .stateIn(coroutineScope, SharingStarted.Lazily, 0)
     val teamAssistsRank = repository.getTeamAssistsRank(teamId)
-        .stateIn(coroutineScope, SharingStarted.Eagerly, 0)
+        .stateIn(coroutineScope, SharingStarted.Lazily, 0)
     val teamPlusMinusRank = repository.getTeamPlusMinusRank(teamId)
-        .stateIn(coroutineScope, SharingStarted.Eagerly, 0)
+        .stateIn(coroutineScope, SharingStarted.Lazily, 0)
 
     private val isRefreshingImp = MutableStateFlow(false)
     val isRefreshing = isRefreshingImp.asStateFlow()
@@ -134,7 +132,7 @@ class TeamViewModel(
             PlayerSort.PF -> playerStats.sortedWith(compareBy<PlayerStats> { it.foulsPersonal.toDouble() / it.gamePlayed }.thenByDescending { it.winPercentage })
             PlayerSort.PLUSMINUS -> playerStats.sortedWith(compareByDescending<PlayerStats> { it.plusMinus }.thenByDescending { it.winPercentage })
         }
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, emptyList())
+    }.stateIn(coroutineScope, SharingStarted.Lazily, emptyList())
 
     init {
         updateStats()
@@ -143,7 +141,7 @@ class TeamViewModel(
     fun updateStats() {
         coroutineScope.launch {
             isTeamRefreshingImp.value = true
-            withContext(Dispatchers.IO) {
+            withContext(dispatcherProvider.io) {
                 val deferred1 = async { repository.refreshTeamStats() }
                 val deferred2 = async { repository.refreshTeamPlayersStats(teamId) }
                 deferred1.await()
@@ -176,14 +174,21 @@ class TeamViewModel(
 
     fun openPlayerInfo(playerId: Int) {
         openScreen(
-            NbaState.Player(PlayerInfoViewModel(playerId, repository, coroutineScope))
+            NbaState.Player(
+                PlayerInfoViewModel(
+                    playerId,
+                    repository,
+                    dispatcherProvider,
+                    coroutineScope
+                )
+            )
         )
     }
 
     fun login(account: String, password: String) {
         coroutineScope.launch {
             isRefreshingImp.value = true
-            withContext(Dispatchers.IO) {
+            withContext(dispatcherProvider.io) {
                 repository.login(account, password)
             }
             isRefreshingImp.value = false
@@ -193,7 +198,7 @@ class TeamViewModel(
     fun register(account: String, password: String) {
         coroutineScope.launch {
             isRefreshingImp.value = true
-            withContext(Dispatchers.IO) {
+            withContext(dispatcherProvider.io) {
                 repository.register(account, password)
             }
             isRefreshingImp.value = false
@@ -203,7 +208,7 @@ class TeamViewModel(
     fun bet(gameId: String, homePoints: Long, awayPoints: Long) {
         coroutineScope.launch {
             isRefreshingImp.value = true
-            withContext(Dispatchers.IO) {
+            withContext(dispatcherProvider.io) {
                 repository.bet(gameId, homePoints, awayPoints)
             }
             isRefreshingImp.value = false

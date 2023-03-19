@@ -14,6 +14,7 @@ import com.jiachian.nbatoday.data.local.team.TeamCeltics
 import com.jiachian.nbatoday.rule.CalendarRule
 import com.jiachian.nbatoday.rule.TestCoroutineEnvironment
 import com.jiachian.nbatoday.utils.NbaUtils
+import com.jiachian.nbatoday.utils.launchAndCollect
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -52,6 +53,7 @@ class HomeViewModelTest {
 
     @Test
     fun home_getUser_afterLogin() {
+        viewModel.user.launchAndCollect(coroutineEnvironment)
         assertThat(viewModel.user.value, nullValue())
         viewModel.login(USER_ACCOUNT, USER_PASSWORD)
         assertThat(viewModel.user.value?.account, `is`(USER_ACCOUNT))
@@ -79,6 +81,7 @@ class HomeViewModelTest {
     @Test
     fun home_getScheduleGames() = runTest {
         val games = generateScheduleGames()
+        viewModel.scheduleGames.launchAndCollect(coroutineEnvironment)
         assertThat(viewModel.scheduleGames.value, `is`(games))
     }
 
@@ -89,6 +92,7 @@ class HomeViewModelTest {
 
     @Test
     fun home_getTeamStats() = runTest {
+        viewModel.teamStats.launchAndCollect(coroutineEnvironment)
         val teams = repository.getTeamStats().first()
         val expected = teams.groupBy { it.teamConference }
         assertThat(viewModel.teamStats.value, `is`(expected))
@@ -139,6 +143,7 @@ class HomeViewModelTest {
 
     @Test
     fun home_updateTodaySchedule_expectsGames() = runTest {
+        viewModel.scheduleGames.launchAndCollect(coroutineEnvironment)
         viewModel.updateTodaySchedule()
         val expected = repository.getGamesAndBets().first()
             .filter { it.game.gameDate == Date(BASIC_TIME) }
@@ -155,6 +160,7 @@ class HomeViewModelTest {
 
     @Test
     fun home_updateTeamStats_expectsTeam() = runTest {
+        viewModel.teamStats.launchAndCollect(coroutineEnvironment)
         viewModel.updateTeamStats()
         val teams = repository.getTeamStats().first()
         val expected = teams.groupBy { it.teamConference }
@@ -206,6 +212,7 @@ class HomeViewModelTest {
 
     @Test
     fun home_login_expectsUserLogin() {
+        viewModel.user.launchAndCollect(coroutineEnvironment)
         viewModel.login(USER_ACCOUNT, USER_PASSWORD)
         assertThat(repository.user.value?.account, `is`(USER_ACCOUNT))
         assertThat(repository.user.value?.password, `is`(USER_PASSWORD))
@@ -215,6 +222,7 @@ class HomeViewModelTest {
 
     @Test
     fun home_logout_expectsUserLogout() {
+        viewModel.user.launchAndCollect(coroutineEnvironment)
         viewModel.login(USER_ACCOUNT, USER_PASSWORD)
         assertThat(repository.user.value?.account, `is`(USER_ACCOUNT))
         assertThat(repository.user.value?.password, `is`(USER_PASSWORD))
@@ -229,6 +237,7 @@ class HomeViewModelTest {
 
     @Test
     fun home_register_expectsUserRegister() {
+        viewModel.user.launchAndCollect(coroutineEnvironment)
         viewModel.register(USER_ACCOUNT, USER_PASSWORD)
         assertThat(repository.user.value?.account, `is`(USER_ACCOUNT))
         assertThat(repository.user.value?.password, `is`(USER_PASSWORD))
@@ -247,6 +256,7 @@ class HomeViewModelTest {
 
     @Test
     fun home_openBetScreen_currentStateBet() {
+        viewModel.user.launchAndCollect(coroutineEnvironment)
         viewModel.login(USER_ACCOUNT, USER_PASSWORD)
         viewModel.openBetScreen()
         assertThat(currentState, instanceOf(NbaState.Bet::class.java))

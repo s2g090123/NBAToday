@@ -27,26 +27,11 @@ class GameCalendarViewModel(
 
     private val games = repository.getGamesAndBets()
     val user = repository.user
-        .stateIn(coroutineScope, SharingStarted.Eagerly, null)
+        .stateIn(coroutineScope, SharingStarted.WhileSubscribed(5000), null)
 
     private val currentYear: MutableStateFlow<Int>
     private val currentMonth: MutableStateFlow<Int>
     private val currentDay: MutableStateFlow<Int>
-
-    private val isRefreshingImp = MutableStateFlow(false)
-    val isRefreshing = isRefreshingImp.asStateFlow()
-
-    private val isLoadingGamesImp = MutableStateFlow(false)
-    val isLoadingGames = isLoadingGamesImp.asStateFlow()
-
-    val currentDate: Date
-        get() {
-            val cal = NbaUtils.getCalendar()
-            cal.set(Calendar.YEAR, currentYear.value)
-            cal.set(Calendar.MONTH, currentMonth.value - 1)
-            cal.set(Calendar.DAY_OF_MONTH, currentDay.value)
-            return cal.time
-        }
 
     init {
         NbaUtils.getCalendar().apply {
@@ -57,14 +42,20 @@ class GameCalendarViewModel(
         }
     }
 
+    private val isRefreshingImp = MutableStateFlow(false)
+    val isRefreshing = isRefreshingImp.asStateFlow()
+
+    private val isLoadingGamesImp = MutableStateFlow(false)
+    val isLoadingGames = isLoadingGamesImp.asStateFlow()
+
     private val lastDate = games.map {
         val cal = NbaUtils.getCalendar()
         it.lastOrNull()?.game?.gameDateTime ?: cal.time
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, NbaUtils.getCalendar().time)
+    }.stateIn(coroutineScope, SharingStarted.Lazily, NbaUtils.getCalendar().time)
     private val firstDate = games.map {
         val cal = NbaUtils.getCalendar()
         it.firstOrNull()?.game?.gameDate ?: cal.time
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, NbaUtils.getCalendar().time)
+    }.stateIn(coroutineScope, SharingStarted.Lazily, NbaUtils.getCalendar().time)
 
     val currentDateString = combine(
         currentYear, currentMonth
@@ -83,18 +74,18 @@ class GameCalendarViewModel(
             11 -> "Nov"
             else -> "Dec"
         } + "  " + year)
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, 0 to "")
+    }.stateIn(coroutineScope, SharingStarted.Lazily, 0 to "")
 
     val hasNextMonth = combine(
         currentYear, currentMonth, lastDate
     ) { _, _, _ ->
         hasNextMonth()
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, false)
+    }.stateIn(coroutineScope, SharingStarted.Lazily, false)
     val hasPreviousMonth = combine(
         currentYear, currentMonth, firstDate
     ) { _, _, _ ->
         hasPreviousMonth()
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, false)
+    }.stateIn(coroutineScope, SharingStarted.Lazily, false)
 
     private val calendarMap = mutableMapOf<String, List<CalendarData>>()
     private val gamesMap = mutableMapOf<String, List<List<NbaGameAndBet>>>()
@@ -102,12 +93,12 @@ class GameCalendarViewModel(
         currentYear, currentMonth
     ) { year, month ->
         getCalendar(year, month)
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, emptyList())
+    }.stateIn(coroutineScope, SharingStarted.Lazily, emptyList())
     val gamesData = combine(
         games, currentYear, currentMonth
     ) { games, year, month ->
         getGames(games, year, month)
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, emptyList())
+    }.stateIn(coroutineScope, SharingStarted.Lazily, emptyList())
 
     private val selectDate = MutableStateFlow(date)
     val selectDateData = combine(
@@ -115,14 +106,14 @@ class GameCalendarViewModel(
         calendarData
     ) { date, data ->
         data.firstOrNull { it.date == date }
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, null)
+    }.stateIn(coroutineScope, SharingStarted.Lazily, null)
     val selectGames = combine(
         selectDate,
         gamesData
     ) { date, data ->
         data.flatten()
             .filter { it.game.gameDate == date }
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, null)
+    }.stateIn(coroutineScope, SharingStarted.Lazily, null)
 
     fun selectDate(date: Date) {
         selectDate.value = date
@@ -238,7 +229,17 @@ class GameCalendarViewModel(
     }
 
     fun openTeamStats(teamId: Int) {
-        openScreen(NbaState.Team(TeamViewModel(teamId, repository, openScreen, coroutineScope)))
+        openScreen(
+            NbaState.Team(
+                TeamViewModel(
+                    teamId,
+                    repository,
+                    openScreen,
+                    dispatcherProvider,
+                    coroutineScope
+                )
+            )
+        )
     }
 
     fun openGameBoxScore(game: NbaGame) {
@@ -250,7 +251,12 @@ class GameCalendarViewModel(
                     showPlayerCareer = { playerId ->
                         openScreen(
                             NbaState.Player(
-                                PlayerInfoViewModel(playerId, repository, coroutineScope)
+                                PlayerInfoViewModel(
+                                    playerId,
+                                    repository,
+                                    dispatcherProvider,
+                                    coroutineScope
+                                )
                             )
                         )
                     },

@@ -7,9 +7,10 @@ import com.jiachian.nbatoday.compose.state.NbaState
 import com.jiachian.nbatoday.compose.theme.updateColors
 import com.jiachian.nbatoday.data.BaseRepository
 import com.jiachian.nbatoday.data.datastore.BaseDataStore
+import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
+import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.event.EventBroadcaster
 import com.jiachian.nbatoday.event.EventManager
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -17,6 +18,7 @@ import kotlinx.coroutines.launch
 class MainViewModel(
     private val repository: BaseRepository,
     private val dataStore: BaseDataStore,
+    dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
     private val eventManager: EventManager<Event> = EventManager()
 ) : ViewModel(), EventBroadcaster<MainViewModel.Event> by eventManager {
 
@@ -49,7 +51,7 @@ class MainViewModel(
     }
 
     init {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatcherProvider.io) {
             isLoadingAppImp.value = true
             val refreshScheduleDeferred = async {
                 repository.refreshSchedule()

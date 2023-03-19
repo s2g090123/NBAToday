@@ -17,13 +17,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-data class BetsTurnTableData(
-    val winPoints: Long,
-    val losePoints: Long
-)
-
 class BetViewModel(
-    private val account: String,
+    account: String,
     private val repository: BaseRepository,
     private val openScreen: (state: NbaState) -> Unit,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
@@ -34,7 +29,7 @@ class BetViewModel(
     val isRefreshing = isRefreshingImp.asStateFlow()
 
     val betAndGame = repository.getBetsAndGames(account)
-        .stateIn(coroutineScope, SharingStarted.Eagerly, emptyList())
+        .stateIn(coroutineScope, SharingStarted.Lazily, emptyList())
 
     private val askTurnTableImp = MutableStateFlow<BetsTurnTableData?>(null)
     val askTurnTable = askTurnTableImp.asStateFlow()

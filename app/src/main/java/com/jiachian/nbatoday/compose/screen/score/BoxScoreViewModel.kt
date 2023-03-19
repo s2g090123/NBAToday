@@ -2,29 +2,24 @@ package com.jiachian.nbatoday.compose.screen.score
 
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.data.BaseRepository
 import com.jiachian.nbatoday.data.local.NbaGame
 import com.jiachian.nbatoday.data.remote.game.GameStatusCode
+import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
+import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-
-data class ScoreLabel(
-    val width: Dp,
-    val text: String,
-    val textAlign: TextAlign
-)
 
 class BoxScoreViewModel(
     game: NbaGame,
     private val repository: BaseRepository,
     val showPlayerCareer: (playerId: Int) -> Unit,
-    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined)
+    private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
+    private val coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
 ) : ComposeViewModel() {
 
     private val gameId = game.gameId
@@ -33,7 +28,7 @@ class BoxScoreViewModel(
     val isRefreshing = isRefreshingImp.asStateFlow()
 
     val boxScore = repository.getGameBoxScore(gameId)
-        .stateIn(coroutineScope, SharingStarted.Eagerly, null)
+        .stateIn(coroutineScope, SharingStarted.Lazily, null)
 
     val homeLeader = boxScore.map { score ->
         val personId = if (game.gameStatus != GameStatusCode.COMING_SOON) {
@@ -45,7 +40,7 @@ class BoxScoreViewModel(
             ?: score?.homeTeam?.players?.maxWithOrNull { p1, p2 ->
                 (p1.statistics?.points ?: 0) - (p2.statistics?.points ?: 0)
             }
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, null)
+    }.stateIn(coroutineScope, SharingStarted.Lazily, null)
     val awayLeader = boxScore.map { score ->
         val personId = if (game.gameStatus != GameStatusCode.COMING_SOON) {
             game.gameLeaders?.awayLeaders?.personId
@@ -56,7 +51,7 @@ class BoxScoreViewModel(
             ?: score?.awayTeam?.players?.maxWithOrNull { p1, p2 ->
                 (p1.statistics?.points ?: 0) - (p2.statistics?.points ?: 0)
             }
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, null)
+    }.stateIn(coroutineScope, SharingStarted.Lazily, null)
 
     private val selectIndexImp = MutableStateFlow(0)
     val selectIndex = selectIndexImp.asStateFlow()
@@ -89,7 +84,7 @@ class BoxScoreViewModel(
     fun refreshScore() {
         coroutineScope.launch {
             isRefreshingImp.value = true
-            withContext(Dispatchers.IO) {
+            withContext(dispatcherProvider.io) {
                 repository.refreshGameBoxScore(gameId)
             }
             isRefreshingImp.value = false
