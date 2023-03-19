@@ -325,9 +325,15 @@ private fun ScoreDetail(
     viewModel: BoxScoreViewModel,
     score: GameBoxScore
 ) {
-    val selectIndex by viewModel.selectIndex.collectAsState()
+    val tabs = remember { BoxScoreTab.values() }
+    val selectPage by viewModel.selectPage.collectAsState()
     val homeLeader by viewModel.homeLeader.collectAsState()
     val awayLeader by viewModel.awayLeader.collectAsState()
+    val selectIndex by remember(selectPage) {
+        derivedStateOf {
+            tabs.indexOf(selectPage)
+        }
+    }
     val pagerState = rememberPagerState(initialPage = selectIndex)
 
     Column(modifier = modifier) {
@@ -350,8 +356,8 @@ private fun ScoreDetail(
                         fontSize = 14.sp
                     )
                 },
-                selected = selectIndex == 0,
-                onClick = { viewModel.updateSelectIndex(0) }
+                selected = selectPage == BoxScoreTab.HOME,
+                onClick = { viewModel.updateSelectPage(BoxScoreTab.HOME) }
             )
             Tab(
                 text = {
@@ -361,8 +367,8 @@ private fun ScoreDetail(
                         fontSize = 14.sp
                     )
                 },
-                selected = selectIndex == 1,
-                onClick = { viewModel.updateSelectIndex(1) }
+                selected = selectPage == BoxScoreTab.AWAY,
+                onClick = { viewModel.updateSelectPage(BoxScoreTab.AWAY) }
             )
             Tab(
                 text = {
@@ -372,8 +378,8 @@ private fun ScoreDetail(
                         fontSize = 14.sp
                     )
                 },
-                selected = selectIndex == 2,
-                onClick = { viewModel.updateSelectIndex(2) }
+                selected = selectPage == BoxScoreTab.STATS,
+                onClick = { viewModel.updateSelectPage(BoxScoreTab.STATS) }
             )
             Tab(
                 text = {
@@ -383,14 +389,14 @@ private fun ScoreDetail(
                         fontSize = 14.sp
                     )
                 },
-                selected = selectIndex == 3,
-                onClick = { viewModel.updateSelectIndex(3) }
+                selected = selectPage == BoxScoreTab.LEADER,
+                onClick = { viewModel.updateSelectPage(BoxScoreTab.LEADER) }
             )
         }
         HorizontalPager(
             modifier = Modifier.fillMaxWidth(),
             state = pagerState,
-            count = 4,
+            count = tabs.size,
             userScrollEnabled = false
         ) { index ->
             when {

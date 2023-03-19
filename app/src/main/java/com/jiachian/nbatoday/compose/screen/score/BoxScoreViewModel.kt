@@ -53,8 +53,8 @@ class BoxScoreViewModel(
             }
     }.stateIn(coroutineScope, SharingStarted.Lazily, null)
 
-    private val selectIndexImp = MutableStateFlow(0)
-    val selectIndex = selectIndexImp.asStateFlow()
+    private val selectPageImp = MutableStateFlow(BoxScoreTab.HOME)
+    val selectPage = selectPageImp.asStateFlow()
 
     val scoreLabel = derivedStateOf {
         listOf(
@@ -91,7 +91,7 @@ class BoxScoreViewModel(
         }
     }
 
-    fun updateSelectIndex(index: Int) {
-        selectIndexImp.value = index.coerceIn(0, 3)
+    fun updateSelectPage(tab: BoxScoreTab) {
+        selectPageImp.value = tab
     }
 }
