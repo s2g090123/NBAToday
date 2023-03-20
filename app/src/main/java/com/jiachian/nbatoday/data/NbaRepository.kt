@@ -70,7 +70,7 @@ class NbaRepository(
             day,
             offset + SCHEDULE_DATE_RANGE + 1
         )
-        if (scoreboards != null) {
+        scoreboards?.also {
             val update = scoreboards.map { it.toGameUpdateData() }
             update.forEach {
                 localDataSource.updateGames(it)
@@ -83,16 +83,16 @@ class NbaRepository(
         val gameDate = NbaUtils.formatScoreboardGameDate(year, month, day)
         val scoreboard = remoteDataSource.getScoreboard(NBA_LEAGUE_ID, gameDate)
         val updateData = scoreboard?.toGameUpdateData()
-        if (updateData != null) {
+        updateData?.also {
             localDataSource.updateGames(updateData)
         }
     }
 
     override suspend fun refreshGameBoxScore(gameId: String) {
         val boxScore = remoteDataSource.getGameBoxScore(gameId)
-        if (boxScore != null) {
+        boxScore?.also {
             val game = boxScore.game?.toLocal()
-            if (game != null) {
+            game?.also {
                 localDataSource.insertGameBoxScore(game)
             }
         }
@@ -100,7 +100,7 @@ class NbaRepository(
 
     override suspend fun refreshTeamStats() {
         val stats = remoteDataSource.getTeamStats()
-        if (stats != null) {
+        stats?.also {
             val teamStats = stats.toLocal()
             localDataSource.updateTeamStats(teamStats)
         }
@@ -108,7 +108,7 @@ class NbaRepository(
 
     override suspend fun refreshTeamStats(teamId: Int) {
         val stats = remoteDataSource.getTeamStats(teamId = teamId)
-        if (stats != null) {
+        stats?.also {
             val teamStats = stats.toLocal()
             localDataSource.updateTeamStats(teamStats)
         }
@@ -116,7 +116,7 @@ class NbaRepository(
 
     override suspend fun refreshTeamPlayersStats(teamId: Int) {
         val stats = remoteDataSource.getTeamPlayersStats(teamId = teamId)
-        if (stats != null) {
+        stats?.also {
             val localStats = localDataSource.getTeamAndPlayersStats(teamId).firstOrNull()
             val playersStats = stats.toLocal()
             val oldPlayerIds = localStats?.playersStats?.map { it.playerId }
@@ -133,15 +133,11 @@ class NbaRepository(
         val info = detail?.info
         val stats = detail?.stats
         if (localDataSource.existPlayer(playerId)) {
-            if (info != null) {
-                info.toUpdateData()?.also {
-                    localDataSource.updatePlayerInfo(it)
-                }
+            info?.toUpdateData()?.also {
+                localDataSource.updatePlayerInfo(it)
             }
-            if (stats != null) {
-                stats.toLocal()?.also {
-                    localDataSource.updatePlayerStats(it)
-                }
+            stats?.toLocal()?.also {
+                localDataSource.updatePlayerStats(it)
             }
         } else if (info != null && stats != null) {
             val infoData = info.toUpdateData()?.info
