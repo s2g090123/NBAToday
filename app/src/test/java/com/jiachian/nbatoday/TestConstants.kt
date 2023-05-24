@@ -9,6 +9,7 @@ const val GAME_STATUS_PREPARE = "3:00 pm ET"
 const val GAME_STATUS_FINAL = "Final"
 const val GAME_DATE = "2023-01-01"
 const val GAME_SEASON = "2022-23"
+const val GAME_SEASON_NEXT = "2023-24"
 
 const val HOME_TEAM_ID = 123456
 const val AWAY_TEAM_ID = 654321

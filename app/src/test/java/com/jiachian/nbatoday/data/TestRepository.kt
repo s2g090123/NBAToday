@@ -139,6 +139,18 @@ class TestRepository : BaseRepository {
                     add(it)
                 }
             }
+        playersCareer.value = playersCareer.value
+            .filterNot { it.personId == playerId }
+            .toMutableList()
+            .apply {
+                when (playerId) {
+                    HOME_PLAYER_ID -> PlayerCareerFactory.createHomePlayerCareer()
+                    AWAY_PLAYER_ID -> PlayerCareerFactory.createAwayPlayerCareer()
+                    else -> null
+                }?.let {
+                    add(it)
+                }
+            }
     }
 
     override suspend fun getGamesAt(date: Long): List<NbaGame> {

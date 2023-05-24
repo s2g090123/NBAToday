@@ -64,11 +64,13 @@ class GameCalendarViewModelTest {
 
     @Test
     fun calendar_getHasNextMonth_returnsFalse() {
+        viewModel.hasNextMonth.launchAndCollect(coroutineEnvironment)
         assertThat(viewModel.hasNextMonth.value, `is`(false))
     }
 
     @Test
     fun calendar_getHasPreviousMonth_returnsFalse() {
+        viewModel.hasNextMonth.launchAndCollect(coroutineEnvironment)
         assertThat(viewModel.hasPreviousMonth.value, `is`(false))
     }
 
