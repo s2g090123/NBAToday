@@ -9,6 +9,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.notNullValue
 import org.hamcrest.MatcherAssert.assertThat
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
@@ -29,6 +30,11 @@ class BoxScoreViewModelTest {
             dispatcherProvider = coroutineEnvironment.testDispatcherProvider,
             coroutineScope = coroutineEnvironment.testScope
         )
+    }
+
+    @After
+    fun teardown() {
+        repository.clear()
     }
 
     @Test
