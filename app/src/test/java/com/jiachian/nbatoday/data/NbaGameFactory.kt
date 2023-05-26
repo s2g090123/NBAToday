@@ -66,8 +66,8 @@ object NbaGameFactory {
             gameStatusText = GAME_STATUS_PREPARE,
             gameSequence = 3,
             homeTeam = GameTeamFactory.getDefaultHomeTeam(),
-            gameDate = Date(BASIC_TIME),
-            gameDateTime = Date(BASIC_TIME),
+            gameDate = Date(NEXT_TIME),
+            gameDateTime = Date(NEXT_TIME),
             monthNum = 1,
             pointsLeaders = listOf(
                 GameLeaderFactory.getHomePointsLeader(),

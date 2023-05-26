@@ -35,6 +35,7 @@ const val BASIC_NUMBER = 10
 const val BASIC_PERCENTAGE = 100.0
 const val BASIC_POSITION = "G"
 const val BASIC_TIME = 1672549200000L
+const val NEXT_TIME = 1672635600000L
 const val BASIC_MINUTES = "10:00"
 
 const val USER_ACCOUNT = "allen.du"
