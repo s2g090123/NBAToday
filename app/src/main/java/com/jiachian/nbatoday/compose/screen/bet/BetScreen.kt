@@ -3,14 +3,29 @@ package com.jiachian.nbatoday.compose.screen.bet
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,11 +39,16 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.*
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.ExperimentalTextApi
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -43,8 +63,6 @@ import com.jiachian.nbatoday.utils.NbaUtils
 import com.jiachian.nbatoday.utils.color
 import com.jiachian.nbatoday.utils.noRippleClickable
 import com.jiachian.nbatoday.utils.rippleClickable
-import kotlinx.coroutines.delay
-import java.util.*
 import kotlin.math.abs
 
 @Composable
@@ -54,7 +72,7 @@ fun BetScreen(
 ) {
     val askTurnTable by viewModel.askTurnTable.collectAsState()
     val showTurnTable by viewModel.showTryTurnTable.collectAsState()
-    var showRewardPoints by remember { mutableStateOf<Long?>(null) }
+    val showRewardPoints by viewModel.showRewardPoints.collectAsState()
 
     Column(
         modifier = Modifier
@@ -63,7 +81,9 @@ fun BetScreen(
             .noRippleClickable { }
     ) {
         IconButton(
-            modifier = Modifier.padding(top = 8.dp, start = 8.dp),
+            modifier = Modifier
+                .testTag("bet_btn_back")
+                .padding(top = 8.dp, start = 8.dp),
             onClick = onBackClick
         ) {
             Icon(
@@ -81,7 +101,7 @@ fun BetScreen(
         AskTurnTableDialog(
             turnTableData = betData,
             onContinue = {
-                viewModel.startTurnTable(it)
+                viewModel.showTurnTable(it)
                 viewModel.closeAskTurnTable()
             },
             onCancel = { viewModel.closeAskTurnTable() }
@@ -90,14 +110,13 @@ fun BetScreen(
     showTurnTable?.let { betData ->
         BetTurnTable(
             modifier = Modifier
+                .testTag("BetScreen_BetTurnTable")
                 .fillMaxSize()
-                .background("#66000000".color),
-            winPoint = betData.winPoints,
-            losePoint = betData.losePoints,
-            onReward = {
-                viewModel.addPoints(it)
-                viewModel.closeTurnTable()
-                showRewardPoints = it
+                .background("#66000000".color)
+                .noRippleClickable { },
+            viewModel = viewModel,
+            onStart = {
+                viewModel.startTurnTable(betData)
             },
             onClose = { viewModel.closeTurnTable() }
         )
@@ -105,7 +124,7 @@ fun BetScreen(
     showRewardPoints?.let { reward ->
         RewardPointDialog(
             rewardPoints = reward,
-            onDismiss = { showRewardPoints = null }
+            onDismiss = { viewModel.closeRewardPointsDialog() }
         )
     }
     BackHandler {
@@ -132,7 +151,10 @@ private fun BetContent(
             )
         }
     } else {
-        LazyColumn(modifier = modifier) {
+        LazyColumn(
+            modifier = modifier
+                .testTag("bet_lc_cards")
+        ) {
             itemsIndexed(betsAndGames) { index, betAndGame ->
                 BetCard(
                     modifier = Modifier
@@ -180,6 +202,7 @@ private fun BetCard(
 
         Text(
             modifier = Modifier
+                .testTag("betCard_text_homePoint")
                 .constrainAs(homePointsText) {
                     top.linkTo(parent.top, 8.dp)
                     linkTo(homeLogo.start, homeLogo.end)
@@ -218,6 +241,7 @@ private fun BetCard(
         )
         Text(
             modifier = Modifier
+                .testTag("betCard_text_awayPoint")
                 .constrainAs(awayPointsText) {
                     top.linkTo(parent.top, 8.dp)
                     linkTo(awayLogo.start, awayLogo.end)
@@ -257,6 +281,7 @@ private fun BetCard(
         if (betAndGame.game.gameStatus != GameStatusCode.COMING_SOON) {
             Text(
                 modifier = Modifier
+                    .testTag("betCard_text_homeScore")
                     .constrainAs(homeScoreText) {
                         top.linkTo(homeLogo.bottom, 8.dp)
                         linkTo(homeLogo.start, homeLogo.end)
@@ -268,6 +293,7 @@ private fun BetCard(
             )
             Text(
                 modifier = Modifier
+                    .testTag("betCard_text_awayScore")
                     .constrainAs(awayScoreText) {
                         top.linkTo(awayLogo.bottom, 8.dp)
                         linkTo(awayLogo.start, awayLogo.end)
@@ -280,14 +306,18 @@ private fun BetCard(
         }
         Text(
             modifier = Modifier
+                .testTag("betCard_text_gameStatus")
                 .constrainAs(gameStatusText) {
                     linkTo(homeLogo.top, awayLogo.bottom)
                     linkTo(homeLogo.end, awayLogo.start)
                 },
-            text = if (betAndGame.game.gameStatus == GameStatusCode.COMING_SOON) {
-                betAndGame.game.gameStatusText.replaceFirst(" ", "\n") + "\n1:1"
-            } else {
-                betAndGame.game.gameStatusText + "\n1:1"
+            text = when (betAndGame.game.gameStatus) {
+                GameStatusCode.COMING_SOON -> betAndGame.game.gameStatusText.replaceFirst(
+                    " ",
+                    "\n"
+                ) + "\n1:1"
+                GameStatusCode.PLAYING -> "1:1"
+                GameStatusCode.FINAL -> betAndGame.game.gameStatusText + "\n1:1"
             }.trim(),
             textAlign = TextAlign.Center,
             color = MaterialTheme.colors.primary,
@@ -297,6 +327,7 @@ private fun BetCard(
         if (isGameFinal) {
             Icon(
                 modifier = Modifier
+                    .testTag("betCard_ic_winner")
                     .constrainAs(winnerIcon) {
                         if (isHomeWin) {
                             start.linkTo(homeLogo.start)
@@ -327,11 +358,13 @@ private fun AskTurnTableDialog(
     onCancel: () -> Unit
 ) {
     AlertDialog(
+        modifier = Modifier.testTag("AskTurnTableDialog_Dialog"),
         shape = RoundedCornerShape(8.dp),
         backgroundColor = MaterialTheme.colors.secondary,
         onDismissRequest = onCancel,
         title = {
             Text(
+                modifier = Modifier.testTag("AskTurnTableDialog_Text_Title"),
                 text = stringResource(R.string.bet_ask_turn_table_title),
                 color = MaterialTheme.colors.primary,
                 fontSize = 24.sp,
@@ -340,6 +373,7 @@ private fun AskTurnTableDialog(
         },
         text = {
             Text(
+                modifier = Modifier.testTag("AskTurnTableDialog_Text_Description"),
                 text = stringResource(
                     R.string.bet_ask_turn_table_text,
                     turnTableData.winPoints,
@@ -366,6 +400,7 @@ private fun AskTurnTableDialog(
                 )
                 Text(
                     modifier = Modifier
+                        .testTag("AskTurnTableDialog_Btn_Continue")
                         .padding(bottom = 8.dp, start = 8.dp, end = 8.dp)
                         .rippleClickable { onContinue(turnTableData) }
                         .padding(10.dp),
@@ -383,15 +418,12 @@ private fun AskTurnTableDialog(
 @Composable
 private fun BetTurnTable(
     modifier: Modifier = Modifier,
-    winPoint: Long,
-    losePoint: Long,
-    onReward: (points: Long) -> Unit,
+    viewModel: BetViewModel,
+    onStart: () -> Unit,
     onClose: () -> Unit
 ) {
-    var isStarting by rememberSaveable { mutableStateOf(false) }
-    val finishAngle = rememberSaveable { Random().nextInt(359).toFloat() }
-    var currentAngle by rememberSaveable { mutableStateOf(0f) }
-    var remainTime = rememberSaveable { 8000 }
+    val isStarting by viewModel.isTurnTableStarting.collectAsState()
+    val currentAngle by viewModel.currentAngle.collectAsState()
     val textMeasure = rememberTextMeasurer()
 
     val plus1TextSize = remember {
@@ -589,60 +621,18 @@ private fun BetTurnTable(
         if (!isStarting) {
             Text(
                 modifier = Modifier
+                    .testTag("BetTurnTable_Text_Start")
                     .align(Alignment.Center)
                     .clip(CircleShape)
                     .shadow(8.dp)
                     .background(Color.Red)
-                    .rippleClickable { isStarting = true }
+                    .rippleClickable { onStart() }
                     .padding(12.dp),
                 text = stringResource(R.string.bet_turn_table_start),
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Medium,
                 color = Color.Black
             )
-        }
-    }
-
-    LaunchedEffect(isStarting) {
-        if (isStarting) {
-            while (remainTime > 0 || currentAngle != finishAngle) {
-                val step = when {
-                    remainTime <= 0 -> {
-                        if (
-                            (currentAngle > finishAngle && 360 - currentAngle + finishAngle > 180) ||
-                            finishAngle - currentAngle > 180
-                        ) {
-                            2
-                        } else {
-                            1
-                        }
-                    }
-                    else -> (remainTime * 2 / 1000).coerceIn(2, 10)
-                }
-                val delay = if (remainTime <= 0) 25 else 15
-                delay(delay.toLong())
-                remainTime -= delay
-                currentAngle = if (remainTime <= 0 && currentAngle < finishAngle) {
-                    (currentAngle + step).coerceAtMost(finishAngle)
-                } else {
-                    (currentAngle + step) % 360
-                }
-            }
-            delay(500)
-            when (finishAngle) {
-                in 0f..89f -> {
-                    onReward(-abs(winPoint) + abs(losePoint))
-                }
-                in 90f..179f -> {
-                    onReward(abs(winPoint) * 4)
-                }
-                in 180f..269f -> {
-                    onReward(-abs(winPoint))
-                }
-                else -> {
-                    onReward(abs(winPoint) + abs(losePoint))
-                }
-            }
         }
     }
     BackHandler {
@@ -681,11 +671,13 @@ private fun RewardPointDialog(
     onDismiss: () -> Unit
 ) {
     AlertDialog(
+        modifier = Modifier.testTag("RewardPointDialog_dialog"),
         shape = RoundedCornerShape(8.dp),
         backgroundColor = MaterialTheme.colors.secondary,
         onDismissRequest = onDismiss,
         title = {
             Text(
+                modifier = Modifier.testTag("RewardPointDialog_text_title"),
                 text = stringResource(if (rewardPoints >= 0) R.string.bet_reward_win_title else R.string.bet_reward_lose_title),
                 color = MaterialTheme.colors.primary,
                 fontSize = 24.sp,
@@ -694,6 +686,7 @@ private fun RewardPointDialog(
         },
         text = {
             Text(
+                modifier = Modifier.testTag("RewardPointDialog_text_body"),
                 text = stringResource(
                     if (rewardPoints >= 0) R.string.bet_reward_win_text else R.string.bet_reward_lose_text,
                     abs(rewardPoints)
@@ -709,6 +702,7 @@ private fun RewardPointDialog(
             ) {
                 Text(
                     modifier = Modifier
+                        .testTag("RewardPointDialog_text_ok")
                         .padding(bottom = 8.dp, end = 8.dp)
                         .rippleClickable { onDismiss() }
                         .padding(10.dp),
