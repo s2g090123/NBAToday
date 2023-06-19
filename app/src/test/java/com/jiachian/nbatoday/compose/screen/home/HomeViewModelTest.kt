@@ -3,7 +3,13 @@ package com.jiachian.nbatoday.compose.screen.home
 import android.text.format.DateUtils
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.jiachian.nbatoday.*
+import com.jiachian.nbatoday.BASIC_MINUTES
+import com.jiachian.nbatoday.BASIC_NUMBER
+import com.jiachian.nbatoday.BASIC_TIME
+import com.jiachian.nbatoday.HOME_TEAM_ID
+import com.jiachian.nbatoday.SCHEDULE_DATE_RANGE
+import com.jiachian.nbatoday.USER_ACCOUNT
+import com.jiachian.nbatoday.USER_PASSWORD
 import com.jiachian.nbatoday.compose.state.NbaState
 import com.jiachian.nbatoday.compose.theme.CelticsColors
 import com.jiachian.nbatoday.data.TestDataStore
@@ -18,13 +24,17 @@ import com.jiachian.nbatoday.utils.launchAndCollect
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
-import org.hamcrest.CoreMatchers.*
+import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.instanceOf
+import org.hamcrest.CoreMatchers.notNullValue
+import org.hamcrest.CoreMatchers.nullValue
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.util.*
+import java.util.Calendar
+import java.util.Date
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class HomeViewModelTest {
@@ -79,7 +89,7 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun home_getScheduleGames() = runTest {
+    fun home_getScheduleGames() = coroutineEnvironment.testScope.runTest {
         val games = generateScheduleGames()
         viewModel.scheduleGames.launchAndCollect(coroutineEnvironment)
         assertThat(viewModel.scheduleGames.value, `is`(games))
@@ -91,7 +101,7 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun home_getTeamStats() = runTest {
+    fun home_getTeamStats() = coroutineEnvironment.testScope.runTest {
         viewModel.teamStats.launchAndCollect(coroutineEnvironment)
         val teams = repository.getTeamStats().first()
         val expected = teams.groupBy { it.teamConference }
@@ -142,7 +152,7 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun home_updateTodaySchedule_expectsGames() = runTest {
+    fun home_updateTodaySchedule_expectsGames() = coroutineEnvironment.testScope.runTest {
         viewModel.scheduleGames.launchAndCollect(coroutineEnvironment)
         viewModel.updateTodaySchedule()
         val expected = repository.getGamesAndBets().first()
@@ -152,14 +162,14 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun home_openGameBoxScore_currentStateBoxScore() = runTest {
+    fun home_openGameBoxScore_currentStateBoxScore() = coroutineEnvironment.testScope.runTest {
         val game = repository.getGamesAt(BASIC_TIME).first()
         viewModel.openGameBoxScore(game)
         assertThat(currentState, instanceOf(NbaState.BoxScore::class.java))
     }
 
     @Test
-    fun home_updateTeamStats_expectsTeam() = runTest {
+    fun home_updateTeamStats_expectsTeam() = coroutineEnvironment.testScope.runTest {
         viewModel.teamStats.launchAndCollect(coroutineEnvironment)
         viewModel.updateTeamStats()
         val teams = repository.getTeamStats().first()
@@ -246,7 +256,7 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun home_bet_containsTargetGame() = runTest {
+    fun home_bet_containsTargetGame() = coroutineEnvironment.testScope.runTest {
         val game = repository.getGamesAt(BASIC_TIME).first()
         viewModel.login(USER_ACCOUNT, USER_PASSWORD)
         viewModel.bet(game.gameId, BASIC_NUMBER.toLong(), BASIC_NUMBER.toLong())
@@ -269,8 +279,7 @@ class HomeViewModelTest {
             openScreen = {
                 currentState = it
             },
-            dispatcherProvider = coroutineEnvironment.testDispatcherProvider,
-            coroutineScope = coroutineEnvironment.testScope
+            dispatcherProvider = coroutineEnvironment.testDispatcherProvider
         )
     }
 

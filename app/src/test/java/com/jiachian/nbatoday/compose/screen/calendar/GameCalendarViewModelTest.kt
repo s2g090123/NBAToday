@@ -1,6 +1,10 @@
 package com.jiachian.nbatoday.compose.screen.calendar
 
-import com.jiachian.nbatoday.*
+import com.jiachian.nbatoday.BASIC_NUMBER
+import com.jiachian.nbatoday.BASIC_TIME
+import com.jiachian.nbatoday.HOME_TEAM_ID
+import com.jiachian.nbatoday.USER_ACCOUNT
+import com.jiachian.nbatoday.USER_PASSWORD
 import com.jiachian.nbatoday.compose.state.NbaState
 import com.jiachian.nbatoday.data.TestRepository
 import com.jiachian.nbatoday.data.local.NbaGameAndBet
@@ -9,10 +13,10 @@ import com.jiachian.nbatoday.rule.CalendarRule
 import com.jiachian.nbatoday.rule.TestCoroutineEnvironment
 import com.jiachian.nbatoday.utils.NbaUtils
 import com.jiachian.nbatoday.utils.launchAndCollect
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.instanceOf
@@ -21,7 +25,8 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.util.*
+import java.util.Calendar
+import java.util.Date
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class GameCalendarViewModelTest {
@@ -37,10 +42,7 @@ class GameCalendarViewModelTest {
     @Before
     fun setup() = runTest {
         repository.refreshSchedule()
-        viewModel = createViewModel(
-            coroutineEnvironment.testScope,
-            coroutineEnvironment.testDispatcherProvider
-        )
+        viewModel = createViewModel(coroutineEnvironment.testDispatcherProvider)
     }
 
     @After
@@ -82,14 +84,14 @@ class GameCalendarViewModelTest {
     }
 
     @Test
-    fun calendar_getGamesData() = runTest {
+    fun calendar_getGamesData() = coroutineEnvironment.testScope.runTest {
         viewModel.gamesData.launchAndCollect(coroutineEnvironment)
         val expected = generateGamesAndBets()
         assertThat(viewModel.gamesData.value, `is`(expected))
     }
 
     @Test
-    fun getSelectDateData() = runTest {
+    fun getSelectDateData() {
         viewModel.selectDateData.launchAndCollect(coroutineEnvironment)
         val date = Date(BASIC_TIME)
         val expected = generateCalendarData().firstOrNull {
@@ -99,7 +101,7 @@ class GameCalendarViewModelTest {
     }
 
     @Test
-    fun calendar_getSelectGames() = runTest {
+    fun calendar_getSelectGames() = coroutineEnvironment.testScope.runTest {
         viewModel.selectGames.launchAndCollect(coroutineEnvironment)
         val date = Date(BASIC_TIME)
         val expected = generateGamesAndBets()
@@ -141,15 +143,17 @@ class GameCalendarViewModelTest {
     }
 
     @Test
-    fun calendar_openGameBoxScore_currentStateIsBoxScore() = runTest {
-        val game = repository.getGamesAt(BASIC_TIME).first()
-        viewModel.openGameBoxScore(game)
-        assertThat(currentState, instanceOf(NbaState.BoxScore::class.java))
-    }
+    fun calendar_openGameBoxScore_currentStateIsBoxScore() =
+        coroutineEnvironment.testScope.runTest {
+            val game = repository.getGamesAt(BASIC_TIME).first()
+            viewModel.openGameBoxScore(game)
+            assertThat(currentState, instanceOf(NbaState.BoxScore::class.java))
+        }
 
     @Test
-    fun calendar_login_userLogin() {
+    fun calendar_login_userLogin() = coroutineEnvironment.testScope.runTest {
         viewModel.login(USER_ACCOUNT, USER_PASSWORD)
+        advanceUntilIdle()
         val user = repository.user.value
         assertThat(user?.account, `is`(USER_ACCOUNT))
         assertThat(user?.password, `is`(USER_PASSWORD))
@@ -164,7 +168,7 @@ class GameCalendarViewModelTest {
     }
 
     @Test
-    fun calendar_bet_returnsBetAndGame() = runTest {
+    fun calendar_bet_returnsBetAndGame() = coroutineEnvironment.testScope.runTest {
         viewModel.login(USER_ACCOUNT, USER_PASSWORD)
         val game = repository.getGamesAt(BASIC_TIME).first()
         viewModel.bet(game.gameId, BASIC_NUMBER.toLong(), BASIC_NUMBER.toLong())
@@ -180,17 +184,13 @@ class GameCalendarViewModelTest {
         assertThat(viewModel.date, `is`(Date(BASIC_TIME)))
     }
 
-    private fun createViewModel(
-        coroutineScope: CoroutineScope,
-        dispatcherProvider: DispatcherProvider
-    ): GameCalendarViewModel {
+    private fun createViewModel(dispatcherProvider: DispatcherProvider): GameCalendarViewModel {
         return GameCalendarViewModel(
             date = Date(BASIC_TIME),
             repository = repository,
             openScreen = {
                 currentState = it
             },
-            coroutineScope = coroutineScope,
             dispatcherProvider = dispatcherProvider
         )
     }

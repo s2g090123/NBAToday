@@ -16,7 +16,9 @@ import com.jiachian.nbatoday.rule.TestCoroutineEnvironment
 import com.jiachian.nbatoday.utils.launchAndCollect
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
-import org.hamcrest.CoreMatchers.*
+import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.instanceOf
+import org.hamcrest.CoreMatchers.nullValue
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
 import org.junit.Before
@@ -44,8 +46,7 @@ class TeamViewModelTest {
             openScreen = {
                 currentState = it
             },
-            dispatcherProvider = coroutineEnvironment.testDispatcherProvider,
-            coroutineScope = coroutineEnvironment.testScope
+            dispatcherProvider = coroutineEnvironment.testDispatcherProvider
         )
     }
 
@@ -62,7 +63,7 @@ class TeamViewModelTest {
     }
 
     @Test
-    fun team_onLogin_checksUsersData() = runTest {
+    fun team_onLogin_checksUsersData() = coroutineEnvironment.testScope.runTest {
         viewModel.user.launchAndCollect(coroutineEnvironment)
         repository.login(USER_ACCOUNT, USER_PASSWORD)
         assertThat(viewModel.user.value?.account, `is`(USER_ACCOUNT))

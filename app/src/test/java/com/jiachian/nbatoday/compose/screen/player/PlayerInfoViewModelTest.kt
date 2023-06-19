@@ -6,7 +6,6 @@ import com.jiachian.nbatoday.data.TestRepository
 import com.jiachian.nbatoday.data.local.player.PlayerCareer
 import com.jiachian.nbatoday.rule.TestCoroutineEnvironment
 import com.jiachian.nbatoday.utils.launchAndCollect
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.notNullValue
 import org.hamcrest.MatcherAssert.assertThat
@@ -14,7 +13,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class PlayerInfoViewModelTest {
 
     private lateinit var viewModel: PlayerInfoViewModel
@@ -27,8 +25,7 @@ class PlayerInfoViewModelTest {
         viewModel = PlayerInfoViewModel(
             playerId = HOME_PLAYER_ID,
             repository = repository,
-            dispatcherProvider = coroutineEnvironment.testDispatcherProvider,
-            coroutineScope = coroutineEnvironment.testScope
+            dispatcherProvider = coroutineEnvironment.testDispatcherProvider
         )
     }
 

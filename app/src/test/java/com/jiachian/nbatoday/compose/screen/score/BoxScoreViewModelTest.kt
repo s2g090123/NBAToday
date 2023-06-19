@@ -27,8 +27,7 @@ class BoxScoreViewModelTest {
             game = game,
             repository = repository,
             showPlayerCareer = { },
-            dispatcherProvider = coroutineEnvironment.testDispatcherProvider,
-            coroutineScope = coroutineEnvironment.testScope
+            dispatcherProvider = coroutineEnvironment.testDispatcherProvider
         )
     }
 
