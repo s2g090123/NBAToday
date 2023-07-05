@@ -394,4 +394,12 @@ class TestRepository : BaseRepository {
     override suspend fun deleteBets(bets: Bets) {
         this.bets.value = this.bets.value.filterNot { it == bets }
     }
+
+    fun insertGame(game: NbaGame) {
+        games.value = mutableListOf<NbaGame>().apply {
+            addAll(games.value)
+            add(game)
+            sortBy { it.gameDate }
+        }
+    }
 }

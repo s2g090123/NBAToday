@@ -12,3 +12,8 @@ fun <T> Flow<T>.launchAndCollect(coroutineEnvironment: TestCoroutineEnvironment)
         collect()
     }
 }
+
+inline fun <reified T : Any> T?.getOrAssert(message: () -> String? = { null }): T {
+    val text = message() ?: "Object must not be null"
+    return this ?: throw AssertionError(text)
+}

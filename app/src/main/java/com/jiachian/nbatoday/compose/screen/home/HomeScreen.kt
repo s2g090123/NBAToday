@@ -5,25 +5,68 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.expandIn
 import androidx.compose.animation.shrinkOut
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.LocalOverscrollConfiguration
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Divider
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ScrollableTabRow
+import androidx.compose.material.Tab
+import androidx.compose.material.TabRow
+import androidx.compose.material.TabRowDefaults
 import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
+import androidx.compose.material.Text
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,6 +77,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -56,7 +100,37 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.jiachian.nbatoday.R
-import com.jiachian.nbatoday.compose.theme.*
+import com.jiachian.nbatoday.compose.theme.BlazersColors
+import com.jiachian.nbatoday.compose.theme.BucksColors
+import com.jiachian.nbatoday.compose.theme.BullsColors
+import com.jiachian.nbatoday.compose.theme.CavaliersColors
+import com.jiachian.nbatoday.compose.theme.CelticsColors
+import com.jiachian.nbatoday.compose.theme.ClippersColors
+import com.jiachian.nbatoday.compose.theme.GrizzliesColors
+import com.jiachian.nbatoday.compose.theme.HawksColors
+import com.jiachian.nbatoday.compose.theme.HeatColors
+import com.jiachian.nbatoday.compose.theme.HornetsColors
+import com.jiachian.nbatoday.compose.theme.JazzColors
+import com.jiachian.nbatoday.compose.theme.KingsColors
+import com.jiachian.nbatoday.compose.theme.KnicksColors
+import com.jiachian.nbatoday.compose.theme.LakersColors
+import com.jiachian.nbatoday.compose.theme.MagicColors
+import com.jiachian.nbatoday.compose.theme.MavericksColors
+import com.jiachian.nbatoday.compose.theme.NetsColors
+import com.jiachian.nbatoday.compose.theme.NuggetsColors
+import com.jiachian.nbatoday.compose.theme.OfficialColors
+import com.jiachian.nbatoday.compose.theme.PacersColors
+import com.jiachian.nbatoday.compose.theme.PelicansColors
+import com.jiachian.nbatoday.compose.theme.PistonsColors
+import com.jiachian.nbatoday.compose.theme.RaptorsColors
+import com.jiachian.nbatoday.compose.theme.RocketsColors
+import com.jiachian.nbatoday.compose.theme.SpursColors
+import com.jiachian.nbatoday.compose.theme.SunsColors
+import com.jiachian.nbatoday.compose.theme.ThunderColors
+import com.jiachian.nbatoday.compose.theme.TimberwolvesColors
+import com.jiachian.nbatoday.compose.theme.WarriorsColors
+import com.jiachian.nbatoday.compose.theme.WizardsColors
+import com.jiachian.nbatoday.compose.theme.p76ersColors
 import com.jiachian.nbatoday.compose.widget.CustomOutlinedTextField
 import com.jiachian.nbatoday.compose.widget.RefreshingScreen
 import com.jiachian.nbatoday.data.local.NbaGame
@@ -66,7 +140,16 @@ import com.jiachian.nbatoday.data.local.team.TeamStats
 import com.jiachian.nbatoday.data.remote.game.GameStatusCode
 import com.jiachian.nbatoday.data.remote.leader.GameLeaders
 import com.jiachian.nbatoday.data.remote.user.User
-import com.jiachian.nbatoday.utils.*
+import com.jiachian.nbatoday.utils.FocusableColumn
+import com.jiachian.nbatoday.utils.NbaUtils
+import com.jiachian.nbatoday.utils.color
+import com.jiachian.nbatoday.utils.dividerPrimary
+import com.jiachian.nbatoday.utils.dividerSecondary
+import com.jiachian.nbatoday.utils.isPhone
+import com.jiachian.nbatoday.utils.isPortrait
+import com.jiachian.nbatoday.utils.noRippleClickable
+import com.jiachian.nbatoday.utils.px2Dp
+import com.jiachian.nbatoday.utils.rippleClickable
 import kotlin.math.max
 import kotlin.math.pow
 
@@ -1081,6 +1164,7 @@ fun GameStatusCard2(
 
         Text(
             modifier = Modifier
+                .testTag("GameStatusCard2_Text_HomeTriCode")
                 .constrainAs(homeTeamText) {
                     top.linkTo(parent.top, 16.dp)
                     linkTo(homeLogo.start, homeLogo.end)
@@ -1107,6 +1191,7 @@ fun GameStatusCard2(
         )
         Text(
             modifier = Modifier
+                .testTag("GameStatusCard2_Text_HomeScore")
                 .constrainAs(homeScoreText) {
                     top.linkTo(homeLogo.bottom, 8.dp)
                     linkTo(homeLogo.start, homeLogo.end)
@@ -1118,6 +1203,7 @@ fun GameStatusCard2(
         )
         Text(
             modifier = Modifier
+                .testTag("GameStatusCard2_Text_AwayTriCode")
                 .constrainAs(awayTeamText) {
                     top.linkTo(parent.top, 16.dp)
                     linkTo(awayLogo.start, awayLogo.end)
@@ -1144,6 +1230,7 @@ fun GameStatusCard2(
         )
         Text(
             modifier = Modifier
+                .testTag("GameStatusCard2_Text_AwayScore")
                 .constrainAs(awayScoreText) {
                     top.linkTo(awayLogo.bottom, 8.dp)
                     linkTo(awayLogo.start, awayLogo.end)
@@ -1155,6 +1242,7 @@ fun GameStatusCard2(
         )
         Text(
             modifier = Modifier
+                .testTag("GameStatusCard2_Text_GameStatus")
                 .constrainAs(gameStatusText) {
                     if (canBet) {
                         linkTo(homeLogo.top, coinsBtn.top, 24.dp)
@@ -1176,6 +1264,7 @@ fun GameStatusCard2(
         if (canBet) {
             IconButton(
                 modifier = Modifier
+                    .testTag("GameStatusCard2_Btn_Bet")
                     .constrainAs(coinsBtn) {
                         linkTo(gameStatusText.bottom, homeLogo.bottom)
                         linkTo(homeLogo.end, awayLogo.start)
@@ -1194,6 +1283,7 @@ fun GameStatusCard2(
         if (expandable) {
             AnimatedVisibility(
                 modifier = Modifier
+                    .testTag("GameStatusCard2_Btn_Expand")
                     .constrainAs(expandBtn) {
                         top.linkTo(homeScoreText.bottom)
                         linkTo(parent.start, parent.end)

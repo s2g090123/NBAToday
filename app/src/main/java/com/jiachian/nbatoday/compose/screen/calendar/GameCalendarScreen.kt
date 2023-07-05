@@ -1,14 +1,36 @@
 package com.jiachian.nbatoday.compose.screen.calendar
 
-import androidx.compose.animation.*
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.with
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.LocalOverscrollConfiguration
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -23,6 +45,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -88,7 +111,9 @@ private fun CalendarTopBar(
 
     Column(modifier = modifier) {
         IconButton(
-            modifier = Modifier.padding(top = 8.dp, start = 8.dp),
+            modifier = Modifier
+                .testTag("CalendarTopBar_Btn_Close")
+                .padding(top = 8.dp, start = 8.dp),
             onClick = onClose
         ) {
             Icon(
@@ -106,6 +131,7 @@ private fun CalendarTopBar(
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(
+                modifier = Modifier.testTag("CalendarTopBar_Btn_Prev"),
                 enabled = hasPreviousMonth,
                 onClick = viewModel::previousMonth
             ) {
@@ -131,6 +157,7 @@ private fun CalendarTopBar(
                 }
             ) { text ->
                 Text(
+                    modifier = Modifier.testTag("CalendarTopBar_Text_Date"),
                     text = text.second,
                     textAlign = TextAlign.Center,
                     fontSize = 18.sp,
@@ -139,6 +166,7 @@ private fun CalendarTopBar(
                 )
             }
             IconButton(
+                modifier = Modifier.testTag("CalendarTopBar_Btn_Next"),
                 enabled = hasNextMonth,
                 onClick = viewModel::nextMonth
             ) {
@@ -191,6 +219,7 @@ private fun CalendarContent(
         ) {
             LazyVerticalGrid(
                 modifier = Modifier
+                    .testTag("CalendarContent_LVG_Games")
                     .padding(top = 8.dp)
                     .fillMaxWidth()
                     .heightIn(max = LocalConfiguration.current.screenHeightDp.dp),
@@ -212,6 +241,7 @@ private fun CalendarContent(
                     ) {
                         Text(
                             modifier = Modifier
+                                .testTag("CalendarContent_Text_Date")
                                 .align(Alignment.TopEnd)
                                 .padding(4.dp),
                             text = dateData.day.toString(),
@@ -226,6 +256,7 @@ private fun CalendarContent(
                         if (!isLoadingGames) {
                             FlowRow(
                                 modifier = Modifier
+                                    .testTag("CalendarContent_FlowRow_Games")
                                     .fillMaxWidth()
                                     .wrapContentHeight()
                                     .align(Alignment.BottomStart)
@@ -234,7 +265,9 @@ private fun CalendarContent(
                                 gameList.getOrNull(index)?.let { games ->
                                     games.forEach {
                                         AsyncImage(
-                                            modifier = Modifier.size(12.dp),
+                                            modifier = Modifier
+                                                .testTag("CalendarContent_Image_Team")
+                                                .size(12.dp),
                                             model = ImageRequest.Builder(LocalContext.current)
                                                 .data(NbaUtils.getTeamSmallLogoUrlById(it.game.homeTeam.teamId))
                                                 .decoderFactory(SvgDecoder.Factory())
@@ -258,6 +291,7 @@ private fun CalendarContent(
         selectGames?.let { games ->
             CalendarGames(
                 modifier = Modifier
+                    .testTag("CalendarContent_CalendarGames")
                     .fillMaxWidth()
                     .heightIn(max = LocalConfiguration.current.screenHeightDp.dp),
                 viewModel = viewModel,
