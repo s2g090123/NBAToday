@@ -4,9 +4,9 @@ import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.filter
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.onChildren
-import androidx.compose.ui.test.onFirst
 
-fun SemanticsNodeInteraction.onNodeWithTag(tag: String) =
+fun SemanticsNodeInteraction.onNodeWithTag(tag: String, index: Int) =
     onChildren()
-        .filter(hasTestTag(tag))
-        .onFirst()
+        .filter(hasTestTag(tag))[index]
+
+fun SemanticsNodeInteraction.onNodeWithTag(tag: String) = onNodeWithTag(tag, 0)

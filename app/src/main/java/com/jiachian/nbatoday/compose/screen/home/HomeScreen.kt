@@ -258,15 +258,24 @@ private fun SchedulePage(
     ) {
         HorizontalPager(
             modifier = Modifier
+                .testTag("SchedulePage_Pager")
                 .padding(top = 48.dp)
                 .fillMaxSize(),
             state = pagerState,
             count = dateData.size
         ) { page ->
             val data = dateData.getOrNull(page)
-            Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
+            Box(
+                modifier = Modifier
+                    .testTag("SchedulePage_Box")
+                    .pullRefresh(pullRefreshState)
+            ) {
                 if (data != null) {
-                    LazyColumn(modifier = Modifier.fillMaxSize()) {
+                    LazyColumn(
+                        modifier = Modifier
+                            .testTag("SchedulePage_LZ_Body")
+                            .fillMaxSize()
+                    ) {
                         val games = scheduleGames[data] ?: listOf()
                         item {
                             Row(
@@ -274,7 +283,9 @@ private fun SchedulePage(
                                 horizontalArrangement = Arrangement.End
                             ) {
                                 IconButton(
-                                    modifier = Modifier.padding(top = 8.dp, end = 4.dp),
+                                    modifier = Modifier
+                                        .testTag("SchedulePage_Btn_Calendar")
+                                        .padding(top = 8.dp, end = 4.dp),
                                     onClick = { viewModel.openCalendar(data) }
                                 ) {
                                     Icon(
@@ -288,6 +299,7 @@ private fun SchedulePage(
                         itemsIndexed(games) { index, game ->
                             GameStatusCard2(
                                 modifier = Modifier
+                                    .testTag("SchedulePage_GameStatusCard2")
                                     .padding(
                                         top = if (index == 0) 8.dp else 16.dp,
                                         bottom = if (index >= games.size - 1) 16.dp else 0.dp,
@@ -382,6 +394,7 @@ private fun StandingPage(
     ) {
         HorizontalPager(
             modifier = Modifier
+                .testTag("StandingPage_Pager")
                 .padding(top = 48.dp)
                 .fillMaxSize(),
             state = pagerState,
@@ -392,6 +405,7 @@ private fun StandingPage(
             if (stats != null) {
                 TeamStanding(
                     modifier = Modifier
+                        .testTag("StandingPage_TeamStanding_Root")
                         .fillMaxSize()
                         .pullRefresh(pullRefreshState),
                     viewModel = viewModel,
@@ -405,6 +419,7 @@ private fun StandingPage(
             state = pullRefreshState
         )
         TabRow(
+            modifier = Modifier.testTag("StandingPage_TabRow_Conference"),
             selectedTabIndex = selectIndex,
             backgroundColor = MaterialTheme.colors.secondary,
             contentColor = MaterialTheme.colors.primaryVariant,
@@ -417,6 +432,7 @@ private fun StandingPage(
         ) {
             conferences.forEach {
                 Tab(
+                    modifier = Modifier.testTag("StandingPage_Tab_Conference"),
                     text = {
                         Text(
                             text = stringResource(
@@ -453,7 +469,9 @@ private fun UserPage(
     if (user == null) {
         Box(modifier = modifier) {
             Column(
-                modifier = Modifier.align(Alignment.Center),
+                modifier = Modifier
+                    .testTag("UserPage_Column_NotLoginRoot")
+                    .align(Alignment.Center),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
@@ -463,7 +481,9 @@ private fun UserPage(
                     fontWeight = FontWeight.Medium
                 )
                 Button(
-                    modifier = Modifier.padding(top = 8.dp),
+                    modifier = Modifier
+                        .testTag("UserPage_Btn_Login")
+                        .padding(top = 8.dp),
                     onClick = { showLoginDialog = true },
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = MaterialTheme.colors.secondary
@@ -503,7 +523,9 @@ private fun UserPage(
                 onLogoutClick = { viewModel.logout() }
             )
             LazyVerticalGrid(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .testTag("UserPage_LVG_Palette")
+                    .fillMaxSize(),
                 columns = GridCells.Fixed(
                     when {
                         isPhone && isPortrait -> 2
@@ -552,6 +574,7 @@ private fun UserPage(
                     }
                     ThemeCard(
                         modifier = Modifier
+                            .testTag("UserPage_ThemeCard")
                             .fillMaxWidth()
                             .wrapContentHeight()
                             .border(1.dp, Color.White, RoundedCornerShape(8.dp))
@@ -604,6 +627,7 @@ private fun ThemeCard(
         )
         Text(
             modifier = Modifier
+                .testTag("ThemeCard_Text_Name")
                 .constrainAs(nameText) {
                     top.linkTo(parent.top, 8.dp)
                     linkTo(teamImage.end, parent.end, 8.dp)
@@ -691,10 +715,14 @@ private fun TeamStanding(
             CompositionLocalProvider(
                 LocalOverscrollConfiguration provides null
             ) {
-                LazyColumn(state = teamState) {
+                LazyColumn(
+                    modifier = Modifier.testTag("TeamStanding_LC_Standing"),
+                    state = teamState
+                ) {
                     itemsIndexed(teamStats) { index, stat ->
                         Column(
                             modifier = Modifier
+                                .testTag("TeamStanding_Row_TeamName")
                                 .wrapContentWidth()
                                 .rippleClickable { viewModel.openTeamStats(stat.teamId) }
                         ) {
@@ -709,6 +737,7 @@ private fun TeamStanding(
                             ) {
                                 Text(
                                     modifier = Modifier
+                                        .testTag("TeamStanding_Text_Index")
                                         .padding(start = 8.dp)
                                         .width(24.dp),
                                     text = (index + 1).toString(),
@@ -734,7 +763,9 @@ private fun TeamStanding(
                                     contentDescription = null
                                 )
                                 Text(
-                                    modifier = Modifier.padding(start = 4.dp),
+                                    modifier = Modifier
+                                        .testTag("TeamStanding_Text_TeamName")
+                                        .padding(start = 4.dp),
                                     text = stat.teamName,
                                     textAlign = TextAlign.Start,
                                     fontSize = 16.sp,
@@ -755,9 +786,15 @@ private fun TeamStanding(
                 }
             }
         }
-        Column(modifier = modifier.horizontalScroll(horizontalScrollState)) {
+        Column(
+            modifier = Modifier
+                .testTag("TeamStanding_Column_StatsRoot")
+                .fillMaxSize()
+                .horizontalScroll(horizontalScrollState)
+        ) {
             Row(
                 modifier = Modifier
+                    .testTag("TeamStanding_Root_Label")
                     .onSizeChanged {
                         dividerWidth = max(dividerWidth, it.width)
                     }
@@ -767,6 +804,7 @@ private fun TeamStanding(
                 labels.forEach { label ->
                     Box(
                         modifier = Modifier
+                            .testTag("TeamStanding_Box_Label")
                             .width(label.width)
                             .height(40.dp)
                             .background(
@@ -802,18 +840,22 @@ private fun TeamStanding(
             ) {
                 LazyColumn(
                     modifier = Modifier
+                        .testTag("TeamStanding_LC_Stats")
                         .fillMaxHeight()
                         .fillMaxWidth(),
                     state = statsState
                 ) {
                     itemsIndexed(teamStats) { index, stats ->
                         Row(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .testTag("TeamStanding_Row_Stats")
+                                .fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             labels.forEach { label ->
                                 Text(
                                     modifier = Modifier
+                                        .testTag("TeamStanding_Text_Stats")
                                         .width(label.width)
                                         .height(40.dp)
                                         .background(
@@ -890,6 +932,7 @@ private fun HomeBottom(
     ) {
         Column(
             modifier = Modifier
+                .testTag("HomeBottom_Btn_Schedule")
                 .weight(1f)
                 .fillMaxHeight()
                 .scale(scheduleScale)
@@ -912,6 +955,7 @@ private fun HomeBottom(
         }
         Column(
             modifier = Modifier
+                .testTag("HomeBottom_Btn_Standing")
                 .weight(1f)
                 .fillMaxHeight()
                 .scale(standingScale)
@@ -934,6 +978,7 @@ private fun HomeBottom(
         }
         Column(
             modifier = Modifier
+                .testTag("HomeBottom_Btn_User")
                 .weight(1f)
                 .fillMaxHeight()
                 .scale(themeScale)
@@ -1305,6 +1350,7 @@ fun GameStatusCard2(
             }
             AnimatedVisibility(
                 modifier = Modifier
+                    .testTag("GameStatusCard2_Btn_Collapse")
                     .constrainAs(playersDetail) {
                         linkTo(parent.start, parent.end, 24.dp, 24.dp)
                         top.linkTo(homeScoreText.bottom)
@@ -1323,6 +1369,7 @@ fun GameStatusCard2(
                     if (homeLeader != null && awayLeader != null) {
                         LeaderInfo(
                             modifier = Modifier
+                                .testTag("GameStatusCard2_LeaderInfo")
                                 .padding(top = 8.dp)
                                 .fillMaxWidth()
                                 .wrapContentHeight(),
@@ -1419,6 +1466,7 @@ private fun LeaderInfo(
         )
         Column(
             modifier = Modifier
+                .testTag("LeaderInfo_Info")
                 .constrainAs(leaderGroup) {
                     top.linkTo(divider.bottom)
                 }
@@ -1426,7 +1474,9 @@ private fun LeaderInfo(
         ) {
             arrayOf(homeLeader, awayLeader).forEach { player ->
                 ConstraintLayout(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .testTag("LeaderInfo_Leaders")
+                        .fillMaxWidth()
                 ) {
                     val (playerImage, playerNameText, playerInfoText) = createRefs()
                     AsyncImage(
@@ -1456,16 +1506,23 @@ private fun LeaderInfo(
                     )
                     Text(
                         modifier = Modifier
+                            .testTag("LeaderInfo_Text_PlayerInfo")
                             .constrainAs(playerInfoText) {
                                 start.linkTo(playerImage.end, 4.dp)
                                 linkTo(playerNameText.bottom, playerImage.bottom)
                             },
-                        text = player.teamTricode + " | #" + player.jerseyNum + " | " + player.position,
+                        text = stringResource(
+                            R.string.player_info,
+                            player.teamTricode,
+                            player.jerseyNum,
+                            player.position
+                        ),
                         color = color,
                         fontSize = 12.sp
                     )
                     Text(
                         modifier = Modifier
+                            .testTag("LeaderInfo_Text_Ast")
                             .constrainAs(astText) {
                                 end.linkTo(parent.end)
                                 linkTo(playerImage.top, playerImage.bottom)
@@ -1479,6 +1536,7 @@ private fun LeaderInfo(
                     )
                     Text(
                         modifier = Modifier
+                            .testTag("LeaderInfo_Text_Reb")
                             .constrainAs(rebText) {
                                 end.linkTo(astText.start)
                                 linkTo(playerImage.top, playerImage.bottom)
@@ -1492,6 +1550,7 @@ private fun LeaderInfo(
                     )
                     Text(
                         modifier = Modifier
+                            .testTag("LeaderInfo_Text_Pts")
                             .constrainAs(ptsText) {
                                 end.linkTo(rebText.start)
                                 linkTo(playerImage.top, playerImage.bottom)
@@ -1522,6 +1581,7 @@ private fun LoginDialog(
     Dialog(onDismissRequest = onDismiss) {
         Column(
             modifier = Modifier
+                .testTag("LoginDialog_Dialog")
                 .clip(RoundedCornerShape(8.dp))
                 .width(IntrinsicSize.Min)
                 .background(Color.White),
@@ -1529,6 +1589,7 @@ private fun LoginDialog(
         ) {
             BasicTextField(
                 modifier = Modifier
+                    .testTag("LoginDialog_EditText_Account")
                     .padding(top = 24.dp, start = 16.dp, end = 16.dp)
                     .fillMaxWidth(),
                 value = account,
@@ -1561,6 +1622,7 @@ private fun LoginDialog(
             )
             BasicTextField(
                 modifier = Modifier
+                    .testTag("LoginDialog_EditText_Password")
                     .padding(top = 16.dp, start = 16.dp, end = 16.dp)
                     .fillMaxWidth(),
                 value = password,
@@ -1596,6 +1658,7 @@ private fun LoginDialog(
             Row {
                 Button(
                     modifier = Modifier
+                        .testTag("LoginDialog_Btn_Register")
                         .padding(top = 16.dp, bottom = 16.dp, start = 16.dp)
                         .width(120.dp),
                     onClick = {
@@ -1620,6 +1683,7 @@ private fun LoginDialog(
                 }
                 Button(
                     modifier = Modifier
+                        .testTag("LoginDialog_Btn_Login")
                         .padding(top = 16.dp, bottom = 16.dp, start = 16.dp, end = 16.dp)
                         .width(120.dp),
                     onClick = {
@@ -1674,12 +1738,16 @@ private fun AccountInfo(
                 .weight(1f)
         ) {
             Text(
+                modifier = Modifier
+                    .testTag("AccountInfo_Text_AccountName"),
                 text = name,
                 fontSize = 16.sp,
                 color = MaterialTheme.colors.primaryVariant,
                 fontWeight = FontWeight.Medium
             )
             Text(
+                modifier = Modifier
+                    .testTag("AccountInfo_Text_Credit"),
                 text = stringResource(R.string.user_points, points),
                 fontSize = 16.sp,
                 color = MaterialTheme.colors.primaryVariant
@@ -1688,6 +1756,7 @@ private fun AccountInfo(
         Row {
             IconButton(
                 modifier = Modifier
+                    .testTag("AccountInfo_Btn_Bet")
                     .size(48.dp)
                     .padding(12.dp),
                 onClick = onRewardClick
@@ -1700,6 +1769,7 @@ private fun AccountInfo(
             }
             IconButton(
                 modifier = Modifier
+                    .testTag("AccountInfo_Btn_Logout")
                     .padding(start = 8.dp)
                     .size(48.dp)
                     .padding(12.dp),
@@ -1749,6 +1819,7 @@ private fun BetDialog(
         ) {
             ConstraintLayout(
                 modifier = Modifier
+                    .testTag("BetDialog_Dialog")
                     .clip(RoundedCornerShape(8.dp))
                     .background(MaterialTheme.colors.secondary)
             ) {
@@ -1760,21 +1831,31 @@ private fun BetDialog(
 
                 Text(
                     modifier = Modifier
+                        .testTag("BetDialog_Text_HomeRecord")
                         .constrainAs(homeRecordText) {
                             top.linkTo(parent.top, 16.dp)
                             linkTo(homeLogo.start, homeLogo.end)
                         },
-                    text = "(${gameAndBet.game.homeTeam.wins}/${gameAndBet.game.homeTeam.losses})",
+                    text = stringResource(
+                        R.string.bet_win_lose_record,
+                        gameAndBet.game.homeTeam.wins,
+                        gameAndBet.game.homeTeam.losses
+                    ),
                     color = MaterialTheme.colors.primary,
                     fontSize = 20.sp
                 )
                 Text(
                     modifier = Modifier
+                        .testTag("BetDialog_Text_AwayRecord")
                         .constrainAs(awayRecordText) {
                             top.linkTo(parent.top, 16.dp)
                             linkTo(awayLogo.start, awayLogo.end)
                         },
-                    text = "(${gameAndBet.game.awayTeam.wins}/${gameAndBet.game.awayTeam.losses})",
+                    text = stringResource(
+                        R.string.bet_win_lose_record,
+                        gameAndBet.game.awayTeam.wins,
+                        gameAndBet.game.awayTeam.losses
+                    ),
                     color = MaterialTheme.colors.primary,
                     fontSize = 20.sp
                 )
@@ -1833,6 +1914,7 @@ private fun BetDialog(
                 )
                 CustomOutlinedTextField(
                     modifier = Modifier
+                        .testTag("BetDialog_EditText_HomeBet")
                         .constrainAs(homeTextFiled) {
                             linkTo(homeLogo.start, homeLogo.end)
                             top.linkTo(homeLogo.bottom, 8.dp)
@@ -1857,6 +1939,7 @@ private fun BetDialog(
                 )
                 CustomOutlinedTextField(
                     modifier = Modifier
+                        .testTag("BetDialog_EditText_AwayBet")
                         .constrainAs(awayTextField) {
                             linkTo(awayLogo.start, awayLogo.end)
                             top.linkTo(awayLogo.bottom, 8.dp)
@@ -1881,6 +1964,7 @@ private fun BetDialog(
                 )
                 Text(
                     modifier = Modifier
+                        .testTag("BetDialog_Text_Remainder")
                         .constrainAs(remainPointText) {
                             top.linkTo(homeTextFiled.bottom, 8.dp)
                             linkTo(parent.start, parent.end, 16.dp, 16.dp)
@@ -1891,6 +1975,7 @@ private fun BetDialog(
                 )
                 Text(
                     modifier = Modifier
+                        .testTag("BetDialog_Btn_Confirm")
                         .constrainAs(confirmBtn) {
                             top.linkTo(remainPointText.bottom, 8.dp)
                             end.linkTo(parent.end, 8.dp)
@@ -1930,6 +2015,7 @@ private fun BetDialog(
         }
         if (showWarning) {
             AlertDialog(
+                modifier = Modifier.testTag("BetDialog_Alert_Warning"),
                 onDismissRequest = { showWarning = false },
                 title = {
                     Text(
@@ -1955,6 +2041,7 @@ private fun BetDialog(
                     ) {
                         Text(
                             modifier = Modifier
+                                .testTag("BetDialog_Alert_Confirm")
                                 .padding(bottom = 8.dp)
                                 .wrapContentSize()
                                 .rippleClickable {
