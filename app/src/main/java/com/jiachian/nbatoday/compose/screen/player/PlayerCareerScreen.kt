@@ -1,19 +1,52 @@
 package com.jiachian.nbatoday.compose.screen.player
 
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.LocalOverscrollConfiguration
+import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Divider
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -25,7 +58,12 @@ import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.data.local.player.PlayerCareer
-import com.jiachian.nbatoday.utils.*
+import com.jiachian.nbatoday.utils.NbaUtils
+import com.jiachian.nbatoday.utils.dividerSecondary
+import com.jiachian.nbatoday.utils.modifyIf
+import com.jiachian.nbatoday.utils.noRippleClickable
+import com.jiachian.nbatoday.utils.px2Dp
+import com.jiachian.nbatoday.utils.rippleClickable
 import kotlin.math.max
 import kotlin.math.pow
 
@@ -62,7 +100,9 @@ fun PlayerCareerScreen(
                 .verticalScroll(rememberScrollState())
         ) {
             IconButton(
-                modifier = Modifier.padding(top = 8.dp, start = 8.dp),
+                modifier = Modifier
+                    .testTag("PlayerCareerScreen_Btn_Back")
+                    .padding(top = 8.dp, start = 8.dp),
                 onClick = onBack
             ) {
                 Icon(
@@ -130,11 +170,19 @@ private fun PlayerCareerInfo(
                     .weight(1f)
             ) {
                 Text(
-                    text = "${playerCareer.info.teamCity} ${playerCareer.info.teamName} | #${playerCareer.info.jersey} | ${playerCareer.info.position}",
+                    modifier = Modifier.testTag("PlayerCareerInfo_Text_PlayerInfo"),
+                    text = stringResource(
+                        R.string.player_career_info,
+                        playerCareer.info.teamCity,
+                        playerCareer.info.teamName,
+                        playerCareer.info.jersey,
+                        playerCareer.info.position
+                    ),
                     fontSize = 16.sp,
                     color = MaterialTheme.colors.secondaryVariant
                 )
                 Text(
+                    modifier = Modifier.testTag("PlayerCareerInfo_Text_PlayerName"),
                     text = playerCareer.info.playerName,
                     fontSize = 24.sp,
                     color = MaterialTheme.colors.secondaryVariant,
@@ -143,7 +191,9 @@ private fun PlayerCareerInfo(
             }
             if (playerCareer.info.isGreatest75) {
                 Image(
-                    modifier = Modifier.size(58.dp, 48.dp),
+                    modifier = Modifier
+                        .testTag("PlayerCareerInfo_Image_Greatest75")
+                        .size(58.dp, 48.dp),
                     painter = painterResource(R.drawable.ic_nba_75th_logo),
                     contentDescription = null
                 )
@@ -176,6 +226,7 @@ private fun PlayerCareerInfo(
                     textAlign = TextAlign.Center
                 )
                 Text(
+                    modifier = Modifier.testTag("PlayerCareerInfo_Text_PPG"),
                     text = playerCareer.info.headlineStats.points.toString(),
                     color = MaterialTheme.colors.secondaryVariant,
                     fontSize = 16.sp,
@@ -204,6 +255,7 @@ private fun PlayerCareerInfo(
                     textAlign = TextAlign.Center
                 )
                 Text(
+                    modifier = Modifier.testTag("PlayerCareerInfo_Text_RPG"),
                     text = playerCareer.info.headlineStats.rebounds.toString(),
                     color = MaterialTheme.colors.secondaryVariant,
                     fontSize = 16.sp,
@@ -232,6 +284,7 @@ private fun PlayerCareerInfo(
                     textAlign = TextAlign.Center
                 )
                 Text(
+                    modifier = Modifier.testTag("PlayerCareerInfo_Text_APG"),
                     text = playerCareer.info.headlineStats.assists.toString(),
                     color = MaterialTheme.colors.secondaryVariant,
                     fontSize = 16.sp,
@@ -260,6 +313,7 @@ private fun PlayerCareerInfo(
                     textAlign = TextAlign.Center
                 )
                 Text(
+                    modifier = Modifier.testTag("PlayerCareerInfo_Text_PIE"),
                     text = (playerCareer.info.headlineStats.impact * 100).decimalFormat(),
                     color = MaterialTheme.colors.secondaryVariant,
                     fontSize = 16.sp,
@@ -293,7 +347,11 @@ private fun PlayerCareerInfo(
                     textAlign = TextAlign.Center
                 )
                 Text(
-                    text = (playerCareer.info.height / 100).decimalFormat(2) + "(m)",
+                    modifier = Modifier.testTag("PlayerCareerInfo_Text_Height"),
+                    text = stringResource(
+                        R.string.player_career_info_height_value,
+                        (playerCareer.info.height / 100).decimalFormat(2)
+                    ),
                     color = MaterialTheme.colors.secondaryVariant,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -321,7 +379,11 @@ private fun PlayerCareerInfo(
                     textAlign = TextAlign.Center
                 )
                 Text(
-                    text = playerCareer.info.weight.decimalFormat() + "(kg)",
+                    modifier = Modifier.testTag("PlayerCareerInfo_Text_Weight"),
+                    text = stringResource(
+                        R.string.player_career_info_weight_value,
+                        playerCareer.info.weight.decimalFormat()
+                    ),
                     color = MaterialTheme.colors.secondaryVariant,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -349,6 +411,7 @@ private fun PlayerCareerInfo(
                     textAlign = TextAlign.Center
                 )
                 Text(
+                    modifier = Modifier.testTag("PlayerCareerInfo_Text_Country"),
                     text = playerCareer.info.country,
                     color = MaterialTheme.colors.secondaryVariant,
                     fontSize = 16.sp,
@@ -377,6 +440,7 @@ private fun PlayerCareerInfo(
                     textAlign = TextAlign.Center
                 )
                 Text(
+                    modifier = Modifier.testTag("PlayerCareerInfo_Text_LastAttended"),
                     text = playerCareer.info.school,
                     color = MaterialTheme.colors.secondaryVariant,
                     fontSize = 16.sp,
@@ -410,6 +474,7 @@ private fun PlayerCareerInfo(
                     textAlign = TextAlign.Center
                 )
                 Text(
+                    modifier = Modifier.testTag("PlayerCareerInfo_Text_Age"),
                     text = playerCareer.info.playerAge.toString(),
                     color = MaterialTheme.colors.secondaryVariant,
                     fontSize = 16.sp,
@@ -438,6 +503,7 @@ private fun PlayerCareerInfo(
                     textAlign = TextAlign.Center
                 )
                 Text(
+                    modifier = Modifier.testTag("PlayerCareerInfo_Text_Birth"),
                     text = playerCareer.info.birthDate,
                     color = MaterialTheme.colors.secondaryVariant,
                     fontSize = 16.sp,
@@ -466,6 +532,7 @@ private fun PlayerCareerInfo(
                     textAlign = TextAlign.Center
                 )
                 Text(
+                    modifier = Modifier.testTag("PlayerCareerInfo_Text_Draft"),
                     text = stringResource(
                         R.string.player_career_info_draft_format,
                         playerCareer.info.draftYear,
@@ -499,6 +566,7 @@ private fun PlayerCareerInfo(
                     textAlign = TextAlign.Center
                 )
                 Text(
+                    modifier = Modifier.testTag("PlayerCareerInfo_Text_Experience"),
                     text = playerCareer.info.seasonExperience.toString(),
                     color = MaterialTheme.colors.secondaryVariant,
                     fontSize = 16.sp,
@@ -577,6 +645,7 @@ private fun PlayerCareerStats(
                     )
                     LazyColumn(
                         modifier = Modifier
+                            .testTag("PlayerCareerStats_LC_Year")
                             .heightIn(max = (LocalConfiguration.current.screenHeightDp * 0.7f).dp),
                         state = timeframeState
                     ) {
@@ -584,6 +653,7 @@ private fun PlayerCareerStats(
                             Column {
                                 Row(
                                     modifier = Modifier
+                                        .testTag("PlayerCareerStats_Row_Year")
                                         .fillMaxWidth()
                                         .height(40.dp)
                                         .background(
@@ -596,6 +666,7 @@ private fun PlayerCareerStats(
                                 ) {
                                     Text(
                                         modifier = Modifier
+                                            .testTag("PlayerCareerStats_Text_Year")
                                             .padding(start = 8.dp, top = 8.dp, bottom = 8.dp)
                                             .weight(1f),
                                         text = stat.timeFrame,
@@ -607,6 +678,7 @@ private fun PlayerCareerStats(
                                     )
                                     Text(
                                         modifier = Modifier
+                                            .testTag("PlayerCareerStats_Text_TeamNaeAbbr")
                                             .padding(end = 8.dp, top = 8.dp, bottom = 8.dp),
                                         text = stat.teamNameAbbr,
                                         textAlign = TextAlign.Start,
@@ -679,18 +751,22 @@ private fun PlayerCareerStats(
                 ) {
                     LazyColumn(
                         modifier = Modifier
+                            .testTag("PlayerCareerStats_LC_Stats")
                             .heightIn(max = (LocalConfiguration.current.screenHeightDp * 0.7f).dp)
                             .fillMaxWidth(),
                         state = statsState
                     ) {
                         items(careerStats) { stats ->
                             Row(
-                                modifier = Modifier.fillMaxWidth(),
+                                modifier = Modifier
+                                    .testTag("PlayerCareerStats_Row_Stats")
+                                    .fillMaxWidth(),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 labels.forEach { label ->
                                     Text(
                                         modifier = Modifier
+                                            .testTag("PlayerCareerStats_Text_Stats")
                                             .width(label.width)
                                             .height(40.dp)
                                             .background(

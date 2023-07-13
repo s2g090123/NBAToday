@@ -70,12 +70,15 @@
     <string name="team_game_status_win">Win</string>
     <string name="team_game_status_lose">Lose</string>
     <string name="player_career_not_found">Player not found or Something went wrong.</string>
+    <string name="player_career_info" translatable="false"> %1$s %2$s | #%3$d | %4$s</string>
     <string name="player_career_info_ppg">PPG</string>
     <string name="player_career_info_rpg">RPG</string>
     <string name="player_career_info_apg">APG</string>
     <string name="player_career_info_pie">PIE</string>
     <string name="player_career_info_height">HEIGHT</string>
+    <string name="player_career_info_height_value" translatable="false">%1$s(m)</string>
     <string name="player_career_info_weight">WEIGHT</string>
+    <string name="player_career_info_weight_value" translatable="false">%1$s(kg)</string>
     <string name="player_career_info_country">COUNTRY</string>
     <string name="player_career_info_attended">LAST ATTENDED</string>
     <string name="player_career_info_age">AGE</string>
