@@ -1,15 +1,49 @@
 package com.jiachian.nbatoday.compose.screen.score
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.LocalOverscrollConfiguration
+import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Divider
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Tab
+import androidx.compose.material.TabRow
+import androidx.compose.material.TabRowDefaults
 import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
-import androidx.compose.runtime.*
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -17,6 +51,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
@@ -36,7 +71,11 @@ import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.data.local.score.GameBoxScore
 import com.jiachian.nbatoday.data.remote.game.GameStatusCode
 import com.jiachian.nbatoday.data.remote.score.PlayerActiveStatus
-import com.jiachian.nbatoday.utils.*
+import com.jiachian.nbatoday.utils.NbaUtils
+import com.jiachian.nbatoday.utils.dividerSecondary
+import com.jiachian.nbatoday.utils.noRippleClickable
+import com.jiachian.nbatoday.utils.px2Dp
+import com.jiachian.nbatoday.utils.rippleClickable
 import kotlin.math.max
 
 @Composable
@@ -98,6 +137,7 @@ private fun ScoreScreen(
 
         IconButton(
             modifier = Modifier
+                .testTag("ScoreScreen_Btn_Back")
                 .constrainAs(backBtn) {
                     top.linkTo(parent.top, 8.dp)
                     start.linkTo(parent.start, 8.dp)
@@ -112,6 +152,7 @@ private fun ScoreScreen(
         }
         Text(
             modifier = Modifier
+                .testTag("ScoreScreen_Text_Date")
                 .constrainAs(dateTitle) {
                     linkTo(backBtn.top, backBtn.bottom)
                     start.linkTo(backBtn.end, 16.dp)
@@ -132,6 +173,7 @@ private fun ScoreScreen(
         )
         ScorePeriod(
             modifier = Modifier
+                .testTag("ScoreScreen_ScorePeriod")
                 .constrainAs(scorePeriod) {
                     top.linkTo(scoreTotal.bottom, 16.dp)
                 }
@@ -164,6 +206,7 @@ private fun ScoreTotal(
 
         Text(
             modifier = Modifier
+                .testTag("ScoreTotal_Text_ScoreComparison")
                 .constrainAs(scoreText) {
                     linkTo(homeImage.top, isFinalText.top)
                     linkTo(parent.start, parent.end)
@@ -175,6 +218,7 @@ private fun ScoreTotal(
         )
         Text(
             modifier = Modifier
+                .testTag("ScoreTotal_Text_Status")
                 .constrainAs(isFinalText) {
                     linkTo(scoreText.bottom, homeImage.bottom)
                     linkTo(parent.start, parent.end)
@@ -206,6 +250,7 @@ private fun ScoreTotal(
         )
         Text(
             modifier = Modifier
+                .testTag("ScoreTotal_Text_HomeName")
                 .constrainAs(homeNameText) {
                     top.linkTo(homeImage.bottom, 8.dp)
                     linkTo(homeImage.start, homeImage.end)
@@ -232,6 +277,7 @@ private fun ScoreTotal(
         )
         Text(
             modifier = Modifier
+                .testTag("ScoreTotal_Text_AwayName")
                 .constrainAs(awyNameText) {
                     top.linkTo(awayImage.bottom, 8.dp)
                     linkTo(awayImage.start, awayImage.end)
@@ -280,9 +326,15 @@ private fun ScorePeriod(
         }
         arrayOf(score.homeTeam, score.awayTeam).forEach { team ->
             if (team != null) {
-                Box(modifier = Modifier.fillMaxWidth()) {
+                Box(
+                    modifier = Modifier
+                        .testTag("ScorePeriod_Box_Score")
+                        .fillMaxWidth()
+                ) {
                     Text(
-                        modifier = Modifier.align(Alignment.TopStart),
+                        modifier = Modifier
+                            .testTag("ScorePeriod_Text_TeamName")
+                            .align(Alignment.TopStart),
                         text = team.teamName,
                         color = MaterialTheme.colors.secondary,
                         fontSize = 16.sp
@@ -290,7 +342,9 @@ private fun ScorePeriod(
                     Row(modifier = Modifier.align(Alignment.TopEnd)) {
                         team.periods.forEach { period ->
                             Text(
-                                modifier = Modifier.width(38.dp),
+                                modifier = Modifier
+                                    .testTag("ScorePeriod_Text_Score")
+                                    .width(38.dp),
                                 text = period.score.toString(),
                                 textAlign = TextAlign.Center,
                                 fontSize = 16.sp,
@@ -298,7 +352,9 @@ private fun ScorePeriod(
                             )
                         }
                         Text(
-                            modifier = Modifier.width(38.dp),
+                            modifier = Modifier
+                                .testTag("ScorePeriod_Text_ScoreTotal")
+                                .width(38.dp),
                             text = team.score.toString(),
                             textAlign = TextAlign.Center,
                             fontSize = 16.sp,
@@ -349,6 +405,7 @@ private fun ScoreDetail(
             }
         ) {
             Tab(
+                modifier = Modifier.testTag("ScoreDetail_Tab_Home"),
                 text = {
                     Text(
                         text = score.homeTeam?.teamName ?: "",
@@ -362,6 +419,7 @@ private fun ScoreDetail(
             Tab(
                 text = {
                     Text(
+                        modifier = Modifier.testTag("ScoreDetail_Tab_Away"),
                         text = score.awayTeam?.teamName ?: "",
                         color = MaterialTheme.colors.primary,
                         fontSize = 14.sp
@@ -373,6 +431,7 @@ private fun ScoreDetail(
             Tab(
                 text = {
                     Text(
+                        modifier = Modifier.testTag("ScoreDetail_Tab_TeamStats"),
                         text = stringResource(R.string.box_score_tab_statistics),
                         color = MaterialTheme.colors.primary,
                         fontSize = 14.sp
@@ -384,6 +443,7 @@ private fun ScoreDetail(
             Tab(
                 text = {
                     Text(
+                        modifier = Modifier.testTag("ScoreDetail_Tab_LeaderStats"),
                         text = stringResource(R.string.box_score_tab_leaders),
                         color = MaterialTheme.colors.primary,
                         fontSize = 14.sp
@@ -394,7 +454,9 @@ private fun ScoreDetail(
             )
         }
         HorizontalPager(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .testTag("ScoreDetail_Pager")
+                .fillMaxWidth(),
             state = pagerState,
             count = tabs.size,
             userScrollEnabled = false
@@ -403,6 +465,7 @@ private fun ScoreDetail(
                 index == 0 && score.homeTeam != null -> {
                     PlayerStatistics(
                         modifier = Modifier
+                            .testTag("ScoreDetail_PlayerStatistics_Home")
                             .height((LocalConfiguration.current.screenHeightDp * 0.7f).dp)
                             .fillMaxWidth(),
                         viewModel = viewModel,
@@ -412,6 +475,7 @@ private fun ScoreDetail(
                 index == 1 && score.awayTeam != null -> {
                     PlayerStatistics(
                         modifier = Modifier
+                            .testTag("ScoreDetail_PlayerStatistics_Away")
                             .height((LocalConfiguration.current.screenHeightDp * 0.7f).dp)
                             .fillMaxWidth(),
                         viewModel = viewModel,
@@ -421,6 +485,7 @@ private fun ScoreDetail(
                 index == 2 -> {
                     TeamStatistics(
                         modifier = Modifier
+                            .testTag("ScoreDetail_TeamStatistics")
                             .heightIn(max = (LocalConfiguration.current.screenHeightDp * 0.7f).dp)
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp),
@@ -431,6 +496,7 @@ private fun ScoreDetail(
                 index == 3 -> {
                     LeaderStatistics(
                         modifier = Modifier
+                            .testTag("ScoreDetail_LeaderStatistics")
                             .heightIn(max = (LocalConfiguration.current.screenHeightDp * 0.7f).dp)
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp),
@@ -487,6 +553,7 @@ private fun PlayerStatistics(
             ) {
                 LazyColumn(
                     modifier = Modifier
+                        .testTag("PlayerStatistics_LC_Players")
                         .heightIn(max = (LocalConfiguration.current.screenHeightDp * 0.7f).dp)
                         .fillMaxWidth(),
                     state = playerState
@@ -494,6 +561,7 @@ private fun PlayerStatistics(
                     itemsIndexed(players) { index, player ->
                         Column(
                             modifier = Modifier
+                                .testTag("PlayerStatistics_Column_Player")
                                 .fillMaxWidth()
                                 .rippleClickable {
                                     viewModel.showPlayerCareer(player.personId)
@@ -501,6 +569,7 @@ private fun PlayerStatistics(
                         ) {
                             Text(
                                 modifier = Modifier
+                                    .testTag("PlayerStatistics_Text_PlayerName")
                                     .fillMaxWidth()
                                     .padding(top = 8.dp, start = 8.dp),
                                 text = player.nameAbbr,
@@ -523,9 +592,14 @@ private fun PlayerStatistics(
                 }
             }
         }
-        Column(modifier = modifier.horizontalScroll(horizontalScrollState)) {
+        Column(
+            modifier = Modifier
+                .testTag("PlayerStatistics_Column_Stats")
+                .horizontalScroll(horizontalScrollState)
+        ) {
             Row(
                 modifier = Modifier
+                    .testTag("PlayerStatistics_Row_Labels")
                     .onSizeChanged {
                         dividerWidth = max(dividerWidth, it.width)
                     }
@@ -536,6 +610,7 @@ private fun PlayerStatistics(
                 labels.forEach { label ->
                     Box(
                         modifier = Modifier
+                            .testTag("PlayerStatistics_Box_Label")
                             .width(label.width)
                             .height(40.dp)
                             .rippleClickable { isPopupVisible = label.text }
@@ -586,6 +661,7 @@ private fun PlayerStatistics(
             ) {
                 LazyColumn(
                     modifier = Modifier
+                        .testTag("PlayerStatistics_LC_PlayerStats")
                         .heightIn(max = (LocalConfiguration.current.screenHeightDp * 0.7f).dp)
                         .fillMaxWidth(),
                     state = statisticsState
@@ -594,11 +670,14 @@ private fun PlayerStatistics(
                         val statistics = player.statistics
                         Row(
                             modifier = Modifier
+                                .testTag("PlayerStatistics_Row_PlayerStats")
                                 .fillMaxWidth()
                                 .padding(top = 8.dp)
                         ) {
                             Text(
-                                modifier = Modifier.width(16.dp),
+                                modifier = Modifier
+                                    .testTag("PlayerStatistics_Text_PlayerPosition")
+                                    .width(16.dp),
                                 text = if (player.starter) player.position.last()
                                     .toString() else "",
                                 textAlign = TextAlign.End,
@@ -607,14 +686,18 @@ private fun PlayerStatistics(
                             )
                             if (player.status == PlayerActiveStatus.INACTIVE) {
                                 Text(
-                                    modifier = Modifier.width(72.dp),
-                                    text = "DNP",
+                                    modifier = Modifier
+                                        .testTag("PlayerStatistics_Text_NotPlay")
+                                        .width(72.dp),
+                                    text = stringResource(R.string.box_score_player_dnp),
                                     textAlign = TextAlign.Center,
                                     fontSize = 16.sp,
                                     color = MaterialTheme.colors.secondary.copy(0.5f)
                                 )
                                 Text(
-                                    modifier = Modifier.padding(start = 16.dp),
+                                    modifier = Modifier
+                                        .testTag("PlayerStatistics_Text_NotPlayReason")
+                                        .padding(start = 16.dp),
                                     text = player.notPlayingReason ?: "",
                                     fontSize = 16.sp,
                                     color = MaterialTheme.colors.secondary.copy(0.5f)
@@ -623,10 +706,11 @@ private fun PlayerStatistics(
                                 labels.forEach { label ->
                                     Text(
                                         modifier = Modifier
+                                            .testTag("PlayerStatistics_Text_PlayerStats")
                                             .width(label.width)
                                             .padding(horizontal = 8.dp),
                                         text = when (label.text) {
-                                            "MIN" -> player.statistics.minutes
+                                            "MIN" -> statistics.minutes
                                             "FGM-A" -> "${statistics.fieldGoalsMade}-${statistics.fieldGoalsAttempted}"
                                             "3PM-A" -> "${statistics.threePointersMade}-${statistics.threePointersAttempted}"
                                             "FTM-A" -> "${statistics.freeThrowsMade}-${statistics.freeThrowsAttempted}"
@@ -729,7 +813,9 @@ private fun TeamStatistics(
                     .padding(top = 8.dp, start = 4.dp, end = 4.dp)
             ) {
                 Text(
-                    modifier = Modifier.align(Alignment.TopStart),
+                    modifier = Modifier
+                        .testTag("TeamStatistics_Text_HomePoints")
+                        .align(Alignment.TopStart),
                     text = homeTeam?.statistics?.points?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -743,7 +829,9 @@ private fun TeamStatistics(
                     color = MaterialTheme.colors.secondary
                 )
                 Text(
-                    modifier = Modifier.align(Alignment.TopEnd),
+                    modifier = Modifier
+                        .testTag("TeamStatistics_Text_AwayPoints")
+                        .align(Alignment.TopEnd),
                     text = awayTeam?.statistics?.points?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -758,8 +846,15 @@ private fun TeamStatistics(
                     .padding(top = 8.dp, start = 4.dp, end = 4.dp)
             ) {
                 Text(
-                    modifier = Modifier.align(Alignment.TopStart),
-                    text = "${homeTeam?.statistics?.fieldGoalsMade ?: 0}/${homeTeam?.statistics?.fieldGoalsAttempted ?: 0}(${homeTeam?.statistics?.fieldGoalsPercentage ?: 0}%)",
+                    modifier = Modifier
+                        .testTag("TeamStatistics_Text_HomeFGM")
+                        .align(Alignment.TopStart),
+                    text = stringResource(
+                        R.string.box_score_team_FGM,
+                        homeTeam?.statistics?.fieldGoalsMade ?: 0,
+                        homeTeam?.statistics?.fieldGoalsAttempted ?: 0,
+                        homeTeam?.statistics?.fieldGoalsPercentage ?: 0
+                    ),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colors.secondary
@@ -772,9 +867,15 @@ private fun TeamStatistics(
                     color = MaterialTheme.colors.secondary
                 )
                 Text(
-                    modifier = Modifier.align(Alignment.TopEnd),
-                    text = "${awayTeam?.statistics?.fieldGoalsMade ?: 0}/${awayTeam?.statistics?.fieldGoalsAttempted ?: 0}(${awayTeam?.statistics?.fieldGoalsPercentage ?: 0}%)",
-                    fontSize = 16.sp,
+                    modifier = Modifier
+                        .testTag("TeamStatistics_Text_AwayFGM")
+                        .align(Alignment.TopEnd),
+                    text = stringResource(
+                        R.string.box_score_team_FGM,
+                        awayTeam?.statistics?.fieldGoalsMade ?: 0,
+                        awayTeam?.statistics?.fieldGoalsAttempted ?: 0,
+                        awayTeam?.statistics?.fieldGoalsPercentage ?: 0
+                    ), fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colors.secondary
                 )
@@ -787,8 +888,15 @@ private fun TeamStatistics(
                     .padding(top = 8.dp, start = 4.dp, end = 4.dp)
             ) {
                 Text(
-                    modifier = Modifier.align(Alignment.TopStart),
-                    text = "${homeTeam?.statistics?.twoPointersMade ?: 0}/${homeTeam?.statistics?.twoPointersAttempted ?: 0}(${homeTeam?.statistics?.twoPointersPercentage ?: 0}%)",
+                    modifier = Modifier
+                        .testTag("TeamStatistics_Text_Home2PM")
+                        .align(Alignment.TopStart),
+                    text = stringResource(
+                        R.string.box_score_team_2PM,
+                        homeTeam?.statistics?.twoPointersMade ?: 0,
+                        homeTeam?.statistics?.twoPointersAttempted ?: 0,
+                        homeTeam?.statistics?.twoPointersPercentage ?: 0
+                    ),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colors.secondary
@@ -801,8 +909,15 @@ private fun TeamStatistics(
                     color = MaterialTheme.colors.secondary
                 )
                 Text(
-                    modifier = Modifier.align(Alignment.TopEnd),
-                    text = "${awayTeam?.statistics?.twoPointersMade ?: 0}/${awayTeam?.statistics?.twoPointersAttempted ?: 0}(${awayTeam?.statistics?.twoPointersPercentage ?: 0}%)",
+                    modifier = Modifier
+                        .testTag("TeamStatistics_Text_Away2PM")
+                        .align(Alignment.TopEnd),
+                    text = stringResource(
+                        R.string.box_score_team_2PM,
+                        awayTeam?.statistics?.twoPointersMade ?: 0,
+                        awayTeam?.statistics?.twoPointersAttempted ?: 0,
+                        awayTeam?.statistics?.twoPointersPercentage ?: 0
+                    ),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colors.secondary
@@ -816,8 +931,15 @@ private fun TeamStatistics(
                     .padding(top = 8.dp, start = 4.dp, end = 4.dp)
             ) {
                 Text(
-                    modifier = Modifier.align(Alignment.TopStart),
-                    text = "${homeTeam?.statistics?.threePointersMade ?: 0}/${homeTeam?.statistics?.threePointersAttempted ?: 0}(${homeTeam?.statistics?.threePointersPercentage ?: 0}%)",
+                    modifier = Modifier
+                        .testTag("TeamStatistics_Text_Home3PM")
+                        .align(Alignment.TopStart),
+                    text = stringResource(
+                        R.string.box_score_team_3PM,
+                        homeTeam?.statistics?.threePointersMade ?: 0,
+                        homeTeam?.statistics?.threePointersAttempted ?: 0,
+                        homeTeam?.statistics?.threePointersPercentage ?: 0
+                    ),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colors.secondary
@@ -830,8 +952,15 @@ private fun TeamStatistics(
                     color = MaterialTheme.colors.secondary
                 )
                 Text(
-                    modifier = Modifier.align(Alignment.TopEnd),
-                    text = "${awayTeam?.statistics?.threePointersMade ?: 0}/${awayTeam?.statistics?.threePointersAttempted ?: 0}(${awayTeam?.statistics?.threePointersPercentage ?: 0}%)",
+                    modifier = Modifier
+                        .testTag("TeamStatistics_Text_Away3PM")
+                        .align(Alignment.TopEnd),
+                    text = stringResource(
+                        R.string.box_score_team_3PM,
+                        awayTeam?.statistics?.threePointersMade ?: 0,
+                        awayTeam?.statistics?.threePointersAttempted ?: 0,
+                        awayTeam?.statistics?.threePointersPercentage ?: 0
+                    ),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colors.secondary
@@ -845,8 +974,15 @@ private fun TeamStatistics(
                     .padding(top = 8.dp, start = 4.dp, end = 4.dp)
             ) {
                 Text(
-                    modifier = Modifier.align(Alignment.TopStart),
-                    text = "${homeTeam?.statistics?.freeThrowsMade ?: 0}/${homeTeam?.statistics?.freeThrowsAttempted ?: 0}(${homeTeam?.statistics?.freeThrowsPercentage ?: 0}%)",
+                    modifier = Modifier
+                        .testTag("TeamStatistics_Text_HomeFTM")
+                        .align(Alignment.TopStart),
+                    text = stringResource(
+                        R.string.box_score_team_FTM,
+                        homeTeam?.statistics?.freeThrowsMade ?: 0,
+                        homeTeam?.statistics?.freeThrowsAttempted ?: 0,
+                        homeTeam?.statistics?.freeThrowsPercentage ?: 0
+                    ),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colors.secondary
@@ -859,8 +995,15 @@ private fun TeamStatistics(
                     color = MaterialTheme.colors.secondary
                 )
                 Text(
-                    modifier = Modifier.align(Alignment.TopEnd),
-                    text = "${awayTeam?.statistics?.freeThrowsMade ?: 0}/${awayTeam?.statistics?.freeThrowsAttempted ?: 0}(${awayTeam?.statistics?.freeThrowsPercentage ?: 0}%)",
+                    modifier = Modifier
+                        .testTag("TeamStatistics_Text_AwayFTM")
+                        .align(Alignment.TopEnd),
+                    text = stringResource(
+                        R.string.box_score_team_FTM,
+                        awayTeam?.statistics?.freeThrowsMade ?: 0,
+                        awayTeam?.statistics?.freeThrowsAttempted ?: 0,
+                        awayTeam?.statistics?.freeThrowsPercentage ?: 0
+                    ),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colors.secondary
@@ -882,7 +1025,9 @@ private fun TeamStatistics(
                     .padding(top = 12.dp, start = 4.dp, end = 4.dp)
             ) {
                 Text(
-                    modifier = Modifier.align(Alignment.TopStart),
+                    modifier = Modifier
+                        .testTag("TeamStatistics_Text_HomeRebPersonal")
+                        .align(Alignment.TopStart),
                     text = homeTeam?.statistics?.reboundsPersonal?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -896,7 +1041,9 @@ private fun TeamStatistics(
                     color = MaterialTheme.colors.secondary
                 )
                 Text(
-                    modifier = Modifier.align(Alignment.TopEnd),
+                    modifier = Modifier
+                        .testTag("TeamStatistics_Text_AwayRebPersonal")
+                        .align(Alignment.TopEnd),
                     text = awayTeam?.statistics?.reboundsPersonal?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -911,7 +1058,9 @@ private fun TeamStatistics(
                     .padding(start = 4.dp, end = 4.dp)
             ) {
                 Text(
-                    modifier = Modifier.align(Alignment.TopStart),
+                    modifier = Modifier
+                        .testTag("TeamStatistics_Text_HomeRebDefensive")
+                        .align(Alignment.TopStart),
                     text = homeTeam?.statistics?.reboundsDefensive?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -925,7 +1074,9 @@ private fun TeamStatistics(
                     color = MaterialTheme.colors.secondary
                 )
                 Text(
-                    modifier = Modifier.align(Alignment.TopEnd),
+                    modifier = Modifier
+                        .testTag("TeamStatistics_Text_AwayRebDefensive")
+                        .align(Alignment.TopEnd),
                     text = awayTeam?.statistics?.reboundsDefensive?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -940,7 +1091,9 @@ private fun TeamStatistics(
                     .padding(start = 4.dp, end = 4.dp)
             ) {
                 Text(
-                    modifier = Modifier.align(Alignment.TopStart),
+                    modifier = Modifier
+                        .testTag("TeamStatistics_Text_HomeRebOffensive")
+                        .align(Alignment.TopStart),
                     text = homeTeam?.statistics?.reboundsOffensive?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -954,7 +1107,9 @@ private fun TeamStatistics(
                     color = MaterialTheme.colors.secondary
                 )
                 Text(
-                    modifier = Modifier.align(Alignment.TopEnd),
+                    modifier = Modifier
+                        .testTag("TeamStatistics_Text_AwayRebOffensive")
+                        .align(Alignment.TopEnd),
                     text = awayTeam?.statistics?.reboundsOffensive?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -969,7 +1124,9 @@ private fun TeamStatistics(
                     .padding(top = 8.dp, start = 4.dp, end = 4.dp)
             ) {
                 Text(
-                    modifier = Modifier.align(Alignment.TopStart),
+                    modifier = Modifier
+                        .testTag("TeamStatistics_Text_HomeAssists")
+                        .align(Alignment.TopStart),
                     text = homeTeam?.statistics?.assists?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -983,7 +1140,9 @@ private fun TeamStatistics(
                     color = MaterialTheme.colors.secondary
                 )
                 Text(
-                    modifier = Modifier.align(Alignment.TopEnd),
+                    modifier = Modifier
+                        .testTag("TeamStatistics_Text_AwayAssists")
+                        .align(Alignment.TopEnd),
                     text = awayTeam?.statistics?.assists?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -998,7 +1157,9 @@ private fun TeamStatistics(
                     .padding(top = 8.dp, start = 4.dp, end = 4.dp)
             ) {
                 Text(
-                    modifier = Modifier.align(Alignment.TopStart),
+                    modifier = Modifier
+                        .testTag("TeamStatistics_Text_HomeBlocks")
+                        .align(Alignment.TopStart),
                     text = homeTeam?.statistics?.blocks?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -1012,7 +1173,9 @@ private fun TeamStatistics(
                     color = MaterialTheme.colors.secondary
                 )
                 Text(
-                    modifier = Modifier.align(Alignment.TopEnd),
+                    modifier = Modifier
+                        .testTag("TeamStatistics_Text_AwayBlocks")
+                        .align(Alignment.TopEnd),
                     text = awayTeam?.statistics?.blocks?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -1027,7 +1190,9 @@ private fun TeamStatistics(
                     .padding(top = 8.dp, start = 4.dp, end = 4.dp)
             ) {
                 Text(
-                    modifier = Modifier.align(Alignment.TopStart),
+                    modifier = Modifier
+                        .testTag("TeamStatistics_Text_HomeSteals")
+                        .align(Alignment.TopStart),
                     text = homeTeam?.statistics?.steals?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -1041,7 +1206,9 @@ private fun TeamStatistics(
                     color = MaterialTheme.colors.secondary
                 )
                 Text(
-                    modifier = Modifier.align(Alignment.TopEnd),
+                    modifier = Modifier
+                        .testTag("TeamStatistics_Text_AwaySteals")
+                        .align(Alignment.TopEnd),
                     text = awayTeam?.statistics?.steals?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -1056,7 +1223,9 @@ private fun TeamStatistics(
                     .padding(top = 8.dp, start = 4.dp, end = 4.dp)
             ) {
                 Text(
-                    modifier = Modifier.align(Alignment.TopStart),
+                    modifier = Modifier
+                        .testTag("TeamStatistics_Text_HomeTurnOvers")
+                        .align(Alignment.TopStart),
                     text = homeTeam?.statistics?.turnoversTotal?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -1070,7 +1239,9 @@ private fun TeamStatistics(
                     color = MaterialTheme.colors.secondary
                 )
                 Text(
-                    modifier = Modifier.align(Alignment.TopEnd),
+                    modifier = Modifier
+                        .testTag("TeamStatistics_Text_AwayTurnOvers")
+                        .align(Alignment.TopEnd),
                     text = awayTeam?.statistics?.turnoversTotal?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -1085,7 +1256,9 @@ private fun TeamStatistics(
                     .padding(top = 8.dp, start = 4.dp, end = 4.dp)
             ) {
                 Text(
-                    modifier = Modifier.align(Alignment.TopStart),
+                    modifier = Modifier
+                        .testTag("TeamStatistics_Text_HomeFastPoints")
+                        .align(Alignment.TopStart),
                     text = homeTeam?.statistics?.pointsFastBreak?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -1099,7 +1272,9 @@ private fun TeamStatistics(
                     color = MaterialTheme.colors.secondary
                 )
                 Text(
-                    modifier = Modifier.align(Alignment.TopEnd),
+                    modifier = Modifier
+                        .testTag("TeamStatistics_Text_AwayFastPoints")
+                        .align(Alignment.TopEnd),
                     text = awayTeam?.statistics?.pointsFastBreak?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -1114,7 +1289,9 @@ private fun TeamStatistics(
                     .padding(start = 4.dp, end = 4.dp)
             ) {
                 Text(
-                    modifier = Modifier.align(Alignment.TopStart),
+                    modifier = Modifier
+                        .testTag("TeamStatistics_Text_HomePointsTurnOver")
+                        .align(Alignment.TopStart),
                     text = homeTeam?.statistics?.pointsFromTurnovers?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -1128,7 +1305,9 @@ private fun TeamStatistics(
                     color = MaterialTheme.colors.secondary
                 )
                 Text(
-                    modifier = Modifier.align(Alignment.TopEnd),
+                    modifier = Modifier
+                        .testTag("TeamStatistics_Text_AwayPointsTurnOver")
+                        .align(Alignment.TopEnd),
                     text = awayTeam?.statistics?.pointsFromTurnovers?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -1143,7 +1322,9 @@ private fun TeamStatistics(
                     .padding(start = 4.dp, end = 4.dp)
             ) {
                 Text(
-                    modifier = Modifier.align(Alignment.TopStart),
+                    modifier = Modifier
+                        .testTag("TeamStatistics_Text_HomePointsPaint")
+                        .align(Alignment.TopStart),
                     text = homeTeam?.statistics?.pointsInThePaint?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -1157,7 +1338,9 @@ private fun TeamStatistics(
                     color = MaterialTheme.colors.secondary
                 )
                 Text(
-                    modifier = Modifier.align(Alignment.TopEnd),
+                    modifier = Modifier
+                        .testTag("TeamStatistics_Text_AwayPointsPaint")
+                        .align(Alignment.TopEnd),
                     text = awayTeam?.statistics?.pointsInThePaint?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -1172,7 +1355,9 @@ private fun TeamStatistics(
                     .padding(start = 4.dp, end = 4.dp)
             ) {
                 Text(
-                    modifier = Modifier.align(Alignment.TopStart),
+                    modifier = Modifier
+                        .testTag("TeamStatistics_Text_HomePointsSecond")
+                        .align(Alignment.TopStart),
                     text = homeTeam?.statistics?.pointsSecondChance?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -1186,7 +1371,9 @@ private fun TeamStatistics(
                     color = MaterialTheme.colors.secondary
                 )
                 Text(
-                    modifier = Modifier.align(Alignment.TopEnd),
+                    modifier = Modifier
+                        .testTag("TeamStatistics_Text_AwayPointsSecond")
+                        .align(Alignment.TopEnd),
                     text = awayTeam?.statistics?.pointsSecondChance?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -1201,7 +1388,9 @@ private fun TeamStatistics(
                     .padding(start = 4.dp, end = 4.dp)
             ) {
                 Text(
-                    modifier = Modifier.align(Alignment.TopStart),
+                    modifier = Modifier
+                        .testTag("TeamStatistics_Text_HomeBenchPoints")
+                        .align(Alignment.TopStart),
                     text = homeTeam?.statistics?.benchPoints?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -1215,7 +1404,9 @@ private fun TeamStatistics(
                     color = MaterialTheme.colors.secondary
                 )
                 Text(
-                    modifier = Modifier.align(Alignment.TopEnd),
+                    modifier = Modifier
+                        .testTag("TeamStatistics_Text_AwayBenchPoints")
+                        .align(Alignment.TopEnd),
                     text = awayTeam?.statistics?.benchPoints?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -1230,7 +1421,9 @@ private fun TeamStatistics(
                     .padding(top = 8.dp, start = 4.dp, end = 4.dp)
             ) {
                 Text(
-                    modifier = Modifier.align(Alignment.TopStart),
+                    modifier = Modifier
+                        .testTag("TeamStatistics_Text_HomeFoulsPersonal")
+                        .align(Alignment.TopStart),
                     text = homeTeam?.statistics?.foulsPersonal?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -1244,7 +1437,9 @@ private fun TeamStatistics(
                     color = MaterialTheme.colors.secondary
                 )
                 Text(
-                    modifier = Modifier.align(Alignment.TopEnd),
+                    modifier = Modifier
+                        .testTag("TeamStatistics_Text_AwayFoulsPersonal")
+                        .align(Alignment.TopEnd),
                     text = awayTeam?.statistics?.foulsPersonal?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -1259,7 +1454,9 @@ private fun TeamStatistics(
                     .padding(start = 4.dp, end = 4.dp)
             ) {
                 Text(
-                    modifier = Modifier.align(Alignment.TopStart),
+                    modifier = Modifier
+                        .testTag("TeamStatistics_Text_HomeFoulsTechnical")
+                        .align(Alignment.TopStart),
                     text = homeTeam?.statistics?.foulsTechnical?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -1273,7 +1470,9 @@ private fun TeamStatistics(
                     color = MaterialTheme.colors.secondary
                 )
                 Text(
-                    modifier = Modifier.align(Alignment.TopEnd),
+                    modifier = Modifier
+                        .testTag("TeamStatistics_Text_AwayFoulsTechnical")
+                        .align(Alignment.TopEnd),
                     text = awayTeam?.statistics?.foulsTechnical?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -1340,7 +1539,9 @@ private fun LeaderStatistics(
                     .padding(top = 8.dp, start = 4.dp, end = 4.dp)
             ) {
                 Text(
-                    modifier = Modifier.align(Alignment.TopStart),
+                    modifier = Modifier
+                        .testTag("LeaderStatistics_Text_HomePlayerName")
+                        .align(Alignment.TopStart),
                     text = homeLeader?.nameAbbr ?: "",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -1354,7 +1555,9 @@ private fun LeaderStatistics(
                     color = MaterialTheme.colors.secondary
                 )
                 Text(
-                    modifier = Modifier.align(Alignment.TopEnd),
+                    modifier = Modifier
+                        .testTag("LeaderStatistics_Text_AwayPlayerName")
+                        .align(Alignment.TopEnd),
                     text = awayLeader?.nameAbbr ?: "",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -1369,7 +1572,9 @@ private fun LeaderStatistics(
                     .padding(top = 8.dp, start = 4.dp, end = 4.dp)
             ) {
                 Text(
-                    modifier = Modifier.align(Alignment.TopStart),
+                    modifier = Modifier
+                        .testTag("LeaderStatistics_Text_HomePlayerPosition")
+                        .align(Alignment.TopStart),
                     text = homeLeader?.position ?: "",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -1383,7 +1588,9 @@ private fun LeaderStatistics(
                     color = MaterialTheme.colors.secondary
                 )
                 Text(
-                    modifier = Modifier.align(Alignment.TopEnd),
+                    modifier = Modifier
+                        .testTag("LeaderStatistics_Text_AwayPlayerPosition")
+                        .align(Alignment.TopEnd),
                     text = awayLeader?.position ?: "",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -1398,7 +1605,9 @@ private fun LeaderStatistics(
                     .padding(top = 8.dp, start = 4.dp, end = 4.dp)
             ) {
                 Text(
-                    modifier = Modifier.align(Alignment.TopStart),
+                    modifier = Modifier
+                        .testTag("LeaderStatistics_Text_HomeMinutes")
+                        .align(Alignment.TopStart),
                     text = homeLeader?.statistics?.minutes ?: "00:00",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -1412,7 +1621,9 @@ private fun LeaderStatistics(
                     color = MaterialTheme.colors.secondary
                 )
                 Text(
-                    modifier = Modifier.align(Alignment.TopEnd),
+                    modifier = Modifier
+                        .testTag("LeaderStatistics_Text_AwayMinutes")
+                        .align(Alignment.TopEnd),
                     text = awayLeader?.statistics?.minutes ?: "00:00",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -1435,7 +1646,9 @@ private fun LeaderStatistics(
                     .padding(top = 12.dp, start = 4.dp, end = 4.dp)
             ) {
                 Text(
-                    modifier = Modifier.align(Alignment.TopStart),
+                    modifier = Modifier
+                        .testTag("LeaderStatistics_Text_HomePoints")
+                        .align(Alignment.TopStart),
                     text = homeLeader?.statistics?.points?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -1449,7 +1662,9 @@ private fun LeaderStatistics(
                     color = MaterialTheme.colors.secondary
                 )
                 Text(
-                    modifier = Modifier.align(Alignment.TopEnd),
+                    modifier = Modifier
+                        .testTag("LeaderStatistics_Text_AwayPoints")
+                        .align(Alignment.TopEnd),
                     text = awayLeader?.statistics?.points?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -1464,7 +1679,9 @@ private fun LeaderStatistics(
                     .padding(top = 8.dp, start = 4.dp, end = 4.dp)
             ) {
                 Text(
-                    modifier = Modifier.align(Alignment.TopStart),
+                    modifier = Modifier
+                        .testTag("LeaderStatistics_Text_HomePlusMinus")
+                        .align(Alignment.TopStart),
                     text = homeLeader?.statistics?.plusMinusPoints?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -1478,7 +1695,9 @@ private fun LeaderStatistics(
                     color = MaterialTheme.colors.secondary
                 )
                 Text(
-                    modifier = Modifier.align(Alignment.TopEnd),
+                    modifier = Modifier
+                        .testTag("LeaderStatistics_Text_AwayPlusMinus")
+                        .align(Alignment.TopEnd),
                     text = awayLeader?.statistics?.plusMinusPoints?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -1493,8 +1712,15 @@ private fun LeaderStatistics(
                     .padding(top = 8.dp, start = 4.dp, end = 4.dp)
             ) {
                 Text(
-                    modifier = Modifier.align(Alignment.TopStart),
-                    text = "${homeLeader?.statistics?.fieldGoalsMade ?: 0}/${homeLeader?.statistics?.fieldGoalsAttempted ?: 0}(${homeLeader?.statistics?.fieldGoalsPercentage ?: 0}%)",
+                    modifier = Modifier
+                        .testTag("LeaderStatistics_Text_HomeFGM")
+                        .align(Alignment.TopStart),
+                    text = stringResource(
+                        R.string.box_score_player_FGM,
+                        homeLeader?.statistics?.fieldGoalsMade ?: 0,
+                        homeLeader?.statistics?.fieldGoalsAttempted ?: 0,
+                        homeLeader?.statistics?.fieldGoalsPercentage ?: 0
+                    ),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colors.secondary
@@ -1507,8 +1733,15 @@ private fun LeaderStatistics(
                     color = MaterialTheme.colors.secondary
                 )
                 Text(
-                    modifier = Modifier.align(Alignment.TopEnd),
-                    text = "${awayLeader?.statistics?.fieldGoalsMade ?: 0}/${awayLeader?.statistics?.fieldGoalsAttempted ?: 0}(${awayLeader?.statistics?.fieldGoalsPercentage ?: 0}%)",
+                    modifier = Modifier
+                        .testTag("LeaderStatistics_Text_AwayFGM")
+                        .align(Alignment.TopEnd),
+                    text = stringResource(
+                        R.string.box_score_player_FGM,
+                        awayLeader?.statistics?.fieldGoalsMade ?: 0,
+                        awayLeader?.statistics?.fieldGoalsAttempted ?: 0,
+                        awayLeader?.statistics?.fieldGoalsPercentage ?: 0
+                    ),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colors.secondary
@@ -1522,8 +1755,15 @@ private fun LeaderStatistics(
                     .padding(top = 8.dp, start = 4.dp, end = 4.dp)
             ) {
                 Text(
-                    modifier = Modifier.align(Alignment.TopStart),
-                    text = "${homeLeader?.statistics?.twoPointersMade ?: 0}/${homeLeader?.statistics?.twoPointersAttempted ?: 0}(${homeLeader?.statistics?.twoPointersPercentage ?: 0}%)",
+                    modifier = Modifier
+                        .testTag("LeaderStatistics_Text_Home2PM")
+                        .align(Alignment.TopStart),
+                    text = stringResource(
+                        R.string.box_score_player_2PM,
+                        homeLeader?.statistics?.twoPointersMade ?: 0,
+                        homeLeader?.statistics?.twoPointersAttempted ?: 0,
+                        homeLeader?.statistics?.twoPointersPercentage ?: 0
+                    ),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colors.secondary
@@ -1536,8 +1776,15 @@ private fun LeaderStatistics(
                     color = MaterialTheme.colors.secondary
                 )
                 Text(
-                    modifier = Modifier.align(Alignment.TopEnd),
-                    text = "${awayLeader?.statistics?.twoPointersMade ?: 0}/${awayLeader?.statistics?.twoPointersAttempted ?: 0}(${awayLeader?.statistics?.twoPointersPercentage ?: 0}%)",
+                    modifier = Modifier
+                        .testTag("LeaderStatistics_Text_Away2PM")
+                        .align(Alignment.TopEnd),
+                    text = stringResource(
+                        R.string.box_score_player_2PM,
+                        awayLeader?.statistics?.twoPointersMade ?: 0,
+                        awayLeader?.statistics?.twoPointersAttempted ?: 0,
+                        awayLeader?.statistics?.twoPointersPercentage ?: 0
+                    ),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colors.secondary
@@ -1551,8 +1798,15 @@ private fun LeaderStatistics(
                     .padding(top = 8.dp, start = 4.dp, end = 4.dp)
             ) {
                 Text(
-                    modifier = Modifier.align(Alignment.TopStart),
-                    text = "${homeLeader?.statistics?.threePointersMade ?: 0}/${homeLeader?.statistics?.threePointersAttempted ?: 0}(${homeLeader?.statistics?.threePointersPercentage ?: 0}%)",
+                    modifier = Modifier
+                        .testTag("LeaderStatistics_Text_Home3PM")
+                        .align(Alignment.TopStart),
+                    text = stringResource(
+                        R.string.box_score_player_3PM,
+                        homeLeader?.statistics?.threePointersMade ?: 0,
+                        homeLeader?.statistics?.threePointersAttempted ?: 0,
+                        homeLeader?.statistics?.threePointersPercentage ?: 0
+                    ),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colors.secondary
@@ -1565,8 +1819,15 @@ private fun LeaderStatistics(
                     color = MaterialTheme.colors.secondary
                 )
                 Text(
-                    modifier = Modifier.align(Alignment.TopEnd),
-                    text = "${awayLeader?.statistics?.threePointersMade ?: 0}/${awayLeader?.statistics?.threePointersAttempted ?: 0}(${awayLeader?.statistics?.threePointersPercentage ?: 0}%)",
+                    modifier = Modifier
+                        .testTag("LeaderStatistics_Text_Away3PM")
+                        .align(Alignment.TopEnd),
+                    text = stringResource(
+                        R.string.box_score_player_3PM,
+                        awayLeader?.statistics?.threePointersMade ?: 0,
+                        awayLeader?.statistics?.threePointersAttempted ?: 0,
+                        awayLeader?.statistics?.threePointersPercentage ?: 0
+                    ),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colors.secondary
@@ -1580,8 +1841,15 @@ private fun LeaderStatistics(
                     .padding(top = 8.dp, start = 4.dp, end = 4.dp)
             ) {
                 Text(
-                    modifier = Modifier.align(Alignment.TopStart),
-                    text = "${homeLeader?.statistics?.freeThrowsMade ?: 0}/${homeLeader?.statistics?.freeThrowsAttempted ?: 0}(${homeLeader?.statistics?.freeThrowsPercentage ?: 0}%)",
+                    modifier = Modifier
+                        .testTag("LeaderStatistics_Text_HomeFTM")
+                        .align(Alignment.TopStart),
+                    text = stringResource(
+                        R.string.box_score_player_FTM,
+                        homeLeader?.statistics?.freeThrowsMade ?: 0,
+                        homeLeader?.statistics?.freeThrowsAttempted ?: 0,
+                        homeLeader?.statistics?.freeThrowsPercentage ?: 0
+                    ),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colors.secondary
@@ -1594,8 +1862,15 @@ private fun LeaderStatistics(
                     color = MaterialTheme.colors.secondary
                 )
                 Text(
-                    modifier = Modifier.align(Alignment.TopEnd),
-                    text = "${awayLeader?.statistics?.freeThrowsMade ?: 0}/${awayLeader?.statistics?.freeThrowsAttempted ?: 0}(${awayLeader?.statistics?.freeThrowsPercentage ?: 0}%)",
+                    modifier = Modifier
+                        .testTag("LeaderStatistics_Text_AwayFTM")
+                        .align(Alignment.TopEnd),
+                    text = stringResource(
+                        R.string.box_score_player_FTM,
+                        awayLeader?.statistics?.freeThrowsMade ?: 0,
+                        awayLeader?.statistics?.freeThrowsAttempted ?: 0,
+                        awayLeader?.statistics?.freeThrowsPercentage ?: 0
+                    ),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colors.secondary
@@ -1617,7 +1892,9 @@ private fun LeaderStatistics(
                     .padding(top = 12.dp, start = 4.dp, end = 4.dp)
             ) {
                 Text(
-                    modifier = Modifier.align(Alignment.TopStart),
+                    modifier = Modifier
+                        .testTag("LeaderStatistics_Text_HomeRebTotal")
+                        .align(Alignment.TopStart),
                     text = homeLeader?.statistics?.reboundsTotal?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -1631,7 +1908,9 @@ private fun LeaderStatistics(
                     color = MaterialTheme.colors.secondary
                 )
                 Text(
-                    modifier = Modifier.align(Alignment.TopEnd),
+                    modifier = Modifier
+                        .testTag("LeaderStatistics_Text_AwayRebTotal")
+                        .align(Alignment.TopEnd),
                     text = awayLeader?.statistics?.reboundsTotal?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -1646,7 +1925,9 @@ private fun LeaderStatistics(
                     .padding(start = 4.dp, end = 4.dp)
             ) {
                 Text(
-                    modifier = Modifier.align(Alignment.TopStart),
+                    modifier = Modifier
+                        .testTag("LeaderStatistics_Text_HomeRebDefensive")
+                        .align(Alignment.TopStart),
                     text = homeLeader?.statistics?.reboundsDefensive?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -1660,7 +1941,9 @@ private fun LeaderStatistics(
                     color = MaterialTheme.colors.secondary
                 )
                 Text(
-                    modifier = Modifier.align(Alignment.TopEnd),
+                    modifier = Modifier
+                        .testTag("LeaderStatistics_Text_AwayRebDefensive")
+                        .align(Alignment.TopEnd),
                     text = awayLeader?.statistics?.reboundsDefensive?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -1675,7 +1958,9 @@ private fun LeaderStatistics(
                     .padding(start = 4.dp, end = 4.dp)
             ) {
                 Text(
-                    modifier = Modifier.align(Alignment.TopStart),
+                    modifier = Modifier
+                        .testTag("LeaderStatistics_Text_HomeRebOffensive")
+                        .align(Alignment.TopStart),
                     text = homeLeader?.statistics?.reboundsOffensive?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -1689,7 +1974,9 @@ private fun LeaderStatistics(
                     color = MaterialTheme.colors.secondary
                 )
                 Text(
-                    modifier = Modifier.align(Alignment.TopEnd),
+                    modifier = Modifier
+                        .testTag("LeaderStatistics_Text_AwayRebOffensive")
+                        .align(Alignment.TopEnd),
                     text = awayLeader?.statistics?.reboundsOffensive?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -1704,7 +1991,9 @@ private fun LeaderStatistics(
                     .padding(top = 8.dp, start = 4.dp, end = 4.dp)
             ) {
                 Text(
-                    modifier = Modifier.align(Alignment.TopStart),
+                    modifier = Modifier
+                        .testTag("LeaderStatistics_Text_HomeAssists")
+                        .align(Alignment.TopStart),
                     text = homeLeader?.statistics?.assists?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -1718,7 +2007,9 @@ private fun LeaderStatistics(
                     color = MaterialTheme.colors.secondary
                 )
                 Text(
-                    modifier = Modifier.align(Alignment.TopEnd),
+                    modifier = Modifier
+                        .testTag("LeaderStatistics_Text_AwayAssists")
+                        .align(Alignment.TopEnd),
                     text = awayLeader?.statistics?.assists?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -1733,7 +2024,9 @@ private fun LeaderStatistics(
                     .padding(top = 8.dp, start = 4.dp, end = 4.dp)
             ) {
                 Text(
-                    modifier = Modifier.align(Alignment.TopStart),
+                    modifier = Modifier
+                        .testTag("LeaderStatistics_Text_HomeBlocks")
+                        .align(Alignment.TopStart),
                     text = homeLeader?.statistics?.blocks?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -1747,7 +2040,9 @@ private fun LeaderStatistics(
                     color = MaterialTheme.colors.secondary
                 )
                 Text(
-                    modifier = Modifier.align(Alignment.TopEnd),
+                    modifier = Modifier
+                        .testTag("LeaderStatistics_Text_AwayBlocks")
+                        .align(Alignment.TopEnd),
                     text = awayLeader?.statistics?.blocks?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -1762,7 +2057,9 @@ private fun LeaderStatistics(
                     .padding(top = 8.dp, start = 4.dp, end = 4.dp)
             ) {
                 Text(
-                    modifier = Modifier.align(Alignment.TopStart),
+                    modifier = Modifier
+                        .testTag("LeaderStatistics_Text_HomeSteals")
+                        .align(Alignment.TopStart),
                     text = homeLeader?.statistics?.steals?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -1776,7 +2073,9 @@ private fun LeaderStatistics(
                     color = MaterialTheme.colors.secondary
                 )
                 Text(
-                    modifier = Modifier.align(Alignment.TopEnd),
+                    modifier = Modifier
+                        .testTag("LeaderStatistics_Text_AwaySteals")
+                        .align(Alignment.TopEnd),
                     text = awayLeader?.statistics?.steals?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -1791,7 +2090,9 @@ private fun LeaderStatistics(
                     .padding(top = 8.dp, start = 4.dp, end = 4.dp)
             ) {
                 Text(
-                    modifier = Modifier.align(Alignment.TopStart),
+                    modifier = Modifier
+                        .testTag("LeaderStatistics_Text_HomeTurnOvers")
+                        .align(Alignment.TopStart),
                     text = homeLeader?.statistics?.turnovers?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -1805,7 +2106,9 @@ private fun LeaderStatistics(
                     color = MaterialTheme.colors.secondary
                 )
                 Text(
-                    modifier = Modifier.align(Alignment.TopEnd),
+                    modifier = Modifier
+                        .testTag("LeaderStatistics_Text_AwayTurnOvers")
+                        .align(Alignment.TopEnd),
                     text = awayLeader?.statistics?.turnovers?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -1820,7 +2123,9 @@ private fun LeaderStatistics(
                     .padding(top = 8.dp, start = 4.dp, end = 4.dp)
             ) {
                 Text(
-                    modifier = Modifier.align(Alignment.TopStart),
+                    modifier = Modifier
+                        .testTag("LeaderStatistics_Text_HomeFoulPersonal")
+                        .align(Alignment.TopStart),
                     text = homeLeader?.statistics?.foulsPersonal?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -1834,7 +2139,9 @@ private fun LeaderStatistics(
                     color = MaterialTheme.colors.secondary
                 )
                 Text(
-                    modifier = Modifier.align(Alignment.TopEnd),
+                    modifier = Modifier
+                        .testTag("LeaderStatistics_Text_AwayFoulPersonal")
+                        .align(Alignment.TopEnd),
                     text = awayLeader?.statistics?.foulsPersonal?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -1849,7 +2156,9 @@ private fun LeaderStatistics(
                     .padding(start = 4.dp, end = 4.dp)
             ) {
                 Text(
-                    modifier = Modifier.align(Alignment.TopStart),
+                    modifier = Modifier
+                        .testTag("LeaderStatistics_Text_HomeFoulTechnical")
+                        .align(Alignment.TopStart),
                     text = homeLeader?.statistics?.foulsTechnical?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -1863,7 +2172,9 @@ private fun LeaderStatistics(
                     color = MaterialTheme.colors.secondary
                 )
                 Text(
-                    modifier = Modifier.align(Alignment.TopEnd),
+                    modifier = Modifier
+                        .testTag("LeaderStatistics_Text_AwayFoulTechnical")
+                        .align(Alignment.TopEnd),
                     text = awayLeader?.statistics?.foulsTechnical?.toString() ?: "0",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
@@ -1894,7 +2205,9 @@ private fun LabelAboutPopup(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                modifier = Modifier.padding(8.dp),
+                modifier = Modifier
+                    .testTag("LabelAboutPopup_Text_About")
+                    .padding(8.dp),
                 text = text,
                 color = MaterialTheme.colors.primaryVariant
             )

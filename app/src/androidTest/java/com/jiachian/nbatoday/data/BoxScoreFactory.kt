@@ -61,7 +61,7 @@ object BoxScoreFactory {
             teamName = HOME_TEAM_NAME,
             teamCity = TEAM_CITY,
             teamTricode = HOME_TEAM_ABBR,
-            score = BASIC_NUMBER,
+            score = BASIC_NUMBER * 4,
             inBonus = true,
             timeoutsRemaining = BASIC_NUMBER,
             periods = createPeriods(),
@@ -76,7 +76,7 @@ object BoxScoreFactory {
             teamName = AWAY_TEAM_NAME,
             teamCity = TEAM_CITY,
             teamTricode = AWAY_TEAM_ABBR,
-            score = BASIC_NUMBER,
+            score = BASIC_NUMBER * 4,
             inBonus = true,
             timeoutsRemaining = BASIC_NUMBER,
             periods = createPeriods(),
@@ -89,7 +89,12 @@ object BoxScoreFactory {
         return (1..4).map {
             GameBoxScore.BoxScoreTeam.Period(
                 period = it,
-                periodLabel = "1st",
+                periodLabel = when (it) {
+                    1 -> "1st"
+                    2 -> "2nd"
+                    3 -> "3rd"
+                    else -> "${it}th"
+                },
                 score = BASIC_NUMBER
             )
         }

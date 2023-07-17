@@ -7,6 +7,7 @@ import androidx.compose.ui.test.SemanticsNodeInteractionCollection
 import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.isDialog
+import androidx.compose.ui.test.isPopup
 import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onLast
@@ -31,6 +32,19 @@ fun SemanticsNodeInteractionsProvider.assertDialogExist(): SemanticsNodeInteract
 
 fun SemanticsNodeInteractionsProvider.assertDialogDoesNotExist(): SemanticsNodeInteractionsProvider {
     onAllNodes(isDialog()).assertCountEquals(0)
+    return this
+}
+
+fun SemanticsNodeInteractionsProvider.onPopup(): SemanticsNodeInteraction =
+    onAllNodes(isPopup()).onLast()
+
+fun SemanticsNodeInteractionsProvider.assertPopupExist(): SemanticsNodeInteractionsProvider {
+    onAllNodes(isPopup()).onFirst().assertExists()
+    return this
+}
+
+fun SemanticsNodeInteractionsProvider.assertPopupDoesNotExist(): SemanticsNodeInteractionsProvider {
+    onAllNodes(isPopup()).assertCountEquals(0)
     return this
 }
 

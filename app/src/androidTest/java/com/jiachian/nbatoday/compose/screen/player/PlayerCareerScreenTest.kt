@@ -20,7 +20,7 @@ import org.junit.Test
 import kotlin.math.pow
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class PlayerCareerScreenKtTest : BaseAndroidTest() {
+class PlayerCareerScreenTest : BaseAndroidTest() {
 
     private lateinit var viewModel: PlayerInfoViewModel
     private lateinit var repository: TestRepository

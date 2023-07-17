@@ -57,6 +57,15 @@
     <string name="box_score_about_BA">BA：Blocked</string>
     <string name="box_score_about_PTS">PTS：Points</string>
     <string name="box_score_about_EFF">EFF：Efficiency</string>
+    <string name="box_score_player_dnp" translatable="false">DNP</string>
+    <string name="box_score_player_FGM" translatable="false">%1$d/%2$d(%3$.1f)\%%</string>
+    <string name="box_score_player_2PM" translatable="false">%1$d/%2$d(%3$.1f)\%%</string>
+    <string name="box_score_player_3PM" translatable="false">%1$d/%2$d(%3$.1f)\%%</string>
+    <string name="box_score_player_FTM" translatable="false">%1$d/%2$d(%3$.1f)\%%</string>
+    <string name="box_score_team_FGM" translatable="false">%1$d/%2$d(%3$.1f)\%%</string>
+    <string name="box_score_team_2PM" translatable="false">%1$d/%2$d(%3$.1f)\%%</string>
+    <string name="box_score_team_3PM" translatable="false">%1$d/%2$d(%3$.1f)\%%</string>
+    <string name="box_score_team_FTM" translatable="false">%1$d/%2$d(%3$.1f)\%%</string>
     <string name="game_is_coming_soon">Game starts soon</string>
     <string name="standing_conference_east">East</string>
     <string name="standing_conference_west">West</string>
