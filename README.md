@@ -45,7 +45,7 @@ https://user-images.githubusercontent.com/32809761/221369247-c05eee72-dfca-4f18-
 </p>
 
 ## To-do list
-- [ ] Write Unit Tests
-- [ ] Write End to End Tests
+- [X] Write Unit Tests
+- [X] Write End to End Tests
 - [ ] CI
 - [ ] Deploy NBA Today Server
