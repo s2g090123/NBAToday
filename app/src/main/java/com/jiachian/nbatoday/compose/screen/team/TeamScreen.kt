@@ -2,15 +2,50 @@ package com.jiachian.nbatoday.compose.screen.team
 
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.LocalOverscrollConfiguration
+import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Divider
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Tab
+import androidx.compose.material.TabRow
+import androidx.compose.material.TabRowDefaults
 import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
-import androidx.compose.runtime.*
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -19,6 +54,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -45,7 +81,7 @@ import com.jiachian.nbatoday.utils.NbaUtils
 import com.jiachian.nbatoday.utils.noRippleClickable
 import com.jiachian.nbatoday.utils.px2Dp
 import com.jiachian.nbatoday.utils.rippleClickable
-import java.util.*
+import java.util.Calendar
 import kotlin.math.max
 import kotlin.math.pow
 
@@ -101,7 +137,9 @@ private fun TeamDetailScreen(
 
     Column(modifier = modifier) {
         IconButton(
-            modifier = Modifier.padding(top = 8.dp, start = 8.dp),
+            modifier = Modifier
+                .testTag("TeamDetailScreen_Btn_Back")
+                .padding(top = 8.dp, start = 8.dp),
             onClick = onBack
         ) {
             Icon(
@@ -158,6 +196,7 @@ private fun TeamInformation(
         )
         Text(
             modifier = Modifier
+                .testTag("TeamInformation_Text_TeamName")
                 .constrainAs(teamName) {
                     top.linkTo(teamLogo.top, 16.dp)
                     linkTo(teamLogo.end, parent.end, 8.dp, 8.dp)
@@ -170,12 +209,19 @@ private fun TeamInformation(
         )
         Text(
             modifier = Modifier
+                .testTag("TeamInformation_Text_TeamRecord")
                 .constrainAs(teamRecord) {
                     bottom.linkTo(teamLogo.bottom, 16.dp)
                     linkTo(teamLogo.end, parent.end, 8.dp, 8.dp)
                     width = Dimension.fillToConstraints
                 },
-            text = "${stats.win} - ${stats.lose} | ${teamRank.toRank()} in ${stats.teamConference}",
+            text = stringResource(
+                R.string.team_rank_record,
+                stats.win,
+                stats.lose,
+                teamRank.toRank(),
+                stats.teamConference.toString()
+            ),
             fontWeight = FontWeight.Medium,
             fontSize = 20.sp,
             color = viewModel.colors.extra2
@@ -190,7 +236,9 @@ private fun TeamInformation(
                 .fillMaxWidth()
         ) {
             Column(
-                modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp),
+                modifier = Modifier
+                    .testTag("TeamInformation_Column_PointsRank")
+                    .padding(vertical = 8.dp, horizontal = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
@@ -200,12 +248,14 @@ private fun TeamInformation(
                     color = viewModel.colors.extra2
                 )
                 Text(
+                    modifier = Modifier.testTag("TeamInformation_Text_PointsRank"),
                     text = teamPointsRank.toRank(),
                     fontWeight = FontWeight.Medium,
                     fontSize = 18.sp,
                     color = viewModel.colors.extra2
                 )
                 Text(
+                    modifier = Modifier.testTag("TeamInformation_Text_Points"),
                     text = (stats.points.toDouble() / stats.gamePlayed).decimalFormat(),
                     fontWeight = FontWeight.Medium,
                     fontSize = 18.sp,
@@ -219,7 +269,9 @@ private fun TeamInformation(
                 color = viewModel.colors.extra2.copy(0.25f)
             )
             Column(
-                modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp),
+                modifier = Modifier
+                    .testTag("TeamInformation_Column_ReboundsRank")
+                    .padding(vertical = 8.dp, horizontal = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
@@ -229,12 +281,14 @@ private fun TeamInformation(
                     color = viewModel.colors.extra2
                 )
                 Text(
+                    modifier = Modifier.testTag("TeamInformation_Text_ReboundsRank"),
                     text = teamReboundsRank.toRank(),
                     fontWeight = FontWeight.Medium,
                     fontSize = 18.sp,
                     color = viewModel.colors.extra2
                 )
                 Text(
+                    modifier = Modifier.testTag("TeamInformation_Text_Rebounds"),
                     text = (stats.reboundsTotal.toDouble() / stats.gamePlayed).decimalFormat(),
                     fontWeight = FontWeight.Medium,
                     fontSize = 18.sp,
@@ -248,7 +302,9 @@ private fun TeamInformation(
                 color = viewModel.colors.extra2.copy(0.25f)
             )
             Column(
-                modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp),
+                modifier = Modifier
+                    .testTag("TeamInformation_Column_AssistsRank")
+                    .padding(vertical = 8.dp, horizontal = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
@@ -258,12 +314,14 @@ private fun TeamInformation(
                     color = viewModel.colors.extra2
                 )
                 Text(
+                    modifier = Modifier.testTag("TeamInformation_Text_AssistsRank"),
                     text = teamAssistsRank.toRank(),
                     fontWeight = FontWeight.Medium,
                     fontSize = 18.sp,
                     color = viewModel.colors.extra2
                 )
                 Text(
+                    modifier = Modifier.testTag("TeamInformation_Text_Assists"),
                     text = (stats.assists.toDouble() / stats.gamePlayed).decimalFormat(),
                     fontWeight = FontWeight.Medium,
                     fontSize = 18.sp,
@@ -277,7 +335,9 @@ private fun TeamInformation(
                 color = viewModel.colors.extra2.copy(0.25f)
             )
             Column(
-                modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp),
+                modifier = Modifier
+                    .testTag("TeamInformation_Column_PlusMinusRank")
+                    .padding(vertical = 8.dp, horizontal = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
@@ -287,12 +347,14 @@ private fun TeamInformation(
                     color = viewModel.colors.extra2
                 )
                 Text(
+                    modifier = Modifier.testTag("TeamInformation_Text_PlusMinusRank"),
                     text = teamPlusMinusRank.toRank(),
                     fontWeight = FontWeight.Medium,
                     fontSize = 18.sp,
                     color = viewModel.colors.extra2
                 )
                 Text(
+                    modifier = Modifier.testTag("TeamInformation_Text_PlusMinus"),
                     text = stats.plusMinus.toDouble().toString(),
                     fontWeight = FontWeight.Medium,
                     fontSize = 18.sp,
@@ -337,6 +399,7 @@ private fun TeamStatsScreen(
                 Tab(
                     text = {
                         Text(
+                            modifier = Modifier.testTag("TeamStatsScreen_Tab"),
                             text = stringResource(
                                 when (it) {
                                     TeamPageTab.PLAYERS -> R.string.team_page_tab_player
@@ -371,6 +434,7 @@ private fun TeamStatsScreen(
                 }
                 1 -> GamesPage(
                     modifier = Modifier
+                        .testTag("TeamStatsScreen_GamesPage_Previous")
                         .heightIn(max = (LocalConfiguration.current.screenHeightDp * 0.7f).dp)
                         .fillMaxWidth(),
                     viewModel = viewModel,
@@ -378,6 +442,7 @@ private fun TeamStatsScreen(
                 )
                 2 -> GamesPage(
                     modifier = Modifier
+                        .testTag("TeamStatsScreen_GamesPage_Next")
                         .heightIn(max = (LocalConfiguration.current.screenHeightDp * 0.7f).dp)
                         .fillMaxWidth(),
                     viewModel = viewModel,
@@ -422,12 +487,14 @@ private fun PlayerStatistics(
             ) {
                 LazyColumn(
                     modifier = Modifier
+                        .testTag("PlayerStatistics_LC_Players")
                         .heightIn(max = (LocalConfiguration.current.screenHeightDp * 0.7f).dp),
                     state = playerState
                 ) {
                     itemsIndexed(players) { index, stat ->
                         Column(
                             modifier = Modifier
+                                .testTag("PlayerStatistics_Column_Player")
                                 .wrapContentWidth()
                                 .rippleClickable {
                                     viewModel.openPlayerInfo(stat.playerId)
@@ -435,6 +502,7 @@ private fun PlayerStatistics(
                         ) {
                             Text(
                                 modifier = Modifier
+                                    .testTag("PlayerStatistics_Text_PlayerName")
                                     .padding(top = 8.dp, start = 8.dp)
                                     .height(24.dp),
                                 text = stat.playerName,
@@ -504,18 +572,22 @@ private fun PlayerStatistics(
             ) {
                 LazyColumn(
                     modifier = Modifier
+                        .testTag("PlayerStatistics_LC_PlayerStats")
                         .heightIn(max = (LocalConfiguration.current.screenHeightDp * 0.7f).dp)
                         .fillMaxWidth(),
                     state = statsState
                 ) {
                     itemsIndexed(players) { index, stats ->
                         Row(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .testTag("PlayerStatistics_Row_PlayerStats")
+                                .fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             labels.forEach { label ->
                                 Text(
                                     modifier = Modifier
+                                        .testTag("PlayerStatistics_Text_PlayerStats")
                                         .width(label.width)
                                         .height(40.dp)
                                         .background(
@@ -595,6 +667,7 @@ private fun GamesPage(
         itemsIndexed(games) { index, game ->
             GameStatusCard2(
                 modifier = Modifier
+                    .testTag("GamesPage_GameStatusCard2")
                     .padding(
                         top = 16.dp,
                         bottom = if (index == games.size - 1) 16.dp else 0.dp,
