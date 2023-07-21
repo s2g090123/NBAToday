@@ -1,0 +1,41 @@
+name: Android CI
+
+on:
+  push:
+    branches:
+      - '*'
+
+jobs:
+  build:
+    name: Build Environment
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Check environment variable
+        uses: |
+          if [ -z "$ANDROID_SDK_ROOT" ]; then
+            export ANDROID_HOME="$HOME/Library/Android/sdk"
+          fi
+          echo "ANDROID_HOME is $ANDROID_HOME."
+
+      - name: Check emulator command can be used
+        uses: |
+          if command -v emulator &> /dev/null; then
+            echo "emulator is in PATH."
+          else
+            echo "emulator is not in PATH. Adding it to PATH..."
+            export PATH="$PATH:$ANDROID_HOME/emulator"
+          fi
+
+  run_unit_test:
+    name: Run UnitTests
+    runs-on: self-hosted
+
+    needs: build
+
+    steps:
+      - name: Run Unit Tests
+        run: ./gradlew test
