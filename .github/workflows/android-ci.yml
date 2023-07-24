@@ -69,16 +69,23 @@ jobs:
       - name: Wait for emulator to start
         run: |
           emulator -avd ${{ env.emulator_name }} -no-audio &
-          sleep 10
-          devices=$(adb devices | grep "device$" | awk '{print $1}')
           series_id=""
-          for device in $devices; do
-              emulator=$(adb -s $device emu avd name 2>&1 | grep -v "OK" | sed -e 's/[[:space:]]*$//')
-              if [ "$emulator" == ${{ env.emulator_name }} ]; then
-                  echo "${{ env.emulator_name }} series id is $device"
-                  series_id=$device
-                  echo "emulator_series_id=$device" >> $GITHUB_ENV
+          while true; do
+              devices=$(adb devices | grep "device$" | awk '{print $1}')
+              series_id=""
+              for device in $devices; do
+                emulator=$(adb -s $device emu avd name 2>&1 | grep -v "OK" | sed -e 's/[[:space:]]*$//')
+                if [ "$emulator" == ${{ env.emulator_name }} ]; then
+                    echo "${{ env.emulator_name }} series id is $device"
+                    series_id=$device
+                    echo "emulator_series_id=$device" >> $GITHUB_ENV
+                    break
+                fi
+              done
+              if [ -n "$series_id" ]; then
+                break
               fi
+              sleep 5
           done
           adb -s $series_id wait-for-device
 
