@@ -1,0 +1,114 @@
+name: NBAToday CI
+
+on:
+  pull_request:
+    branches:
+      - '*'
+
+env:
+  emulator_name: "ci_emulator_33"
+  package_name: "com.jiachian.nbatoday"
+
+jobs:
+  run_android_test:
+    name: Run AndroidTests
+    runs-on: self-hosted
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Check emulator command is exists
+        run: |
+          if command -v emulator &> /dev/null; then
+            echo "emulator is in PATH."
+          else
+            echo "emulator is not in PATH. Adding it to PATH..."
+            echo "$ANDROID_HOME/emulator" >> $GITHUB_PATH
+          fi
+
+      - name: Check avdmanager command is exists
+        run: |
+          if command -v avdmanager &> /dev/null; then
+            echo "avdmanager is in PATH."
+          else
+            echo "avdmanager is not in PATH. Adding it to PATH..."
+            echo "$ANDROID_HOME/cmdline-tools/latest/bin" >> $GITHUB_PATH
+          fi
+
+      - name: Check adb command is exists
+        run: |
+          if command -v adb &> /dev/null; then
+            echo "adb is in PATH."
+          else
+            echo "adb is not in PATH. Adding it to PATH..."
+            echo "$ANDROID_HOME/platform-tools" >> $GITHUB_PATH
+          fi
+
+      - name: Check if emulator is installed
+        run: |
+          echo $ANDROID_HOME
+          emulators=$(emulator -list-avds)
+          if grep -wq "${{ env.emulator_name }}" <<< "$emulators"; then
+            echo "emulator_found=true" >> $GITHUB_ENV
+          else
+            echo "emulator_found=false" >> $GITHUB_ENV
+          fi
+
+      - name: Enulator is not installed and Create it
+        if: env.emulator_found == 'false'
+        run: |
+          echo "Emulator not found. Creating and starting emulator..."
+          echo "no" | avdmanager create avd -n ${{ env.emulator_name }} -k "system-images;android-33;google_apis;arm64-v8a" --device "pixel_4"
+
+      - name: Emulator is already installed
+        if: env.emulator_found == 'true'
+        run: echo "Emulator is already installed."
+
+      - name: Wait for emulator to start
+        run: |
+          emulator -avd ${{ env.emulator_name }} -no-audio &
+          series_id=""
+          while true; do
+              devices=$(adb devices | grep "device$" | awk '{print $1}')
+              series_id=""
+              for device in $devices; do
+                emulator=$(adb -s $device emu avd name 2>&1 | grep -v "OK" | sed -e 's/[[:space:]]*$//')
+                if [ "$emulator" == ${{ env.emulator_name }} ]; then
+                    echo "${{ env.emulator_name }} series id is $device"
+                    series_id=$device
+                    echo "emulator_series_id=$device" >> $GITHUB_ENV
+                    break
+                fi
+              done
+              if [ -n "$series_id" ]; then
+                break
+              fi
+              sleep 5
+          done
+          adb -s $series_id wait-for-device
+
+      - name: Run Android Tests
+        run: |
+          export ANDROID_SERIAL=${{ env.emulator_series_id }}
+          ./gradlew connectedAndroidTest
+
+  run_unit_test:
+    name: Run UnitTests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+
+      - name: Run Unit Tests
+        run: |
+          ./gradlew test
