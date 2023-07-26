@@ -7,7 +7,7 @@ on:
 
 env:
   emulator_name: "ci_emulator_33"
-  package_name: "com.jiachian.nbatoday"
+  package_name: "com.jiachian.nbatoday "
 
 jobs:
   run_android_test:
