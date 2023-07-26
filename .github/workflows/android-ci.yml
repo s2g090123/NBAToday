@@ -122,9 +122,9 @@ jobs:
           ./gradlew test
 
       - name: Archive Test Results
-          if: always()
-          uses: actions/upload-artifact@v2
-          with:
-            name: unit-test-results
-            path: |
-              app/build/reports/tests/testDebugUnitTest/
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: unit-test-results
+          path: |
+            app/build/reports/tests/testDebugUnitTest/
