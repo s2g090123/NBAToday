@@ -94,7 +94,7 @@ jobs:
           export ANDROID_SERIAL=${{ env.emulator_series_id }}
           ./gradlew connectedAndroidTest
 
-      - name: Archive Test Results
+      - name: Archive Android Test Results
         if: always()
         uses: actions/upload-artifact@v2
         with:
@@ -121,7 +121,7 @@ jobs:
         run: |
           ./gradlew test
 
-      - name: Archive Test Results
+      - name: Archive Unit Test Results
         if: always()
         uses: actions/upload-artifact@v2
         with:
