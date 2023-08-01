@@ -133,7 +133,7 @@ jobs:
       - name: Generate combined code coverage report
         run: ./gradlew generateJacocoTestReport
 
-      - name: Archive Unit Test Results
+      - name: Archive Code Coverage Report
         uses: actions/upload-artifact@v2
         with:
           name: code-coverage-report
