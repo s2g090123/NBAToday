@@ -10,15 +10,21 @@ env:
   package_name: "com.jiachian.nbatoday"
 
 jobs:
-  run_android_test:
-    name: Run AndroidTests
+  build:
+    name: Build Environment
     runs-on: self-hosted
-    timeout-minutes: 10
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
+  run_android_test:
+    name: Run AndroidTests
+    runs-on: self-hosted
+    needs: [ build ]
+    timeout-minutes: 10
+
+    steps:
       - name: Check emulator command is exists
         run: |
           if command -v emulator &> /dev/null; then
@@ -105,12 +111,10 @@ jobs:
   run_unit_test:
     name: Run UnitTests
     runs-on: self-hosted
+    needs: [ build ]
     timeout-minutes: 10
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
       - name: Run Unit Tests
         run: |
           ./gradlew test
