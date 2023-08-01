@@ -1,3 +1,5 @@
+[![NBAToday CI](https://github.com/s2g090123/NBAToday/actions/workflows/android-ci.yml/badge.svg)](https://github.com/s2g090123/NBAToday/actions/workflows/android-ci.yml)
+
 # NBAToday
 Note that the NBA Today must be used in conjunction with [NBAToday-Server](https://github.com/s2g090123/NBAToday-Server)
 
