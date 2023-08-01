@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
 }
+apply from: "../buildscripts/jacoco.gradle"
 
 android {
     compileSdk 33
@@ -24,6 +25,9 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            testCoverageEnabled true
         }
     }
     compileOptions {
@@ -49,6 +53,7 @@ android {
 
 dependencies {
 
+    debugImplementation 'androidx.test:core-ktx:1.5.0'
     implementation 'androidx.core:core-ktx:1.9.0'
 
     testImplementation 'junit:junit:4.13.2'
