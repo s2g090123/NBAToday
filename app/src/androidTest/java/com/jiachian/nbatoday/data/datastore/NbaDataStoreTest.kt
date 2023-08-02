@@ -45,8 +45,8 @@ class NbaDataStoreTest {
         assertThat(emptyData, `is`(empty()))
         val cookie = "test"
         dataStore.updateStatsCookies(setOf(cookie))
-        val expectData = dataStore.statsCookies.first()
-        assertThat(expectData, `is`(setOf(cookie)))
+        val actualData = dataStore.statsCookies.first()
+        assertThat(actualData, `is`(setOf(cookie)))
     }
 
     @Test
@@ -54,8 +54,8 @@ class NbaDataStoreTest {
         val emptyData = dataStore.recordScheduleToday.first()
         assertThat(emptyData, `is`(NbaUtils.formatDate(1990, 1, 1)))
         dataStore.updateRecordScheduleToday(2023, 1, 1)
-        val expectData = dataStore.recordScheduleToday.first()
-        assertThat(expectData, `is`(NbaUtils.formatDate(2023, 1, 1)))
+        val actualData = dataStore.recordScheduleToday.first()
+        assertThat(actualData, `is`(NbaUtils.formatDate(2023, 1, 1)))
     }
 
     @Test
@@ -64,8 +64,8 @@ class NbaDataStoreTest {
         assertThat(emptyData, `is`(LakersColors))
         val teamId = 1610612738
         dataStore.updateThemeColor(teamId)
-        val expectData = dataStore.themeColors.first()
-        assertThat(expectData, `is`(DefaultTeam.getColorsById(teamId)))
+        val actualData = dataStore.themeColors.first()
+        assertThat(actualData, `is`(DefaultTeam.getColorsById(teamId)))
     }
 
     @Test
@@ -74,12 +74,12 @@ class NbaDataStoreTest {
         assertThat(emptyData, `is`(nullValue()))
         val user = User(USER_ACCOUNT, USER_NAME, USER_POINTS, USER_PASSWORD, "")
         dataStore.updateUser(user)
-        val expectData = dataStore.userData.first()
-        assertThat(expectData.account, `is`(user.account))
-        assertThat(expectData.name, `is`(user.name))
-        assertThat(expectData.points, `is`(user.points))
-        assertThat(expectData.password, `is`(user.password))
-        assertThat(expectData.token, `is`(user.token))
+        val actualData = dataStore.userData.first()
+        assertThat(actualData.account, `is`(user.account))
+        assertThat(actualData.name, `is`(user.name))
+        assertThat(actualData.points, `is`(user.points))
+        assertThat(actualData.password, `is`(user.password))
+        assertThat(actualData.token, `is`(user.token))
         dataStore.updateUser(null)
         val nullData = dataStore.userData.first()
         assertThat(nullData, `is`(nullValue()))
