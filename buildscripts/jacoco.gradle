@@ -42,7 +42,8 @@ def combineJacocoTestReport(JacocoReport reportTask) {
             '**/R$*.class',
             '**/BuildConfig.*',
             '**/Manifest*.*',
-            'android/**/*.*'
+            'android/**/*.*',
+            '**/SemanticsPropertyKeyKt.class' // Compose Semantics
     ]
     def classDirs = [
             fileTree(dir: "$buildDir/intermediates/classes/debug", excludes: excludes),
