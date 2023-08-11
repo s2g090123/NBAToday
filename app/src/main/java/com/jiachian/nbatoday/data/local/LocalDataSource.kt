@@ -10,8 +10,8 @@ import com.jiachian.nbatoday.data.local.team.DefaultTeam
 import com.jiachian.nbatoday.data.local.team.TeamStats
 import com.jiachian.nbatoday.data.remote.game.GameScoreUpdateData
 import com.jiachian.nbatoday.data.remote.game.GameUpdateData
+import java.util.Date
 import kotlinx.coroutines.flow.Flow
-import java.util.*
 
 abstract class LocalDataSource {
 
@@ -50,9 +50,9 @@ abstract class LocalDataSource {
     abstract suspend fun deletePlayerStats(teamId: Int, playerIds: List<Int>)
 
     abstract suspend fun existPlayer(playerId: Int): Boolean
-    abstract suspend fun insertPlayerStats(stats: PlayerCareer)
-    abstract suspend fun updatePlayerInfo(info: PlayerCareerInfoUpdate)
-    abstract suspend fun updatePlayerStats(stats: PlayerCareerStatsUpdate)
+    abstract suspend fun insertPlayerCareer(stats: PlayerCareer)
+    abstract suspend fun updatePlayerCareerInfo(info: PlayerCareerInfoUpdate)
+    abstract suspend fun updatePlayerCareerStats(stats: PlayerCareerStatsUpdate)
 
     abstract fun getPlayerCareer(playerId: Int): Flow<PlayerCareer?>
 

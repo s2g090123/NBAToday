@@ -236,14 +236,19 @@ class NbaRemoteDataSourceTest {
     }
 
     @Test
-    fun updatePassword_checksSuccess() = runTest {
+    fun updatePassword_checksResponseBody() = runTest {
         val actual = remoteDataSource.updatePassword(USER_ACCOUNT, USER_PASSWORD, "")
-        assertThat(actual, `is`(Unit))
+        val expected =
+            testNbaService.updatePassword(UpdatePasswordBody(USER_ACCOUNT, USER_PASSWORD, ""))
+                .body()
+        assertThat(actual, `is`(expected))
     }
 
     @Test
-    fun updatePoints_checksSuccess() = runTest {
+    fun updatePoints_checksResponseBody() = runTest {
         val actual = remoteDataSource.updatePoints(USER_ACCOUNT, USER_POINTS, "")
-        assertThat(actual, `is`(Unit))
+        val expected =
+            testNbaService.updatePoints(UpdatePointBody(USER_ACCOUNT, "", USER_POINTS)).body()
+        assertThat(actual, `is`(expected))
     }
 }

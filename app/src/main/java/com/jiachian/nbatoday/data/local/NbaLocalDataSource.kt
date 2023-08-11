@@ -95,31 +95,31 @@ class NbaLocalDataSource(
     }
 
     override suspend fun updateTeamStats(stats: TeamStats) {
-        dao.updateTeamStats(stats)
+        dao.insertTeamStats(stats)
     }
 
     override suspend fun updateTeamStats(stats: List<TeamStats>) {
-        dao.updateTeamStats(stats)
+        dao.insertTeamStats(stats)
     }
 
     override suspend fun updatePlayerStats(stats: List<PlayerStats>) {
-        dao.updatePlayerStats(stats)
-    }
-
-    override suspend fun insertPlayerStats(stats: PlayerCareer) {
         dao.insertPlayerStats(stats)
     }
 
-    override suspend fun updatePlayerStats(stats: PlayerCareerStatsUpdate) {
-        dao.updatePlayerStats(stats)
+    override suspend fun insertPlayerCareer(stats: PlayerCareer) {
+        dao.insertPlayerCareer(stats)
+    }
+
+    override suspend fun updatePlayerCareerStats(stats: PlayerCareerStatsUpdate) {
+        dao.updatePlayerCareerStats(stats)
     }
 
     override suspend fun deletePlayerStats(teamId: Int, playerIds: List<Int>) {
         dao.deleteTeamPlayersStats(teamId, playerIds)
     }
 
-    override suspend fun updatePlayerInfo(info: PlayerCareerInfoUpdate) {
-        dao.updatePlayerInfo(info)
+    override suspend fun updatePlayerCareerInfo(info: PlayerCareerInfoUpdate) {
+        dao.updatePlayerCareerInfo(info)
     }
 
     override fun getPlayerCareer(playerId: Int): Flow<PlayerCareer?> {

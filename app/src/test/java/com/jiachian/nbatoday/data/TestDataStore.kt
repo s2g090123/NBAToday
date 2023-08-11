@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 class TestDataStore : BaseDataStore {
 
     override val statsCookies = MutableStateFlow<Set<String>>(emptySet())
-    override val recordScheduleToday = MutableStateFlow("")
+    override val recordScheduleToday = MutableStateFlow(NbaUtils.formatDate(1990, 1, 1))
     override val themeColors = MutableStateFlow(LakersColors)
     override val userData = MutableStateFlow<User?>(null)
 

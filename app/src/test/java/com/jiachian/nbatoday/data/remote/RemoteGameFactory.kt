@@ -14,6 +14,7 @@ import com.jiachian.nbatoday.BASIC_POSITION
 import com.jiachian.nbatoday.FINAL_GAME_ID
 import com.jiachian.nbatoday.GAME_CODE
 import com.jiachian.nbatoday.GAME_DATE
+import com.jiachian.nbatoday.GAME_DATE_TIME
 import com.jiachian.nbatoday.GAME_DAY
 import com.jiachian.nbatoday.GAME_SEASON
 import com.jiachian.nbatoday.GAME_STATUS_FINAL
@@ -44,7 +45,7 @@ object RemoteGameFactory {
                     GameScoreboard.Scoreboard.Game(
                         gameId = FINAL_GAME_ID,
                         gameCode = GAME_CODE,
-                        gameStatus = BASIC_NUMBER,
+                        gameStatus = GameStatusCode.FINAL.status,
                         gameStatusText = GAME_STATUS_FINAL,
                         gameTime = GAME_DATE,
                         gameLeaders = GameLeaderFactory.getGameLeaders(),
@@ -89,8 +90,8 @@ object RemoteGameFactory {
                                     teamTricode = HOME_TEAM_ABBR,
                                     wins = BASIC_NUMBER
                                 ),
-                                gameDateEst = GAME_DATE,
-                                gameDateTimeEst = GAME_DATE,
+                                gameDateEst = GAME_DATE_TIME,
+                                gameDateTimeEst = GAME_DATE_TIME,
                                 monthNum = BASIC_NUMBER,
                                 pointsLeaders = listOf(
                                     Schedule.LeagueSchedule.GameDate.Game.PointsLeader(

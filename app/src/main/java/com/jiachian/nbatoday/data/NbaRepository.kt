@@ -3,7 +3,11 @@ package com.jiachian.nbatoday.data
 import com.jiachian.nbatoday.NBA_LEAGUE_ID
 import com.jiachian.nbatoday.SCHEDULE_DATE_RANGE
 import com.jiachian.nbatoday.data.datastore.BaseDataStore
-import com.jiachian.nbatoday.data.local.*
+import com.jiachian.nbatoday.data.local.BetAndNbaGame
+import com.jiachian.nbatoday.data.local.LocalDataSource
+import com.jiachian.nbatoday.data.local.NbaGame
+import com.jiachian.nbatoday.data.local.NbaGameAndBet
+import com.jiachian.nbatoday.data.local.TeamAndPlayers
 import com.jiachian.nbatoday.data.local.bet.Bets
 import com.jiachian.nbatoday.data.local.player.PlayerCareer
 import com.jiachian.nbatoday.data.local.score.GameBoxScore
@@ -12,11 +16,11 @@ import com.jiachian.nbatoday.data.local.team.TeamStats
 import com.jiachian.nbatoday.data.remote.RemoteDataSource
 import com.jiachian.nbatoday.data.remote.user.User
 import com.jiachian.nbatoday.utils.NbaUtils
+import java.util.Calendar
+import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
-import java.util.*
-import java.util.concurrent.TimeUnit
 
 class NbaRepository(
     private val remoteDataSource: RemoteDataSource,
@@ -134,16 +138,16 @@ class NbaRepository(
         val stats = detail?.stats
         if (localDataSource.existPlayer(playerId)) {
             info?.toUpdateData()?.also {
-                localDataSource.updatePlayerInfo(it)
+                localDataSource.updatePlayerCareerInfo(it)
             }
             stats?.toLocal()?.also {
-                localDataSource.updatePlayerStats(it)
+                localDataSource.updatePlayerCareerStats(it)
             }
         } else if (info != null && stats != null) {
             val infoData = info.toUpdateData()?.info
             val statsData = stats.toLocal()?.stats
             if (infoData != null && statsData != null) {
-                localDataSource.insertPlayerStats(
+                localDataSource.insertPlayerCareer(
                     PlayerCareer(playerId, infoData, statsData)
                 )
             }
