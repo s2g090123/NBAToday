@@ -6,15 +6,39 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.animation.animateColor
-import androidx.compose.animation.core.*
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.InfiniteRepeatableSpec
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.LocalTextStyle
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.LinearGradientShader
+import androidx.compose.ui.graphics.Shader
+import androidx.compose.ui.graphics.ShaderBrush
+import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.ExperimentalTextApi
@@ -63,7 +87,7 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-
+        viewModel.loadData()
         observeData()
     }
 
@@ -83,7 +107,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 private fun NbaScreen(viewModel: MainViewModel) {
     val navController = rememberNavController()
-    val isLoadingApp by viewModel.isLoadingApp.collectAsState()
+    val isLoaded by viewModel.isLoaded.collectAsState()
 
     NavHost(
         modifier = Modifier.fillMaxSize(),
@@ -99,8 +123,8 @@ private fun NbaScreen(viewModel: MainViewModel) {
             MainScreen(viewModel)
         }
     }
-    LaunchedEffect(isLoadingApp) {
-        if (!isLoadingApp) {
+    LaunchedEffect(isLoaded) {
+        if (isLoaded) {
             navController.navigate("home")
         }
     }

@@ -12,13 +12,19 @@ import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.event.EventBroadcaster
 import com.jiachian.nbatoday.event.EventManager
 import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class MainViewModel(
     private val repository: BaseRepository,
     private val dataStore: BaseDataStore,
-    dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
+    private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
     private val eventManager: EventManager<Event> = EventManager()
 ) : ViewModel(), EventBroadcaster<MainViewModel.Event> by eventManager {
 
@@ -40,8 +46,10 @@ class MainViewModel(
         )
     }
 
-    private val isLoadingAppImp = MutableStateFlow(true)
-    val isLoadingApp = isLoadingAppImp.asStateFlow()
+    private val isLoading = MutableStateFlow(false)
+
+    private val isLoadedImp = MutableStateFlow(false)
+    val isLoaded = isLoadedImp.asStateFlow()
 
     private val stateStackImp by lazy { MutableStateFlow(listOf(initState)) }
     val stateStack by lazy { stateStackImp.asStateFlow() }
@@ -50,9 +58,10 @@ class MainViewModel(
             .stateIn(viewModelScope, SharingStarted.Eagerly, initState)
     }
 
-    init {
+    fun loadData() {
+        if (isLoading.value || isLoaded.value) return
         viewModelScope.launch(dispatcherProvider.io) {
-            isLoadingAppImp.value = true
+            isLoading.value = true
             val refreshScheduleDeferred = async {
                 repository.refreshSchedule()
             }
@@ -69,7 +78,8 @@ class MainViewModel(
             refreshScheduleDeferred.await()
             updateColorsDeferred.await()
             loginDeferred.await()
-            isLoadingAppImp.value = false
+            isLoading.value = false
+            isLoadedImp.value = true
         }
     }
 
