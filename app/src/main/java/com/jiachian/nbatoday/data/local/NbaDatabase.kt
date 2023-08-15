@@ -1,12 +1,21 @@
 package com.jiachian.nbatoday.data.local
 
 import android.content.Context
+import androidx.annotation.VisibleForTesting
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.jiachian.nbatoday.data.local.bet.Bets
-import com.jiachian.nbatoday.data.local.converter.*
+import com.jiachian.nbatoday.data.local.converter.BoxScoreTeamConverter
+import com.jiachian.nbatoday.data.local.converter.DateConverter
+import com.jiachian.nbatoday.data.local.converter.GameLeadersConverter
+import com.jiachian.nbatoday.data.local.converter.GameTeamConverter
+import com.jiachian.nbatoday.data.local.converter.PlayerCareerInfoConverter
+import com.jiachian.nbatoday.data.local.converter.PlayerCareerStatsConverter
+import com.jiachian.nbatoday.data.local.converter.PointsLeaderConverter
+import com.jiachian.nbatoday.data.local.converter.TeamConferenceConverter
+import com.jiachian.nbatoday.data.local.converter.TeamDivisionConverter
 import com.jiachian.nbatoday.data.local.player.PlayerCareer
 import com.jiachian.nbatoday.data.local.player.PlayerStats
 import com.jiachian.nbatoday.data.local.score.GameBoxScore
@@ -38,12 +47,17 @@ abstract class NbaDatabase : RoomDatabase() {
 
         fun getInstance(context: Context): NbaDatabase {
             return instance ?: synchronized(this) {
-                instance ?: buildDatabase(context).also { instance = it }
+                buildDatabase(context).also { instance = it }
             }
         }
 
         private fun buildDatabase(context: Context): NbaDatabase {
             return Room.databaseBuilder(context, NbaDatabase::class.java, DATABASE_NAME).build()
+        }
+
+        @VisibleForTesting
+        fun reset() {
+            instance = null
         }
     }
 
