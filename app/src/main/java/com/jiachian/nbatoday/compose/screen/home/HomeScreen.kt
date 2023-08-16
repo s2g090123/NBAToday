@@ -143,8 +143,8 @@ import com.jiachian.nbatoday.data.remote.user.User
 import com.jiachian.nbatoday.utils.FocusableColumn
 import com.jiachian.nbatoday.utils.NbaUtils
 import com.jiachian.nbatoday.utils.color
-import com.jiachian.nbatoday.utils.dividerPrimary
-import com.jiachian.nbatoday.utils.dividerSecondary
+import com.jiachian.nbatoday.utils.dividerPrimaryColor
+import com.jiachian.nbatoday.utils.dividerSecondaryColor
 import com.jiachian.nbatoday.utils.isPhone
 import com.jiachian.nbatoday.utils.isPortrait
 import com.jiachian.nbatoday.utils.noRippleClickable
@@ -709,7 +709,7 @@ private fun TeamStanding(
             Spacer(modifier = Modifier.height(40.dp))
             Divider(
                 modifier = Modifier.width(teamNameWidth.px2Dp()),
-                color = MaterialTheme.colors.dividerSecondary(),
+                color = dividerSecondaryColor(),
                 thickness = 3.dp
             )
             CompositionLocalProvider(
@@ -777,7 +777,7 @@ private fun TeamStanding(
                             if (index < teamStats.size - 1) {
                                 Divider(
                                     modifier = Modifier.width(teamNameWidth.px2Dp()),
-                                    color = MaterialTheme.colors.dividerSecondary(),
+                                    color = dividerSecondaryColor(),
                                     thickness = if (index == 9) 3.dp else 1.dp
                                 )
                             }
@@ -832,7 +832,7 @@ private fun TeamStanding(
             }
             Divider(
                 modifier = Modifier.width(dividerWidth.px2Dp()),
-                color = MaterialTheme.colors.dividerSecondary(),
+                color = dividerSecondaryColor(),
                 thickness = 3.dp
             )
             CompositionLocalProvider(
@@ -900,7 +900,7 @@ private fun TeamStanding(
                         if (index < teamStats.size - 1) {
                             Divider(
                                 modifier = Modifier.width(dividerWidth.px2Dp()),
-                                color = MaterialTheme.colors.dividerSecondary(),
+                                color = dividerSecondaryColor(),
                                 thickness = if (index == 9) 3.dp else 1.dp
                             )
                         }
@@ -1462,7 +1462,7 @@ private fun LeaderInfo(
                     top.linkTo(ptsTitle.bottom, 4.dp)
                 }
                 .fillMaxWidth(),
-            color = MaterialTheme.colors.dividerPrimary()
+            color = dividerPrimaryColor()
         )
         Column(
             modifier = Modifier

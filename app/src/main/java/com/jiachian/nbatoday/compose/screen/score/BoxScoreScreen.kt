@@ -72,7 +72,7 @@ import com.jiachian.nbatoday.data.local.score.GameBoxScore
 import com.jiachian.nbatoday.data.remote.game.GameStatusCode
 import com.jiachian.nbatoday.data.remote.score.PlayerActiveStatus
 import com.jiachian.nbatoday.utils.NbaUtils
-import com.jiachian.nbatoday.utils.dividerSecondary
+import com.jiachian.nbatoday.utils.dividerSecondaryColor
 import com.jiachian.nbatoday.utils.noRippleClickable
 import com.jiachian.nbatoday.utils.px2Dp
 import com.jiachian.nbatoday.utils.rippleClickable
@@ -298,7 +298,7 @@ private fun ScorePeriod(
     Column(modifier = modifier) {
         Divider(
             modifier = Modifier.fillMaxWidth(),
-            color = MaterialTheme.colors.dividerSecondary(),
+            color = dividerSecondaryColor(),
             thickness = 2.dp
         )
         Row(
@@ -368,7 +368,7 @@ private fun ScorePeriod(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 8.dp),
-            color = MaterialTheme.colors.dividerSecondary(),
+            color = dividerSecondaryColor(),
             thickness = 2.dp
         )
     }
@@ -545,7 +545,7 @@ private fun PlayerStatistics(
             )
             Divider(
                 modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colors.dividerSecondary(),
+                color = dividerSecondaryColor(),
                 thickness = 3.dp
             )
             CompositionLocalProvider(
@@ -583,7 +583,7 @@ private fun PlayerStatistics(
                             if (index < players.size - 1) {
                                 Divider(
                                     modifier = Modifier.fillMaxWidth(),
-                                    color = MaterialTheme.colors.dividerSecondary(),
+                                    color = dividerSecondaryColor(),
                                     thickness = 1.dp
                                 )
                             }
@@ -653,7 +653,7 @@ private fun PlayerStatistics(
             }
             Divider(
                 modifier = Modifier.width(dividerWidth.px2Dp()),
-                color = MaterialTheme.colors.dividerSecondary(),
+                color = dividerSecondaryColor(),
                 thickness = 3.dp
             )
             CompositionLocalProvider(
@@ -739,7 +739,7 @@ private fun PlayerStatistics(
                         if (index < players.size - 1) {
                             Divider(
                                 modifier = Modifier.width(dividerWidth.px2Dp()),
-                                color = MaterialTheme.colors.dividerSecondary(),
+                                color = dividerSecondaryColor(),
                                 thickness = 1.dp
                             )
                         }
@@ -1015,7 +1015,7 @@ private fun TeamStatistics(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 12.dp),
-                color = MaterialTheme.colors.dividerSecondary()
+                color = dividerSecondaryColor()
             )
         }
         item {
@@ -1636,7 +1636,7 @@ private fun LeaderStatistics(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 12.dp),
-                color = MaterialTheme.colors.dividerSecondary()
+                color = dividerSecondaryColor()
             )
         }
         item {
@@ -1882,7 +1882,7 @@ private fun LeaderStatistics(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 12.dp),
-                color = MaterialTheme.colors.dividerSecondary()
+                color = dividerSecondaryColor()
             )
         }
         item {
