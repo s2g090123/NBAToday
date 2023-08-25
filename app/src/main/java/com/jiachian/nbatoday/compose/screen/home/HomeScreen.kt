@@ -119,6 +119,7 @@ import com.jiachian.nbatoday.compose.theme.MavericksColors
 import com.jiachian.nbatoday.compose.theme.NetsColors
 import com.jiachian.nbatoday.compose.theme.NuggetsColors
 import com.jiachian.nbatoday.compose.theme.OfficialColors
+import com.jiachian.nbatoday.compose.theme.P76ersColors
 import com.jiachian.nbatoday.compose.theme.PacersColors
 import com.jiachian.nbatoday.compose.theme.PelicansColors
 import com.jiachian.nbatoday.compose.theme.PistonsColors
@@ -130,7 +131,6 @@ import com.jiachian.nbatoday.compose.theme.ThunderColors
 import com.jiachian.nbatoday.compose.theme.TimberwolvesColors
 import com.jiachian.nbatoday.compose.theme.WarriorsColors
 import com.jiachian.nbatoday.compose.theme.WizardsColors
-import com.jiachian.nbatoday.compose.theme.p76ersColors
 import com.jiachian.nbatoday.compose.widget.CustomOutlinedTextField
 import com.jiachian.nbatoday.compose.widget.RefreshingScreen
 import com.jiachian.nbatoday.data.local.NbaGame
@@ -564,7 +564,7 @@ private fun UserPage(
                         22 -> 1610612761 to RaptorsColors
                         23 -> 1610612745 to RocketsColors
                         24 -> 1610612759 to SpursColors
-                        25 -> 1610612755 to p76ersColors
+                        25 -> 1610612755 to P76ersColors
                         26 -> 1610612756 to SunsColors
                         27 -> 1610612760 to ThunderColors
                         28 -> 1610612750 to TimberwolvesColors
