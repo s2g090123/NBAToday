@@ -119,6 +119,7 @@ import com.jiachian.nbatoday.compose.theme.MavericksColors
 import com.jiachian.nbatoday.compose.theme.NetsColors
 import com.jiachian.nbatoday.compose.theme.NuggetsColors
 import com.jiachian.nbatoday.compose.theme.OfficialColors
+import com.jiachian.nbatoday.compose.theme.P76ersColors
 import com.jiachian.nbatoday.compose.theme.PacersColors
 import com.jiachian.nbatoday.compose.theme.PelicansColors
 import com.jiachian.nbatoday.compose.theme.PistonsColors
@@ -130,7 +131,6 @@ import com.jiachian.nbatoday.compose.theme.ThunderColors
 import com.jiachian.nbatoday.compose.theme.TimberwolvesColors
 import com.jiachian.nbatoday.compose.theme.WarriorsColors
 import com.jiachian.nbatoday.compose.theme.WizardsColors
-import com.jiachian.nbatoday.compose.theme.p76ersColors
 import com.jiachian.nbatoday.compose.widget.CustomOutlinedTextField
 import com.jiachian.nbatoday.compose.widget.RefreshingScreen
 import com.jiachian.nbatoday.data.local.NbaGame
@@ -143,8 +143,8 @@ import com.jiachian.nbatoday.data.remote.user.User
 import com.jiachian.nbatoday.utils.FocusableColumn
 import com.jiachian.nbatoday.utils.NbaUtils
 import com.jiachian.nbatoday.utils.color
-import com.jiachian.nbatoday.utils.dividerPrimary
-import com.jiachian.nbatoday.utils.dividerSecondary
+import com.jiachian.nbatoday.utils.dividerPrimaryColor
+import com.jiachian.nbatoday.utils.dividerSecondaryColor
 import com.jiachian.nbatoday.utils.isPhone
 import com.jiachian.nbatoday.utils.isPortrait
 import com.jiachian.nbatoday.utils.noRippleClickable
@@ -564,7 +564,7 @@ private fun UserPage(
                         22 -> 1610612761 to RaptorsColors
                         23 -> 1610612745 to RocketsColors
                         24 -> 1610612759 to SpursColors
-                        25 -> 1610612755 to p76ersColors
+                        25 -> 1610612755 to P76ersColors
                         26 -> 1610612756 to SunsColors
                         27 -> 1610612760 to ThunderColors
                         28 -> 1610612750 to TimberwolvesColors
@@ -709,7 +709,7 @@ private fun TeamStanding(
             Spacer(modifier = Modifier.height(40.dp))
             Divider(
                 modifier = Modifier.width(teamNameWidth.px2Dp()),
-                color = MaterialTheme.colors.dividerSecondary(),
+                color = dividerSecondaryColor(),
                 thickness = 3.dp
             )
             CompositionLocalProvider(
@@ -777,7 +777,7 @@ private fun TeamStanding(
                             if (index < teamStats.size - 1) {
                                 Divider(
                                     modifier = Modifier.width(teamNameWidth.px2Dp()),
-                                    color = MaterialTheme.colors.dividerSecondary(),
+                                    color = dividerSecondaryColor(),
                                     thickness = if (index == 9) 3.dp else 1.dp
                                 )
                             }
@@ -832,7 +832,7 @@ private fun TeamStanding(
             }
             Divider(
                 modifier = Modifier.width(dividerWidth.px2Dp()),
-                color = MaterialTheme.colors.dividerSecondary(),
+                color = dividerSecondaryColor(),
                 thickness = 3.dp
             )
             CompositionLocalProvider(
@@ -900,7 +900,7 @@ private fun TeamStanding(
                         if (index < teamStats.size - 1) {
                             Divider(
                                 modifier = Modifier.width(dividerWidth.px2Dp()),
-                                color = MaterialTheme.colors.dividerSecondary(),
+                                color = dividerSecondaryColor(),
                                 thickness = if (index == 9) 3.dp else 1.dp
                             )
                         }
@@ -1462,7 +1462,7 @@ private fun LeaderInfo(
                     top.linkTo(ptsTitle.bottom, 4.dp)
                 }
                 .fillMaxWidth(),
-            color = MaterialTheme.colors.dividerPrimary()
+            color = dividerPrimaryColor()
         )
         Column(
             modifier = Modifier

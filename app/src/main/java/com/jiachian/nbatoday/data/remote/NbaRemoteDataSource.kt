@@ -21,13 +21,13 @@ import com.jiachian.nbatoday.data.remote.user.User
 import com.jiachian.nbatoday.service.CdnNbaService
 import com.jiachian.nbatoday.service.NbaService
 import com.jiachian.nbatoday.service.StatsNbaService
+import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.concurrent.TimeUnit
 
 class NbaRemoteDataSource(private val dataStore: BaseDataStore) : RemoteDataSource() {
 
@@ -112,12 +112,12 @@ class NbaRemoteDataSource(private val dataStore: BaseDataStore) : RemoteDataSour
         return nbaService.register(LoginBody(account, password)).body()
     }
 
-    override suspend fun updatePassword(account: String, password: String, token: String) {
-        nbaService.updatePassword(UpdatePasswordBody(account, token, password))
+    override suspend fun updatePassword(account: String, password: String, token: String): String? {
+        return nbaService.updatePassword(UpdatePasswordBody(account, token, password)).body()
     }
 
-    override suspend fun updatePoints(account: String, points: Long, token: String) {
-        nbaService.updatePoints(UpdatePointBody(account, token, points))
+    override suspend fun updatePoints(account: String, points: Long, token: String): String? {
+        return nbaService.updatePoints(UpdatePointBody(account, token, points)).body()
     }
 
     private fun buildStatsOkHttpClient(): OkHttpClient {

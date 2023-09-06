@@ -1,7 +1,38 @@
 package com.jiachian.nbatoday.data.local.team
 
 import com.jiachian.nbatoday.R
-import com.jiachian.nbatoday.compose.theme.*
+import com.jiachian.nbatoday.compose.theme.BlazersColors
+import com.jiachian.nbatoday.compose.theme.BucksColors
+import com.jiachian.nbatoday.compose.theme.BullsColors
+import com.jiachian.nbatoday.compose.theme.CavaliersColors
+import com.jiachian.nbatoday.compose.theme.CelticsColors
+import com.jiachian.nbatoday.compose.theme.ClippersColors
+import com.jiachian.nbatoday.compose.theme.GrizzliesColors
+import com.jiachian.nbatoday.compose.theme.HawksColors
+import com.jiachian.nbatoday.compose.theme.HeatColors
+import com.jiachian.nbatoday.compose.theme.HornetsColors
+import com.jiachian.nbatoday.compose.theme.JazzColors
+import com.jiachian.nbatoday.compose.theme.KingsColors
+import com.jiachian.nbatoday.compose.theme.KnicksColors
+import com.jiachian.nbatoday.compose.theme.LakersColors
+import com.jiachian.nbatoday.compose.theme.MagicColors
+import com.jiachian.nbatoday.compose.theme.MavericksColors
+import com.jiachian.nbatoday.compose.theme.NBAColors
+import com.jiachian.nbatoday.compose.theme.NetsColors
+import com.jiachian.nbatoday.compose.theme.NuggetsColors
+import com.jiachian.nbatoday.compose.theme.OfficialColors
+import com.jiachian.nbatoday.compose.theme.P76ersColors
+import com.jiachian.nbatoday.compose.theme.PacersColors
+import com.jiachian.nbatoday.compose.theme.PelicansColors
+import com.jiachian.nbatoday.compose.theme.PistonsColors
+import com.jiachian.nbatoday.compose.theme.RaptorsColors
+import com.jiachian.nbatoday.compose.theme.RocketsColors
+import com.jiachian.nbatoday.compose.theme.SpursColors
+import com.jiachian.nbatoday.compose.theme.SunsColors
+import com.jiachian.nbatoday.compose.theme.ThunderColors
+import com.jiachian.nbatoday.compose.theme.TimberwolvesColors
+import com.jiachian.nbatoday.compose.theme.WarriorsColors
+import com.jiachian.nbatoday.compose.theme.WizardsColors
 
 /** Offline Data */
 abstract class DefaultTeam {
@@ -75,7 +106,7 @@ abstract class DefaultTeam {
                 1610612752 -> KnicksColors
                 1610612760 -> ThunderColors
                 1610612753 -> MagicColors
-                1610612755 -> p76ersColors
+                1610612755 -> P76ersColors
                 1610612756 -> SunsColors
                 1610612757 -> BlazersColors
                 1610612758 -> KingsColors

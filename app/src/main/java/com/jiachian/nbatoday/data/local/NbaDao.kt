@@ -1,6 +1,11 @@
 package com.jiachian.nbatoday.data.local
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Update
 import com.jiachian.nbatoday.data.local.bet.Bets
 import com.jiachian.nbatoday.data.local.player.PlayerCareer
 import com.jiachian.nbatoday.data.local.player.PlayerCareerInfoUpdate
@@ -11,8 +16,8 @@ import com.jiachian.nbatoday.data.local.team.DefaultTeam
 import com.jiachian.nbatoday.data.local.team.TeamStats
 import com.jiachian.nbatoday.data.remote.game.GameScoreUpdateData
 import com.jiachian.nbatoday.data.remote.game.GameUpdateData
+import java.util.Date
 import kotlinx.coroutines.flow.Flow
-import java.util.*
 
 @Dao
 interface NbaDao {
@@ -162,13 +167,13 @@ interface NbaDao {
     fun getPlusMinusRank(teamId: Int): Flow<Int>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun updateTeamStats(stats: List<TeamStats>)
+    suspend fun insertTeamStats(stats: List<TeamStats>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun updateTeamStats(stats: TeamStats)
+    suspend fun insertTeamStats(stats: TeamStats)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun updatePlayerStats(stats: List<PlayerStats>)
+    suspend fun insertPlayerStats(stats: List<PlayerStats>)
 
     @Query("DELETE FROM nba_player_stats WHERE team_id == :teamId AND player_id IN (:playerIds)")
     suspend fun deleteTeamPlayersStats(teamId: Int, playerIds: List<Int>)
@@ -181,13 +186,13 @@ interface NbaDao {
     fun getPlayerCareer(playerId: Int): Flow<PlayerCareer?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertPlayerStats(stats: PlayerCareer)
+    suspend fun insertPlayerCareer(stats: PlayerCareer)
 
     @Update(entity = PlayerCareer::class, onConflict = OnConflictStrategy.REPLACE)
-    suspend fun updatePlayerInfo(info: PlayerCareerInfoUpdate)
+    suspend fun updatePlayerCareerInfo(info: PlayerCareerInfoUpdate)
 
     @Update(entity = PlayerCareer::class, onConflict = OnConflictStrategy.REPLACE)
-    suspend fun updatePlayerStats(stats: PlayerCareerStatsUpdate)
+    suspend fun updatePlayerCareerStats(stats: PlayerCareerStatsUpdate)
 
     /** Bet */
     @Insert(onConflict = OnConflictStrategy.IGNORE)

@@ -32,6 +32,6 @@ abstract class RemoteDataSource {
     /** User */
     abstract suspend fun login(account: String, password: String): User?
     abstract suspend fun register(account: String, password: String): User?
-    abstract suspend fun updatePassword(account: String, password: String, token: String)
-    abstract suspend fun updatePoints(account: String, points: Long, token: String)
+    abstract suspend fun updatePassword(account: String, password: String, token: String): String?
+    abstract suspend fun updatePoints(account: String, points: Long, token: String): String?
 }

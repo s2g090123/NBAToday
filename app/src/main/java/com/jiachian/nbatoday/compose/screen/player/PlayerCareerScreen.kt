@@ -59,7 +59,7 @@ import coil.request.ImageRequest
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.data.local.player.PlayerCareer
 import com.jiachian.nbatoday.utils.NbaUtils
-import com.jiachian.nbatoday.utils.dividerSecondary
+import com.jiachian.nbatoday.utils.dividerSecondaryColor
 import com.jiachian.nbatoday.utils.modifyIf
 import com.jiachian.nbatoday.utils.noRippleClickable
 import com.jiachian.nbatoday.utils.px2Dp
@@ -640,7 +640,7 @@ private fun PlayerCareerStats(
                     )
                     Divider(
                         modifier = Modifier.fillMaxWidth(),
-                        color = MaterialTheme.colors.dividerSecondary(),
+                        color = dividerSecondaryColor(),
                         thickness = 3.dp
                     )
                     LazyColumn(
@@ -690,7 +690,7 @@ private fun PlayerCareerStats(
                                 }
                                 Divider(
                                     modifier = Modifier.fillMaxWidth(),
-                                    color = MaterialTheme.colors.dividerSecondary(),
+                                    color = dividerSecondaryColor(),
                                     thickness = 1.dp
                                 )
                             }
@@ -743,7 +743,7 @@ private fun PlayerCareerStats(
                 }
                 Divider(
                     modifier = Modifier.width(dividerWidth.px2Dp()),
-                    color = MaterialTheme.colors.dividerSecondary(),
+                    color = dividerSecondaryColor(),
                     thickness = 3.dp
                 )
                 CompositionLocalProvider(
@@ -811,7 +811,7 @@ private fun PlayerCareerStats(
                             }
                             Divider(
                                 modifier = Modifier.width(dividerWidth.px2Dp()),
-                                color = MaterialTheme.colors.dividerSecondary(),
+                                color = dividerSecondaryColor(),
                                 thickness = 1.dp
                             )
                         }
@@ -882,7 +882,7 @@ private fun PlayerCareerRank(
                     }
                     Divider(
                         modifier = Modifier.fillMaxWidth(),
-                        color = MaterialTheme.colors.dividerSecondary(),
+                        color = dividerSecondaryColor(),
                         thickness = 3.dp
                     )
                     LazyColumn(state = timeframeState) {
@@ -903,7 +903,7 @@ private fun PlayerCareerRank(
                                 if (index < careerRank.size - 1) {
                                     Divider(
                                         modifier = Modifier.fillMaxWidth(),
-                                        color = MaterialTheme.colors.dividerSecondary(),
+                                        color = dividerSecondaryColor(),
                                         thickness = 1.dp
                                     )
                                 }
@@ -943,7 +943,7 @@ private fun PlayerCareerRank(
                 }
                 Divider(
                     modifier = Modifier.width(dividerWidth.px2Dp()),
-                    color = MaterialTheme.colors.dividerSecondary(),
+                    color = dividerSecondaryColor(),
                     thickness = 3.dp
                 )
                 CompositionLocalProvider(
@@ -1004,7 +1004,7 @@ private fun PlayerCareerRank(
                             if (index < careerRank.size - 1) {
                                 Divider(
                                     modifier = Modifier.width(dividerWidth.px2Dp()),
-                                    color = MaterialTheme.colors.dividerSecondary(),
+                                    color = dividerSecondaryColor(),
                                     thickness = 1.dp
                                 )
                             }

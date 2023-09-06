@@ -6,19 +6,28 @@ import com.jiachian.nbatoday.compose.screen.player.PlayerInfoViewModel
 import com.jiachian.nbatoday.compose.screen.score.BoxScoreViewModel
 import com.jiachian.nbatoday.compose.screen.team.TeamViewModel
 import com.jiachian.nbatoday.compose.state.NbaState
-import com.jiachian.nbatoday.data.*
+import com.jiachian.nbatoday.data.NbaGameFactory
+import com.jiachian.nbatoday.data.PlayerStatsFactory
+import com.jiachian.nbatoday.data.TeamStatsFactory
+import com.jiachian.nbatoday.data.TestDataStore
+import com.jiachian.nbatoday.data.TestRepository
+import com.jiachian.nbatoday.data.remote.user.User
 import com.jiachian.nbatoday.rule.SetMainDispatcherRule
 import com.jiachian.nbatoday.rule.TestCoroutineEnvironment
 import com.jiachian.nbatoday.utils.launchAndCollect
+import java.util.Date
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.instanceOf
+import org.hamcrest.CoreMatchers.nullValue
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.util.*
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class MainViewModelTest {
@@ -182,5 +191,56 @@ class MainViewModelTest {
             viewModel.currentState.value,
             CoreMatchers.instanceOf(NbaState.Home::class.java)
         )
+    }
+
+    @Test
+    fun loadData_userNotLogin_checksDataCorrect() = runTest {
+        assertThat(viewModel.isLoaded.value, `is`(false))
+        viewModel.loadData()
+        assertThat(viewModel.isLoaded.value, `is`(true))
+        assertThat(repository.getGamesAndBets().first().isNotEmpty(), `is`(true))
+    }
+
+    @Test
+    fun loadData_userLogin_checksDataCorrect() = runTest {
+        assertThat(viewModel.isLoaded.value, `is`(false))
+        dataStore.updateUser(
+            User(
+                account = USER_ACCOUNT,
+                name = USER_NAME,
+                points = USER_POINTS,
+                password = USER_PASSWORD,
+                token = ""
+            )
+        )
+        viewModel.loadData()
+        assertThat(viewModel.isLoaded.value, `is`(true))
+        assertThat(repository.getGamesAndBets().first().isNotEmpty(), `is`(true))
+        assertThat(repository.user.value?.account, `is`(USER_ACCOUNT))
+        assertThat(repository.user.value?.password, `is`(USER_PASSWORD))
+    }
+
+    @Test
+    fun updateState_sameWithCurrentState_checksDataCorrect() {
+        val state = NbaState.Bet(
+            BetViewModel(
+                account = USER_ACCOUNT,
+                repository = repository,
+                openScreen = {}
+            )
+        )
+        viewModel.updateState(state)
+        assertThat(viewModel.currentState.value, `is`(state))
+        assertThat(viewModel.stateStack.value.size, `is`(2))
+        viewModel.updateState(state)
+        assertThat(viewModel.currentState.value, `is`(state))
+        assertThat(viewModel.stateStack.value.size, `is`(2))
+    }
+
+    @Test
+    fun backState_currentHomeState_checksEventSent() {
+        assertThat(viewModel.eventFlow.value, nullValue())
+        viewModel.backState()
+        assertThat(viewModel.eventFlow.value, instanceOf(MainViewModel.Event.Exit::class.java))
     }
 }

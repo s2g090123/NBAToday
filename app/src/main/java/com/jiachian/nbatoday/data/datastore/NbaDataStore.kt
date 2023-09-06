@@ -2,12 +2,18 @@ package com.jiachian.nbatoday.data.datastore
 
 import android.app.Application
 import android.content.Context
+import androidx.annotation.VisibleForTesting
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.*
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.jiachian.nbatoday.DATA_STORE_NAME
+import com.jiachian.nbatoday.annotation.ExcludeFromJacocoGeneratedReport
 import com.jiachian.nbatoday.compose.theme.LakersColors
 import com.jiachian.nbatoday.data.datastore.NbaDataStore.PreferencesKeys.RECORD_SCHEDULE_TODAY
 import com.jiachian.nbatoday.data.datastore.NbaDataStore.PreferencesKeys.STATS_COOKIES
@@ -91,6 +97,14 @@ class NbaDataStore(
             } else {
                 ""
             }
+        }
+    }
+
+    @VisibleForTesting
+    @ExcludeFromJacocoGeneratedReport
+    suspend fun clear() {
+        dataStore.edit { settings ->
+            settings.clear()
         }
     }
 }
