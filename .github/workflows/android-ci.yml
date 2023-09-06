@@ -142,7 +142,7 @@ jobs:
         with:
           name: code-coverage-report
           path: |
-            app/build/reports/jacoco/report/
+            app/build/reports/jacoco/withoutTest
 
   generate_code_coverage_badge:
     name: Generate code coverage report badge

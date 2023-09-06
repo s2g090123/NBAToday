@@ -22,22 +22,28 @@ tasks.withType(Test) {
 task generateJacocoTestReport(
         type: JacocoReport
 ) {
-    combineJacocoTestReport(generateJacocoTestReport, "withoutTests")
+    combineJacocoTestReport(generateJacocoTestReport, "withoutTest")
 }
 
 task runTestsAndGenerateJacocoTestReport(
         type: JacocoReport,
         dependsOn: ["testDebugUnitTest", "createDebugCoverageReport"],
 ) {
-    combineJacocoTestReport(runTestsAndGenerateJacocoTestReport, "allTests")
+    combineJacocoTestReport(runTestsAndGenerateJacocoTestReport, "runTest")
 }
 
 def combineJacocoTestReport(JacocoReport reportTask, String directory) {
+    def folderPath = ""
+    if (directory.isEmpty()) {
+        folderPath = "$buildDir/reports/jacoco"
+    } else {
+        folderPath = "$buildDir/reports/jacoco/$directory"
+    }
     reportTask.reports {
         html.enabled true
         csv.enabled true
-        html.destination file("$buildDir/reports/jacoco/$directory/html")
-        csv.destination file("$buildDir/reports/jacoco/$directory/jacoco.csv")
+        html.destination file("$folderPath/html")
+        csv.destination file("$folderPath/jacoco.csv")
     }
 
     def excludes = [
