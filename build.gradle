@@ -11,10 +11,12 @@ buildscript {
         mockk_version = '1.13.4'
         jacoco_version = '0.8.10'
         jacoco_android_version = "0.2"
+        detekt_version = "1.23.1"
     }
 
     dependencies {
         classpath "com.hiya:jacoco-android:$jacoco_android_version"
+        classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:$detekt_version"
     }
 }// Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
