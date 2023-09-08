@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Check ktlint
-        uses: ./gradlew ktlintCheck
+        run: ./gradlew ktlintCheck
 
       - name: Archive ktlint Reports
         if: always()
@@ -40,7 +40,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Check detekt
-        uses: ./gradlew detekt
+        run: ./gradlew detekt
 
       - name: Archive detekt Reports
         if: always()
