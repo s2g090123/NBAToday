@@ -5,6 +5,7 @@ plugins {
 }
 apply from: "../buildscripts/jacoco.gradle"
 apply from: "../buildscripts/detekt.gradle"
+apply from: "../buildscripts/ktlint.gradle"
 
 android {
     compileSdk 33

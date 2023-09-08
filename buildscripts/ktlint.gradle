@@ -1,0 +1,10 @@
+apply plugin: "org.jlleitschuh.gradle.ktlint"
+
+ktlint {
+    version = "$ktlint_version"
+    ignoreFailures = true
+    outputToConsole = false
+    reporters {
+        reporter "html"
+    }
+}
