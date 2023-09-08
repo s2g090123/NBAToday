@@ -10,9 +10,50 @@ env:
   package_name: "com.jiachian.nbatoday"
 
 jobs:
+  analyze_ktlint:
+    name: Run ktlint
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Check ktlint
+        run: ./gradlew ktlintCheck
+
+      - name: Archive ktlint Reports
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: ktlint-report
+          path: |
+            app/build/reports/ktlint/*
+
+  analyze_detekt:
+    name: Run detekt
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Check detekt
+        run: ./gradlew detekt
+
+      - name: Archive detekt Reports
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: detekt-report
+          path: |
+            app/build/reports/detekt/detekt.html
+
   build:
     name: Build Environment
     runs-on: self-hosted
+    needs: [ analyze_ktlint, analyze_detekt ]
 
     steps:
       - name: Checkout code
