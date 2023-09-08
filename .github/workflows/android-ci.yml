@@ -28,7 +28,7 @@ jobs:
         with:
           name: ktlint-report
           path: |
-            app/build/outputs/ktlint/*
+            app/build/reports/ktlint/*
 
   analyze_detekt:
     name: Run detekt
@@ -48,7 +48,7 @@ jobs:
         with:
           name: detekt-report
           path: |
-            app/build/outputs/detekt/detekt.html
+            app/build/reports/detekt/detekt.html
 
   build:
     name: Build Environment
