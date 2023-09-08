@@ -207,20 +207,8 @@ private fun BetCard(
                     top.linkTo(parent.top, 8.dp)
                     linkTo(homeLogo.start, homeLogo.end)
                 },
-            text = if (isGameFinal) {
-                if (isHomeWin) {
-                    "+" + (betAndGame.bets.homePoints * 2).toString()
-                } else {
-                    "-" + (betAndGame.bets.homePoints).toString()
-                }
-            } else {
-                betAndGame.bets.homePoints.toString()
-            },
-            color = if (isGameFinal) {
-                if (isHomeWin) MaterialTheme.colors.primaryVariant else MaterialTheme.colors.secondaryVariant
-            } else {
-                MaterialTheme.colors.primary
-            },
+            text = betAndGame.getHomePointText(),
+            color = betAndGame.getHomePointTextColor(),
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold
         )
@@ -246,20 +234,8 @@ private fun BetCard(
                     top.linkTo(parent.top, 8.dp)
                     linkTo(awayLogo.start, awayLogo.end)
                 },
-            text = if (isGameFinal) {
-                if (!isHomeWin) {
-                    "+" + (betAndGame.bets.awayPoints * 2).toString()
-                } else {
-                    "-" + (betAndGame.bets.awayPoints).toString()
-                }
-            } else {
-                betAndGame.bets.awayPoints.toString()
-            },
-            color = if (isGameFinal) {
-                if (!isHomeWin) MaterialTheme.colors.primaryVariant else MaterialTheme.colors.secondaryVariant
-            } else {
-                MaterialTheme.colors.primary
-            },
+            text = betAndGame.getAwayPointText(),
+            color = betAndGame.getAwayPointTextColor(),
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold
         )
@@ -311,14 +287,7 @@ private fun BetCard(
                     linkTo(homeLogo.top, awayLogo.bottom)
                     linkTo(homeLogo.end, awayLogo.start)
                 },
-            text = when (betAndGame.game.gameStatus) {
-                GameStatusCode.COMING_SOON -> betAndGame.game.gameStatusText.replaceFirst(
-                    " ",
-                    "\n"
-                ) + "\n1:1"
-                GameStatusCode.PLAYING -> "1:1"
-                GameStatusCode.FINAL -> betAndGame.game.gameStatusText + "\n1:1"
-            }.trim(),
+            text = betAndGame.getGameStatusText(),
             textAlign = TextAlign.Center,
             color = MaterialTheme.colors.primary,
             fontSize = 16.sp,
@@ -714,4 +683,57 @@ private fun RewardPointDialog(
             }
         }
     )
+}
+
+private fun BetAndNbaGame.getHomePointText(): String {
+    val isGameFinal = game.gameStatus == GameStatusCode.FINAL
+    val isHomeWin = game.homeTeam.score > game.awayTeam.score
+    return if (isGameFinal) {
+        if (isHomeWin) "+${bets.homePoints * 2}" else "-${bets.homePoints}"
+    } else {
+        "${bets.homePoints}"
+    }
+}
+
+private fun BetAndNbaGame.getAwayPointText(): String {
+    val isGameFinal = game.gameStatus == GameStatusCode.FINAL
+    val isHomeWin = game.homeTeam.score > game.awayTeam.score
+    return if (isGameFinal) {
+        if (!isHomeWin) "+${bets.awayPoints * 2}" else "-${bets.awayPoints}"
+    } else {
+        "${bets.awayPoints}"
+    }
+}
+
+@Composable
+private fun BetAndNbaGame.getHomePointTextColor(): Color {
+    val isGameFinal = game.gameStatus == GameStatusCode.FINAL
+    val isHomeWin = game.homeTeam.score > game.awayTeam.score
+    return if (isGameFinal) {
+        if (isHomeWin) MaterialTheme.colors.primaryVariant else MaterialTheme.colors.secondaryVariant
+    } else {
+        MaterialTheme.colors.primary
+    }
+}
+
+@Composable
+private fun BetAndNbaGame.getAwayPointTextColor(): Color {
+    val isGameFinal = game.gameStatus == GameStatusCode.FINAL
+    val isHomeWin = game.homeTeam.score > game.awayTeam.score
+    return if (isGameFinal) {
+        if (!isHomeWin) MaterialTheme.colors.primaryVariant else MaterialTheme.colors.secondaryVariant
+    } else {
+        MaterialTheme.colors.primary
+    }
+}
+
+private fun BetAndNbaGame.getGameStatusText(): String {
+    return when (game.gameStatus) {
+        GameStatusCode.COMING_SOON -> game.gameStatusText.replaceFirst(
+            " ",
+            "\n"
+        ) + "\n1:1"
+        GameStatusCode.PLAYING -> "1:1"
+        GameStatusCode.FINAL -> game.gameStatusText + "\n1:1"
+    }.trim()
 }

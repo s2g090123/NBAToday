@@ -63,6 +63,7 @@ import com.jiachian.nbatoday.data.remote.game.GameStatusCode
 import com.jiachian.nbatoday.utils.NbaUtils
 import com.jiachian.nbatoday.utils.noRippleClickable
 import com.jiachian.nbatoday.utils.rippleClickable
+import java.util.Date
 
 @Composable
 fun GameCalendarScreen(
@@ -193,27 +194,9 @@ private fun CalendarContent(
     val isLoadingGames by viewModel.isLoadingGames.collectAsState()
 
     Column(modifier = modifier) {
-        Row(
+        DayAbbrTextRow(
             modifier = Modifier.fillMaxWidth()
-        ) {
-            repeat(7) {
-                Text(
-                    modifier = Modifier.weight(1f),
-                    text = when (it) {
-                        1 -> "MON"
-                        2 -> "TUE"
-                        3 -> "WED"
-                        4 -> "THU"
-                        5 -> "FRI"
-                        6 -> "SAT"
-                        else -> "SUN"
-                    },
-                    fontSize = 16.sp,
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-        }
+        )
         CompositionLocalProvider(
             LocalOverscrollConfiguration provides null
         ) {
@@ -226,69 +209,15 @@ private fun CalendarContent(
                 columns = GridCells.Fixed(7)
             ) {
                 itemsIndexed(calendarList) { index, dateData ->
-                    Box(
-                        modifier = Modifier
-                            .aspectRatio(1f)
-                            .border(
-                                BorderStroke(
-                                    2.dp,
-                                    if (dateData == selectDateData) {
-                                        MaterialTheme.colors.secondary
-                                    } else {
-                                        MaterialTheme.colors.secondaryVariant
-                                    }
-                                )
-                            )
-                            .rippleClickable {
-                                viewModel.selectDate(dateData.date)
-                            }
-                    ) {
-                        Text(
-                            modifier = Modifier
-                                .testTag("CalendarContent_Text_Date")
-                                .align(Alignment.TopEnd)
-                                .padding(4.dp),
-                            text = dateData.day.toString(),
-                            color = if (selectDateData?.day == dateData.day && dateData.isCurrentMonth) {
-                                MaterialTheme.colors.secondary
-                            } else {
-                                MaterialTheme.colors.secondaryVariant.copy(if (dateData.isCurrentMonth) 1f else 0.25f)
-                            },
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Medium
-                        )
-                        if (!isLoadingGames) {
-                            FlowRow(
-                                modifier = Modifier
-                                    .testTag("CalendarContent_FlowRow_Games")
-                                    .fillMaxWidth()
-                                    .wrapContentHeight()
-                                    .align(Alignment.BottomStart)
-                                    .padding(2.dp)
-                            ) {
-                                gameList.getOrNull(index)?.let { games ->
-                                    games.forEach {
-                                        AsyncImage(
-                                            modifier = Modifier
-                                                .testTag("CalendarContent_Image_Team")
-                                                .size(12.dp),
-                                            model = ImageRequest.Builder(LocalContext.current)
-                                                .data(NbaUtils.getTeamSmallLogoUrlById(it.game.homeTeam.teamId))
-                                                .decoderFactory(SvgDecoder.Factory())
-                                                .build(),
-                                            error = painterResource(NbaUtils.getTeamLogoResById(it.game.homeTeam.teamId)),
-                                            placeholder = painterResource(
-                                                NbaUtils.getTeamLogoResById(
-                                                    it.game.homeTeam.teamId
-                                                )
-                                            ),
-                                            contentDescription = null
-                                        )
-                                    }
-                                }
-                            }
+                    DateBox(
+                        dateData = dateData,
+                        games = gameList.getOrNull(index),
+                        isSelected = dateData == selectDateData,
+                        isLoadingGames = isLoadingGames,
+                        onClick = {
+                            viewModel.selectDate(it)
                         }
-                    }
+                    )
                 }
             }
         }
@@ -331,7 +260,7 @@ private fun CalendarGames(
                     .background(MaterialTheme.colors.secondary)
                     .rippleClickable {
                         if (game.game.gameStatus == GameStatusCode.COMING_SOON) {
-                            viewModel.openTeamStats(game.game.homeTeam.teamId)
+                            viewModel.openTeamStats(game.game.homeTeam)
                         } else {
                             viewModel.openGameBoxScore(game.game)
                         }
@@ -345,6 +274,104 @@ private fun CalendarGames(
                 onRegister = viewModel::register,
                 onConfirm = viewModel::bet
             )
+        }
+    }
+}
+
+@Composable
+private fun DayAbbrTextRow(
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+    ) {
+        repeat(7) {
+            Text(
+                modifier = Modifier.weight(1f),
+                text = when (it) {
+                    1 -> "MON"
+                    2 -> "TUE"
+                    3 -> "WED"
+                    4 -> "THU"
+                    5 -> "FRI"
+                    6 -> "SAT"
+                    else -> "SUN"
+                },
+                fontSize = 16.sp,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Medium
+            )
+        }
+    }
+}
+
+@Composable
+private fun DateBox(
+    dateData: CalendarData,
+    games: List<NbaGameAndBet>?,
+    isSelected: Boolean,
+    isLoadingGames: Boolean,
+    onClick: (Date) -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .aspectRatio(1f)
+            .border(
+                BorderStroke(
+                    2.dp,
+                    if (isSelected) {
+                        MaterialTheme.colors.secondary
+                    } else {
+                        MaterialTheme.colors.secondaryVariant
+                    }
+                )
+            )
+            .rippleClickable {
+                onClick(dateData.date)
+            }
+    ) {
+        Text(
+            modifier = Modifier
+                .testTag("CalendarContent_Text_Date")
+                .align(Alignment.TopEnd)
+                .padding(4.dp),
+            text = dateData.day.toString(),
+            color = if (isSelected && dateData.isCurrentMonth) {
+                MaterialTheme.colors.secondary
+            } else {
+                MaterialTheme.colors.secondaryVariant.copy(if (dateData.isCurrentMonth) 1f else 0.25f)
+            },
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Medium
+        )
+        if (!isLoadingGames) {
+            FlowRow(
+                modifier = Modifier
+                    .testTag("CalendarContent_FlowRow_Games")
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .align(Alignment.BottomStart)
+                    .padding(2.dp)
+            ) {
+                games?.forEach {
+                    AsyncImage(
+                        modifier = Modifier
+                            .testTag("CalendarContent_Image_Team")
+                            .size(12.dp),
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(NbaUtils.getTeamSmallLogoUrlById(it.game.homeTeam.teamId))
+                            .decoderFactory(SvgDecoder.Factory())
+                            .build(),
+                        error = painterResource(NbaUtils.getTeamLogoResById(it.game.homeTeam.teamId)),
+                        placeholder = painterResource(
+                            NbaUtils.getTeamLogoResById(
+                                it.game.homeTeam.teamId
+                            )
+                        ),
+                        contentDescription = null
+                    )
+                }
+            }
         }
     }
 }

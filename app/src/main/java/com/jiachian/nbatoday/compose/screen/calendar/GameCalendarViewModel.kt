@@ -8,6 +8,7 @@ import com.jiachian.nbatoday.compose.state.NbaState
 import com.jiachian.nbatoday.data.BaseRepository
 import com.jiachian.nbatoday.data.local.NbaGame
 import com.jiachian.nbatoday.data.local.NbaGameAndBet
+import com.jiachian.nbatoday.data.local.team.NBATeam
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.utils.NbaUtils
@@ -236,7 +237,7 @@ class GameCalendarViewModel(
         return year > firstYear || (year == firstYear && month > firstMonth)
     }
 
-    fun openTeamStats(teamId: Int) {
+    fun openTeamStats(team: NBATeam) {
         openScreen(
             NbaState.Team(
                 TeamViewModel(
