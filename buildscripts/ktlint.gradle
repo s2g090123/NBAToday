@@ -1,9 +1,15 @@
 apply plugin: "org.jlleitschuh.gradle.ktlint"
 
+// tasks:
+// ktlintCheck: checks all SourceSets and project Kotlin script files
+// ktlintFormat: tries to format according to the code style all SourceSets Kotlin files and project Kotlin script files
+
 ktlint {
     version = "$ktlint_version"
-    ignoreFailures = true
+    android = true
+    ignoreFailures = false
     outputToConsole = false
+    additionalEditorconfigFile = file("${rootProject.projectDir}/.editorconfig")
     reporters {
         reporter "html"
     }
