@@ -1,8 +1,8 @@
 package com.jiachian.nbatoday.event
 
+import java.util.concurrent.ConcurrentLinkedQueue
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import java.util.concurrent.ConcurrentLinkedQueue
 
 class EventManager<T> : EventBroadcaster<T> {
     private val queue = ConcurrentLinkedQueue<T>()

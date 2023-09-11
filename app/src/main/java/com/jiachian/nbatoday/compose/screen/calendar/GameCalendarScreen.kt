@@ -147,10 +147,10 @@ private fun CalendarTopBar(
                 transitionSpec = {
                     if (targetState.first > initialState.first) {
                         slideInHorizontally { width -> width } + fadeIn() with
-                                slideOutHorizontally { width -> -width } + fadeOut()
+                            slideOutHorizontally { width -> -width } + fadeOut()
                     } else {
                         slideInHorizontally { width -> -width } + fadeIn() with
-                                slideOutHorizontally { width -> width } + fadeOut()
+                            slideOutHorizontally { width -> width } + fadeOut()
                     }.using(
                         SizeTransform(clip = false)
                     )
@@ -232,7 +232,11 @@ private fun CalendarContent(
                             .border(
                                 BorderStroke(
                                     2.dp,
-                                    if (dateData == selectDateData) MaterialTheme.colors.secondary else MaterialTheme.colors.secondaryVariant
+                                    if (dateData == selectDateData) {
+                                        MaterialTheme.colors.secondary
+                                    } else {
+                                        MaterialTheme.colors.secondaryVariant
+                                    }
                                 )
                             )
                             .rippleClickable {

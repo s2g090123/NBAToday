@@ -131,7 +131,6 @@ class NbaRemoteDataSourceTest {
         override suspend fun updatePoints(updatePointBody: UpdatePointBody): Response<String> {
             return Response.success("success")
         }
-
     }
 
     @Before

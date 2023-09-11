@@ -4,7 +4,9 @@ import android.annotation.SuppressLint
 import com.jiachian.nbatoday.CDN_BASE_URL
 import com.jiachian.nbatoday.data.local.team.DefaultTeam
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.TimeZone
 
 object NbaUtils {
     fun getCalendar(): Calendar {

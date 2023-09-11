@@ -1,6 +1,5 @@
 package com.jiachian.nbatoday.data.local.score
 
-
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -145,8 +144,10 @@ data class GameBoxScore(
                 @ColumnInfo(name = "two_pointers_percentage")
                 val twoPointersPercentage: Double // 66.6
             ) {
-                val efficiency =
-                    points + reboundsTotal + assists + steals + blocks - ((fieldGoalsAttempted - fieldGoalsMade) + (freeThrowsAttempted - freeThrowsMade) + turnovers)
+                private val indicator = points + reboundsTotal + assists + steals + blocks
+                private val fieldGoalScore = fieldGoalsAttempted - fieldGoalsMade
+                private val freeThrowScore = freeThrowsAttempted - freeThrowsMade
+                val efficiency = indicator - (fieldGoalScore + freeThrowScore + turnovers)
             }
         }
 

@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 import com.jiachian.nbatoday.data.local.NbaGame
 import com.jiachian.nbatoday.data.remote.team.GameTeam
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.TimeZone
 
 data class Schedule(
     @SerializedName("leagueSchedule") val leagueSchedule: LeagueSchedule?

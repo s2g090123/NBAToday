@@ -1,9 +1,16 @@
 package com.jiachian.nbatoday.data
 
-import com.jiachian.nbatoday.*
+import com.jiachian.nbatoday.BASIC_TIME
+import com.jiachian.nbatoday.COMING_SOON_GAME_ID
+import com.jiachian.nbatoday.FINAL_GAME_ID
+import com.jiachian.nbatoday.GAME_CODE
+import com.jiachian.nbatoday.GAME_STATUS_FINAL
+import com.jiachian.nbatoday.GAME_STATUS_PREPARE
+import com.jiachian.nbatoday.NEXT_TIME
+import com.jiachian.nbatoday.PLAYING_GAME_ID
 import com.jiachian.nbatoday.data.local.NbaGame
 import com.jiachian.nbatoday.data.remote.game.GameStatusCode
-import java.util.*
+import java.util.Date
 
 object NbaGameFactory {
 
