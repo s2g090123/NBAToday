@@ -2,7 +2,6 @@ package com.jiachian.nbatoday.data.remote.leader
 
 import androidx.room.ColumnInfo
 
-
 data class GameLeaders(
     @ColumnInfo(name = "home_leaders")
     val homeLeaders: GameLeader?,

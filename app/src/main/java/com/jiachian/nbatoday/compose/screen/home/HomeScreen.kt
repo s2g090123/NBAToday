@@ -1192,7 +1192,7 @@ fun GameStatusCard2(
     val canBet by remember(gameAndBet, userData) {
         derivedStateOf {
             gameAndBet.game.gameStatus == GameStatusCode.COMING_SOON &&
-                    (userData == null || gameAndBet.bets.find { it.account == userData.account } == null)
+                (userData == null || gameAndBet.bets.find { it.account == userData.account } == null)
         }
     }
     var showBetsDialog by rememberSaveable { mutableStateOf(false) }
@@ -1991,8 +1991,10 @@ private fun BetDialog(
                                         Toast.LENGTH_SHORT
                                     )
                                     .show()
-                            } else if ((homePoints.toLongOrNull()
-                                    ?: 0) <= 0 && (awayPoints.toLongOrNull() ?: 0) <= 0
+                            } else if ((
+                                homePoints.toLongOrNull()
+                                    ?: 0
+                                ) <= 0 && (awayPoints.toLongOrNull() ?: 0) <= 0
                             ) {
                                 Toast
                                     .makeText(

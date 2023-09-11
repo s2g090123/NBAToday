@@ -6,7 +6,7 @@ import com.jiachian.nbatoday.data.remote.game.GameStatusCode
 import com.jiachian.nbatoday.data.remote.game.PeriodType
 import com.jiachian.nbatoday.utils.NbaUtils
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
 
 data class RemoteGameBoxScore(
     val game: Game?

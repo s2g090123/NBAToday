@@ -11,6 +11,8 @@ import com.jiachian.nbatoday.data.local.NbaGameAndBet
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.utils.NbaUtils
+import java.util.Calendar
+import java.util.Date
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -20,8 +22,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.Calendar
-import java.util.Date
 
 class GameCalendarViewModel(
     val date: Date,
@@ -66,20 +66,22 @@ class GameCalendarViewModel(
     val currentDateString = combine(
         currentYear, currentMonth
     ) { year, month ->
-        (year * 100 + month) to (when (month) {
-            1 -> "Jan"
-            2 -> "Feb"
-            3 -> "Mar"
-            4 -> "Apr"
-            5 -> "May"
-            6 -> "Jun"
-            7 -> "Jul"
-            8 -> "Aug"
-            9 -> "Sep"
-            10 -> "Oct"
-            11 -> "Nov"
-            else -> "Dec"
-        } + "  " + year)
+        (year * 100 + month) to (
+            when (month) {
+                1 -> "Jan"
+                2 -> "Feb"
+                3 -> "Mar"
+                4 -> "Apr"
+                5 -> "May"
+                6 -> "Jun"
+                7 -> "Jul"
+                8 -> "Aug"
+                9 -> "Sep"
+                10 -> "Oct"
+                11 -> "Nov"
+                else -> "Dec"
+            } + "  " + year
+            )
     }.stateIn(coroutineScope, SharingStarted.Lazily, 0 to "")
 
     val hasNextMonth = combine(

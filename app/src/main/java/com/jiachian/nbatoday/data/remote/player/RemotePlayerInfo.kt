@@ -6,7 +6,9 @@ import com.jiachian.nbatoday.data.local.player.PlayerCareer
 import com.jiachian.nbatoday.data.local.player.PlayerCareerInfoUpdate
 import com.jiachian.nbatoday.utils.NbaUtils
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.TimeZone
 
 data class RemotePlayerInfo(
     @SerializedName("resultSets") val resultSets: List<Result>?

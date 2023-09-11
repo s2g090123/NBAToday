@@ -9,6 +9,8 @@ import com.jiachian.nbatoday.data.local.BetAndNbaGame
 import com.jiachian.nbatoday.data.remote.game.GameStatusCode
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
+import java.util.Random
+import kotlin.math.abs
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,8 +19,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.*
-import kotlin.math.abs
 
 class BetViewModel(
     account: String,
@@ -85,11 +85,13 @@ class BetViewModel(
     }
 
     private fun settleBets(betAndGame: BetAndNbaGame) {
-        val winPoint = (if (betAndGame.game.homeTeam.score > betAndGame.game.awayTeam.score) {
-            betAndGame.bets.homePoints
-        } else {
-            betAndGame.bets.awayPoints
-        }) * 2
+        val winPoint = (
+            if (betAndGame.game.homeTeam.score > betAndGame.game.awayTeam.score) {
+                betAndGame.bets.homePoints
+            } else {
+                betAndGame.bets.awayPoints
+            }
+            ) * 2
         val losePoint = if (betAndGame.game.homeTeam.score > betAndGame.game.awayTeam.score) {
             betAndGame.bets.awayPoints
         } else {

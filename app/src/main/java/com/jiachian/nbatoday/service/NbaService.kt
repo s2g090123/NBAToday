@@ -13,7 +13,11 @@ import com.jiachian.nbatoday.data.remote.user.UpdatePasswordBody
 import com.jiachian.nbatoday.data.remote.user.UpdatePointBody
 import com.jiachian.nbatoday.data.remote.user.User
 import retrofit2.Response
-import retrofit2.http.*
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface NbaService {
 
