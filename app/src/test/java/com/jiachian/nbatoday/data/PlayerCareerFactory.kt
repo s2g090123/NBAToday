@@ -1,6 +1,24 @@
 package com.jiachian.nbatoday.data
 
-import com.jiachian.nbatoday.*
+import com.jiachian.nbatoday.AWAY_PLAYER_FULL_NAME
+import com.jiachian.nbatoday.AWAY_PLAYER_ID
+import com.jiachian.nbatoday.AWAY_PLAYER_LAST_NAME
+import com.jiachian.nbatoday.AWAY_TEAM_ABBR
+import com.jiachian.nbatoday.AWAY_TEAM_ID
+import com.jiachian.nbatoday.AWAY_TEAM_NAME
+import com.jiachian.nbatoday.BASIC_NUMBER
+import com.jiachian.nbatoday.BASIC_PERCENTAGE
+import com.jiachian.nbatoday.BASIC_POSITION
+import com.jiachian.nbatoday.GAME_DATE
+import com.jiachian.nbatoday.GAME_SEASON
+import com.jiachian.nbatoday.GAME_SEASON_NEXT
+import com.jiachian.nbatoday.HOME_PLAYER_FULL_NAME
+import com.jiachian.nbatoday.HOME_PLAYER_ID
+import com.jiachian.nbatoday.HOME_PLAYER_LAST_NAME
+import com.jiachian.nbatoday.HOME_TEAM_ABBR
+import com.jiachian.nbatoday.HOME_TEAM_ID
+import com.jiachian.nbatoday.HOME_TEAM_NAME
+import com.jiachian.nbatoday.TEAM_CITY
 import com.jiachian.nbatoday.data.local.player.PlayerCareer
 
 object PlayerCareerFactory {

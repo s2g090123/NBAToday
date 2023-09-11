@@ -1,6 +1,15 @@
 package com.jiachian.nbatoday.data
 
-import com.jiachian.nbatoday.*
+import com.jiachian.nbatoday.AWAY_PLAYER_FULL_NAME
+import com.jiachian.nbatoday.AWAY_PLAYER_ID
+import com.jiachian.nbatoday.AWAY_PLAYER_LAST_NAME
+import com.jiachian.nbatoday.AWAY_TEAM_ID
+import com.jiachian.nbatoday.BASIC_NUMBER
+import com.jiachian.nbatoday.BASIC_PERCENTAGE
+import com.jiachian.nbatoday.HOME_PLAYER_FULL_NAME
+import com.jiachian.nbatoday.HOME_PLAYER_ID
+import com.jiachian.nbatoday.HOME_PLAYER_LAST_NAME
+import com.jiachian.nbatoday.HOME_TEAM_ID
 import com.jiachian.nbatoday.data.local.player.PlayerStats
 
 object PlayerStatsFactory {

@@ -13,7 +13,6 @@ fun SemanticsNodeInteraction.onNodeWithTag(tag: String, index: Int): SemanticsNo
         assert(hasScrollAction())
         performScrollToTag(tag)
     } catch (t: Throwable) {
-
     }
     return onChildren()
         .filter(hasTestTag(tag))[index]

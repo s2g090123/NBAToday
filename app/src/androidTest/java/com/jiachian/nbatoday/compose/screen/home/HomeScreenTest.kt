@@ -30,6 +30,8 @@ import com.jiachian.nbatoday.utils.onAllNodesWithMergedTag
 import com.jiachian.nbatoday.utils.onDialog
 import com.jiachian.nbatoday.utils.onNodeWithMergedTag
 import com.jiachian.nbatoday.utils.onNodeWithTag
+import java.util.Date
+import kotlin.math.pow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.equalTo
@@ -38,8 +40,6 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import java.util.Date
-import kotlin.math.pow
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class HomeScreenTest : BaseAndroidTest() {

@@ -1,6 +1,15 @@
 package com.jiachian.nbatoday.data
 
-import com.jiachian.nbatoday.*
+import com.jiachian.nbatoday.AWAY_TEAM_ABBR
+import com.jiachian.nbatoday.AWAY_TEAM_FULL_NAME
+import com.jiachian.nbatoday.AWAY_TEAM_ID
+import com.jiachian.nbatoday.AWAY_TEAM_NAME
+import com.jiachian.nbatoday.BASIC_NUMBER
+import com.jiachian.nbatoday.BASIC_PERCENTAGE
+import com.jiachian.nbatoday.HOME_TEAM_ABBR
+import com.jiachian.nbatoday.HOME_TEAM_FULL_NAME
+import com.jiachian.nbatoday.HOME_TEAM_ID
+import com.jiachian.nbatoday.HOME_TEAM_NAME
 import com.jiachian.nbatoday.data.local.team.DefaultTeam
 import com.jiachian.nbatoday.data.local.team.TeamStats
 

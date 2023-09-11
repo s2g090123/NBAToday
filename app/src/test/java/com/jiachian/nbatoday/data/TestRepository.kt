@@ -1,6 +1,16 @@
 package com.jiachian.nbatoday.data
 
-import com.jiachian.nbatoday.*
+import com.jiachian.nbatoday.AWAY_PLAYER_ID
+import com.jiachian.nbatoday.AWAY_TEAM_ID
+import com.jiachian.nbatoday.FINAL_GAME_ID
+import com.jiachian.nbatoday.HOME_PLAYER_ID
+import com.jiachian.nbatoday.HOME_TEAM_ID
+import com.jiachian.nbatoday.PLAYING_GAME_ID
+import com.jiachian.nbatoday.USER_ACCOUNT
+import com.jiachian.nbatoday.USER_NAME
+import com.jiachian.nbatoday.USER_PASSWORD
+import com.jiachian.nbatoday.USER_POINTS
+import com.jiachian.nbatoday.USER_TOKEN
 import com.jiachian.nbatoday.data.local.BetAndNbaGame
 import com.jiachian.nbatoday.data.local.NbaGame
 import com.jiachian.nbatoday.data.local.NbaGameAndBet

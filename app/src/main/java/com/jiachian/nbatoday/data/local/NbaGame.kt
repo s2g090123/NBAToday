@@ -7,7 +7,7 @@ import com.jiachian.nbatoday.data.remote.game.GameScoreUpdateData
 import com.jiachian.nbatoday.data.remote.game.GameStatusCode
 import com.jiachian.nbatoday.data.remote.leader.GameLeaders
 import com.jiachian.nbatoday.data.remote.team.GameTeam
-import java.util.*
+import java.util.Date
 
 @Entity(tableName = "nba_game")
 data class NbaGame(

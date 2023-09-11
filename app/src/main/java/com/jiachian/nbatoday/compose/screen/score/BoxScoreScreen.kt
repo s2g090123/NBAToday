@@ -875,7 +875,8 @@ private fun TeamStatistics(
                         awayTeam?.statistics?.fieldGoalsMade ?: 0,
                         awayTeam?.statistics?.fieldGoalsAttempted ?: 0,
                         awayTeam?.statistics?.fieldGoalsPercentage ?: 0
-                    ), fontSize = 16.sp,
+                    ),
+                    fontSize = 16.sp,
                     fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colors.secondary
                 )
