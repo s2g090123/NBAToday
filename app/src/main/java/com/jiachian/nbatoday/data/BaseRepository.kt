@@ -7,7 +7,7 @@ import com.jiachian.nbatoday.data.local.TeamAndPlayers
 import com.jiachian.nbatoday.data.local.bet.Bets
 import com.jiachian.nbatoday.data.local.player.PlayerCareer
 import com.jiachian.nbatoday.data.local.score.GameBoxScore
-import com.jiachian.nbatoday.data.local.team.DefaultTeam
+import com.jiachian.nbatoday.data.local.team.NBATeam
 import com.jiachian.nbatoday.data.local.team.TeamStats
 import com.jiachian.nbatoday.data.remote.user.User
 import kotlinx.coroutines.flow.Flow
@@ -36,7 +36,7 @@ interface BaseRepository {
 
     fun getTeamAndPlayersStats(teamId: Int): Flow<TeamAndPlayers?>
 
-    fun getTeamRank(teamId: Int, conference: DefaultTeam.Conference): Flow<Int>
+    fun getTeamRank(teamId: Int, conference: NBATeam.Conference): Flow<Int>
     fun getTeamPointsRank(teamId: Int): Flow<Int>
     fun getTeamReboundsRank(teamId: Int): Flow<Int>
     fun getTeamAssistsRank(teamId: Int): Flow<Int>
