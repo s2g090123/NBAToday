@@ -801,31 +801,7 @@ private fun TeamStanding(
                                             }
                                         )
                                         .padding(8.dp),
-                                    text = when (label.text) {
-                                        "GP" -> stats.gamePlayed.toString()
-                                        "W" -> stats.win.toString()
-                                        "L" -> stats.lose.toString()
-                                        "WIN%" -> stats.winPercentage.decimalFormat()
-                                        "PTS" -> (stats.points.toDouble() / stats.gamePlayed).decimalFormat()
-                                        "FGM" -> (stats.fieldGoalsMade.toDouble() / stats.gamePlayed).decimalFormat()
-                                        "FGA" -> (stats.fieldGoalsAttempted.toDouble() / stats.gamePlayed).decimalFormat()
-                                        "FG%" -> stats.fieldGoalsPercentage.decimalFormat()
-                                        "3PM" -> (stats.threePointersMade.toDouble() / stats.gamePlayed).decimalFormat()
-                                        "3PA" -> (stats.threePointersAttempted.toDouble() / stats.gamePlayed).decimalFormat()
-                                        "3P%" -> stats.threePointersPercentage.decimalFormat()
-                                        "FTM" -> (stats.freeThrowsMade.toDouble() / stats.gamePlayed).decimalFormat()
-                                        "FTA" -> (stats.freeThrowsAttempted.toDouble() / stats.gamePlayed).decimalFormat()
-                                        "FT%" -> stats.freeThrowsPercentage.decimalFormat()
-                                        "OREB" -> (stats.reboundsOffensive.toDouble() / stats.gamePlayed).decimalFormat()
-                                        "DREB" -> (stats.reboundsDefensive.toDouble() / stats.gamePlayed).decimalFormat()
-                                        "REB" -> (stats.reboundsTotal.toDouble() / stats.gamePlayed).decimalFormat()
-                                        "AST" -> (stats.assists.toDouble() / stats.gamePlayed).decimalFormat()
-                                        "TOV" -> (stats.turnovers.toDouble() / stats.gamePlayed).decimalFormat()
-                                        "STL" -> (stats.steals.toDouble() / stats.gamePlayed).decimalFormat()
-                                        "BLK" -> (stats.blocks.toDouble() / stats.gamePlayed).decimalFormat()
-                                        "PF" -> (stats.foulsPersonal.toDouble() / stats.gamePlayed).decimalFormat()
-                                        else -> ""
-                                    },
+                                    text = viewModel.getEvaluationTextByLabel(label, stats),
                                     textAlign = if (label.sort == sort) TextAlign.Center else label.textAlign,
                                     fontSize = 16.sp,
                                     color = MaterialTheme.colors.secondary

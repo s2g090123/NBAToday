@@ -87,6 +87,30 @@ class HomeViewModel(
     val isRefreshingSchedule = isRefreshingScheduleImp.asStateFlow()
 
     // Standing
+    private val labelToEvaluationAccessor = mapOf(
+        "GP" to { stats: TeamStats -> stats.gamePlayed.toString() },
+        "W" to { stats: TeamStats -> stats.win.toString() },
+        "L" to { stats: TeamStats -> stats.lose.toString() },
+        "WIN%" to { stats: TeamStats -> stats.winPercentage.toString() },
+        "PTS" to { stats: TeamStats -> (stats.points.toDouble() / stats.gamePlayed).toString() },
+        "FGM" to { stats: TeamStats -> (stats.fieldGoalsMade.toDouble() / stats.gamePlayed).toString() },
+        "FGA" to { stats: TeamStats -> (stats.fieldGoalsAttempted.toDouble() / stats.gamePlayed).toString() },
+        "FG%" to { stats: TeamStats -> stats.fieldGoalsPercentage.toString() },
+        "3PM" to { stats: TeamStats -> (stats.threePointersMade.toDouble() / stats.gamePlayed).toString() },
+        "3PA" to { stats: TeamStats -> (stats.threePointersAttempted.toDouble() / stats.gamePlayed).toString() },
+        "3P%" to { stats: TeamStats -> stats.threePointersPercentage.toString() },
+        "FTM" to { stats: TeamStats -> (stats.freeThrowsMade.toDouble() / stats.gamePlayed).toString() },
+        "FTA" to { stats: TeamStats -> (stats.freeThrowsAttempted.toDouble() / stats.gamePlayed).toString() },
+        "FT%" to { stats: TeamStats -> stats.freeThrowsPercentage.toString() },
+        "OREB" to { stats: TeamStats -> (stats.reboundsOffensive.toDouble() / stats.gamePlayed).toString() },
+        "DREB" to { stats: TeamStats -> (stats.reboundsDefensive.toDouble() / stats.gamePlayed).toString() },
+        "REB" to { stats: TeamStats -> (stats.reboundsTotal.toDouble() / stats.gamePlayed).toString() },
+        "AST" to { stats: TeamStats -> (stats.assists.toDouble() / stats.gamePlayed).toString() },
+        "TOV" to { stats: TeamStats -> (stats.turnovers.toDouble() / stats.gamePlayed).toString() },
+        "STL" to { stats: TeamStats -> (stats.steals.toDouble() / stats.gamePlayed).toString() },
+        "BLK" to { stats: TeamStats -> (stats.blocks.toDouble() / stats.gamePlayed).toString() },
+        "PF" to { stats: TeamStats -> (stats.foulsPersonal.toDouble() / stats.gamePlayed).toString() }
+    )
     private val standingSortImp = MutableStateFlow(StandingSort.WINP)
     val standingSort = standingSortImp.asStateFlow()
     val teamStats = combine(
@@ -459,5 +483,11 @@ class HomeViewModel(
                 )
             )
         )
+    }
+
+    fun getEvaluationTextByLabel(label: StandingLabel, stats: TeamStats): String {
+        val labelText = label.text
+        val accessor = labelToEvaluationAccessor[labelText] ?: return ""
+        return accessor(stats)
     }
 }
