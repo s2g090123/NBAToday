@@ -30,6 +30,32 @@ class PlayerInfoViewModel(
     val playerCareer = repository.getPlayerCareer(playerId)
         .stateIn(coroutineScope, SharingStarted.Lazily, null)
 
+    private val labelToEvaluationAccessor = mapOf(
+        "GP" to { stats: Stats -> stats.gamePlayed.toString() },
+        "W" to { stats: Stats -> stats.win.toString() },
+        "L" to { stats: Stats -> stats.lose.toString() },
+        "WIN%" to { stats: Stats -> stats.winPercentage.toString() },
+        "PTS" to { stats: Stats -> (stats.points.toDouble() / stats.gamePlayed).toString() },
+        "FGM" to { stats: Stats -> (stats.fieldGoalsMade.toDouble() / stats.gamePlayed).toString() },
+        "FGA" to { stats: Stats -> (stats.fieldGoalsAttempted.toDouble() / stats.gamePlayed).toString() },
+        "FG%" to { stats: Stats -> stats.fieldGoalsPercentage.toString() },
+        "3PM" to { stats: Stats -> (stats.threePointersMade.toDouble() / stats.gamePlayed).toString() },
+        "3PA" to { stats: Stats -> (stats.threePointersAttempted.toDouble() / stats.gamePlayed).toString() },
+        "3P%" to { stats: Stats -> stats.threePointersPercentage.toString() },
+        "FTM" to { stats: Stats -> (stats.freeThrowsMade.toDouble() / stats.gamePlayed).toString() },
+        "FTA" to { stats: Stats -> (stats.freeThrowsAttempted.toDouble() / stats.gamePlayed).toString() },
+        "FT%" to { stats: Stats -> stats.freeThrowsPercentage.toString() },
+        "OREB" to { stats: Stats -> (stats.reboundsOffensive.toDouble() / stats.gamePlayed).toString() },
+        "DREB" to { stats: Stats -> (stats.reboundsDefensive.toDouble() / stats.gamePlayed).toString() },
+        "REB" to { stats: Stats -> (stats.reboundsTotal.toDouble() / stats.gamePlayed).toString() },
+        "AST" to { stats: Stats -> (stats.assists.toDouble() / stats.gamePlayed).toString() },
+        "TOV" to { stats: Stats -> (stats.turnovers.toDouble() / stats.gamePlayed).toString() },
+        "STL" to { stats: Stats -> (stats.steals.toDouble() / stats.gamePlayed).toString() },
+        "BLK" to { stats: Stats -> (stats.blocks.toDouble() / stats.gamePlayed).toString() },
+        "PF" to { stats: Stats -> (stats.foulsPersonal.toDouble() / stats.gamePlayed).toString() },
+        "+/-" to { stats: Stats -> stats.plusMinus.toString() }
+    )
+
     val statsLabels = derivedStateOf {
         listOf(
             CareerStatsLabel(40.dp, "GP", TextAlign.End, CareerStatsSort.GP),
@@ -248,5 +274,11 @@ class PlayerInfoViewModel(
 
     fun updateStatsSort(sort: CareerStatsSort) {
         statsSortImp.value = sort
+    }
+
+    fun getEvaluationTextByLabel(label: CareerStatsLabel, stats: Stats): String {
+        val labelText = label.text
+        val accessor = labelToEvaluationAccessor[labelText] ?: return ""
+        return accessor(stats)
     }
 }
