@@ -121,7 +121,6 @@ import com.jiachian.nbatoday.utils.noRippleClickable
 import com.jiachian.nbatoday.utils.px2Dp
 import com.jiachian.nbatoday.utils.rippleClickable
 import kotlin.math.max
-import kotlin.math.pow
 
 @Composable
 fun HomeScreen(
@@ -1310,7 +1309,7 @@ fun GameStatusCard2(
         }
     }
     if (showBetsDialog) {
-        BetDialog(
+        RequestBetScreen(
             userData = userData,
             gameAndBet = gameAndBet,
             onLogin = onLogin,
@@ -1701,7 +1700,7 @@ private fun AccountInfo(
 }
 
 @Composable
-private fun BetDialog(
+private fun RequestBetScreen(
     userData: User?,
     gameAndBet: NbaGameAndBet,
     onLogin: (account: String, password: String) -> Unit,
@@ -1718,284 +1717,298 @@ private fun BetDialog(
     } else if (gameAndBet.bets.find { it.account == userData.account } != null) {
         onDismiss()
     } else {
-        val context = LocalContext.current
-        var homePoints by rememberSaveable { mutableStateOf("") }
-        var awayPoints by rememberSaveable { mutableStateOf("") }
-        var showWarning by rememberSaveable { mutableStateOf(false) }
-        val homeTeam = remember(gameAndBet) { gameAndBet.game.homeTeam }
-        val awayTeam = remember(gameAndBet) { gameAndBet.game.awayTeam }
-        val remainPoints by remember(userData) {
-            derivedStateOf {
-                val points = userData.points ?: 0
-                points - (homePoints.toLongOrNull() ?: 0) - (awayPoints.toLongOrNull() ?: 0)
-            }
+        BetDialog(
+            userPoints = userData.points ?: 0,
+            gameAndBet = gameAndBet,
+            onConfirm = onConfirm,
+            onDismiss = onDismiss
+        )
+    }
+}
+
+@Composable
+private fun BetDialog(
+    userPoints: Long,
+    gameAndBet: NbaGameAndBet,
+    onConfirm: (gameId: String, homePoints: Long, awayPoints: Long) -> Unit,
+    onDismiss: () -> Unit
+) {
+    val context = LocalContext.current
+    var homePoints by rememberSaveable { mutableStateOf("") }
+    var awayPoints by rememberSaveable { mutableStateOf("") }
+    var showWarning by rememberSaveable { mutableStateOf(false) }
+    val homeTeam = remember(gameAndBet) { gameAndBet.game.homeTeam }
+    val awayTeam = remember(gameAndBet) { gameAndBet.game.awayTeam }
+    val remainPoints by remember {
+        derivedStateOf {
+            userPoints - (homePoints.toLongOrNull() ?: 0) - (awayPoints.toLongOrNull() ?: 0)
         }
+    }
 
-        Dialog(
-            onDismissRequest = onDismiss
+    Dialog(
+        onDismissRequest = onDismiss
+    ) {
+        ConstraintLayout(
+            modifier = Modifier
+                .testTag("BetDialog_Dialog")
+                .clip(RoundedCornerShape(8.dp))
+                .background(MaterialTheme.colors.secondary)
         ) {
-            ConstraintLayout(
-                modifier = Modifier
-                    .testTag("BetDialog_Dialog")
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(MaterialTheme.colors.secondary)
-            ) {
-                val (
-                    vsText, remainPointText, oddText,
-                    homeLogo, awayLogo, homeRecordText, awayRecordText,
-                    homeTextFiled, awayTextField, confirmBtn
-                ) = createRefs()
+            val (
+                vsText, remainPointText, oddText,
+                homeLogo, awayLogo, homeRecordText, awayRecordText,
+                homeTextFiled, awayTextField, confirmBtn
+            ) = createRefs()
 
-                Text(
-                    modifier = Modifier
-                        .testTag("BetDialog_Text_HomeRecord")
-                        .constrainAs(homeRecordText) {
-                            top.linkTo(parent.top, 16.dp)
-                            linkTo(homeLogo.start, homeLogo.end)
-                        },
-                    text = stringResource(
-                        R.string.bet_win_lose_record,
-                        homeTeam.wins,
-                        homeTeam.losses
-                    ),
-                    color = MaterialTheme.colors.primary,
-                    fontSize = 20.sp
-                )
-                Text(
-                    modifier = Modifier
-                        .testTag("BetDialog_Text_AwayRecord")
-                        .constrainAs(awayRecordText) {
-                            top.linkTo(parent.top, 16.dp)
-                            linkTo(awayLogo.start, awayLogo.end)
-                        },
-                    text = stringResource(
-                        R.string.bet_win_lose_record,
-                        awayTeam.wins,
-                        awayTeam.losses
-                    ),
-                    color = MaterialTheme.colors.primary,
-                    fontSize = 20.sp
-                )
-                AsyncImage(
-                    modifier = Modifier
-                        .constrainAs(homeLogo) {
-                            top.linkTo(homeRecordText.bottom, 8.dp)
-                            start.linkTo(parent.start, 16.dp)
-                        }
-                        .size(100.dp),
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(NbaUtils.getTeamLogoUrlById(homeTeam.team.teamId))
-                        .decoderFactory(SvgDecoder.Factory())
-                        .build(),
-                    error = painterResource(homeTeam.team.logoRes),
-                    placeholder = painterResource(homeTeam.team.logoRes),
-                    contentDescription = null
-                )
-                AsyncImage(
-                    modifier = Modifier
-                        .constrainAs(awayLogo) {
-                            top.linkTo(awayRecordText.bottom, 8.dp)
-                            end.linkTo(parent.end, 16.dp)
-                        }
-                        .size(100.dp),
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(NbaUtils.getTeamLogoUrlById(awayTeam.team.teamId))
-                        .decoderFactory(SvgDecoder.Factory())
-                        .build(),
-                    error = painterResource(awayTeam.team.logoRes),
-                    placeholder = painterResource(awayTeam.team.logoRes),
-                    contentDescription = null
-                )
-                Text(
-                    modifier = Modifier
-                        .constrainAs(vsText) {
-                            linkTo(homeLogo.top, awayLogo.bottom)
-                            linkTo(homeLogo.end, awayLogo.start, 16.dp, 16.dp)
-                        },
-                    text = stringResource(R.string.bet_vs),
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colors.primary,
-                    fontSize = 16.sp,
-                    fontStyle = FontStyle.Italic
-                )
-                Text(
-                    modifier = Modifier
-                        .constrainAs(oddText) {
-                            top.linkTo(vsText.bottom)
-                            linkTo(homeLogo.end, awayLogo.start, 16.dp, 16.dp)
-                        },
-                    text = "1:1",
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colors.primary,
-                    fontSize = 16.sp
-                )
-                CustomOutlinedTextField(
-                    modifier = Modifier
-                        .testTag("BetDialog_EditText_HomeBet")
-                        .constrainAs(homeTextFiled) {
-                            linkTo(homeLogo.start, homeLogo.end)
-                            top.linkTo(homeLogo.bottom, 8.dp)
-                            width = Dimension.fillToConstraints
-                        }
-                        .height(32.dp),
-                    value = homePoints,
-                    onValueChange = {
-                        homePoints = if (it.isEmpty()) {
-                            it
-                        } else {
-                            it.toLongOrNull()?.coerceIn(0, Long.MAX_VALUE)?.toString() ?: homePoints
-                        }
+            Text(
+                modifier = Modifier
+                    .testTag("BetDialog_Text_HomeRecord")
+                    .constrainAs(homeRecordText) {
+                        top.linkTo(parent.top, 16.dp)
+                        linkTo(homeLogo.start, homeLogo.end)
                     },
-                    textStyle = TextStyle(
-                        color = MaterialTheme.colors.primary,
-                        textAlign = TextAlign.Center
-                    ),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    singleLine = true,
-                    maxLines = 1
-                )
-                CustomOutlinedTextField(
-                    modifier = Modifier
-                        .testTag("BetDialog_EditText_AwayBet")
-                        .constrainAs(awayTextField) {
-                            linkTo(awayLogo.start, awayLogo.end)
-                            top.linkTo(awayLogo.bottom, 8.dp)
-                            width = Dimension.fillToConstraints
-                        }
-                        .height(32.dp),
-                    value = awayPoints,
-                    onValueChange = {
-                        awayPoints = if (it.isEmpty()) {
-                            it
-                        } else {
-                            it.toLongOrNull()?.coerceIn(0, Long.MAX_VALUE)?.toString() ?: awayPoints
-                        }
+                text = stringResource(
+                    R.string.bet_win_lose_record,
+                    homeTeam.wins,
+                    homeTeam.losses
+                ),
+                color = MaterialTheme.colors.primary,
+                fontSize = 20.sp
+            )
+            Text(
+                modifier = Modifier
+                    .testTag("BetDialog_Text_AwayRecord")
+                    .constrainAs(awayRecordText) {
+                        top.linkTo(parent.top, 16.dp)
+                        linkTo(awayLogo.start, awayLogo.end)
                     },
-                    textStyle = TextStyle(
-                        color = MaterialTheme.colors.primary,
-                        textAlign = TextAlign.Center
-                    ),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    singleLine = true,
-                    maxLines = 1
-                )
-                Text(
-                    modifier = Modifier
-                        .testTag("BetDialog_Text_Remainder")
-                        .constrainAs(remainPointText) {
-                            top.linkTo(homeTextFiled.bottom, 8.dp)
-                            linkTo(parent.start, parent.end, 16.dp, 16.dp)
-                        },
-                    text = stringResource(R.string.bet_remain, remainPoints),
+                text = stringResource(
+                    R.string.bet_win_lose_record,
+                    awayTeam.wins,
+                    awayTeam.losses
+                ),
+                color = MaterialTheme.colors.primary,
+                fontSize = 20.sp
+            )
+            AsyncImage(
+                modifier = Modifier
+                    .constrainAs(homeLogo) {
+                        top.linkTo(homeRecordText.bottom, 8.dp)
+                        start.linkTo(parent.start, 16.dp)
+                    }
+                    .size(100.dp),
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(NbaUtils.getTeamLogoUrlById(homeTeam.team.teamId))
+                    .decoderFactory(SvgDecoder.Factory())
+                    .build(),
+                error = painterResource(homeTeam.team.logoRes),
+                placeholder = painterResource(homeTeam.team.logoRes),
+                contentDescription = null
+            )
+            AsyncImage(
+                modifier = Modifier
+                    .constrainAs(awayLogo) {
+                        top.linkTo(awayRecordText.bottom, 8.dp)
+                        end.linkTo(parent.end, 16.dp)
+                    }
+                    .size(100.dp),
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(NbaUtils.getTeamLogoUrlById(awayTeam.team.teamId))
+                    .decoderFactory(SvgDecoder.Factory())
+                    .build(),
+                error = painterResource(awayTeam.team.logoRes),
+                placeholder = painterResource(awayTeam.team.logoRes),
+                contentDescription = null
+            )
+            Text(
+                modifier = Modifier
+                    .constrainAs(vsText) {
+                        linkTo(homeLogo.top, awayLogo.bottom)
+                        linkTo(homeLogo.end, awayLogo.start, 16.dp, 16.dp)
+                    },
+                text = stringResource(R.string.bet_vs),
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colors.primary,
+                fontSize = 16.sp,
+                fontStyle = FontStyle.Italic
+            )
+            Text(
+                modifier = Modifier
+                    .constrainAs(oddText) {
+                        top.linkTo(vsText.bottom)
+                        linkTo(homeLogo.end, awayLogo.start, 16.dp, 16.dp)
+                    },
+                text = "1:1",
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colors.primary,
+                fontSize = 16.sp
+            )
+            CustomOutlinedTextField(
+                modifier = Modifier
+                    .testTag("BetDialog_EditText_HomeBet")
+                    .constrainAs(homeTextFiled) {
+                        linkTo(homeLogo.start, homeLogo.end)
+                        top.linkTo(homeLogo.bottom, 8.dp)
+                        width = Dimension.fillToConstraints
+                    }
+                    .height(32.dp),
+                value = homePoints,
+                onValueChange = {
+                    homePoints = it.toLongOrNull()?.coerceIn(0, Long.MAX_VALUE)?.toString() ?: ""
+                },
+                textStyle = TextStyle(
                     color = MaterialTheme.colors.primary,
-                    fontSize = 12.sp,
+                    textAlign = TextAlign.Center
+                ),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                singleLine = true,
+                maxLines = 1
+            )
+            CustomOutlinedTextField(
+                modifier = Modifier
+                    .testTag("BetDialog_EditText_AwayBet")
+                    .constrainAs(awayTextField) {
+                        linkTo(awayLogo.start, awayLogo.end)
+                        top.linkTo(awayLogo.bottom, 8.dp)
+                        width = Dimension.fillToConstraints
+                    }
+                    .height(32.dp),
+                value = awayPoints,
+                onValueChange = {
+                    awayPoints = it.toLongOrNull()?.coerceIn(0, Long.MAX_VALUE)?.toString() ?: ""
+                },
+                textStyle = TextStyle(
+                    color = MaterialTheme.colors.primary,
+                    textAlign = TextAlign.Center
+                ),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                singleLine = true,
+                maxLines = 1
+            )
+            Text(
+                modifier = Modifier
+                    .testTag("BetDialog_Text_Remainder")
+                    .constrainAs(remainPointText) {
+                        top.linkTo(homeTextFiled.bottom, 8.dp)
+                        linkTo(parent.start, parent.end, 16.dp, 16.dp)
+                    },
+                text = stringResource(R.string.bet_remain, remainPoints),
+                color = MaterialTheme.colors.primary,
+                fontSize = 12.sp,
+            )
+            Text(
+                modifier = Modifier
+                    .testTag("BetDialog_Btn_Confirm")
+                    .constrainAs(confirmBtn) {
+                        top.linkTo(remainPointText.bottom, 8.dp)
+                        end.linkTo(parent.end, 8.dp)
+                    }
+                    .padding(bottom = 8.dp)
+                    .wrapContentSize()
+                    .rippleClickable {
+                        if (remainPoints < 0) {
+                            Toast
+                                .makeText(
+                                    context,
+                                    context.getString(R.string.bet_not_enough),
+                                    Toast.LENGTH_SHORT
+                                )
+                                .show()
+                        } else if ((homePoints.toLongOrNull() ?: 0) <= 0 && (awayPoints.toLongOrNull() ?: 0) <= 0) {
+                            Toast
+                                .makeText(
+                                    context,
+                                    context.getString(R.string.bet_point_require),
+                                    Toast.LENGTH_SHORT
+                                )
+                                .show()
+                        } else {
+                            showWarning = true
+                        }
+                    }
+                    .padding(10.dp),
+                text = stringResource(R.string.bet_confirm),
+                color = MaterialTheme.colors.primary,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Medium
+            )
+        }
+    }
+    if (showWarning) {
+        BetWarningDialog(
+            onConfirm = {
+                onConfirm(
+                    gameAndBet.game.gameId,
+                    homePoints.toLongOrNull() ?: 0,
+                    awayPoints.toLongOrNull() ?: 0
                 )
+            },
+            onDismiss = { showWarning = false }
+        )
+    }
+}
+
+@Composable
+private fun BetWarningDialog(
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        modifier = Modifier.testTag("BetDialog_Alert_Warning"),
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = stringResource(R.string.bet_warning_title),
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colors.primary
+            )
+        },
+        text = {
+            Text(
+                text = stringResource(R.string.bet_warning_text),
+                fontSize = 16.sp,
+                color = MaterialTheme.colors.primary
+            )
+        },
+        buttons = {
+            Column(
+                modifier = Modifier
+                    .padding(horizontal = 8.dp)
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.End
+            ) {
                 Text(
                     modifier = Modifier
-                        .testTag("BetDialog_Btn_Confirm")
-                        .constrainAs(confirmBtn) {
-                            top.linkTo(remainPointText.bottom, 8.dp)
-                            end.linkTo(parent.end, 8.dp)
-                        }
+                        .testTag("BetDialog_Alert_Confirm")
                         .padding(bottom = 8.dp)
                         .wrapContentSize()
                         .rippleClickable {
-                            if (remainPoints < 0) {
-                                Toast
-                                    .makeText(
-                                        context,
-                                        context.getString(R.string.bet_not_enough),
-                                        Toast.LENGTH_SHORT
-                                    )
-                                    .show()
-                            } else if ((homePoints.toLongOrNull() ?: 0) <= 0 && (awayPoints.toLongOrNull() ?: 0) <= 0) {
-                                Toast
-                                    .makeText(
-                                        context,
-                                        context.getString(R.string.bet_point_require),
-                                        Toast.LENGTH_SHORT
-                                    )
-                                    .show()
-                            } else {
-                                showWarning = true
-                            }
+                            onConfirm()
+                            onDismiss()
                         }
                         .padding(10.dp),
-                    text = stringResource(R.string.bet_confirm),
+                    text = stringResource(R.string.bet_warning_confirm),
+                    color = MaterialTheme.colors.primary,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium
+                )
+                Text(
+                    modifier = Modifier
+                        .padding(bottom = 8.dp)
+                        .wrapContentSize()
+                        .rippleClickable {
+                            onDismiss()
+                        }
+                        .padding(10.dp),
+                    text = stringResource(R.string.bet_warning_cancel),
                     color = MaterialTheme.colors.primary,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Medium
                 )
             }
-        }
-        if (showWarning) {
-            AlertDialog(
-                modifier = Modifier.testTag("BetDialog_Alert_Warning"),
-                onDismissRequest = { showWarning = false },
-                title = {
-                    Text(
-                        text = stringResource(R.string.bet_warning_title),
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = MaterialTheme.colors.primary
-                    )
-                },
-                text = {
-                    Text(
-                        text = stringResource(R.string.bet_warning_text),
-                        fontSize = 16.sp,
-                        color = MaterialTheme.colors.primary
-                    )
-                },
-                buttons = {
-                    Column(
-                        modifier = Modifier
-                            .padding(horizontal = 8.dp)
-                            .fillMaxWidth(),
-                        horizontalAlignment = Alignment.End
-                    ) {
-                        Text(
-                            modifier = Modifier
-                                .testTag("BetDialog_Alert_Confirm")
-                                .padding(bottom = 8.dp)
-                                .wrapContentSize()
-                                .rippleClickable {
-                                    onConfirm(
-                                        gameAndBet.game.gameId,
-                                        homePoints.toLongOrNull() ?: 0,
-                                        awayPoints.toLongOrNull() ?: 0
-                                    )
-                                    onDismiss()
-                                }
-                                .padding(10.dp),
-                            text = stringResource(R.string.bet_warning_confirm),
-                            color = MaterialTheme.colors.primary,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Medium
-                        )
-                        Text(
-                            modifier = Modifier
-                                .padding(bottom = 8.dp)
-                                .wrapContentSize()
-                                .rippleClickable {
-                                    showWarning = false
-                                }
-                                .padding(10.dp),
-                            text = stringResource(R.string.bet_warning_cancel),
-                            color = MaterialTheme.colors.primary,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Medium
-                        )
-                    }
-                },
-                shape = RoundedCornerShape(8.dp),
-                backgroundColor = MaterialTheme.colors.secondary
-            )
-        }
-    }
-}
-
-private fun Double.decimalFormat(radix: Int = 1): String {
-    val value = (this * 10.0.pow(radix)).toInt() / 10.0.pow(radix)
-    return value.toString()
+        },
+        shape = RoundedCornerShape(8.dp),
+        backgroundColor = MaterialTheme.colors.secondary
+    )
 }
