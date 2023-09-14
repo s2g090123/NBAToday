@@ -6,7 +6,7 @@ import androidx.compose.ui.unit.dp
 import com.jiachian.nbatoday.BASIC_MINUTES
 import com.jiachian.nbatoday.BASIC_NUMBER
 import com.jiachian.nbatoday.BASIC_TIME
-import com.jiachian.nbatoday.HOME_TEAM_ID
+import com.jiachian.nbatoday.HOME_TEAM
 import com.jiachian.nbatoday.SCHEDULE_DATE_RANGE
 import com.jiachian.nbatoday.USER_ACCOUNT
 import com.jiachian.nbatoday.USER_PASSWORD
@@ -15,8 +15,8 @@ import com.jiachian.nbatoday.compose.theme.CelticsColors
 import com.jiachian.nbatoday.data.TestDataStore
 import com.jiachian.nbatoday.data.TestRepository
 import com.jiachian.nbatoday.data.local.NbaGameAndBet
-import com.jiachian.nbatoday.data.local.team.DefaultTeam
-import com.jiachian.nbatoday.data.local.team.TeamCeltics
+import com.jiachian.nbatoday.data.local.team.NBATeam
+import com.jiachian.nbatoday.data.local.team.teamCeltics
 import com.jiachian.nbatoday.rule.CalendarRule
 import com.jiachian.nbatoday.rule.TestCoroutineEnvironment
 import com.jiachian.nbatoday.utils.NbaUtils
@@ -26,8 +26,8 @@ import java.util.Date
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
-import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.notNullValue
 import org.hamcrest.CoreMatchers.nullValue
 import org.hamcrest.MatcherAssert.assertThat
@@ -110,7 +110,7 @@ class HomeViewModelTest {
 
     @Test
     fun home_getStandingIndex_expectsZero() {
-        assertThat(viewModel.selectConference.value, `is`(DefaultTeam.Conference.EAST))
+        assertThat(viewModel.selectConference.value, `is`(NBATeam.Conference.EAST))
     }
 
     @Test
@@ -179,14 +179,14 @@ class HomeViewModelTest {
 
     @Test
     fun home_updateStandingConference_selectsEast() {
-        viewModel.updateStandingConference(DefaultTeam.Conference.EAST)
-        assertThat(viewModel.selectConference.value, `is`(DefaultTeam.Conference.EAST))
+        viewModel.updateStandingConference(NBATeam.Conference.EAST)
+        assertThat(viewModel.selectConference.value, `is`(NBATeam.Conference.EAST))
     }
 
     @Test
     fun home_updateStandingConference_selectsWest() {
-        viewModel.updateStandingConference(DefaultTeam.Conference.WEST)
-        assertThat(viewModel.selectConference.value, `is`(DefaultTeam.Conference.WEST))
+        viewModel.updateStandingConference(NBATeam.Conference.WEST)
+        assertThat(viewModel.selectConference.value, `is`(NBATeam.Conference.WEST))
     }
 
     @Test
@@ -203,13 +203,13 @@ class HomeViewModelTest {
 
     @Test
     fun home_openTeamStats_currentStateTeam() {
-        viewModel.openTeamStats(HOME_TEAM_ID)
+        viewModel.openTeamStats(HOME_TEAM)
         assertThat(currentState, instanceOf(NbaState.Team::class.java))
     }
 
     @Test
     fun home_updateTheme_expectsCelticsColors() {
-        viewModel.updateTheme(TeamCeltics().teamId, CelticsColors)
+        viewModel.updateTheme(teamCeltics.teamId, CelticsColors)
         assertThat(dataStore.themeColors.value, `is`(CelticsColors))
     }
 

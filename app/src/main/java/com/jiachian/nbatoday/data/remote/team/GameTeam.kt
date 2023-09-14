@@ -1,20 +1,15 @@
 package com.jiachian.nbatoday.data.remote.team
 
 import androidx.room.ColumnInfo
+import com.jiachian.nbatoday.data.local.team.NBATeam
 
 data class GameTeam(
+    @ColumnInfo(name = "team")
+    val team: NBATeam,
     @ColumnInfo(name = "losses")
     val losses: Int, // 敗場場次(從這場之前), e.g. 2
     @ColumnInfo(name = "score")
     val score: Int, // 比分, e.g. 100
-    @ColumnInfo(name = "team_city")
-    val teamCity: String, // 城市名, e.g. LA
-    @ColumnInfo(name = "team_id")
-    val teamId: Int, // 隊伍id, e.g. 1610612746
-    @ColumnInfo(name = "team_name")
-    val teamName: String, // 隊伍名稱, e.g. Clippers
-    @ColumnInfo(name = "team_tri_code")
-    val teamTricode: String, // 隊伍縮寫名稱, e.g. LAC
     @ColumnInfo(name = "wins")
     val wins: Int, // 勝場場次(從這場之前), e.g. 2
     @ColumnInfo(name = "periods")

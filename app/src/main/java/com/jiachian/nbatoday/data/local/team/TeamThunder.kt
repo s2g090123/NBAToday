@@ -1,13 +1,16 @@
 package com.jiachian.nbatoday.data.local.team
 
 import com.jiachian.nbatoday.R
+import com.jiachian.nbatoday.compose.theme.NBAColors
+import com.jiachian.nbatoday.compose.theme.ThunderColors
 
-data class TeamThunder(
-    override val teamId: Int = 1610612760,
-    override val abbreviation: String = "OKC",
-    override val teamName: String = "Thunder",
-    override val location: String = "Oklahoma City",
-    override val logoRes: Int = R.drawable.ic_team_logo_thunder,
-    override val conference: Conference = Conference.WEST,
-    override val division: Division = Division.NORTHWEST
-) : DefaultTeam()
+val teamThunder = object : NBATeam {
+    override val teamId: Int = 1610612760
+    override val abbreviation: String = "OKC"
+    override val teamName: String = "Thunder"
+    override val location: String = "Oklahoma City"
+    override val logoRes: Int = R.drawable.ic_team_logo_thunder
+    override val conference: NBATeam.Conference = NBATeam.Conference.WEST
+    override val division: NBATeam.Division = NBATeam.Division.NORTHWEST
+    override val colors: NBAColors = ThunderColors
+}

@@ -19,7 +19,7 @@ import com.jiachian.nbatoday.data.local.bet.Bets
 import com.jiachian.nbatoday.data.local.player.PlayerCareer
 import com.jiachian.nbatoday.data.local.player.PlayerStats
 import com.jiachian.nbatoday.data.local.score.GameBoxScore
-import com.jiachian.nbatoday.data.local.team.DefaultTeam
+import com.jiachian.nbatoday.data.local.team.NBATeam
 import com.jiachian.nbatoday.data.local.team.TeamStats
 import com.jiachian.nbatoday.data.remote.user.User
 import kotlinx.coroutines.flow.Flow
@@ -228,7 +228,7 @@ class TestRepository : BaseRepository {
         }
     }
 
-    override fun getTeamRank(teamId: Int, conference: DefaultTeam.Conference): Flow<Int> {
+    override fun getTeamRank(teamId: Int, conference: NBATeam.Conference): Flow<Int> {
         return teams.map { teams ->
             teams.filter {
                 it.teamConference == conference

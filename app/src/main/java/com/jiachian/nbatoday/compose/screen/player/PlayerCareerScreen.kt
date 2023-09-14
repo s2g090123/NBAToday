@@ -137,11 +137,11 @@ private fun PlayerCareerInfo(
                     .weight(1f)
                     .aspectRatio(1f),
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data(NbaUtils.getTeamLogoUrlById(playerCareer.info.teamId))
+                    .data(NbaUtils.getTeamLogoUrlById(playerCareer.info.team.teamId))
                     .decoderFactory(SvgDecoder.Factory())
                     .build(),
-                error = painterResource(NbaUtils.getTeamLogoResById(playerCareer.info.teamId)),
-                placeholder = painterResource(NbaUtils.getTeamLogoResById(playerCareer.info.teamId)),
+                error = painterResource(playerCareer.info.team.logoRes),
+                placeholder = painterResource(playerCareer.info.team.logoRes),
                 contentDescription = null
             )
             AsyncImage(
@@ -173,8 +173,8 @@ private fun PlayerCareerInfo(
                     modifier = Modifier.testTag("PlayerCareerInfo_Text_PlayerInfo"),
                     text = stringResource(
                         R.string.player_career_info,
-                        playerCareer.info.teamCity,
-                        playerCareer.info.teamName,
+                        playerCareer.info.team.location,
+                        playerCareer.info.team.teamName,
                         playerCareer.info.jersey,
                         playerCareer.info.position
                     ),

@@ -4,9 +4,7 @@ import com.jiachian.nbatoday.AWAY_PLAYER_FIRST_NAME
 import com.jiachian.nbatoday.AWAY_PLAYER_FULL_NAME
 import com.jiachian.nbatoday.AWAY_PLAYER_ID
 import com.jiachian.nbatoday.AWAY_PLAYER_LAST_NAME
-import com.jiachian.nbatoday.AWAY_TEAM_ABBR
-import com.jiachian.nbatoday.AWAY_TEAM_ID
-import com.jiachian.nbatoday.AWAY_TEAM_NAME
+import com.jiachian.nbatoday.AWAY_TEAM
 import com.jiachian.nbatoday.BASIC_MINUTES
 import com.jiachian.nbatoday.BASIC_NUMBER
 import com.jiachian.nbatoday.BASIC_PERCENTAGE
@@ -20,11 +18,8 @@ import com.jiachian.nbatoday.HOME_PLAYER_FIRST_NAME
 import com.jiachian.nbatoday.HOME_PLAYER_FULL_NAME
 import com.jiachian.nbatoday.HOME_PLAYER_ID
 import com.jiachian.nbatoday.HOME_PLAYER_LAST_NAME
-import com.jiachian.nbatoday.HOME_TEAM_ABBR
-import com.jiachian.nbatoday.HOME_TEAM_ID
-import com.jiachian.nbatoday.HOME_TEAM_NAME
+import com.jiachian.nbatoday.HOME_TEAM
 import com.jiachian.nbatoday.PLAYING_GAME_ID
-import com.jiachian.nbatoday.TEAM_CITY
 import com.jiachian.nbatoday.data.local.score.GameBoxScore
 import com.jiachian.nbatoday.data.remote.game.GameStatusCode
 import com.jiachian.nbatoday.data.remote.score.PlayerActiveStatus
@@ -57,10 +52,7 @@ object BoxScoreFactory {
 
     private fun getHomeTeamScore(): GameBoxScore.BoxScoreTeam {
         return GameBoxScore.BoxScoreTeam(
-            teamId = HOME_TEAM_ID,
-            teamName = HOME_TEAM_NAME,
-            teamCity = TEAM_CITY,
-            teamTricode = HOME_TEAM_ABBR,
+            team = HOME_TEAM,
             score = BASIC_NUMBER * 4,
             inBonus = true,
             timeoutsRemaining = BASIC_NUMBER,
@@ -72,10 +64,7 @@ object BoxScoreFactory {
 
     private fun getAwayTeamScore(): GameBoxScore.BoxScoreTeam {
         return GameBoxScore.BoxScoreTeam(
-            teamId = AWAY_TEAM_ID,
-            teamName = AWAY_TEAM_NAME,
-            teamCity = TEAM_CITY,
-            teamTricode = AWAY_TEAM_ABBR,
+            team = AWAY_TEAM,
             score = BASIC_NUMBER * 4,
             inBonus = true,
             timeoutsRemaining = BASIC_NUMBER,

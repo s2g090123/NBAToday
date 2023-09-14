@@ -1,8 +1,9 @@
 package com.jiachian.nbatoday.data.remote.team
 
 import com.google.gson.annotations.SerializedName
-import com.jiachian.nbatoday.data.local.team.DefaultTeam
+import com.jiachian.nbatoday.data.local.team.NBATeam
 import com.jiachian.nbatoday.data.local.team.TeamStats
+import com.jiachian.nbatoday.data.local.team.teamOfficial
 
 data class RemoteTeamStats(
     @SerializedName("resultSets") val data: List<Data>?
@@ -20,20 +21,16 @@ data class RemoteTeamStats(
         val output = mutableListOf<TeamStats>()
         rowData.forEach { data ->
             val teamId = data.getOrNull(headers.indexOf("TEAM_ID"))?.toIntOrNull() ?: return@forEach
-            val team = DefaultTeam.getTeamById(teamId)
+            val team = NBATeam.getTeamById(teamId) ?: teamOfficial
             output.add(
                 TeamStats(
                     teamId,
-                    team.teamFullName,
-                    team.teamName,
-                    team.abbreviation,
+                    team,
                     team.conference,
-                    team.division,
                     data.getOrNull(headers.indexOf("GP"))?.toIntOrNull() ?: return@forEach,
                     data.getOrNull(headers.indexOf("W"))?.toIntOrNull() ?: return@forEach,
                     data.getOrNull(headers.indexOf("L"))?.toIntOrNull() ?: return@forEach,
-                    data.getOrNull(headers.indexOf("W_PCT"))?.toDoubleOrNull()?.times(100)
-                        ?: return@forEach,
+                    data.getOrNull(headers.indexOf("W_PCT"))?.toDoubleOrNull()?.times(100) ?: return@forEach,
                     data.getOrNull(headers.indexOf("FGM"))?.toIntOrNull() ?: return@forEach,
                     data.getOrNull(headers.indexOf("FGA"))?.toIntOrNull() ?: return@forEach,
                     data.getOrNull(headers.indexOf("FG_PCT"))?.toDoubleOrNull()?.times(100)

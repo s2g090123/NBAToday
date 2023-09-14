@@ -6,7 +6,7 @@ import com.jiachian.nbatoday.data.local.player.PlayerCareerInfoUpdate
 import com.jiachian.nbatoday.data.local.player.PlayerCareerStatsUpdate
 import com.jiachian.nbatoday.data.local.player.PlayerStats
 import com.jiachian.nbatoday.data.local.score.GameBoxScore
-import com.jiachian.nbatoday.data.local.team.DefaultTeam
+import com.jiachian.nbatoday.data.local.team.NBATeam
 import com.jiachian.nbatoday.data.local.team.TeamStats
 import com.jiachian.nbatoday.data.remote.game.GameScoreUpdateData
 import com.jiachian.nbatoday.data.remote.game.GameUpdateData
@@ -39,7 +39,7 @@ abstract class LocalDataSource {
 
     abstract fun getTeamStats(): Flow<List<TeamStats>>
     abstract fun getTeamAndPlayersStats(teamId: Int): Flow<TeamAndPlayers?>
-    abstract fun getTeamRank(teamId: Int, conference: DefaultTeam.Conference): Flow<Int>
+    abstract fun getTeamRank(teamId: Int, conference: NBATeam.Conference): Flow<Int>
     abstract fun getTeamPointsRank(teamId: Int): Flow<Int>
     abstract fun getTeamReboundsRank(teamId: Int): Flow<Int>
     abstract fun getTeamAssistsRank(teamId: Int): Flow<Int>

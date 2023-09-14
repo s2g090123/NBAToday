@@ -68,8 +68,8 @@ class PlayerCareerScreenTest : BaseAndroidTest() {
             .assertTextEquals(
                 context.getString(
                     R.string.player_career_info,
-                    playerCareer.info.teamCity,
-                    playerCareer.info.teamName,
+                    playerCareer.info.team.location,
+                    playerCareer.info.team.teamName,
                     playerCareer.info.jersey,
                     playerCareer.info.position
                 )

@@ -124,10 +124,10 @@ class GameCalendarScreenTest {
             .onFirst()
         firstCardRoot
             .onNodeWithTag("GameStatusCard2_Text_HomeTriCode")
-            .assertTextEquals(firstGame.game.homeTeam.teamTricode)
+            .assertTextEquals(firstGame.game.homeTeam.team.abbreviation)
         firstCardRoot
             .onNodeWithTag("GameStatusCard2_Text_AwayTriCode")
-            .assertTextEquals(firstGame.game.awayTeam.teamTricode)
+            .assertTextEquals(firstGame.game.awayTeam.team.abbreviation)
         firstCardRoot
             .onNodeWithTag("GameStatusCard2_Text_HomeScore")
             .assertTextEquals(firstGame.game.homeTeam.score.toString())
@@ -149,10 +149,10 @@ class GameCalendarScreenTest {
             .assertCountEquals(games.size)[1]
         secondCardRoot
             .onNodeWithTag("GameStatusCard2_Text_HomeTriCode")
-            .assertTextEquals(secondGame.game.homeTeam.teamTricode)
+            .assertTextEquals(secondGame.game.homeTeam.team.abbreviation)
         secondCardRoot
             .onNodeWithTag("GameStatusCard2_Text_AwayTriCode")
-            .assertTextEquals(secondGame.game.awayTeam.teamTricode)
+            .assertTextEquals(secondGame.game.awayTeam.team.abbreviation)
         secondCardRoot
             .onNodeWithTag("GameStatusCard2_Text_HomeScore")
             .assertTextEquals(secondGame.game.homeTeam.score.toString())
@@ -202,10 +202,10 @@ class GameCalendarScreenTest {
             .onFirst()
         firstCardRoot
             .onNodeWithTag("GameStatusCard2_Text_HomeTriCode")
-            .assertTextEquals(game.game.homeTeam.teamTricode)
+            .assertTextEquals(game.game.homeTeam.team.abbreviation)
         firstCardRoot
             .onNodeWithTag("GameStatusCard2_Text_AwayTriCode")
-            .assertTextEquals(game.game.awayTeam.teamTricode)
+            .assertTextEquals(game.game.awayTeam.team.abbreviation)
         firstCardRoot
             .onNodeWithTag("GameStatusCard2_Text_HomeScore")
             .assertTextEquals(game.game.homeTeam.score.toString())
@@ -265,10 +265,10 @@ class GameCalendarScreenTest {
             .onFirst()
         cardRoot
             .onNodeWithTag("GameStatusCard2_Text_HomeTriCode")
-            .assertTextEquals(lastGame.homeTeam.teamTricode)
+            .assertTextEquals(lastGame.homeTeam.team.abbreviation)
         cardRoot
             .onNodeWithTag("GameStatusCard2_Text_AwayTriCode")
-            .assertTextEquals(lastGame.awayTeam.teamTricode)
+            .assertTextEquals(lastGame.awayTeam.team.abbreviation)
         cardRoot
             .onNodeWithTag("GameStatusCard2_Text_HomeScore")
             .assertTextEquals(lastGame.homeTeam.score.toString())
@@ -328,10 +328,10 @@ class GameCalendarScreenTest {
             .onFirst()
         cardRoot
             .onNodeWithTag("GameStatusCard2_Text_HomeTriCode")
-            .assertTextEquals(nextGame.homeTeam.teamTricode)
+            .assertTextEquals(nextGame.homeTeam.team.abbreviation)
         cardRoot
             .onNodeWithTag("GameStatusCard2_Text_AwayTriCode")
-            .assertTextEquals(nextGame.awayTeam.teamTricode)
+            .assertTextEquals(nextGame.awayTeam.team.abbreviation)
         cardRoot
             .onNodeWithTag("GameStatusCard2_Text_HomeScore")
             .assertTextEquals(nextGame.homeTeam.score.toString())

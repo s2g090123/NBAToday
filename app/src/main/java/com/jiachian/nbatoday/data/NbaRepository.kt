@@ -11,7 +11,7 @@ import com.jiachian.nbatoday.data.local.TeamAndPlayers
 import com.jiachian.nbatoday.data.local.bet.Bets
 import com.jiachian.nbatoday.data.local.player.PlayerCareer
 import com.jiachian.nbatoday.data.local.score.GameBoxScore
-import com.jiachian.nbatoday.data.local.team.DefaultTeam
+import com.jiachian.nbatoday.data.local.team.NBATeam
 import com.jiachian.nbatoday.data.local.team.TeamStats
 import com.jiachian.nbatoday.data.remote.RemoteDataSource
 import com.jiachian.nbatoday.data.remote.user.User
@@ -186,7 +186,7 @@ class NbaRepository(
         return localDataSource.getTeamAndPlayersStats(teamId)
     }
 
-    override fun getTeamRank(teamId: Int, conference: DefaultTeam.Conference): Flow<Int> {
+    override fun getTeamRank(teamId: Int, conference: NBATeam.Conference): Flow<Int> {
         return localDataSource.getTeamRank(teamId, conference)
     }
 

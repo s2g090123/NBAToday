@@ -11,6 +11,7 @@ import com.jiachian.nbatoday.data.local.converter.BoxScoreTeamConverter
 import com.jiachian.nbatoday.data.local.converter.DateConverter
 import com.jiachian.nbatoday.data.local.converter.GameLeadersConverter
 import com.jiachian.nbatoday.data.local.converter.GameTeamConverter
+import com.jiachian.nbatoday.data.local.converter.NBATeamConverter
 import com.jiachian.nbatoday.data.local.converter.PlayerCareerInfoConverter
 import com.jiachian.nbatoday.data.local.converter.PlayerCareerStatsConverter
 import com.jiachian.nbatoday.data.local.converter.PointsLeaderConverter
@@ -34,6 +35,7 @@ import com.jiachian.nbatoday.data.local.team.TeamStats
     TeamDivisionConverter::class,
     PlayerCareerInfoConverter::class,
     PlayerCareerStatsConverter::class,
+    NBATeamConverter::class,
     DateConverter::class
 )
 abstract class NbaDatabase : RoomDatabase() {

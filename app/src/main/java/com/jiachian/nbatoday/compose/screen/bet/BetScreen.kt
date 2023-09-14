@@ -184,6 +184,8 @@ private fun BetCard(
     modifier: Modifier = Modifier,
     betAndGame: BetAndNbaGame
 ) {
+    val homeTeam = remember(betAndGame) { betAndGame.game.homeTeam }
+    val awayTeam = remember(betAndGame) { betAndGame.game.awayTeam }
     val isGameFinal by remember(betAndGame) {
         derivedStateOf { betAndGame.game.gameStatus == GameStatusCode.FINAL }
     }
@@ -220,11 +222,11 @@ private fun BetCard(
                 }
                 .size(100.dp),
             model = ImageRequest.Builder(LocalContext.current)
-                .data(NbaUtils.getTeamLogoUrlById(betAndGame.game.homeTeam.teamId))
+                .data(NbaUtils.getTeamLogoUrlById(homeTeam.team.teamId))
                 .decoderFactory(SvgDecoder.Factory())
                 .build(),
-            error = painterResource(NbaUtils.getTeamLogoResById(betAndGame.game.homeTeam.teamId)),
-            placeholder = painterResource(NbaUtils.getTeamLogoResById(betAndGame.game.homeTeam.teamId)),
+            error = painterResource(homeTeam.team.logoRes),
+            placeholder = painterResource(homeTeam.team.logoRes),
             contentDescription = null
         )
         Text(
@@ -247,11 +249,11 @@ private fun BetCard(
                 }
                 .size(100.dp),
             model = ImageRequest.Builder(LocalContext.current)
-                .data(NbaUtils.getTeamLogoUrlById(betAndGame.game.awayTeam.teamId))
+                .data(NbaUtils.getTeamLogoUrlById(awayTeam.team.teamId))
                 .decoderFactory(SvgDecoder.Factory())
                 .build(),
-            error = painterResource(NbaUtils.getTeamLogoResById(betAndGame.game.awayTeam.teamId)),
-            placeholder = painterResource(NbaUtils.getTeamLogoResById(betAndGame.game.awayTeam.teamId)),
+            error = painterResource(awayTeam.team.logoRes),
+            placeholder = painterResource(awayTeam.team.logoRes),
             contentDescription = null
         )
         if (betAndGame.game.gameStatus != GameStatusCode.COMING_SOON) {
@@ -262,7 +264,7 @@ private fun BetCard(
                         top.linkTo(homeLogo.bottom, 8.dp)
                         linkTo(homeLogo.start, homeLogo.end)
                     },
-                text = betAndGame.game.homeTeam.score.toString(),
+                text = homeTeam.score.toString(),
                 color = MaterialTheme.colors.primary,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold
@@ -274,7 +276,7 @@ private fun BetCard(
                         top.linkTo(awayLogo.bottom, 8.dp)
                         linkTo(awayLogo.start, awayLogo.end)
                     },
-                text = betAndGame.game.awayTeam.score.toString(),
+                text = awayTeam.score.toString(),
                 color = MaterialTheme.colors.primary,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold

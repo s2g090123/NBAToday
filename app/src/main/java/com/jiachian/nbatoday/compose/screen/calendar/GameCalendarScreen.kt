@@ -260,7 +260,7 @@ private fun CalendarGames(
                     .background(MaterialTheme.colors.secondary)
                     .rippleClickable {
                         if (game.game.gameStatus == GameStatusCode.COMING_SOON) {
-                            viewModel.openTeamStats(game.game.homeTeam)
+                            viewModel.openTeamStats(game.game.homeTeam.team)
                         } else {
                             viewModel.openGameBoxScore(game.game)
                         }
@@ -359,15 +359,11 @@ private fun DateBox(
                             .testTag("CalendarContent_Image_Team")
                             .size(12.dp),
                         model = ImageRequest.Builder(LocalContext.current)
-                            .data(NbaUtils.getTeamSmallLogoUrlById(it.game.homeTeam.teamId))
+                            .data(NbaUtils.getTeamSmallLogoUrlById(it.game.homeTeam.team.teamId))
                             .decoderFactory(SvgDecoder.Factory())
                             .build(),
-                        error = painterResource(NbaUtils.getTeamLogoResById(it.game.homeTeam.teamId)),
-                        placeholder = painterResource(
-                            NbaUtils.getTeamLogoResById(
-                                it.game.homeTeam.teamId
-                            )
-                        ),
+                        error = painterResource(it.game.homeTeam.team.logoRes),
+                        placeholder = painterResource(it.game.homeTeam.team.logoRes),
                         contentDescription = null
                     )
                 }

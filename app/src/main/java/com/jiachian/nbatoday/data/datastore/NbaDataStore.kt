@@ -19,7 +19,7 @@ import com.jiachian.nbatoday.data.datastore.NbaDataStore.PreferencesKeys.RECORD_
 import com.jiachian.nbatoday.data.datastore.NbaDataStore.PreferencesKeys.STATS_COOKIES
 import com.jiachian.nbatoday.data.datastore.NbaDataStore.PreferencesKeys.THEME_COLORS
 import com.jiachian.nbatoday.data.datastore.NbaDataStore.PreferencesKeys.USER_DATA
-import com.jiachian.nbatoday.data.local.team.DefaultTeam
+import com.jiachian.nbatoday.data.local.team.NBATeam
 import com.jiachian.nbatoday.data.remote.user.User
 import com.jiachian.nbatoday.utils.NbaUtils
 import kotlinx.coroutines.flow.map
@@ -57,7 +57,8 @@ class NbaDataStore(
         dataStore.data.map { pref ->
             val themeColorTeamId = pref[THEME_COLORS]
             themeColorTeamId?.let {
-                DefaultTeam.getColorsById(it)
+                val team = NBATeam.getTeamById(it)
+                team?.colors
             } ?: LakersColors
         }
     }

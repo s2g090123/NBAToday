@@ -2,7 +2,7 @@ package com.jiachian.nbatoday.compose.screen.calendar
 
 import com.jiachian.nbatoday.BASIC_NUMBER
 import com.jiachian.nbatoday.BASIC_TIME
-import com.jiachian.nbatoday.HOME_TEAM_ID
+import com.jiachian.nbatoday.HOME_TEAM
 import com.jiachian.nbatoday.USER_ACCOUNT
 import com.jiachian.nbatoday.USER_PASSWORD
 import com.jiachian.nbatoday.compose.state.NbaState
@@ -20,8 +20,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
 import org.junit.Before
@@ -138,7 +138,7 @@ class GameCalendarViewModelTest {
 
     @Test
     fun calendar_openTeamStats_currentStateIsTeam() {
-        viewModel.openTeamStats(HOME_TEAM_ID)
+        viewModel.openTeamStats(HOME_TEAM)
         assertThat(currentState, instanceOf(NbaState.Team::class.java))
     }
 

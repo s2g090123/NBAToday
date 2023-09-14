@@ -69,6 +69,7 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.data.local.score.GameBoxScore
+import com.jiachian.nbatoday.data.local.team.teamOfficial
 import com.jiachian.nbatoday.data.remote.game.GameStatusCode
 import com.jiachian.nbatoday.data.remote.score.PlayerActiveStatus
 import com.jiachian.nbatoday.utils.NbaUtils
@@ -198,6 +199,9 @@ private fun ScoreTotal(
     modifier: Modifier = Modifier,
     score: GameBoxScore
 ) {
+    val homeTeam = remember(score) { score.homeTeam }
+    val awayTeam = remember(score) { score.awayTeam }
+
     ConstraintLayout(modifier = modifier) {
         val (
             homeImage, homeNameText, scoreText,
@@ -211,7 +215,7 @@ private fun ScoreTotal(
                     linkTo(homeImage.top, isFinalText.top)
                     linkTo(parent.start, parent.end)
                 },
-            text = "${score.homeTeam?.score} - ${score.awayTeam?.score}",
+            text = "${homeTeam?.score} - ${awayTeam?.score}",
             fontWeight = FontWeight.Bold,
             fontSize = 24.sp,
             color = MaterialTheme.colors.secondary
@@ -241,11 +245,11 @@ private fun ScoreTotal(
                 }
                 .size(100.dp),
             model = ImageRequest.Builder(LocalContext.current)
-                .data(NbaUtils.getTeamLogoUrlById(score.homeTeam?.teamId ?: 0))
+                .data(NbaUtils.getTeamLogoUrlById(homeTeam?.team?.teamId ?: 0))
                 .decoderFactory(SvgDecoder.Factory())
                 .build(),
-            error = painterResource(NbaUtils.getTeamLogoResById(score.homeTeam?.teamId ?: 0)),
-            placeholder = painterResource(NbaUtils.getTeamLogoResById(score.homeTeam?.teamId ?: 0)),
+            error = painterResource(score.homeTeam?.team?.logoRes ?: teamOfficial.logoRes),
+            placeholder = painterResource(score.homeTeam?.team?.logoRes ?: teamOfficial.logoRes),
             contentDescription = null
         )
         Text(
@@ -255,7 +259,7 @@ private fun ScoreTotal(
                     top.linkTo(homeImage.bottom, 8.dp)
                     linkTo(homeImage.start, homeImage.end)
                 },
-            text = score.homeTeam?.teamName ?: "",
+            text = homeTeam?.team?.teamName ?: "",
             fontWeight = FontWeight.Medium,
             fontSize = 18.sp,
             color = MaterialTheme.colors.secondary
@@ -268,11 +272,11 @@ private fun ScoreTotal(
                 }
                 .size(100.dp),
             model = ImageRequest.Builder(LocalContext.current)
-                .data(NbaUtils.getTeamLogoUrlById(score.awayTeam?.teamId ?: 0))
+                .data(NbaUtils.getTeamLogoUrlById(awayTeam?.team?.teamId ?: 0))
                 .decoderFactory(SvgDecoder.Factory())
                 .build(),
-            error = painterResource(NbaUtils.getTeamLogoResById(score.awayTeam?.teamId ?: 0)),
-            placeholder = painterResource(NbaUtils.getTeamLogoResById(score.awayTeam?.teamId ?: 0)),
+            error = painterResource(awayTeam?.team?.logoRes ?: teamOfficial.logoRes),
+            placeholder = painterResource(awayTeam?.team?.logoRes ?: teamOfficial.logoRes),
             contentDescription = null
         )
         Text(
@@ -282,7 +286,7 @@ private fun ScoreTotal(
                     top.linkTo(awayImage.bottom, 8.dp)
                     linkTo(awayImage.start, awayImage.end)
                 },
-            text = score.awayTeam?.teamName ?: "",
+            text = awayTeam?.team?.teamName ?: "",
             fontWeight = FontWeight.Medium,
             fontSize = 18.sp,
             color = MaterialTheme.colors.secondary
@@ -335,7 +339,7 @@ private fun ScorePeriod(
                         modifier = Modifier
                             .testTag("ScorePeriod_Text_TeamName")
                             .align(Alignment.TopStart),
-                        text = team.teamName,
+                        text = team.team.teamName,
                         color = MaterialTheme.colors.secondary,
                         fontSize = 16.sp
                     )
@@ -408,7 +412,7 @@ private fun ScoreDetail(
                 modifier = Modifier.testTag("ScoreDetail_Tab_Home"),
                 text = {
                     Text(
-                        text = score.homeTeam?.teamName ?: "",
+                        text = score.homeTeam?.team?.teamName ?: "",
                         color = MaterialTheme.colors.primary,
                         fontSize = 14.sp
                     )
@@ -420,7 +424,7 @@ private fun ScoreDetail(
                 text = {
                     Text(
                         modifier = Modifier.testTag("ScoreDetail_Tab_Away"),
-                        text = score.awayTeam?.teamName ?: "",
+                        text = score.awayTeam?.team?.teamName ?: "",
                         color = MaterialTheme.colors.primary,
                         fontSize = 14.sp
                     )
@@ -774,13 +778,11 @@ private fun TeamStatistics(
                         .size(56.dp)
                         .align(Alignment.TopStart),
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data(NbaUtils.getTeamLogoUrlById(homeTeam?.teamId ?: 0))
+                        .data(NbaUtils.getTeamLogoUrlById(homeTeam?.team?.teamId ?: 0))
                         .decoderFactory(SvgDecoder.Factory())
                         .build(),
-                    error = painterResource(NbaUtils.getTeamLogoResById(homeTeam?.teamId ?: 0)),
-                    placeholder = painterResource(
-                        NbaUtils.getTeamLogoResById(homeTeam?.teamId ?: 0)
-                    ),
+                    error = painterResource(homeTeam?.team?.logoRes ?: teamOfficial.logoRes),
+                    placeholder = painterResource(homeTeam?.team?.logoRes ?: teamOfficial.logoRes),
                     contentDescription = null
                 )
                 Text(
@@ -795,13 +797,11 @@ private fun TeamStatistics(
                         .size(56.dp)
                         .align(Alignment.TopEnd),
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data(NbaUtils.getTeamLogoUrlById(awayTeam?.teamId ?: 0))
+                        .data(NbaUtils.getTeamLogoUrlById(awayTeam?.team?.teamId ?: 0))
                         .decoderFactory(SvgDecoder.Factory())
                         .build(),
-                    error = painterResource(NbaUtils.getTeamLogoResById(awayTeam?.teamId ?: 0)),
-                    placeholder = painterResource(
-                        NbaUtils.getTeamLogoResById(awayTeam?.teamId ?: 0)
-                    ),
+                    error = painterResource(awayTeam?.team?.logoRes ?: teamOfficial.logoRes),
+                    placeholder = painterResource(awayTeam?.team?.logoRes ?: teamOfficial.logoRes),
                     contentDescription = null
                 )
             }

@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.jiachian.nbatoday.data.local.player.PlayerCareer
 import com.jiachian.nbatoday.data.local.player.PlayerCareerInfoUpdate
+import com.jiachian.nbatoday.data.local.team.NBATeam
+import com.jiachian.nbatoday.data.local.team.teamOfficial
 import com.jiachian.nbatoday.utils.NbaUtils
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -34,14 +36,13 @@ data class RemotePlayerInfo(
         val birthDate = playerInfoRowData.getOrNull(playerInfoHeaders.indexOf("BIRTHDATE"))?.let {
             parseBirthdate(it)
         } ?: currentDate
+        val teamId = playerInfoRowData.getOrNull(playerInfoHeaders.indexOf("TEAM_ID"))?.toIntOrNull() ?: return null
+        val team = NBATeam.getTeamById(teamId) ?: teamOfficial
         return PlayerCareerInfoUpdate(
-            playerInfoRowData.getOrNull(playerInfoHeaders.indexOf("PERSON_ID"))?.toIntOrNull()
-                ?: return null,
+            playerInfoRowData.getOrNull(playerInfoHeaders.indexOf("PERSON_ID"))?.toIntOrNull() ?: return null,
             PlayerCareer.PlayerCareerInfo(
-                playerInfoRowData.getOrNull(playerInfoHeaders.indexOf("DISPLAY_FIRST_LAST"))
-                    ?: return null,
-                playerInfoRowData.getOrNull(playerInfoHeaders.indexOf("DISPLAY_FI_LAST"))
-                    ?: return null,
+                playerInfoRowData.getOrNull(playerInfoHeaders.indexOf("DISPLAY_FIRST_LAST")) ?: return null,
+                playerInfoRowData.getOrNull(playerInfoHeaders.indexOf("DISPLAY_FI_LAST")) ?: return null,
                 getAge(birthDate),
                 formatBirthDate(birthDate),
                 playerInfoRowData.getOrNull(playerInfoHeaders.indexOf("COUNTRY")) ?: return null,
@@ -55,40 +56,24 @@ data class RemotePlayerInfo(
                 playerInfoRowData.getOrNull(playerInfoHeaders.indexOf("WEIGHT"))?.let {
                     weightToKG(it.toIntOrNull() ?: 0)
                 } ?: return null,
-                playerInfoRowData.getOrNull(playerInfoHeaders.indexOf("SEASON_EXP"))?.toIntOrNull()
-                    ?: return null,
-                playerInfoRowData.getOrNull(playerInfoHeaders.indexOf("JERSEY"))?.toIntOrNull()
-                    ?: return null,
+                playerInfoRowData.getOrNull(playerInfoHeaders.indexOf("SEASON_EXP"))?.toIntOrNull() ?: return null,
+                playerInfoRowData.getOrNull(playerInfoHeaders.indexOf("JERSEY"))?.toIntOrNull() ?: return null,
                 playerInfoRowData.getOrNull(playerInfoHeaders.indexOf("POSITION")) ?: return null,
-                playerInfoRowData.getOrNull(playerInfoHeaders.indexOf("TEAM_ID"))?.toIntOrNull()
-                    ?: return null,
-                playerInfoRowData.getOrNull(playerInfoHeaders.indexOf("TEAM_NAME")) ?: return null,
-                playerInfoRowData.getOrNull(playerInfoHeaders.indexOf("TEAM_ABBREVIATION"))
-                    ?: return null,
-                playerInfoRowData.getOrNull(playerInfoHeaders.indexOf("TEAM_CITY")) ?: return null,
-                playerInfoRowData.getOrNull(playerInfoHeaders.indexOf("FROM_YEAR"))?.toIntOrNull()
-                    ?: return null,
-                playerInfoRowData.getOrNull(playerInfoHeaders.indexOf("TO_YEAR"))?.toIntOrNull()
-                    ?: return null,
-                playerInfoRowData.getOrNull(playerInfoHeaders.indexOf("DRAFT_YEAR"))?.toIntOrNull()
-                    ?: return null,
-                playerInfoRowData.getOrNull(playerInfoHeaders.indexOf("DRAFT_ROUND"))?.toIntOrNull()
-                    ?: return null,
-                playerInfoRowData.getOrNull(playerInfoHeaders.indexOf("DRAFT_NUMBER"))
-                    ?.toIntOrNull() ?: return null,
+                team,
+                playerInfoRowData.getOrNull(playerInfoHeaders.indexOf("FROM_YEAR"))?.toIntOrNull() ?: return null,
+                playerInfoRowData.getOrNull(playerInfoHeaders.indexOf("TO_YEAR"))?.toIntOrNull() ?: return null,
+                playerInfoRowData.getOrNull(playerInfoHeaders.indexOf("DRAFT_YEAR"))?.toIntOrNull() ?: return null,
+                playerInfoRowData.getOrNull(playerInfoHeaders.indexOf("DRAFT_ROUND"))?.toIntOrNull() ?: return null,
+                playerInfoRowData.getOrNull(playerInfoHeaders.indexOf("DRAFT_NUMBER"))?.toIntOrNull() ?: return null,
                 playerInfoRowData.getOrNull(playerInfoHeaders.indexOf("GREATEST_75_FLAG"))?.let {
                     it == "Y"
                 } ?: return null,
                 PlayerCareer.PlayerCareerInfo.HeadlineStats(
                     headlineRowData.getOrNull(headlineHeaders.indexOf("TimeFrame")) ?: return null,
-                    headlineRowData.getOrNull(headlineHeaders.indexOf("PTS"))?.toDoubleOrNull()
-                        ?: return null,
-                    headlineRowData.getOrNull(headlineHeaders.indexOf("AST"))?.toDoubleOrNull()
-                        ?: return null,
-                    headlineRowData.getOrNull(headlineHeaders.indexOf("REB"))?.toDoubleOrNull()
-                        ?: return null,
-                    headlineRowData.getOrNull(headlineHeaders.indexOf("PIE"))?.toDoubleOrNull()
-                        ?: return null
+                    headlineRowData.getOrNull(headlineHeaders.indexOf("PTS"))?.toDoubleOrNull() ?: return null,
+                    headlineRowData.getOrNull(headlineHeaders.indexOf("AST"))?.toDoubleOrNull() ?: return null,
+                    headlineRowData.getOrNull(headlineHeaders.indexOf("REB"))?.toDoubleOrNull() ?: return null,
+                    headlineRowData.getOrNull(headlineHeaders.indexOf("PIE"))?.toDoubleOrNull() ?: return null
                 )
             )
         )

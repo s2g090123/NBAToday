@@ -1,25 +1,17 @@
 package com.jiachian.nbatoday.data
 
-import com.jiachian.nbatoday.AWAY_TEAM_ABBR
-import com.jiachian.nbatoday.AWAY_TEAM_ID
-import com.jiachian.nbatoday.AWAY_TEAM_NAME
+import com.jiachian.nbatoday.AWAY_TEAM
 import com.jiachian.nbatoday.BASIC_NUMBER
-import com.jiachian.nbatoday.HOME_TEAM_ABBR
-import com.jiachian.nbatoday.HOME_TEAM_ID
-import com.jiachian.nbatoday.HOME_TEAM_NAME
-import com.jiachian.nbatoday.TEAM_CITY
+import com.jiachian.nbatoday.HOME_TEAM
 import com.jiachian.nbatoday.data.remote.team.GameTeam
 
 object GameTeamFactory {
 
     fun getDefaultHomeTeam(): GameTeam {
         return GameTeam(
+            team = HOME_TEAM,
             losses = BASIC_NUMBER,
             score = BASIC_NUMBER,
-            teamCity = TEAM_CITY,
-            teamId = HOME_TEAM_ID,
-            teamName = HOME_TEAM_NAME,
-            teamTricode = HOME_TEAM_ABBR,
             wins = BASIC_NUMBER,
             periods = getWinPeriod()
         )
@@ -27,12 +19,9 @@ object GameTeamFactory {
 
     fun getDefaultAwayTeam(): GameTeam {
         return GameTeam(
+            team = AWAY_TEAM,
             losses = BASIC_NUMBER,
             score = BASIC_NUMBER,
-            teamCity = TEAM_CITY,
-            teamId = AWAY_TEAM_ID,
-            teamName = AWAY_TEAM_NAME,
-            teamTricode = AWAY_TEAM_ABBR,
             wins = BASIC_NUMBER,
             periods = getLosePeriod()
         )

@@ -6,7 +6,8 @@ import com.jiachian.nbatoday.USER_NAME
 import com.jiachian.nbatoday.USER_PASSWORD
 import com.jiachian.nbatoday.USER_POINTS
 import com.jiachian.nbatoday.compose.theme.LakersColors
-import com.jiachian.nbatoday.data.local.team.DefaultTeam
+import com.jiachian.nbatoday.data.local.team.NBATeam
+import com.jiachian.nbatoday.data.local.team.teamOfficial
 import com.jiachian.nbatoday.data.remote.user.User
 import com.jiachian.nbatoday.utils.NbaUtils
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -65,7 +66,8 @@ class NbaDataStoreTest {
         val teamId = 1610612738
         dataStore.updateThemeColor(teamId)
         val actualData = dataStore.themeColors.first()
-        assertThat(actualData, `is`(DefaultTeam.getColorsById(teamId)))
+        val team = NBATeam.getTeamById(teamId) ?: teamOfficial
+        assertThat(actualData, `is`(team.colors))
     }
 
     @Test

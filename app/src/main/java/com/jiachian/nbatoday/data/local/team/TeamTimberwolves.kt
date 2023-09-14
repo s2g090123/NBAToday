@@ -1,13 +1,16 @@
 package com.jiachian.nbatoday.data.local.team
 
 import com.jiachian.nbatoday.R
+import com.jiachian.nbatoday.compose.theme.NBAColors
+import com.jiachian.nbatoday.compose.theme.TimberwolvesColors
 
-data class TeamTimberwolves(
-    override val teamId: Int = 1610612750,
-    override val abbreviation: String = "MIN",
-    override val teamName: String = "Timberwolves",
-    override val location: String = "Minnesota",
-    override val logoRes: Int = R.drawable.ic_team_logo_timberwolves,
-    override val conference: Conference = Conference.WEST,
-    override val division: Division = Division.NORTHWEST
-) : DefaultTeam()
+val teamTimberwolves = object : NBATeam {
+    override val teamId: Int = 1610612750
+    override val abbreviation: String = "MIN"
+    override val teamName: String = "Timberwolves"
+    override val location: String = "Minnesota"
+    override val logoRes: Int = R.drawable.ic_team_logo_timberwolves
+    override val conference: NBATeam.Conference = NBATeam.Conference.WEST
+    override val division: NBATeam.Division = NBATeam.Division.NORTHWEST
+    override val colors: NBAColors = TimberwolvesColors
+}

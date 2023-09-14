@@ -3,6 +3,7 @@ package com.jiachian.nbatoday.data.local.player
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.jiachian.nbatoday.data.local.team.NBATeam
 
 @Entity(tableName = "nba_player_career_stats")
 data class PlayerCareer(
@@ -23,10 +24,7 @@ data class PlayerCareer(
         @ColumnInfo(name = "season_exp") val seasonExperience: Int,
         @ColumnInfo(name = "jersey") val jersey: Int,
         @ColumnInfo(name = "position") val position: String,
-        @ColumnInfo(name = "team_id") val teamId: Int,
-        @ColumnInfo(name = "team_name") val teamName: String,
-        @ColumnInfo(name = "team_name_abbr") val teamNameAbbr: String,
-        @ColumnInfo(name = "team_city") val teamCity: String,
+        @ColumnInfo(name = "team") val team: NBATeam,
         @ColumnInfo(name = "from_year") val fromYear: Int,
         @ColumnInfo(name = "to_year") val toYear: Int,
         @ColumnInfo(name = "draft_year") val draftYear: Int,

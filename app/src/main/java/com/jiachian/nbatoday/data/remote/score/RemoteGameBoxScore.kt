@@ -2,6 +2,8 @@ package com.jiachian.nbatoday.data.remote.score
 
 import android.annotation.SuppressLint
 import com.jiachian.nbatoday.data.local.score.GameBoxScore
+import com.jiachian.nbatoday.data.local.team.NBATeam
+import com.jiachian.nbatoday.data.local.team.teamOfficial
 import com.jiachian.nbatoday.data.remote.game.GameStatusCode
 import com.jiachian.nbatoday.data.remote.game.PeriodType
 import com.jiachian.nbatoday.utils.NbaUtils
@@ -240,12 +242,10 @@ data class RemoteGameBoxScore(
                 }
             }
 
-            fun toLocal(): GameBoxScore.BoxScoreTeam {
+            fun toLocal(): GameBoxScore.BoxScoreTeam? {
+                val team = teamId?.let { NBATeam.getTeamById(it) } ?: teamOfficial
                 return GameBoxScore.BoxScoreTeam(
-                    teamId ?: 0,
-                    teamName ?: "",
-                    teamCity ?: "",
-                    teamTricode ?: "",
+                    team,
                     score ?: 0,
                     inBonus?.takeIf { it == "1" }?.let { true } ?: false,
                     timeoutsRemaining ?: 0,

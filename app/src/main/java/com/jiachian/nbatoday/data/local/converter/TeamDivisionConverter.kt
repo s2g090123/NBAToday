@@ -1,24 +1,24 @@
 package com.jiachian.nbatoday.data.local.converter
 
 import androidx.room.TypeConverter
-import com.jiachian.nbatoday.data.local.team.DefaultTeam
+import com.jiachian.nbatoday.data.local.team.NBATeam
 
 class TeamDivisionConverter {
     @TypeConverter
-    fun from(value: DefaultTeam.Division): String {
+    fun from(value: NBATeam.Division): String {
         return value.name
     }
 
     @TypeConverter
-    fun to(value: String): DefaultTeam.Division {
+    fun to(value: String): NBATeam.Division {
         return when (value) {
-            DefaultTeam.Division.PACIFIC.name -> DefaultTeam.Division.PACIFIC
-            DefaultTeam.Division.SOUTHEAST.name -> DefaultTeam.Division.SOUTHEAST
-            DefaultTeam.Division.NORTHWEST.name -> DefaultTeam.Division.NORTHWEST
-            DefaultTeam.Division.CENTRAL.name -> DefaultTeam.Division.CENTRAL
-            DefaultTeam.Division.SOUTHWEST.name -> DefaultTeam.Division.SOUTHWEST
-            DefaultTeam.Division.ATLANTIC.name -> DefaultTeam.Division.ATLANTIC
-            else -> DefaultTeam.Division.PACIFIC
+            NBATeam.Division.PACIFIC.name -> NBATeam.Division.PACIFIC
+            NBATeam.Division.SOUTHEAST.name -> NBATeam.Division.SOUTHEAST
+            NBATeam.Division.NORTHWEST.name -> NBATeam.Division.NORTHWEST
+            NBATeam.Division.CENTRAL.name -> NBATeam.Division.CENTRAL
+            NBATeam.Division.SOUTHWEST.name -> NBATeam.Division.SOUTHWEST
+            NBATeam.Division.ATLANTIC.name -> NBATeam.Division.ATLANTIC
+            else -> NBATeam.Division.PACIFIC
         }
     }
 }

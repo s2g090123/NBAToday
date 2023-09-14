@@ -18,8 +18,9 @@ import com.jiachian.nbatoday.compose.theme.updateColors
 import com.jiachian.nbatoday.data.BaseRepository
 import com.jiachian.nbatoday.data.datastore.BaseDataStore
 import com.jiachian.nbatoday.data.local.NbaGame
-import com.jiachian.nbatoday.data.local.team.DefaultTeam
+import com.jiachian.nbatoday.data.local.team.NBATeam
 import com.jiachian.nbatoday.data.local.team.TeamStats
+import com.jiachian.nbatoday.data.local.team.teamOfficial
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.utils.NbaUtils
@@ -46,6 +47,11 @@ class HomeViewModel(
 
     val user = repository.user
         .stateIn(coroutineScope, SharingStarted.WhileSubscribed(5000), null)
+
+    val nbaTeams: List<NBATeam> = mutableListOf<NBATeam>().apply {
+        add(teamOfficial)
+        addAll(NBATeam.nbaTeams)
+    }
 
     private val isRefreshingImp = MutableStateFlow(false)
     val isRefreshing = isRefreshingImp.asStateFlow()
@@ -248,7 +254,7 @@ class HomeViewModel(
     }.stateIn(coroutineScope, SharingStarted.Lazily, mapOf())
     private val isRefreshingTeamStatsImp = MutableStateFlow(false)
     val isRefreshingTeamStats = isRefreshingTeamStatsImp.asStateFlow()
-    private val selectConferenceImp = MutableStateFlow(DefaultTeam.Conference.EAST)
+    private val selectConferenceImp = MutableStateFlow(NBATeam.Conference.EAST)
     val selectConference = selectConferenceImp.asStateFlow()
     val standingLabel = derivedStateOf {
         listOf(
@@ -354,7 +360,7 @@ class HomeViewModel(
         }
     }
 
-    fun updateStandingConference(conference: DefaultTeam.Conference) {
+    fun updateStandingConference(conference: NBATeam.Conference) {
         selectConferenceImp.value = conference
     }
 
@@ -362,11 +368,11 @@ class HomeViewModel(
         standingSortImp.value = label.sort
     }
 
-    fun openTeamStats(teamId: Int) {
+    fun openTeamStats(team: NBATeam) {
         openScreen(
             NbaState.Team(
                 TeamViewModel(
-                    teamId,
+                    team,
                     repository,
                     openScreen,
                     dispatcherProvider,

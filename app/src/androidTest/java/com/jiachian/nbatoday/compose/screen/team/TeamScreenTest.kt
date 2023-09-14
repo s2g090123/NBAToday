@@ -21,8 +21,8 @@ import com.jiachian.nbatoday.utils.onNodeWithTag
 import kotlin.math.pow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
-import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.nullValue
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
@@ -43,7 +43,7 @@ class TeamScreenTest : BaseAndroidTest() {
     fun setup() = runTest {
         repository = TestRepository()
         viewModel = TeamViewModel(
-            teamId = team.teamId,
+            team = team.team,
             repository = repository,
             openScreen = { currentState = it },
             dispatcherProvider = coroutineEnvironment.testDispatcherProvider
@@ -76,7 +76,7 @@ class TeamScreenTest : BaseAndroidTest() {
     fun team_checksTeamInfoUI() {
         composeTestRule
             .onNodeWithMergedTag("TeamInformation_Text_TeamName")
-            .assertTextEquals(team.teamFullName)
+            .assertTextEquals(team.team.teamFullName)
         composeTestRule
             .onNodeWithMergedTag("TeamInformation_Text_TeamRecord")
             .assertTextEquals(
@@ -192,9 +192,9 @@ class TeamScreenTest : BaseAndroidTest() {
                             performClick()
                             assertThat(currentState, instanceOf(NbaState.BoxScore::class.java))
                             onNodeWithTag("GameStatusCard2_Text_HomeTriCode")
-                                .assertTextEquals(game.game.homeTeam.teamTricode)
+                                .assertTextEquals(game.game.homeTeam.team.abbreviation)
                             onNodeWithTag("GameStatusCard2_Text_AwayTriCode")
-                                .assertTextEquals(game.game.awayTeam.teamTricode)
+                                .assertTextEquals(game.game.awayTeam.team.abbreviation)
                             onNodeWithTag("GameStatusCard2_Text_HomeScore")
                                 .assertTextEquals(game.game.homeTeam.score.toString())
                             onNodeWithTag("GameStatusCard2_Text_AwayScore")
@@ -224,9 +224,9 @@ class TeamScreenTest : BaseAndroidTest() {
                             performClick()
                             assertThat(currentState, nullValue())
                             onNodeWithTag("GameStatusCard2_Text_HomeTriCode")
-                                .assertTextEquals(game.game.homeTeam.teamTricode)
+                                .assertTextEquals(game.game.homeTeam.team.abbreviation)
                             onNodeWithTag("GameStatusCard2_Text_AwayTriCode")
-                                .assertTextEquals(game.game.awayTeam.teamTricode)
+                                .assertTextEquals(game.game.awayTeam.team.abbreviation)
                             onNodeWithTag("GameStatusCard2_Text_HomeScore")
                                 .assertTextEquals(game.game.homeTeam.score.toString())
                             onNodeWithTag("GameStatusCard2_Text_AwayScore")

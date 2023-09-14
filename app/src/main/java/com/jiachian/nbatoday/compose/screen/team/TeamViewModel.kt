@@ -10,7 +10,7 @@ import com.jiachian.nbatoday.compose.state.NbaState
 import com.jiachian.nbatoday.data.BaseRepository
 import com.jiachian.nbatoday.data.local.NbaGame
 import com.jiachian.nbatoday.data.local.player.PlayerStats
-import com.jiachian.nbatoday.data.local.team.DefaultTeam
+import com.jiachian.nbatoday.data.local.team.NBATeam
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.utils.NbaUtils
@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class TeamViewModel(
-    val teamId: Int,
+    val team: NBATeam,
     private val repository: BaseRepository,
     private val openScreen: (state: NbaState) -> Unit,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
@@ -36,38 +36,36 @@ class TeamViewModel(
     val user = repository.user
         .stateIn(coroutineScope, SharingStarted.WhileSubscribed(5000L), null)
 
-    private val team = DefaultTeam.getTeamById(teamId)
-
-    val colors = DefaultTeam.getColorsById(teamId)
+    val colors = team.colors
 
     private val games = repository.getGamesAndBets()
     val gamesBefore = games.map { games ->
         games.filter {
-            (it.game.homeTeam.teamId == teamId || it.game.awayTeam.teamId == teamId) &&
+            (it.game.homeTeam.team.teamId == team.teamId || it.game.awayTeam.team.teamId == team.teamId) &&
                 it.game.gameDateTime.time <= NbaUtils.getCalendar().timeInMillis
         }
     }.stateIn(coroutineScope, SharingStarted.Lazily, emptyList())
     val gamesAfter = games.map { games ->
         games.filter {
-            (it.game.homeTeam.teamId == teamId || it.game.awayTeam.teamId == teamId) &&
+            (it.game.homeTeam.team.teamId == team.teamId || it.game.awayTeam.team.teamId == team.teamId) &&
                 it.game.gameDateTime.time > NbaUtils.getCalendar().timeInMillis
         }
     }.stateIn(coroutineScope, SharingStarted.Lazily, emptyList())
-    private val teamAndPlayersStats = repository.getTeamAndPlayersStats(teamId)
+    private val teamAndPlayersStats = repository.getTeamAndPlayersStats(team.teamId)
 
     val teamStats = teamAndPlayersStats.map {
         it?.teamStats
     }.stateIn(coroutineScope, SharingStarted.Lazily, null)
 
-    val teamRank = repository.getTeamRank(teamId, team.conference)
+    val teamRank = repository.getTeamRank(team.teamId, team.conference)
         .stateIn(coroutineScope, SharingStarted.Eagerly, 0)
-    val teamPointsRank = repository.getTeamPointsRank(teamId)
+    val teamPointsRank = repository.getTeamPointsRank(team.teamId)
         .stateIn(coroutineScope, SharingStarted.Eagerly, 0)
-    val teamReboundsRank = repository.getTeamReboundsRank(teamId)
+    val teamReboundsRank = repository.getTeamReboundsRank(team.teamId)
         .stateIn(coroutineScope, SharingStarted.Eagerly, 0)
-    val teamAssistsRank = repository.getTeamAssistsRank(teamId)
+    val teamAssistsRank = repository.getTeamAssistsRank(team.teamId)
         .stateIn(coroutineScope, SharingStarted.Eagerly, 0)
-    val teamPlusMinusRank = repository.getTeamPlusMinusRank(teamId)
+    val teamPlusMinusRank = repository.getTeamPlusMinusRank(team.teamId)
         .stateIn(coroutineScope, SharingStarted.Eagerly, 0)
 
     private val isRefreshingImp = MutableStateFlow(false)
@@ -286,7 +284,7 @@ class TeamViewModel(
             isTeamRefreshingImp.value = true
             withContext(dispatcherProvider.io) {
                 val deferred1 = async { repository.refreshTeamStats() }
-                val deferred2 = async { repository.refreshTeamPlayersStats(teamId) }
+                val deferred2 = async { repository.refreshTeamPlayersStats(team.teamId) }
                 deferred1.await()
                 deferred2.await()
             }

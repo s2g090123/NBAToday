@@ -10,14 +10,13 @@ import com.jiachian.nbatoday.data.NbaGameFactory
 import com.jiachian.nbatoday.data.PlayerStatsFactory
 import com.jiachian.nbatoday.data.TeamStatsFactory
 import com.jiachian.nbatoday.data.TestRepository
-import com.jiachian.nbatoday.data.local.team.DefaultTeam
 import com.jiachian.nbatoday.rule.CalendarRule
 import com.jiachian.nbatoday.rule.TestCoroutineEnvironment
 import com.jiachian.nbatoday.utils.launchAndCollect
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
-import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.nullValue
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
@@ -41,7 +40,7 @@ class TeamViewModelTest {
     fun setup() = runTest {
         repository.refreshSchedule()
         viewModel = TeamViewModel(
-            teamId = homeTeamStats.teamId,
+            team = homeTeamStats.team,
             repository = repository,
             openScreen = {
                 currentState = it
@@ -72,7 +71,7 @@ class TeamViewModelTest {
 
     @Test
     fun team_checksTeamColors() {
-        val expected = DefaultTeam.getColorsById(homeTeamStats.teamId)
+        val expected = homeTeamStats.team.colors
         assertThat(viewModel.colors, `is`(expected))
     }
 

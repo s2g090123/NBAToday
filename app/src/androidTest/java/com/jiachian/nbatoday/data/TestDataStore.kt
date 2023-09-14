@@ -2,7 +2,8 @@ package com.jiachian.nbatoday.data
 
 import com.jiachian.nbatoday.compose.theme.LakersColors
 import com.jiachian.nbatoday.data.datastore.BaseDataStore
-import com.jiachian.nbatoday.data.local.team.DefaultTeam
+import com.jiachian.nbatoday.data.local.team.NBATeam
+import com.jiachian.nbatoday.data.local.team.teamOfficial
 import com.jiachian.nbatoday.data.remote.user.User
 import com.jiachian.nbatoday.utils.NbaUtils
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,7 +24,8 @@ class TestDataStore : BaseDataStore {
     }
 
     override suspend fun updateThemeColor(teamId: Int) {
-        val color = DefaultTeam.getColorsById(teamId)
+        val team = NBATeam.getTeamById(teamId)
+        val color = team?.colors ?: teamOfficial.colors
         themeColors.value = color
     }
 

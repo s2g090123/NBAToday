@@ -10,7 +10,7 @@ import com.jiachian.nbatoday.USER_POINTS
 import com.jiachian.nbatoday.data.local.NbaGameAndBet
 import com.jiachian.nbatoday.data.local.TestLocalDataSource
 import com.jiachian.nbatoday.data.local.bet.Bets
-import com.jiachian.nbatoday.data.local.team.DefaultTeam
+import com.jiachian.nbatoday.data.local.team.NBATeam
 import com.jiachian.nbatoday.data.remote.RemoteGameFactory
 import com.jiachian.nbatoday.data.remote.RemotePlayerFactory
 import com.jiachian.nbatoday.data.remote.RemoteTeamFactory
@@ -268,9 +268,9 @@ class NbaRepositoryTest {
         repository.refreshTeamStats()
         repository.refreshTeamStats(HOME_TEAM_ID)
         repository.refreshTeamPlayersStats(HOME_TEAM_ID)
-        val actual = repository.getTeamRank(HOME_TEAM_ID, DefaultTeam.Conference.EAST).first()
+        val actual = repository.getTeamRank(HOME_TEAM_ID, NBATeam.Conference.EAST).first()
         val expected =
-            localDataSource.getTeamRank(HOME_TEAM_ID, DefaultTeam.Conference.EAST).first()
+            localDataSource.getTeamRank(HOME_TEAM_ID, NBATeam.Conference.EAST).first()
         assertThat(actual, `is`(expected))
     }
 

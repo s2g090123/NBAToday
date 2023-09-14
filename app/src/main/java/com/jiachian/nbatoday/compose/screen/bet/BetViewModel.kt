@@ -56,7 +56,7 @@ class BetViewModel(
         if (betAndGame.game.gameStatus == GameStatusCode.COMING_SOON) {
             openScreen(
                 NbaState.Team(
-                    TeamViewModel(betAndGame.game.homeTeam.teamId, repository, openScreen)
+                    TeamViewModel(betAndGame.game.homeTeam.team, repository, openScreen)
                 )
             )
         } else if (betAndGame.game.gameStatus != GameStatusCode.FINAL) {

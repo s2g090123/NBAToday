@@ -190,8 +190,8 @@ private fun TeamInformation(
                 .data(NbaUtils.getTeamLogoUrlById(stats.teamId))
                 .decoderFactory(SvgDecoder.Factory())
                 .build(),
-            error = painterResource(NbaUtils.getTeamLogoResById(stats.teamId)),
-            placeholder = painterResource(NbaUtils.getTeamLogoResById(stats.teamId)),
+            error = painterResource(stats.team.logoRes),
+            placeholder = painterResource(stats.team.logoRes),
             contentDescription = null
         )
         Text(
@@ -202,7 +202,7 @@ private fun TeamInformation(
                     linkTo(teamLogo.end, parent.end, 8.dp, 8.dp)
                     width = Dimension.fillToConstraints
                 },
-            text = stats.teamFullName,
+            text = stats.team.teamFullName,
             fontWeight = FontWeight.Bold,
             fontSize = 24.sp,
             color = viewModel.colors.extra2
@@ -739,7 +739,7 @@ private fun NbaGame.getStatusText(targetTeamId: Int): String {
         "${cal.get(Calendar.YEAR)}-${cal.get(Calendar.MONTH) + 1}-${cal.get(Calendar.DAY_OF_MONTH)}"
     return if (gameStatus == GameStatusCode.FINAL) {
         dateString + "\n" + when (targetTeamId) {
-            homeTeam.teamId -> {
+            homeTeam.team.teamId -> {
                 if (homeTeam.score >= awayTeam.score) stringResource(R.string.team_game_status_win)
                 else stringResource(R.string.team_game_status_lose)
             }

@@ -6,7 +6,7 @@ import com.jiachian.nbatoday.data.local.player.PlayerCareerInfoUpdate
 import com.jiachian.nbatoday.data.local.player.PlayerCareerStatsUpdate
 import com.jiachian.nbatoday.data.local.player.PlayerStats
 import com.jiachian.nbatoday.data.local.score.GameBoxScore
-import com.jiachian.nbatoday.data.local.team.DefaultTeam
+import com.jiachian.nbatoday.data.local.team.NBATeam
 import com.jiachian.nbatoday.data.local.team.TeamStats
 import com.jiachian.nbatoday.data.remote.game.GameScoreUpdateData
 import com.jiachian.nbatoday.data.remote.game.GameUpdateData
@@ -201,7 +201,7 @@ class TestDao : NbaDao {
         }
     }
 
-    override fun getRank(teamId: Int, conference: DefaultTeam.Conference): Flow<Int> {
+    override fun getRank(teamId: Int, conference: NBATeam.Conference): Flow<Int> {
         return teamStats.map {
             it.filter { team ->
                 team.teamConference == conference

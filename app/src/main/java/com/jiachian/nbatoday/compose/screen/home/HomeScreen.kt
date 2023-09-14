@@ -33,6 +33,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
@@ -100,42 +101,11 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.jiachian.nbatoday.R
-import com.jiachian.nbatoday.compose.theme.BlazersColors
-import com.jiachian.nbatoday.compose.theme.BucksColors
-import com.jiachian.nbatoday.compose.theme.BullsColors
-import com.jiachian.nbatoday.compose.theme.CavaliersColors
-import com.jiachian.nbatoday.compose.theme.CelticsColors
-import com.jiachian.nbatoday.compose.theme.ClippersColors
-import com.jiachian.nbatoday.compose.theme.GrizzliesColors
-import com.jiachian.nbatoday.compose.theme.HawksColors
-import com.jiachian.nbatoday.compose.theme.HeatColors
-import com.jiachian.nbatoday.compose.theme.HornetsColors
-import com.jiachian.nbatoday.compose.theme.JazzColors
-import com.jiachian.nbatoday.compose.theme.KingsColors
-import com.jiachian.nbatoday.compose.theme.KnicksColors
-import com.jiachian.nbatoday.compose.theme.LakersColors
-import com.jiachian.nbatoday.compose.theme.MagicColors
-import com.jiachian.nbatoday.compose.theme.MavericksColors
-import com.jiachian.nbatoday.compose.theme.NetsColors
-import com.jiachian.nbatoday.compose.theme.NuggetsColors
-import com.jiachian.nbatoday.compose.theme.OfficialColors
-import com.jiachian.nbatoday.compose.theme.P76ersColors
-import com.jiachian.nbatoday.compose.theme.PacersColors
-import com.jiachian.nbatoday.compose.theme.PelicansColors
-import com.jiachian.nbatoday.compose.theme.PistonsColors
-import com.jiachian.nbatoday.compose.theme.RaptorsColors
-import com.jiachian.nbatoday.compose.theme.RocketsColors
-import com.jiachian.nbatoday.compose.theme.SpursColors
-import com.jiachian.nbatoday.compose.theme.SunsColors
-import com.jiachian.nbatoday.compose.theme.ThunderColors
-import com.jiachian.nbatoday.compose.theme.TimberwolvesColors
-import com.jiachian.nbatoday.compose.theme.WarriorsColors
-import com.jiachian.nbatoday.compose.theme.WizardsColors
 import com.jiachian.nbatoday.compose.widget.CustomOutlinedTextField
 import com.jiachian.nbatoday.compose.widget.RefreshingScreen
 import com.jiachian.nbatoday.data.local.NbaGame
 import com.jiachian.nbatoday.data.local.NbaGameAndBet
-import com.jiachian.nbatoday.data.local.team.DefaultTeam
+import com.jiachian.nbatoday.data.local.team.NBATeam
 import com.jiachian.nbatoday.data.local.team.TeamStats
 import com.jiachian.nbatoday.data.remote.game.GameStatusCode
 import com.jiachian.nbatoday.data.remote.leader.GameLeaders
@@ -313,7 +283,7 @@ private fun SchedulePage(
                                     .background(MaterialTheme.colors.secondary)
                                     .rippleClickable {
                                         if (game.game.gameStatus == GameStatusCode.COMING_SOON) {
-                                            viewModel.openTeamStats(game.game.homeTeam.teamId)
+                                            viewModel.openTeamStats(game.game.homeTeam.team)
                                         } else {
                                             viewModel.openGameBoxScore(game.game)
                                         }
@@ -378,7 +348,7 @@ private fun StandingPage(
     val selectConference by viewModel.selectConference.collectAsState()
     val isRefreshing by viewModel.isRefreshingTeamStats.collectAsState()
     val pagerState = rememberPagerState()
-    val conferences = remember { DefaultTeam.Conference.values() }
+    val conferences = remember { NBATeam.Conference.values() }
     val pullRefreshState = rememberPullRefreshState(
         refreshing = isRefreshing,
         onRefresh = { viewModel.updateTeamStats() }
@@ -437,8 +407,8 @@ private fun StandingPage(
                         Text(
                             text = stringResource(
                                 when (it) {
-                                    DefaultTeam.Conference.EAST -> R.string.standing_conference_east
-                                    DefaultTeam.Conference.WEST -> R.string.standing_conference_west
+                                    NBATeam.Conference.EAST -> R.string.standing_conference_east
+                                    NBATeam.Conference.WEST -> R.string.standing_conference_west
                                 }
                             ),
                             color = MaterialTheme.colors.primary,
@@ -538,40 +508,9 @@ private fun UserPage(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(31) { index ->
-                    val (teamId, color) = when (index) {
-                        1 -> 1610612757 to BlazersColors
-                        2 -> 1610612749 to BucksColors
-                        3 -> 1610612741 to BullsColors
-                        4 -> 1610612739 to CavaliersColors
-                        5 -> 1610612738 to CelticsColors
-                        6 -> 1610612746 to ClippersColors
-                        7 -> 1610612763 to GrizzliesColors
-                        8 -> 1610612737 to HawksColors
-                        9 -> 1610612748 to HeatColors
-                        10 -> 1610612766 to HornetsColors
-                        11 -> 1610612762 to JazzColors
-                        12 -> 1610612758 to KingsColors
-                        13 -> 1610612752 to KnicksColors
-                        14 -> 1610612747 to LakersColors
-                        15 -> 1610612753 to MagicColors
-                        16 -> 1610612742 to MavericksColors
-                        17 -> 1610612751 to NetsColors
-                        18 -> 1610612743 to NuggetsColors
-                        19 -> 1610612754 to PacersColors
-                        20 -> 1610612740 to PelicansColors
-                        21 -> 1610612765 to PistonsColors
-                        22 -> 1610612761 to RaptorsColors
-                        23 -> 1610612745 to RocketsColors
-                        24 -> 1610612759 to SpursColors
-                        25 -> 1610612755 to P76ersColors
-                        26 -> 1610612756 to SunsColors
-                        27 -> 1610612760 to ThunderColors
-                        28 -> 1610612750 to TimberwolvesColors
-                        29 -> 1610612744 to WarriorsColors
-                        30 -> 1610612764 to WizardsColors
-                        else -> 0 to OfficialColors
-                    }
+                items(viewModel.nbaTeams) { team ->
+                    val teamId = team.teamId
+                    val color = team.colors
                     ThemeCard(
                         modifier = Modifier
                             .testTag("UserPage_ThemeCard")
@@ -584,7 +523,7 @@ private fun UserPage(
                                 viewModel.updateTheme(teamId, color)
                             }
                             .padding(bottom = 8.dp),
-                        team = DefaultTeam.getTeamById(teamId),
+                        team = team,
                         firstColor = color.primary,
                         secondColor = color.secondary,
                         thirdColor = color.extra1,
@@ -599,7 +538,7 @@ private fun UserPage(
 @Composable
 private fun ThemeCard(
     modifier: Modifier = Modifier,
-    team: DefaultTeam,
+    team: NBATeam,
     firstColor: Color,
     secondColor: Color,
     thirdColor: Color,
@@ -621,8 +560,8 @@ private fun ThemeCard(
                 .data(NbaUtils.getTeamLogoUrlById(team.teamId))
                 .decoderFactory(SvgDecoder.Factory())
                 .build(),
-            error = painterResource(NbaUtils.getTeamLogoResById(team.teamId)),
-            placeholder = painterResource(NbaUtils.getTeamLogoResById(team.teamId)),
+            error = painterResource(team.logoRes),
+            placeholder = painterResource(team.logoRes),
             contentDescription = null
         )
         Text(
@@ -724,7 +663,7 @@ private fun TeamStanding(
                             modifier = Modifier
                                 .testTag("TeamStanding_Row_TeamName")
                                 .wrapContentWidth()
-                                .rippleClickable { viewModel.openTeamStats(stat.teamId) }
+                                .rippleClickable { viewModel.openTeamStats(stat.team) }
                         ) {
                             Row(
                                 modifier = Modifier
@@ -754,19 +693,15 @@ private fun TeamStanding(
                                         .data(NbaUtils.getTeamLogoUrlById(stat.teamId))
                                         .decoderFactory(SvgDecoder.Factory())
                                         .build(),
-                                    error = painterResource(NbaUtils.getTeamLogoResById(stat.teamId)),
-                                    placeholder = painterResource(
-                                        NbaUtils.getTeamLogoResById(
-                                            stat.teamId
-                                        )
-                                    ),
+                                    error = painterResource(stat.team.logoRes),
+                                    placeholder = painterResource(stat.team.logoRes),
                                     contentDescription = null
                                 )
                                 Text(
                                     modifier = Modifier
                                         .testTag("TeamStanding_Text_TeamName")
                                         .padding(start = 4.dp),
-                                    text = stat.teamName,
+                                    text = stat.team.teamName,
                                     textAlign = TextAlign.Start,
                                     fontSize = 16.sp,
                                     color = MaterialTheme.colors.secondary,
@@ -1010,6 +945,8 @@ fun GameStatusCard(
     expandable: Boolean,
 ) {
     var isExpand by rememberSaveable { mutableStateOf(false) }
+    val homeTeam = remember(game) { game.homeTeam }
+    val awayTeam = remember(game) { game.awayTeam }
 
     ConstraintLayout(
         modifier = modifier
@@ -1026,7 +963,7 @@ fun GameStatusCard(
                     top.linkTo(parent.top, 16.dp)
                     linkTo(homeLogo.start, homeLogo.end)
                 },
-            text = game.homeTeam.teamTricode,
+            text = homeTeam.team.abbreviation,
             color = color,
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold
@@ -1039,11 +976,11 @@ fun GameStatusCard(
                 }
                 .size(100.dp),
             model = ImageRequest.Builder(LocalContext.current)
-                .data(NbaUtils.getTeamLogoUrlById(game.homeTeam.teamId))
+                .data(NbaUtils.getTeamLogoUrlById(homeTeam.team.teamId))
                 .decoderFactory(SvgDecoder.Factory())
                 .build(),
-            error = painterResource(NbaUtils.getTeamLogoResById(game.homeTeam.teamId)),
-            placeholder = painterResource(NbaUtils.getTeamLogoResById(game.homeTeam.teamId)),
+            error = painterResource(homeTeam.team.logoRes),
+            placeholder = painterResource(homeTeam.team.logoRes),
             contentDescription = null
         )
         Text(
@@ -1052,7 +989,7 @@ fun GameStatusCard(
                     top.linkTo(homeLogo.bottom, 8.dp)
                     linkTo(homeLogo.start, homeLogo.end)
                 },
-            text = game.homeTeam.score.toString(),
+            text = homeTeam.score.toString(),
             color = color,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold
@@ -1063,7 +1000,7 @@ fun GameStatusCard(
                     top.linkTo(parent.top, 16.dp)
                     linkTo(awayLogo.start, awayLogo.end)
                 },
-            text = game.awayTeam.teamTricode,
+            text = awayTeam.team.abbreviation,
             color = color,
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold
@@ -1076,11 +1013,11 @@ fun GameStatusCard(
                 }
                 .size(100.dp),
             model = ImageRequest.Builder(LocalContext.current)
-                .data(NbaUtils.getTeamLogoUrlById(game.awayTeam.teamId))
+                .data(NbaUtils.getTeamLogoUrlById(awayTeam.team.teamId))
                 .decoderFactory(SvgDecoder.Factory())
                 .build(),
-            error = painterResource(NbaUtils.getTeamLogoResById(game.awayTeam.teamId)),
-            placeholder = painterResource(NbaUtils.getTeamLogoResById(game.awayTeam.teamId)),
+            error = painterResource(awayTeam.team.logoRes),
+            placeholder = painterResource(awayTeam.team.logoRes),
             contentDescription = null
         )
         Text(
@@ -1089,7 +1026,7 @@ fun GameStatusCard(
                     top.linkTo(awayLogo.bottom, 8.dp)
                     linkTo(awayLogo.start, awayLogo.end)
                 },
-            text = game.awayTeam.score.toString(),
+            text = awayTeam.score.toString(),
             color = color,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold
@@ -1195,6 +1132,8 @@ fun GameStatusCard2(
                 (userData == null || gameAndBet.bets.find { it.account == userData.account } == null)
         }
     }
+    val homeTeam = remember(gameAndBet) { gameAndBet.game.homeTeam }
+    val awayTeam = remember(gameAndBet) { gameAndBet.game.awayTeam }
     var showBetsDialog by rememberSaveable { mutableStateOf(false) }
 
     ConstraintLayout(
@@ -1214,7 +1153,7 @@ fun GameStatusCard2(
                     top.linkTo(parent.top, 16.dp)
                     linkTo(homeLogo.start, homeLogo.end)
                 },
-            text = gameAndBet.game.homeTeam.teamTricode,
+            text = homeTeam.team.abbreviation,
             color = color,
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold
@@ -1227,11 +1166,11 @@ fun GameStatusCard2(
                 }
                 .size(100.dp),
             model = ImageRequest.Builder(LocalContext.current)
-                .data(NbaUtils.getTeamLogoUrlById(gameAndBet.game.homeTeam.teamId))
+                .data(NbaUtils.getTeamLogoUrlById(homeTeam.team.teamId))
                 .decoderFactory(SvgDecoder.Factory())
                 .build(),
-            error = painterResource(NbaUtils.getTeamLogoResById(gameAndBet.game.homeTeam.teamId)),
-            placeholder = painterResource(NbaUtils.getTeamLogoResById(gameAndBet.game.homeTeam.teamId)),
+            error = painterResource(homeTeam.team.logoRes),
+            placeholder = painterResource(homeTeam.team.logoRes),
             contentDescription = null
         )
         Text(
@@ -1241,7 +1180,7 @@ fun GameStatusCard2(
                     top.linkTo(homeLogo.bottom, 8.dp)
                     linkTo(homeLogo.start, homeLogo.end)
                 },
-            text = gameAndBet.game.homeTeam.score.toString(),
+            text = homeTeam.score.toString(),
             color = color,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold
@@ -1253,7 +1192,7 @@ fun GameStatusCard2(
                     top.linkTo(parent.top, 16.dp)
                     linkTo(awayLogo.start, awayLogo.end)
                 },
-            text = gameAndBet.game.awayTeam.teamTricode,
+            text = awayTeam.team.abbreviation,
             color = color,
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold
@@ -1266,11 +1205,11 @@ fun GameStatusCard2(
                 }
                 .size(100.dp),
             model = ImageRequest.Builder(LocalContext.current)
-                .data(NbaUtils.getTeamLogoUrlById(gameAndBet.game.awayTeam.teamId))
+                .data(NbaUtils.getTeamLogoUrlById(awayTeam.team.teamId))
                 .decoderFactory(SvgDecoder.Factory())
                 .build(),
-            error = painterResource(NbaUtils.getTeamLogoResById(gameAndBet.game.awayTeam.teamId)),
-            placeholder = painterResource(NbaUtils.getTeamLogoResById(gameAndBet.game.awayTeam.teamId)),
+            error = painterResource(awayTeam.team.logoRes),
+            placeholder = painterResource(awayTeam.team.logoRes),
             contentDescription = null
         )
         Text(
@@ -1280,7 +1219,7 @@ fun GameStatusCard2(
                     top.linkTo(awayLogo.bottom, 8.dp)
                     linkTo(awayLogo.start, awayLogo.end)
                 },
-            text = gameAndBet.game.awayTeam.score.toString(),
+            text = awayTeam.score.toString(),
             color = color,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold
@@ -1807,6 +1746,8 @@ private fun BetDialog(
         var homePoints by rememberSaveable { mutableStateOf("") }
         var awayPoints by rememberSaveable { mutableStateOf("") }
         var showWarning by rememberSaveable { mutableStateOf(false) }
+        val homeTeam = remember(gameAndBet) { gameAndBet.game.homeTeam }
+        val awayTeam = remember(gameAndBet) { gameAndBet.game.awayTeam }
         val remainPoints by remember(userData) {
             derivedStateOf {
                 val points = userData.points ?: 0
@@ -1838,8 +1779,8 @@ private fun BetDialog(
                         },
                     text = stringResource(
                         R.string.bet_win_lose_record,
-                        gameAndBet.game.homeTeam.wins,
-                        gameAndBet.game.homeTeam.losses
+                        homeTeam.wins,
+                        homeTeam.losses
                     ),
                     color = MaterialTheme.colors.primary,
                     fontSize = 20.sp
@@ -1853,8 +1794,8 @@ private fun BetDialog(
                         },
                     text = stringResource(
                         R.string.bet_win_lose_record,
-                        gameAndBet.game.awayTeam.wins,
-                        gameAndBet.game.awayTeam.losses
+                        awayTeam.wins,
+                        awayTeam.losses
                     ),
                     color = MaterialTheme.colors.primary,
                     fontSize = 20.sp
@@ -1867,11 +1808,11 @@ private fun BetDialog(
                         }
                         .size(100.dp),
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data(NbaUtils.getTeamLogoUrlById(gameAndBet.game.homeTeam.teamId))
+                        .data(NbaUtils.getTeamLogoUrlById(homeTeam.team.teamId))
                         .decoderFactory(SvgDecoder.Factory())
                         .build(),
-                    error = painterResource(NbaUtils.getTeamLogoResById(gameAndBet.game.homeTeam.teamId)),
-                    placeholder = painterResource(NbaUtils.getTeamLogoResById(gameAndBet.game.homeTeam.teamId)),
+                    error = painterResource(homeTeam.team.logoRes),
+                    placeholder = painterResource(homeTeam.team.logoRes),
                     contentDescription = null
                 )
                 AsyncImage(
@@ -1882,11 +1823,11 @@ private fun BetDialog(
                         }
                         .size(100.dp),
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data(NbaUtils.getTeamLogoUrlById(gameAndBet.game.awayTeam.teamId))
+                        .data(NbaUtils.getTeamLogoUrlById(awayTeam.team.teamId))
                         .decoderFactory(SvgDecoder.Factory())
                         .build(),
-                    error = painterResource(NbaUtils.getTeamLogoResById(gameAndBet.game.awayTeam.teamId)),
-                    placeholder = painterResource(NbaUtils.getTeamLogoResById(gameAndBet.game.awayTeam.teamId)),
+                    error = painterResource(awayTeam.team.logoRes),
+                    placeholder = painterResource(awayTeam.team.logoRes),
                     contentDescription = null
                 )
                 Text(
@@ -1991,11 +1932,7 @@ private fun BetDialog(
                                         Toast.LENGTH_SHORT
                                     )
                                     .show()
-                            } else if ((
-                                homePoints.toLongOrNull()
-                                    ?: 0
-                                ) <= 0 && (awayPoints.toLongOrNull() ?: 0) <= 0
-                            ) {
+                            } else if ((homePoints.toLongOrNull() ?: 0) <= 0 && (awayPoints.toLongOrNull() ?: 0) <= 0) {
                                 Toast
                                     .makeText(
                                         context,

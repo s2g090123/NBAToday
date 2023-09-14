@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import androidx.room.ColumnInfo
 import com.google.gson.annotations.SerializedName
 import com.jiachian.nbatoday.data.local.NbaGame
+import com.jiachian.nbatoday.data.local.team.NBATeam
+import com.jiachian.nbatoday.data.local.team.teamOfficial
 import com.jiachian.nbatoday.data.remote.team.GameTeam
 import java.text.SimpleDateFormat
 import java.util.TimeZone
@@ -71,20 +73,14 @@ data class Schedule(
                     val wins: Int? // 勝場場次(從這場之前), e.g. 2
                 ) {
                     fun toNbaAwayTeam(): GameTeam? {
+                        val team = teamId?.let { NBATeam.getTeamById(it) } ?: teamOfficial
                         val losses = losses ?: return null
                         val score = score ?: return null
-                        val teamCity = teamCity ?: return null
-                        val teamId = teamId ?: return null
-                        val teamName = teamName ?: return null
-                        val teamTricode = teamTricode ?: return null
                         val wins = wins ?: return null
                         return GameTeam(
+                            team,
                             losses,
                             score,
-                            teamCity,
-                            teamId,
-                            teamName,
-                            teamTricode,
                             wins,
                             emptyList()
                         )
@@ -108,20 +104,14 @@ data class Schedule(
                     val wins: Int?
                 ) {
                     fun toNbaHomeTeam(): GameTeam? {
+                        val team = teamId?.let { NBATeam.getTeamById(it) } ?: teamOfficial
                         val losses = losses ?: return null
                         val score = score ?: return null
-                        val teamCity = teamCity ?: return null
-                        val teamId = teamId ?: return null
-                        val teamName = teamName ?: return null
-                        val teamTricode = teamTricode ?: return null
                         val wins = wins ?: return null
                         return GameTeam(
+                            team,
                             losses,
                             score,
-                            teamCity,
-                            teamId,
-                            teamName,
-                            teamTricode,
                             wins,
                             emptyList()
                         )

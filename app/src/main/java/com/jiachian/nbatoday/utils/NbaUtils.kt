@@ -2,7 +2,6 @@ package com.jiachian.nbatoday.utils
 
 import android.annotation.SuppressLint
 import com.jiachian.nbatoday.CDN_BASE_URL
-import com.jiachian.nbatoday.data.local.team.DefaultTeam
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -14,10 +13,6 @@ object NbaUtils {
         cal.timeZone = TimeZone.getTimeZone("EST")
         cal.time = Date()
         return cal
-    }
-
-    fun getTeamLogoResById(teamId: Int): Int {
-        return DefaultTeam.getTeamById(teamId).logoRes
     }
 
     // returns svg

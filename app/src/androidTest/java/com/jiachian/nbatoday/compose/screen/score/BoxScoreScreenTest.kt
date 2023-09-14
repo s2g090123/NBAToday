@@ -84,10 +84,10 @@ class BoxScoreScreenTest : BaseAndroidTest() {
             .assertTextEquals(game.gameStatusText)
         composeTestRule
             .onNodeWithMergedTag("ScoreTotal_Text_HomeName")
-            .assertTextEquals(home.teamName)
+            .assertTextEquals(home.team.teamName)
         composeTestRule
             .onNodeWithMergedTag("ScoreTotal_Text_AwayName")
-            .assertTextEquals(away.teamName)
+            .assertTextEquals(away.team.teamName)
         val scorePeriod = composeTestRule
             .onNodeWithMergedTag("ScoreScreen_ScorePeriod")
         val homePeriod = scorePeriod
@@ -96,7 +96,7 @@ class BoxScoreScreenTest : BaseAndroidTest() {
             .onNodeWithTag("ScorePeriod_Box_Score", 1)
         homePeriod.apply {
             onNodeWithTag("ScorePeriod_Text_TeamName")
-                .assertTextEquals(home.teamName)
+                .assertTextEquals(home.team.teamName)
             onNodeWithTag("ScorePeriod_Text_Score", 0)
                 .assertTextEquals(home.periods[0].score.toString())
             onNodeWithTag("ScorePeriod_Text_Score", 1)
@@ -110,7 +110,7 @@ class BoxScoreScreenTest : BaseAndroidTest() {
         }
         awayPeriod.apply {
             onNodeWithTag("ScorePeriod_Text_TeamName")
-                .assertTextEquals(away.teamName)
+                .assertTextEquals(away.team.teamName)
             onNodeWithTag("ScorePeriod_Text_Score", 0)
                 .assertTextEquals(away.periods[0].score.toString())
             onNodeWithTag("ScorePeriod_Text_Score", 1)

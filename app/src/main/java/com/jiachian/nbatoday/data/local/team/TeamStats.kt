@@ -7,11 +7,8 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "nba_team_stats")
 data class TeamStats(
     @ColumnInfo(name = "team_id") @PrimaryKey val teamId: Int,
-    @ColumnInfo(name = "team_full_name") val teamFullName: String, // Boston Celtics
-    @ColumnInfo(name = "team_name") val teamName: String, // Celtics
-    @ColumnInfo(name = "team_abbr") val teamAbbr: String, // BOS
-    @ColumnInfo(name = "team_conference") val teamConference: DefaultTeam.Conference,
-    @ColumnInfo(name = "team_division") val teamDivision: DefaultTeam.Division,
+    @ColumnInfo(name = "team") val team: NBATeam,
+    @ColumnInfo(name = "team_conference") val teamConference: NBATeam.Conference,
     @ColumnInfo(name = "game_played") val gamePlayed: Int, // 目前打了幾場比賽
     @ColumnInfo(name = "win") val win: Int,
     @ColumnInfo(name = "lose") val lose: Int,

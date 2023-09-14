@@ -1,5 +1,9 @@
 package com.jiachian.nbatoday
 
+import com.jiachian.nbatoday.compose.theme.NBAColors
+import com.jiachian.nbatoday.compose.theme.OfficialColors
+import com.jiachian.nbatoday.data.local.team.NBATeam
+
 const val FINAL_GAME_ID = "0"
 const val PLAYING_GAME_ID = "1"
 const val COMING_SOON_GAME_ID = "2"
@@ -21,6 +25,29 @@ const val HOME_TEAM_NAME = "Home"
 const val AWAY_TEAM_NAME = "Away"
 const val HOME_TEAM_ABBR = "TWH"
 const val AWAY_TEAM_ABBR = "TWA"
+const val HOME_TEAM_LOCATION = "Home"
+const val AWAY_TEAM_LOCATION = "Away"
+
+val HOME_TEAM = object : NBATeam {
+    override val teamId: Int = HOME_TEAM_ID
+    override val abbreviation: String = HOME_TEAM_ABBR
+    override val teamName: String = HOME_TEAM_NAME
+    override val location: String = HOME_TEAM_LOCATION
+    override val logoRes: Int = R.drawable.ic_logo_nba
+    override val conference: NBATeam.Conference = NBATeam.Conference.EAST
+    override val division: NBATeam.Division = NBATeam.Division.SOUTHEAST
+    override val colors: NBAColors = OfficialColors
+}
+val AWAY_TEAM = object : NBATeam {
+    override val teamId: Int = AWAY_TEAM_ID
+    override val abbreviation: String = AWAY_TEAM_ABBR
+    override val teamName: String = AWAY_TEAM_NAME
+    override val location: String = AWAY_TEAM_LOCATION
+    override val logoRes: Int = R.drawable.ic_logo_nba
+    override val conference: NBATeam.Conference = NBATeam.Conference.WEST
+    override val division: NBATeam.Division = NBATeam.Division.SOUTHWEST
+    override val colors: NBAColors = OfficialColors
+}
 
 const val HOME_PLAYER_ID = 123456
 const val AWAY_PLAYER_ID = 654321

@@ -12,7 +12,7 @@ import com.jiachian.nbatoday.data.local.player.PlayerCareerInfoUpdate
 import com.jiachian.nbatoday.data.local.player.PlayerCareerStatsUpdate
 import com.jiachian.nbatoday.data.local.player.PlayerStats
 import com.jiachian.nbatoday.data.local.score.GameBoxScore
-import com.jiachian.nbatoday.data.local.team.DefaultTeam
+import com.jiachian.nbatoday.data.local.team.NBATeam
 import com.jiachian.nbatoday.data.local.team.TeamStats
 import com.jiachian.nbatoday.data.remote.game.GameScoreUpdateData
 import com.jiachian.nbatoday.data.remote.game.GameUpdateData
@@ -83,7 +83,7 @@ interface NbaDao {
         """
             SELECT (
                 SELECT COUNT(team_id) + 1
-                FROM nba_team_stats b 
+                FROM nba_team_stats b
                 WHERE b.win_percentage > a.win_percentage AND team_conference == :conference
             )
             FROM nba_team_stats a
@@ -91,14 +91,14 @@ interface NbaDao {
             ORDER BY win_percentage
         """
     )
-    fun getRank(teamId: Int, conference: DefaultTeam.Conference): Flow<Int>
+    fun getRank(teamId: Int, conference: NBATeam.Conference): Flow<Int>
 
     @Query(
         """
             SELECT (
                 SELECT COUNT(team_id) + 1
-                FROM nba_team_stats b 
-                WHERE 
+                FROM nba_team_stats b
+                WHERE
                     CASE
                         WHEN (b.points * 1.0 / b.game_played) == (a.points * 1.0 / a.game_played) THEN b.win_percentage > a.win_percentage
                         ELSE (b.points * 1.0 / b.game_played) > (a.points * 1.0 / a.game_played)
@@ -115,8 +115,8 @@ interface NbaDao {
         """
             SELECT (
                 SELECT COUNT(team_id) + 1
-                FROM nba_team_stats b 
-                WHERE 
+                FROM nba_team_stats b
+                WHERE
                     CASE
                         WHEN (b.rebounds_total * 1.0 / b.game_played) == (a.rebounds_total * 1.0 / a.game_played) THEN b.win_percentage > a.win_percentage
                         ELSE (b.rebounds_total * 1.0 / b.game_played) > (a.rebounds_total * 1.0 / a.game_played)
@@ -133,8 +133,8 @@ interface NbaDao {
         """
             SELECT (
                 SELECT COUNT(team_id) + 1
-                FROM nba_team_stats b 
-                WHERE 
+                FROM nba_team_stats b
+                WHERE
                     CASE
                         WHEN (b.assists * 1.0 / b.game_played) == (a.assists * 1.0 / a.game_played) THEN b.win_percentage > a.win_percentage
                         ELSE (b.assists * 1.0 / b.game_played) > (a.assists * 1.0 / a.game_played)
@@ -151,8 +151,8 @@ interface NbaDao {
         """
             SELECT (
                 SELECT COUNT(team_id) + 1
-                FROM nba_team_stats b 
-                WHERE 
+                FROM nba_team_stats b
+                WHERE
                     CASE
                         WHEN b.plus_minus == a.plus_minus THEN b.win_percentage > a.win_percentage
                         ELSE b.plus_minus > a.plus_minus

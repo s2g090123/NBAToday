@@ -20,8 +20,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers
-import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.nullValue
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
@@ -99,7 +99,7 @@ class MainViewModelTest {
         viewModel.updateState(
             NbaState.Team(
                 TeamViewModel(
-                    teamId = TeamStatsFactory.getHomeTeamStats().teamId,
+                    team = TeamStatsFactory.getHomeTeamStats().team,
                     repository = repository,
                     openScreen = {}
                 )

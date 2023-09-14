@@ -3,6 +3,7 @@ package com.jiachian.nbatoday.data.local.score
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.jiachian.nbatoday.data.local.team.NBATeam
 import com.jiachian.nbatoday.data.remote.game.GameStatusCode
 import com.jiachian.nbatoday.data.remote.score.PlayerActiveStatus
 
@@ -24,14 +25,8 @@ data class GameBoxScore(
     val awayTeam: BoxScoreTeam?
 ) {
     data class BoxScoreTeam(
-        @ColumnInfo(name = "team_id")
-        val teamId: Int, // e.g. 1610612766
-        @ColumnInfo(name = "team_name")
-        val teamName: String, // e.g. Hornets
-        @ColumnInfo(name = "team_city")
-        val teamCity: String, // e.g. Charlotte
-        @ColumnInfo(name = "team_tri_code")
-        val teamTricode: String, // e.g. CHA
+        @ColumnInfo(name = "team")
+        val team: NBATeam,
         @ColumnInfo(name = "score")
         val score: Int, // e.g. 134
         @ColumnInfo(name = "in_bonus")

@@ -75,7 +75,7 @@ class MainActivityTest {
         viewModel.updateState(
             NbaState.Team(
                 TeamViewModel(
-                    teamId = TeamStatsFactory.getHomeTeamStats().teamId,
+                    team = TeamStatsFactory.getHomeTeamStats().team,
                     repository = repository,
                     openScreen = {}
                 )

@@ -112,9 +112,9 @@ class HomeScreenTest : BaseAndroidTest() {
             .apply {
                 assertThat(currentState, instanceOf(NbaState.BoxScore::class.java))
                 onNodeWithTag("GameStatusCard2_Text_HomeTriCode")
-                    .assertTextEquals(firstGame.game.homeTeam.teamTricode)
+                    .assertTextEquals(firstGame.game.homeTeam.team.abbreviation)
                 onNodeWithTag("GameStatusCard2_Text_AwayTriCode")
-                    .assertTextEquals(firstGame.game.awayTeam.teamTricode)
+                    .assertTextEquals(firstGame.game.awayTeam.team.abbreviation)
                 onNodeWithTag("GameStatusCard2_Text_HomeScore")
                     .assertTextEquals(firstGame.game.homeTeam.score.toString())
                 onNodeWithTag("GameStatusCard2_Text_AwayScore")
@@ -181,9 +181,9 @@ class HomeScreenTest : BaseAndroidTest() {
             .apply {
                 assertThat(currentState, instanceOf(NbaState.BoxScore::class.java))
                 onNodeWithTag("GameStatusCard2_Text_HomeTriCode")
-                    .assertTextEquals(secondGame.game.homeTeam.teamTricode)
+                    .assertTextEquals(secondGame.game.homeTeam.team.abbreviation)
                 onNodeWithTag("GameStatusCard2_Text_AwayTriCode")
-                    .assertTextEquals(secondGame.game.awayTeam.teamTricode)
+                    .assertTextEquals(secondGame.game.awayTeam.team.abbreviation)
                 onNodeWithTag("GameStatusCard2_Text_HomeScore")
                     .assertTextEquals(secondGame.game.homeTeam.score.toString())
                 onNodeWithTag("GameStatusCard2_Text_AwayScore")
@@ -269,9 +269,9 @@ class HomeScreenTest : BaseAndroidTest() {
             .apply {
                 assertThat(currentState, instanceOf(NbaState.Team::class.java))
                 onNodeWithTag("GameStatusCard2_Text_HomeTriCode")
-                    .assertTextEquals(firstGame.game.homeTeam.teamTricode)
+                    .assertTextEquals(firstGame.game.homeTeam.team.abbreviation)
                 onNodeWithTag("GameStatusCard2_Text_AwayTriCode")
-                    .assertTextEquals(firstGame.game.awayTeam.teamTricode)
+                    .assertTextEquals(firstGame.game.awayTeam.team.abbreviation)
                 onNodeWithTag("GameStatusCard2_Text_HomeScore")
                     .assertTextEquals(firstGame.game.homeTeam.score.toString())
                 onNodeWithTag("GameStatusCard2_Text_AwayScore")
@@ -357,9 +357,9 @@ class HomeScreenTest : BaseAndroidTest() {
             .apply {
                 assertThat(currentState, instanceOf(NbaState.BoxScore::class.java))
                 onNodeWithTag("GameStatusCard2_Text_HomeTriCode")
-                    .assertTextEquals(firstGame.game.homeTeam.teamTricode)
+                    .assertTextEquals(firstGame.game.homeTeam.team.abbreviation)
                 onNodeWithTag("GameStatusCard2_Text_AwayTriCode")
-                    .assertTextEquals(firstGame.game.awayTeam.teamTricode)
+                    .assertTextEquals(firstGame.game.awayTeam.team.abbreviation)
                 onNodeWithTag("GameStatusCard2_Text_HomeScore")
                     .assertTextEquals(firstGame.game.homeTeam.score.toString())
                 onNodeWithTag("GameStatusCard2_Text_AwayScore")
@@ -525,7 +525,7 @@ class HomeScreenTest : BaseAndroidTest() {
             onNodeWithTag("TeamStanding_Text_Index")
                 .assertTextEquals("1")
             onNodeWithTag("TeamStanding_Text_TeamName")
-                .assertTextEquals(stats.teamName)
+                .assertTextEquals(stats.team.teamName)
         }
         val statsRoot = page
             .onNodeWithTag("TeamStanding_Column_StatsRoot")
@@ -704,7 +704,7 @@ class HomeScreenTest : BaseAndroidTest() {
             .onNodeWithMergedTag("UserPage_LVG_Palette")
             .onNodeWithTag("UserPage_ThemeCard", 1)
             .onNodeWithTag("ThemeCard_Text_Name")
-            .assertTextEquals("Blazers")
+            .assertTextEquals(viewModel.nbaTeams[1].teamName)
     }
 
     private fun getYesterdayGame(): NbaGame {

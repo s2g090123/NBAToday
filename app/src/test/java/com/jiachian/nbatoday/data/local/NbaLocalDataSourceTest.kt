@@ -16,15 +16,15 @@ import com.jiachian.nbatoday.data.TeamStatsFactory
 import com.jiachian.nbatoday.data.local.bet.Bets
 import com.jiachian.nbatoday.data.local.player.PlayerCareerInfoUpdate
 import com.jiachian.nbatoday.data.local.player.PlayerCareerStatsUpdate
-import com.jiachian.nbatoday.data.local.team.DefaultTeam
+import com.jiachian.nbatoday.data.local.team.NBATeam
 import com.jiachian.nbatoday.data.remote.game.GameScoreUpdateData
 import com.jiachian.nbatoday.data.remote.game.GameStatusCode
 import com.jiachian.nbatoday.data.remote.game.GameUpdateData
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
-import org.hamcrest.CoreMatchers.hasItem
 import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.hasItem
 import org.hamcrest.CoreMatchers.nullValue
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
@@ -183,7 +183,7 @@ class NbaLocalDataSourceTest {
     fun getTeamRank_checksDataCorrect() = runTest {
         val homeTeam = TeamStatsFactory.getHomeTeamStats()
         dataSource.updateTeamStats(homeTeam)
-        val actual = dataSource.getTeamRank(HOME_TEAM_ID, DefaultTeam.Conference.EAST).first()
+        val actual = dataSource.getTeamRank(HOME_TEAM_ID, NBATeam.Conference.EAST).first()
         assertThat(actual, `is`(1))
     }
 

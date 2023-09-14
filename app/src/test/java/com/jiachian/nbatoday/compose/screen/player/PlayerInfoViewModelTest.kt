@@ -41,9 +41,9 @@ class PlayerInfoViewModelTest {
         assertThat(playerCareer?.personId, `is`(homePlayer.personId))
         assertThat(playerCareer?.info, `is`(notNullValue()))
         assertThat(playerCareer?.info?.playerName, `is`(homePlayer.info.playerName))
-        assertThat(playerCareer?.info?.teamName, `is`(homePlayer.info.teamName))
-        assertThat(playerCareer?.info?.teamNameAbbr, `is`(homePlayer.info.teamNameAbbr))
-        assertThat(playerCareer?.info?.teamId, `is`(homePlayer.info.teamId))
+        assertThat(playerCareer?.info?.team?.teamName, `is`(homePlayer.info.team.teamName))
+        assertThat(playerCareer?.info?.team?.abbreviation, `is`(homePlayer.info.team.abbreviation))
+        assertThat(playerCareer?.info?.team?.teamId, `is`(homePlayer.info.team.teamId))
         assertThat(playerCareer?.stats?.careerStats, `is`(homePlayer.stats.careerStats))
         assertThat(playerCareer?.stats?.careerRank, `is`(homePlayer.stats.careerRank))
     }

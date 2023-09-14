@@ -241,7 +241,7 @@ class GameCalendarViewModel(
         openScreen(
             NbaState.Team(
                 TeamViewModel(
-                    teamId,
+                    team,
                     repository,
                     openScreen,
                     dispatcherProvider,
