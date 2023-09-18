@@ -1,8 +1,5 @@
 package com.jiachian.nbatoday.compose.screen.team
 
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.compose.screen.player.PlayerInfoViewModel
 import com.jiachian.nbatoday.compose.screen.score.BoxScoreViewModel
@@ -77,33 +74,6 @@ class TeamViewModel(
 
     private val playerSortImp = MutableStateFlow(PlayerSort.PTS)
     val playerSort = playerSortImp.asStateFlow()
-    val playerLabels = derivedStateOf {
-        listOf(
-            PlayerLabel(40.dp, "GP", TextAlign.End, PlayerSort.GP),
-            PlayerLabel(40.dp, "W", TextAlign.End, PlayerSort.W),
-            PlayerLabel(40.dp, "L", TextAlign.End, PlayerSort.L),
-            PlayerLabel(64.dp, "WIN%", TextAlign.End, PlayerSort.WINP),
-            PlayerLabel(64.dp, "PTS", TextAlign.End, PlayerSort.PTS),
-            PlayerLabel(64.dp, "FGM", TextAlign.End, PlayerSort.FGM),
-            PlayerLabel(64.dp, "FGA", TextAlign.End, PlayerSort.FGA),
-            PlayerLabel(64.dp, "FG%", TextAlign.End, PlayerSort.FGP),
-            PlayerLabel(64.dp, "3PM", TextAlign.End, PlayerSort.PM3),
-            PlayerLabel(64.dp, "3PA", TextAlign.End, PlayerSort.PA3),
-            PlayerLabel(64.dp, "3P%", TextAlign.End, PlayerSort.PP3),
-            PlayerLabel(64.dp, "FTM", TextAlign.End, PlayerSort.FTM),
-            PlayerLabel(64.dp, "FTA", TextAlign.End, PlayerSort.FTA),
-            PlayerLabel(64.dp, "FT%", TextAlign.End, PlayerSort.FTP),
-            PlayerLabel(48.dp, "OREB", TextAlign.End, PlayerSort.OREB),
-            PlayerLabel(48.dp, "DREB", TextAlign.End, PlayerSort.DREB),
-            PlayerLabel(48.dp, "REB", TextAlign.End, PlayerSort.REB),
-            PlayerLabel(48.dp, "AST", TextAlign.End, PlayerSort.AST),
-            PlayerLabel(48.dp, "TOV", TextAlign.End, PlayerSort.TOV),
-            PlayerLabel(48.dp, "STL", TextAlign.End, PlayerSort.STL),
-            PlayerLabel(48.dp, "BLK", TextAlign.End, PlayerSort.BLK),
-            PlayerLabel(48.dp, "PF", TextAlign.End, PlayerSort.PF),
-            PlayerLabel(48.dp, "+/-", TextAlign.End, PlayerSort.PLUSMINUS)
-        )
-    }
 
     val playersStats = combine(
         teamAndPlayersStats,
@@ -296,8 +266,8 @@ class TeamViewModel(
         selectPageImp.value = page
     }
 
-    fun updatePlayerSort(label: PlayerLabel) {
-        playerSortImp.value = label.sort
+    fun updatePlayerSort(sort: PlayerSort) {
+        playerSortImp.value = sort
     }
 
     fun openGameBoxScore(game: NbaGame) {

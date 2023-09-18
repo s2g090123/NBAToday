@@ -32,4 +32,13 @@ data class TeamStats(
     @ColumnInfo(name = "fouls_personal") val foulsPersonal: Int,
     @ColumnInfo(name = "points") val points: Int,
     @ColumnInfo(name = "plus_minus") val plusMinus: Int
-)
+) {
+    val pointsAverage: Double
+        get() = points.toDouble() / gamePlayed
+    val reboundsAverage: Double
+        get() = reboundsTotal.toDouble() / gamePlayed
+    val assistsAverage: Double
+        get() = assists.toDouble() / gamePlayed
+    val plusMinusAverage: Double
+        get() = plusMinus.toDouble()
+}

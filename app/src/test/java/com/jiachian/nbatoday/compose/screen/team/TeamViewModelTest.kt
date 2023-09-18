@@ -1,7 +1,5 @@
 package com.jiachian.nbatoday.compose.screen.team
 
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import com.jiachian.nbatoday.USER_ACCOUNT
 import com.jiachian.nbatoday.USER_PASSWORD
 import com.jiachian.nbatoday.USER_POINTS
@@ -193,9 +191,8 @@ class TeamViewModelTest {
     @Test
     fun team_selectGamePlayedSort_checksGamePlaySelect() {
         viewModel.playerSort.launchAndCollect(coroutineEnvironment)
-        val expected = PlayerLabel(1.dp, "TEST", TextAlign.Center, PlayerSort.GP)
-        viewModel.updatePlayerSort(expected)
-        assertThat(viewModel.playerSort.value, `is`(expected.sort))
+        viewModel.updatePlayerSort(PlayerSort.GP)
+        assertThat(viewModel.playerSort.value, `is`(PlayerSort.GP))
     }
 
     @Test

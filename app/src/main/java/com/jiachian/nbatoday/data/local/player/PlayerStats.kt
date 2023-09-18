@@ -33,4 +33,35 @@ data class PlayerStats(
     @ColumnInfo(name = "fouls_personal") val foulsPersonal: Int,
     @ColumnInfo(name = "points") val points: Int,
     @ColumnInfo(name = "plus_minus") val plusMinus: Int
-)
+) {
+    val pointsAverage: Double
+        get() = points / gamePlayed.toDouble()
+    val fieldGoalsMadeAverage: Double
+        get() = fieldGoalsMade / gamePlayed.toDouble()
+    val fieldGoalsAttemptedAverage: Double
+        get() = fieldGoalsAttempted / gamePlayed.toDouble()
+    val threePointersMadeAverage: Double
+        get() = threePointersMade / gamePlayed.toDouble()
+    val threePointersAttemptedAverage: Double
+        get() = threePointersAttempted / gamePlayed.toDouble()
+    val freeThrowsMadeAverage: Double
+        get() = freeThrowsMade / gamePlayed.toDouble()
+    val freeThrowsAttemptedAverage: Double
+        get() = freeThrowsAttempted / gamePlayed.toDouble()
+    val reboundsOffensiveAverage: Double
+        get() = reboundsOffensive / gamePlayed.toDouble()
+    val reboundsDefensiveAverage: Double
+        get() = reboundsDefensive / gamePlayed.toDouble()
+    val reboundsTotalAverage: Double
+        get() = reboundsTotal / gamePlayed.toDouble()
+    val assistsAverage: Double
+        get() = assists / gamePlayed.toDouble()
+    val turnoversAverage: Double
+        get() = turnovers / gamePlayed.toDouble()
+    val stealsAverage: Double
+        get() = steals / gamePlayed.toDouble()
+    val blocksAverage: Double
+        get() = blocks / gamePlayed.toDouble()
+    val foulsPersonalAverage: Double
+        get() = foulsPersonal / gamePlayed.toDouble()
+}

@@ -5,6 +5,7 @@ import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.printToLog
+import androidx.compose.ui.unit.dp
 import com.jiachian.nbatoday.BaseAndroidTest
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.USER_ACCOUNT
@@ -38,6 +39,32 @@ class TeamScreenTest : BaseAndroidTest() {
     private var currentState: NbaState? = null
 
     private val team = TeamStatsFactory.getHomeTeamStats()
+
+    private val labels = listOf(
+        PlayerLabel(40.dp, "GP", PlayerSort.GP),
+        PlayerLabel(40.dp, "W", PlayerSort.W),
+        PlayerLabel(40.dp, "L", PlayerSort.L),
+        PlayerLabel(64.dp, "WIN%", PlayerSort.WINP),
+        PlayerLabel(64.dp, "PTS", PlayerSort.PTS),
+        PlayerLabel(64.dp, "FGM", PlayerSort.FGM),
+        PlayerLabel(64.dp, "FGA", PlayerSort.FGA),
+        PlayerLabel(64.dp, "FG%", PlayerSort.FGP),
+        PlayerLabel(64.dp, "3PM", PlayerSort.PM3),
+        PlayerLabel(64.dp, "3PA", PlayerSort.PA3),
+        PlayerLabel(64.dp, "3P%", PlayerSort.PP3),
+        PlayerLabel(64.dp, "FTM", PlayerSort.FTM),
+        PlayerLabel(64.dp, "FTA", PlayerSort.FTA),
+        PlayerLabel(64.dp, "FT%", PlayerSort.FTP),
+        PlayerLabel(48.dp, "OREB", PlayerSort.OREB),
+        PlayerLabel(48.dp, "DREB", PlayerSort.DREB),
+        PlayerLabel(48.dp, "REB", PlayerSort.REB),
+        PlayerLabel(48.dp, "AST", PlayerSort.AST),
+        PlayerLabel(48.dp, "TOV", PlayerSort.TOV),
+        PlayerLabel(48.dp, "STL", PlayerSort.STL),
+        PlayerLabel(48.dp, "BLK", PlayerSort.BLK),
+        PlayerLabel(48.dp, "PF", PlayerSort.PF),
+        PlayerLabel(48.dp, "+/-", PlayerSort.PLUSMINUS)
+    )
 
     @Before
     fun setup() = runTest {
@@ -93,36 +120,36 @@ class TeamScreenTest : BaseAndroidTest() {
             .printToLog("HAHA")
         composeTestRule
             .onNodeWithMergedTag("TeamInformation_Column_PointsRank")
-            .onNodeWithTag("TeamInformation_Text_PointsRank")
+            .onNodeWithTag("TeamInformation_Text_Rank")
             .assertTextEquals(viewModel.teamPointsRank.value.toRank())
         composeTestRule
             .onNodeWithMergedTag("TeamInformation_Column_PointsRank")
-            .onNodeWithTag("TeamInformation_Text_Points")
-            .assertTextEquals((team.points.toDouble() / team.gamePlayed).decimalFormat())
+            .onNodeWithTag("TeamInformation_Text_Average")
+            .assertTextEquals(team.pointsAverage.decimalFormat())
         composeTestRule
             .onNodeWithMergedTag("TeamInformation_Column_ReboundsRank")
-            .onNodeWithTag("TeamInformation_Text_ReboundsRank")
+            .onNodeWithTag("TeamInformation_Text_Rank")
             .assertTextEquals(viewModel.teamReboundsRank.value.toRank())
         composeTestRule
             .onNodeWithMergedTag("TeamInformation_Column_ReboundsRank")
-            .onNodeWithTag("TeamInformation_Text_Rebounds")
-            .assertTextEquals((team.reboundsTotal.toDouble() / team.gamePlayed).decimalFormat())
+            .onNodeWithTag("TeamInformation_Text_Average")
+            .assertTextEquals(team.reboundsAverage.decimalFormat())
         composeTestRule
             .onNodeWithMergedTag("TeamInformation_Column_AssistsRank")
-            .onNodeWithTag("TeamInformation_Text_AssistsRank")
+            .onNodeWithTag("TeamInformation_Text_Rank")
             .assertTextEquals(viewModel.teamAssistsRank.value.toRank())
         composeTestRule
             .onNodeWithMergedTag("TeamInformation_Column_AssistsRank")
-            .onNodeWithTag("TeamInformation_Text_Assists")
-            .assertTextEquals((team.assists.toDouble() / team.gamePlayed).decimalFormat())
+            .onNodeWithTag("TeamInformation_Text_Average")
+            .assertTextEquals(team.assistsAverage.decimalFormat())
         composeTestRule
             .onNodeWithMergedTag("TeamInformation_Column_PlusMinusRank")
-            .onNodeWithTag("TeamInformation_Text_PlusMinusRank")
+            .onNodeWithTag("TeamInformation_Text_Rank")
             .assertTextEquals(viewModel.teamPlusMinusRank.value.toRank())
         composeTestRule
             .onNodeWithMergedTag("TeamInformation_Column_PlusMinusRank")
-            .onNodeWithTag("TeamInformation_Text_PlusMinus")
-            .assertTextEquals(team.plusMinus.toDouble().toString())
+            .onNodeWithTag("TeamInformation_Text_Average")
+            .assertTextEquals(team.plusMinusAverage.decimalFormat())
     }
 
     @Test
@@ -143,7 +170,7 @@ class TeamScreenTest : BaseAndroidTest() {
             composeTestRule
                 .onAllNodesWithMergedTag("PlayerStatistics_Row_PlayerStats")[index]
                 .apply {
-                    viewModel.playerLabels.value.forEachIndexed { labelIndex, label ->
+                    labels.forEachIndexed { labelIndex, label ->
                         onNodeWithTag("PlayerStatistics_Text_PlayerStats", labelIndex)
                             .assertTextEquals(
                                 when (label.text) {
@@ -151,24 +178,24 @@ class TeamScreenTest : BaseAndroidTest() {
                                     "W" -> stats.win.toString()
                                     "L" -> stats.lose.toString()
                                     "WIN%" -> stats.winPercentage.decimalFormat()
-                                    "PTS" -> (stats.points.toDouble() / stats.gamePlayed).decimalFormat()
-                                    "FGM" -> (stats.fieldGoalsMade.toDouble() / stats.gamePlayed).decimalFormat()
-                                    "FGA" -> (stats.fieldGoalsAttempted.toDouble() / stats.gamePlayed).decimalFormat()
+                                    "PTS" -> stats.pointsAverage.decimalFormat()
+                                    "FGM" -> stats.fieldGoalsMadeAverage.decimalFormat()
+                                    "FGA" -> stats.fieldGoalsAttemptedAverage.decimalFormat()
                                     "FG%" -> stats.fieldGoalsPercentage.decimalFormat()
-                                    "3PM" -> (stats.threePointersMade.toDouble() / stats.gamePlayed).decimalFormat()
-                                    "3PA" -> (stats.threePointersAttempted.toDouble() / stats.gamePlayed).decimalFormat()
+                                    "3PM" -> stats.threePointersMadeAverage.decimalFormat()
+                                    "3PA" -> stats.threePointersAttemptedAverage.decimalFormat()
                                     "3P%" -> stats.threePointersPercentage.decimalFormat()
-                                    "FTM" -> (stats.freeThrowsMade.toDouble() / stats.gamePlayed).decimalFormat()
-                                    "FTA" -> (stats.freeThrowsAttempted.toDouble() / stats.gamePlayed).decimalFormat()
+                                    "FTM" -> stats.freeThrowsMadeAverage.decimalFormat()
+                                    "FTA" -> stats.freeThrowsAttemptedAverage.decimalFormat()
                                     "FT%" -> stats.freeThrowsPercentage.decimalFormat()
-                                    "OREB" -> (stats.reboundsOffensive.toDouble() / stats.gamePlayed).decimalFormat()
-                                    "DREB" -> (stats.reboundsDefensive.toDouble() / stats.gamePlayed).decimalFormat()
-                                    "REB" -> (stats.reboundsTotal.toDouble() / stats.gamePlayed).decimalFormat()
-                                    "AST" -> (stats.assists.toDouble() / stats.gamePlayed).decimalFormat()
-                                    "TOV" -> (stats.turnovers.toDouble() / stats.gamePlayed).decimalFormat()
-                                    "STL" -> (stats.steals.toDouble() / stats.gamePlayed).decimalFormat()
-                                    "BLK" -> (stats.blocks.toDouble() / stats.gamePlayed).decimalFormat()
-                                    "PF" -> (stats.foulsPersonal.toDouble() / stats.gamePlayed).decimalFormat()
+                                    "OREB" -> stats.reboundsOffensiveAverage.decimalFormat()
+                                    "DREB" -> stats.reboundsDefensiveAverage.decimalFormat()
+                                    "REB" -> stats.reboundsTotalAverage.decimalFormat()
+                                    "AST" -> stats.assistsAverage.decimalFormat()
+                                    "TOV" -> stats.turnoversAverage.decimalFormat()
+                                    "STL" -> stats.stealsAverage.decimalFormat()
+                                    "BLK" -> stats.blocksAverage.decimalFormat()
+                                    "PF" -> stats.foulsPersonalAverage.decimalFormat()
                                     "+/-" -> stats.plusMinus.toString()
                                     else -> ""
                                 }
