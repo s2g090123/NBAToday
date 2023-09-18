@@ -4,6 +4,8 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import com.jiachian.nbatoday.BaseAndroidTest
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.data.BoxScoreFactory
@@ -34,6 +36,25 @@ class BoxScoreScreenTest : BaseAndroidTest() {
     private var showPlayerId: Int? = null
     private val game = NbaGameFactory.getFinalGame()
     private val score = BoxScoreFactory.getFinalGameBoxScore()
+
+    private val scoreLabel = listOf(
+        ScoreLabel(72.dp, R.string.label_min, TextAlign.Center, R.string.box_score_about_min),
+        ScoreLabel(72.dp, R.string.label_fgm, TextAlign.End, R.string.box_score_about_FGMA),
+        ScoreLabel(72.dp, R.string.label_3pm, TextAlign.End, R.string.box_score_about_3PMA),
+        ScoreLabel(72.dp, R.string.label_ftm, TextAlign.End, R.string.box_score_about_FTMA),
+        ScoreLabel(40.dp, R.string.label_plus_minus, TextAlign.End, R.string.box_score_about_plusMinus),
+        ScoreLabel(40.dp, R.string.label_or, TextAlign.End, R.string.box_score_about_OR),
+        ScoreLabel(40.dp, R.string.label_dr, TextAlign.End, R.string.box_score_about_DR),
+        ScoreLabel(40.dp, R.string.label_tr, TextAlign.End, R.string.box_score_about_TR),
+        ScoreLabel(40.dp, R.string.label_as, TextAlign.End, R.string.box_score_about_AS),
+        ScoreLabel(40.dp, R.string.label_pf, TextAlign.End, R.string.box_score_about_PF),
+        ScoreLabel(40.dp, R.string.label_st, TextAlign.End, R.string.box_score_about_ST),
+        ScoreLabel(40.dp, R.string.label_to, TextAlign.End, R.string.box_score_about_TO),
+        ScoreLabel(40.dp, R.string.label_bs, TextAlign.End, R.string.box_score_about_BS),
+        ScoreLabel(40.dp, R.string.label_ba, TextAlign.End, R.string.box_score_about_BA),
+        ScoreLabel(48.dp, R.string.label_pts, TextAlign.End, R.string.box_score_about_PTS),
+        ScoreLabel(48.dp, R.string.label_eff, TextAlign.End, R.string.box_score_about_EFF)
+    )
 
     @Before
     fun setup() = runTest {
@@ -78,7 +99,13 @@ class BoxScoreScreenTest : BaseAndroidTest() {
             .assertTextEquals(score.gameDate)
         composeTestRule
             .onNodeWithMergedTag("ScoreTotal_Text_ScoreComparison")
-            .assertTextEquals("${home.score} - ${away.score}")
+            .assertTextEquals(
+                context.getString(
+                    R.string.box_score_comparison,
+                    home.score,
+                    away.score
+                )
+            )
         composeTestRule
             .onNodeWithMergedTag("ScoreTotal_Text_Status")
             .assertTextEquals(game.gameStatusText)
@@ -142,7 +169,7 @@ class BoxScoreScreenTest : BaseAndroidTest() {
             .onNodeWithTag("PlayerStatistics_Column_Stats")
             .onNodeWithTag("PlayerStatistics_Row_Labels")
             .apply {
-                viewModel.scoreLabel.value.forEachIndexed { index, label ->
+                scoreLabel.forEachIndexed { index, label ->
                     onNodeWithTag("PlayerStatistics_Box_Label", index)
                         .performScrollTo()
                         .assertIsDisplayed()
@@ -151,7 +178,7 @@ class BoxScoreScreenTest : BaseAndroidTest() {
                         .assertPopupExist()
                         .onPopup()
                         .onNodeWithTag("LabelAboutPopup_Text_About")
-                        .assertTextEquals(getLabelHint(label))
+                        .assertTextEquals(context.getString(label.infoRes))
                 }
             }
         playerStats
@@ -175,7 +202,7 @@ class BoxScoreScreenTest : BaseAndroidTest() {
                             .assertDoesNotExist()
                         onNodeWithTag("PlayerStatistics_Text_NotPlayReason")
                             .assertDoesNotExist()
-                        viewModel.scoreLabel.value.forEachIndexed { labelIndex, label ->
+                        scoreLabel.forEachIndexed { labelIndex, label ->
                             onNodeWithTag("PlayerStatistics_Text_PlayerStats", labelIndex)
                                 .performScrollTo()
                                 .assertTextEquals(getPlayerStats(label, player))
@@ -203,7 +230,7 @@ class BoxScoreScreenTest : BaseAndroidTest() {
             .onNodeWithTag("PlayerStatistics_Column_Stats")
             .onNodeWithTag("PlayerStatistics_Row_Labels")
             .apply {
-                viewModel.scoreLabel.value.forEachIndexed { index, label ->
+                scoreLabel.forEachIndexed { index, label ->
                     onNodeWithTag("PlayerStatistics_Box_Label", index)
                         .performScrollTo()
                         .assertIsDisplayed()
@@ -212,7 +239,7 @@ class BoxScoreScreenTest : BaseAndroidTest() {
                         .assertPopupExist()
                         .onPopup()
                         .onNodeWithTag("LabelAboutPopup_Text_About")
-                        .assertTextEquals(getLabelHint(label))
+                        .assertTextEquals(context.getString(label.infoRes))
                 }
             }
         playerStats
@@ -236,7 +263,7 @@ class BoxScoreScreenTest : BaseAndroidTest() {
                             .assertDoesNotExist()
                         onNodeWithTag("PlayerStatistics_Text_NotPlayReason")
                             .assertDoesNotExist()
-                        viewModel.scoreLabel.value.forEachIndexed { labelIndex, label ->
+                        scoreLabel.forEachIndexed { labelIndex, label ->
                             onNodeWithTag("PlayerStatistics_Text_PlayerStats", labelIndex)
                                 .performScrollTo()
                                 .assertTextEquals(getPlayerStats(label, player))
@@ -537,50 +564,28 @@ class BoxScoreScreenTest : BaseAndroidTest() {
             }
     }
 
-    private fun getLabelHint(label: ScoreLabel): String {
-        return when (label.text) {
-            "MIN" -> context.getString(R.string.box_score_about_min)
-            "FGM-A" -> context.getString(R.string.box_score_about_FGMA)
-            "3PM-A" -> context.getString(R.string.box_score_about_3PMA)
-            "FTM-A" -> context.getString(R.string.box_score_about_FTMA)
-            "+/-" -> context.getString(R.string.box_score_about_plusMinus)
-            "OR" -> context.getString(R.string.box_score_about_OR)
-            "DR" -> context.getString(R.string.box_score_about_DR)
-            "TR" -> context.getString(R.string.box_score_about_TR)
-            "AS" -> context.getString(R.string.box_score_about_AS)
-            "PF" -> context.getString(R.string.box_score_about_PF)
-            "ST" -> context.getString(R.string.box_score_about_ST)
-            "TO" -> context.getString(R.string.box_score_about_TO)
-            "BS" -> context.getString(R.string.box_score_about_BS)
-            "BA" -> context.getString(R.string.box_score_about_BA)
-            "PTS" -> context.getString(R.string.box_score_about_PTS)
-            "EFF" -> context.getString(R.string.box_score_about_EFF)
-            else -> ""
-        }
-    }
-
     private fun getPlayerStats(
         label: ScoreLabel,
         player: GameBoxScore.BoxScoreTeam.Player
     ): String {
         val statistics = player.statistics.getOrAssert()
-        return when (label.text) {
-            "MIN" -> statistics.minutes
-            "FGM-A" -> "${statistics.fieldGoalsMade}-${statistics.fieldGoalsAttempted}"
-            "3PM-A" -> "${statistics.threePointersMade}-${statistics.threePointersAttempted}"
-            "FTM-A" -> "${statistics.freeThrowsMade}-${statistics.freeThrowsAttempted}"
-            "+/-" -> statistics.plusMinusPoints.toString()
-            "OR" -> statistics.reboundsOffensive.toString()
-            "DR" -> statistics.reboundsDefensive.toString()
-            "TR" -> statistics.reboundsTotal.toString()
-            "AS" -> statistics.assists.toString()
-            "PF" -> statistics.foulsPersonal.toString()
-            "ST" -> statistics.steals.toString()
-            "TO" -> statistics.turnovers.toString()
-            "BS" -> statistics.blocks.toString()
-            "BA" -> statistics.blocksReceived.toString()
-            "PTS" -> statistics.points.toString()
-            "EFF" -> statistics.efficiency.toString()
+        return when (label.textRes) {
+            R.string.label_min -> statistics.minutes
+            R.string.label_fgm -> statistics.fieldGoalProportion
+            R.string.label_3pm -> statistics.threePointProportion
+            R.string.label_ftm -> statistics.freeThrowProportion
+            R.string.label_plus_minus -> statistics.plusMinusPoints.toString()
+            R.string.label_or -> statistics.reboundsOffensive.toString()
+            R.string.label_dr -> statistics.reboundsDefensive.toString()
+            R.string.label_tr -> statistics.reboundsTotal.toString()
+            R.string.label_as -> statistics.assists.toString()
+            R.string.label_pf -> statistics.foulsPersonal.toString()
+            R.string.label_st -> statistics.steals.toString()
+            R.string.label_to -> statistics.turnovers.toString()
+            R.string.label_bs -> statistics.blocks.toString()
+            R.string.label_ba -> statistics.blocksReceived.toString()
+            R.string.label_pts -> statistics.points.toString()
+            R.string.label_eff -> statistics.efficiency.toString()
             else -> ""
         }
     }

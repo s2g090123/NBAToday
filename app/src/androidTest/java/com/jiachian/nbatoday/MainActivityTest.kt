@@ -60,7 +60,7 @@ class MainActivityTest {
         viewModel.updateState(
             NbaState.BoxScore(
                 BoxScoreViewModel(
-                    game = NbaGameFactory.getPlayingGame(),
+                    game = NbaGameFactory.getFinalGame(),
                     repository = repository,
                     showPlayerCareer = {}
                 )

@@ -24,6 +24,14 @@ data class GameBoxScore(
     @ColumnInfo(name = "away_team")
     val awayTeam: BoxScoreTeam?
 ) {
+
+    val statusText: String
+        get() = if (gameStatus != GameStatusCode.COMING_SOON) {
+            gameStatusText
+        } else {
+            gameStatusText.replace(" ", "\n")
+        }.trim()
+
     data class BoxScoreTeam(
         @ColumnInfo(name = "team")
         val team: NBATeam,
@@ -143,6 +151,13 @@ data class GameBoxScore(
                 private val fieldGoalScore = fieldGoalsAttempted - fieldGoalsMade
                 private val freeThrowScore = freeThrowsAttempted - freeThrowsMade
                 val efficiency = indicator - (fieldGoalScore + freeThrowScore + turnovers)
+
+                val fieldGoalProportion
+                    get() = "$fieldGoalsMade-$fieldGoalsAttempted"
+                val threePointProportion
+                    get() = "$threePointersMade-$threePointersAttempted"
+                val freeThrowProportion
+                    get() = "$freeThrowsMade-$freeThrowsAttempted"
             }
         }
 

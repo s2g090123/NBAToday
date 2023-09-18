@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name" translatable="false">NBAToday</string>
     <string name="app_name_splash" translatable="false">NBA Today</string>
+    <string name="na" translatable="false">N/A</string>
 
     <string name="is_loading_app">Fetching all game schedules…</string>
     <string name="home_bottom_schedule">Schedule</string>
@@ -41,7 +42,24 @@
     <string name="box_score_leader_statistics_position">Position</string>
     <string name="box_score_leader_statistics_time">Minutes played</string>
     <string name="box_score_leader_statistics_plusMinusPoints">+/-</string>
-    <string name="box_score_about_min">MIN：Minutes played(分:秒)</string>
+    <string name="label_min" translatable="false">MIN</string>
+    <string name="label_fgm" translatable="false">FGM-A</string>
+    <string name="label_3pm" translatable="false">3PM-A</string>
+    <string name="label_ftm" translatable="false">FTM-A</string>
+    <string name="label_plus_minus" translatable="false">+/-</string>
+    <string name="label_or" translatable="false">OR</string>
+    <string name="label_dr" translatable="false">DR</string>
+    <string name="label_tr" translatable="false">TR</string>
+    <string name="label_as" translatable="false">AS</string>
+    <string name="label_pf" translatable="false">PF</string>
+    <string name="label_st" translatable="false">ST</string>
+    <string name="label_to" translatable="false">TO</string>
+    <string name="label_bs" translatable="false">BS</string>
+    <string name="label_ba" translatable="false">BA</string>
+    <string name="label_pts" translatable="false">PTS</string>
+    <string name="label_eff" translatable="false">EFF</string>
+    <string name="box_score_comparison" translatable="false">%1$d - %2$d</string>
+    <string name="box_score_about_min">MIN：Minutes played(m:s)</string>
     <string name="box_score_about_FGMA">FGM-A(FGM-FGA)：Field goals Made-Attempted</string>
     <string name="box_score_about_3PMA">3PM-A(3FGM-3FGA)：3-Point Made-Attempted</string>
     <string name="box_score_about_FTMA">FTM-A(FTM-FTA)：Free Throws Made-Attempted</string>

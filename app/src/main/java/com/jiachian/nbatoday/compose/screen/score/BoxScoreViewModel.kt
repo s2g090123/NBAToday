@@ -1,8 +1,5 @@
 package com.jiachian.nbatoday.compose.screen.score
 
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.data.BaseRepository
 import com.jiachian.nbatoday.data.local.NbaGame
@@ -34,6 +31,12 @@ class BoxScoreViewModel(
     val boxScore = repository.getGameBoxScore(gameId)
         .stateIn(coroutineScope, SharingStarted.Lazily, null)
 
+    val periodLabel = boxScore.map {
+        it?.homeTeam?.periods?.map { period ->
+            period.periodLabel
+        } ?: emptyList()
+    }.stateIn(coroutineScope, SharingStarted.Lazily, emptyList())
+
     val homeLeader = boxScore.map { score ->
         val personId = if (game.gameStatus != GameStatusCode.COMING_SOON) {
             game.gameLeaders?.homeLeaders?.personId
@@ -60,26 +63,8 @@ class BoxScoreViewModel(
     private val selectPageImp = MutableStateFlow(BoxScoreTab.HOME)
     val selectPage = selectPageImp.asStateFlow()
 
-    val scoreLabel = derivedStateOf {
-        listOf(
-            ScoreLabel(72.dp, "MIN", TextAlign.Center),
-            ScoreLabel(72.dp, "FGM-A", TextAlign.End),
-            ScoreLabel(72.dp, "3PM-A", TextAlign.End),
-            ScoreLabel(72.dp, "FTM-A", TextAlign.End),
-            ScoreLabel(40.dp, "+/-", TextAlign.End),
-            ScoreLabel(40.dp, "OR", TextAlign.End),
-            ScoreLabel(40.dp, "DR", TextAlign.End),
-            ScoreLabel(40.dp, "TR", TextAlign.End),
-            ScoreLabel(40.dp, "AS", TextAlign.End),
-            ScoreLabel(40.dp, "PF", TextAlign.End),
-            ScoreLabel(40.dp, "ST", TextAlign.End),
-            ScoreLabel(40.dp, "TO", TextAlign.End),
-            ScoreLabel(40.dp, "BS", TextAlign.End),
-            ScoreLabel(40.dp, "BA", TextAlign.End),
-            ScoreLabel(48.dp, "PTS", TextAlign.End),
-            ScoreLabel(48.dp, "EFF", TextAlign.End)
-        )
-    }
+    private val selectedLabelImp = MutableStateFlow<ScoreLabel?>(null)
+    val selectedLabel = selectedLabelImp.asStateFlow()
 
     init {
         refreshScore()
@@ -97,5 +82,9 @@ class BoxScoreViewModel(
 
     fun updateSelectPage(tab: BoxScoreTab) {
         selectPageImp.value = tab
+    }
+
+    fun selectLabel(label: ScoreLabel?) {
+        selectedLabelImp.value = label
     }
 }
