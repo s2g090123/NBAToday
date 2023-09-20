@@ -14,7 +14,7 @@ object RemoteTeamFactory {
                 teamId = HOME_TEAM_ID
             ),
             data = listOf(
-                RemoteTeamPlayerStats.Data(
+                RemoteTeamPlayerStats.Result(
                     name = "PlayersSeasonTotals",
                     headers = listOf(
                         "PLAYER_ID",
