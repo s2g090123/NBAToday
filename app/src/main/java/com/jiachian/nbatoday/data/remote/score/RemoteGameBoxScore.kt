@@ -7,6 +7,8 @@ import com.jiachian.nbatoday.data.local.team.teamOfficial
 import com.jiachian.nbatoday.data.remote.game.GameStatusCode
 import com.jiachian.nbatoday.data.remote.game.PeriodType
 import com.jiachian.nbatoday.utils.NbaUtils
+import com.jiachian.nbatoday.utils.getOrNA
+import com.jiachian.nbatoday.utils.getOrZero
 import java.text.SimpleDateFormat
 import java.util.Calendar
 
@@ -30,8 +32,8 @@ data class RemoteGameBoxScore(
             val score: Int?,
             val inBonus: String?,
             val timeoutsRemaining: Int?,
-            val periods: List<Period?>?,
-            val players: List<Player?>?,
+            val periods: List<Period>?,
+            val players: List<Player>?,
             val statistics: Statistics?
         ) {
             data class Period(
@@ -49,7 +51,11 @@ data class RemoteGameBoxScore(
                         period == 4 -> "4th"
                         else -> "OT${period - 4}"
                     }
-                    return GameBoxScore.BoxScoreTeam.Period(period, periodLabel, score ?: 0)
+                    return GameBoxScore.BoxScoreTeam.Period(
+                        period = period,
+                        periodLabel = periodLabel,
+                        score = score.getOrZero()
+                    )
                 }
             }
 
@@ -102,41 +108,48 @@ data class RemoteGameBoxScore(
                 ) {
                     fun toLocal(): GameBoxScore.BoxScoreTeam.Player.Statistics {
                         return GameBoxScore.BoxScoreTeam.Player.Statistics(
-                            assists ?: 0,
-                            blocks ?: 0,
-                            blocksReceived ?: 0,
-                            fieldGoalsAttempted ?: 0,
-                            fieldGoalsMade ?: 0,
-                            fieldGoalsPercentage?.times(1000)?.toInt()?.div(10.0) ?: 0.0,
-                            foulsOffensive ?: 0,
-                            foulsDrawn ?: 0,
-                            foulsPersonal ?: 0,
-                            foulsTechnical ?: 0,
-                            freeThrowsAttempted ?: 0,
-                            freeThrowsMade ?: 0,
-                            freeThrowsPercentage?.times(1000)?.toInt()?.div(10.0) ?: 0.0,
-                            minus?.toInt() ?: 0,
-                            minutes?.substringAfter("PT")?.substringBefore(".")?.replace("M", ":")
-                                ?: "00:00",
-                            plus?.toInt() ?: 0,
-                            plusMinusPoints?.toInt() ?: 0,
-                            points ?: 0,
-                            reboundsDefensive ?: 0,
-                            reboundsOffensive ?: 0,
-                            reboundsTotal ?: 0,
-                            steals ?: 0,
-                            threePointersAttempted ?: 0,
-                            threePointersMade ?: 0,
-                            threePointersPercentage?.times(1000)?.toInt()?.div(10.0) ?: 0.0,
-                            turnovers ?: 0,
-                            twoPointersAttempted ?: 0,
-                            twoPointersMade ?: 0,
-                            twoPointersPercentage?.times(1000)?.toInt()?.div(10.0) ?: 0.0
+                            assists = assists.getOrZero(),
+                            blocks = blocks.getOrZero(),
+                            blocksReceived = blocksReceived.getOrZero(),
+                            fieldGoalsAttempted = fieldGoalsAttempted.getOrZero(),
+                            fieldGoalsMade = fieldGoalsMade.getOrZero(),
+                            fieldGoalsPercentage = fieldGoalsPercentage?.parsePercentage().getOrZero(),
+                            foulsOffensive = foulsOffensive.getOrZero(),
+                            foulsDrawn = foulsDrawn.getOrZero(),
+                            foulsPersonal = foulsPersonal.getOrZero(),
+                            foulsTechnical = foulsTechnical.getOrZero(),
+                            freeThrowsAttempted = freeThrowsAttempted.getOrZero(),
+                            freeThrowsMade = freeThrowsMade.getOrZero(),
+                            freeThrowsPercentage = freeThrowsPercentage?.parsePercentage().getOrZero(),
+                            minus = minus?.toInt().getOrZero(),
+                            minutes = parseMinutes(),
+                            plus = plus?.toInt().getOrZero(),
+                            plusMinusPoints = plusMinusPoints?.toInt().getOrZero(),
+                            points = points.getOrZero(),
+                            reboundsDefensive = reboundsDefensive.getOrZero(),
+                            reboundsOffensive = reboundsOffensive.getOrZero(),
+                            reboundsTotal = reboundsTotal.getOrZero(),
+                            steals = steals.getOrZero(),
+                            threePointersAttempted = threePointersAttempted.getOrZero(),
+                            threePointersMade = threePointersMade.getOrZero(),
+                            threePointersPercentage = threePointersPercentage?.parsePercentage().getOrZero(),
+                            turnovers = turnovers.getOrZero(),
+                            twoPointersAttempted = twoPointersAttempted.getOrZero(),
+                            twoPointersMade = twoPointersMade.getOrZero(),
+                            twoPointersPercentage = twoPointersPercentage?.parsePercentage().getOrZero()
                         )
+                    }
+
+                    private fun parseMinutes(): String {
+                        return minutes
+                            ?.substringAfter("PT")
+                            ?.substringBefore(".")
+                            ?.replace("M", ":")
+                            ?: "00:00"
                     }
                 }
 
-                fun toLocal(): GameBoxScore.BoxScoreTeam.Player {
+                fun toLocal(): GameBoxScore.BoxScoreTeam.Player? {
                     val notPlaying = when (notPlayingReason) {
                         "INACTIVE_INJURY" -> "Injury"
                         "INACTIVE_GLEAGUE_TWOWAY" -> "G League Two Way"
@@ -148,21 +161,33 @@ data class RemoteGameBoxScore(
                         else -> notPlayingReason
                     }
                     return GameBoxScore.BoxScoreTeam.Player(
-                        status ?: PlayerActiveStatus.INACTIVE,
-                        notPlaying,
-                        order ?: 0,
-                        personId ?: 0,
-                        jerseyNum ?: "0",
-                        position ?: "Bench",
-                        starter?.takeIf { it == "1" }?.let { true } ?: false,
-                        oncourt?.takeIf { it == "1" }?.let { true } ?: false,
-                        played?.takeIf { it == "1" }?.let { true } ?: false,
-                        statistics?.toLocal(),
-                        name ?: "",
-                        nameI ?: "",
-                        firstName ?: "",
-                        familyName ?: ""
+                        status = status ?: PlayerActiveStatus.INACTIVE,
+                        notPlayingReason = notPlaying,
+                        order = order.getOrZero(),
+                        personId = personId ?: return null,
+                        jerseyNum = jerseyNum.getOrNA(),
+                        position = position.getOrNA(),
+                        starter = isStarter(),
+                        onCourt = isOnCourt(),
+                        played = isPlayed(),
+                        statistics = statistics?.toLocal(),
+                        name = name.getOrNA(),
+                        nameAbbr = nameI.getOrNA(),
+                        firstName = firstName.getOrNA(),
+                        familyName = familyName.getOrNA()
                     )
+                }
+
+                private fun isStarter(): Boolean {
+                    return starter?.takeIf { it == "1" }?.let { true } ?: false
+                }
+
+                private fun isOnCourt(): Boolean {
+                    return oncourt?.takeIf { it == "1" }?.let { true } ?: false
+                }
+
+                private fun isPlayed(): Boolean {
+                    return played?.takeIf { it == "1" }?.let { true } ?: false
                 }
             }
 
@@ -204,84 +229,95 @@ data class RemoteGameBoxScore(
             ) {
                 fun toLocal(): GameBoxScore.BoxScoreTeam.Statistics {
                     return GameBoxScore.BoxScoreTeam.Statistics(
-                        assists ?: 0,
-                        blocks ?: 0,
-                        blocksReceived ?: 0,
-                        fieldGoalsAttempted ?: 0,
-                        fieldGoalsMade ?: 0,
-                        fieldGoalsPercentage?.times(1000)?.toInt()?.div(10.0) ?: 0.0,
-                        foulsOffensive ?: 0,
-                        foulsDrawn ?: 0,
-                        foulsPersonal ?: 0,
-                        foulsTeam ?: 0,
-                        foulsTechnical ?: 0,
-                        freeThrowsAttempted ?: 0,
-                        freeThrowsMade ?: 0,
-                        freeThrowsPercentage?.times(1000)?.toInt()?.div(10.0) ?: 0.0,
-                        points ?: 0,
-                        reboundsDefensive ?: 0,
-                        reboundsOffensive ?: 0,
-                        reboundsPersonal ?: 0,
-                        reboundsTotal ?: 0,
-                        steals ?: 0,
-                        threePointersAttempted ?: 0,
-                        threePointersMade ?: 0,
-                        threePointersPercentage?.times(1000)?.toInt()?.div(10.0) ?: 0.0,
-                        turnovers ?: 0,
-                        turnoversTeam ?: 0,
-                        turnoversTotal ?: 0,
-                        twoPointersAttempted ?: 0,
-                        twoPointersMade ?: 0,
-                        twoPointersPercentage?.times(1000)?.toInt()?.div(10.0) ?: 0.0,
-                        pointsFastBreak ?: 0,
-                        pointsFromTurnovers ?: 0,
-                        pointsInThePaint ?: 0,
-                        pointsSecondChance ?: 0,
-                        benchPoints ?: 0
+                        assists = assists.getOrZero(),
+                        blocks = blocks.getOrZero(),
+                        blocksReceived = blocksReceived.getOrZero(),
+                        fieldGoalsAttempted = fieldGoalsAttempted.getOrZero(),
+                        fieldGoalsMade = fieldGoalsMade.getOrZero(),
+                        fieldGoalsPercentage = fieldGoalsPercentage?.parsePercentage().getOrZero(),
+                        foulsOffensive = foulsOffensive.getOrZero(),
+                        foulsDrawn = foulsDrawn.getOrZero(),
+                        foulsPersonal = foulsPersonal.getOrZero(),
+                        foulsTeam = foulsTeam.getOrZero(),
+                        foulsTechnical = foulsTechnical.getOrZero(),
+                        freeThrowsAttempted = freeThrowsAttempted.getOrZero(),
+                        freeThrowsMade = freeThrowsMade.getOrZero(),
+                        freeThrowsPercentage = freeThrowsPercentage?.parsePercentage().getOrZero(),
+                        points = points.getOrZero(),
+                        reboundsDefensive = reboundsDefensive.getOrZero(),
+                        reboundsOffensive = reboundsOffensive.getOrZero(),
+                        reboundsPersonal = reboundsPersonal.getOrZero(),
+                        reboundsTotal = reboundsTotal.getOrZero(),
+                        steals = steals.getOrZero(),
+                        threePointersAttempted = threePointersAttempted.getOrZero(),
+                        threePointersMade = threePointersMade.getOrZero(),
+                        threePointersPercentage = threePointersPercentage?.parsePercentage().getOrZero(),
+                        turnovers = turnovers.getOrZero(),
+                        turnoversTeam = turnoversTeam.getOrZero(),
+                        turnoversTotal = turnoversTotal.getOrZero(),
+                        twoPointersAttempted = twoPointersAttempted.getOrZero(),
+                        twoPointersMade = twoPointersMade.getOrZero(),
+                        twoPointersPercentage = twoPointersPercentage?.parsePercentage().getOrZero(),
+                        pointsFastBreak = pointsFastBreak.getOrZero(),
+                        pointsFromTurnovers = pointsFromTurnovers.getOrZero(),
+                        pointsInThePaint = pointsInThePaint.getOrZero(),
+                        pointsSecondChance = pointsSecondChance.getOrZero(),
+                        benchPoints = benchPoints.getOrZero()
                     )
                 }
             }
 
-            fun toLocal(): GameBoxScore.BoxScoreTeam? {
+            fun toLocal(): GameBoxScore.BoxScoreTeam {
                 val team = teamId?.let { NBATeam.getTeamById(it) } ?: teamOfficial
                 return GameBoxScore.BoxScoreTeam(
-                    team,
-                    score ?: 0,
-                    inBonus?.takeIf { it == "1" }?.let { true } ?: false,
-                    timeoutsRemaining ?: 0,
-                    periods?.mapNotNull { it?.toLocal() } ?: emptyList(),
-                    players?.mapNotNull { it?.toLocal() } ?: emptyList(),
-                    statistics?.toLocal()
+                    team = team,
+                    score = score.getOrZero(),
+                    inBonus = isInBonus(),
+                    timeoutsRemaining = timeoutsRemaining.getOrZero(),
+                    periods = periods?.map { it.toLocal() } ?: emptyList(),
+                    players = players?.mapNotNull { it.toLocal() } ?: emptyList(),
+                    statistics = statistics?.toLocal()
                 )
+            }
+
+            private fun isInBonus(): Boolean {
+                return inBonus?.takeIf { it == "1" }?.let { true } ?: false
             }
         }
 
         @SuppressLint("SimpleDateFormat")
-        fun toLocal(): GameBoxScore {
-            val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+        fun toLocal(): GameBoxScore? {
             return GameBoxScore(
-                gameId ?: "",
-                gameEt?.substringBeforeLast("-")?.let {
-                    try {
-                        dateFormat.parse(it)?.let { date ->
-                            val cal = NbaUtils.getCalendar()
-                            cal.time = date
-                            NbaUtils.formatScoreboardGameDate(
-                                cal.get(Calendar.YEAR),
-                                cal.get(Calendar.MONTH) + 1,
-                                cal.get(Calendar.DAY_OF_MONTH)
-                            )
-                        }
-                    } catch (e: Exception) {
-                        null
-                    }
-                } ?: "",
-                gameCode ?: "",
-                gameStatusText ?: "",
-                gameStatus ?: GameStatusCode.COMING_SOON,
-                homeTeam?.toLocal(),
-                awayTeam?.toLocal()
+                gameId = gameId ?: return null,
+                gameDate = getGameDate(),
+                gameCode = gameCode.getOrNA(),
+                gameStatusText = gameStatusText.getOrNA(),
+                gameStatus = gameStatus ?: GameStatusCode.COMING_SOON,
+                homeTeam = homeTeam?.toLocal(),
+                awayTeam = awayTeam?.toLocal()
             )
+        }
+
+        @SuppressLint("SimpleDateFormat")
+        private fun getGameDate(): String {
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+            return gameEt?.substringBeforeLast("-")?.let {
+                try {
+                    dateFormat.parse(it)?.let { date ->
+                        val cal = NbaUtils.getCalendar()
+                        cal.time = date
+                        NbaUtils.formatScoreboardGameDate(
+                            cal.get(Calendar.YEAR),
+                            cal.get(Calendar.MONTH) + 1,
+                            cal.get(Calendar.DAY_OF_MONTH)
+                        )
+                    }
+                } catch (e: Exception) {
+                    null
+                }
+            }.getOrNA()
         }
     }
 }
+
+private fun Double.parsePercentage(): Double = times(1000).toInt().div(10.0)
