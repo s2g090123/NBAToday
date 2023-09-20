@@ -5,10 +5,17 @@ import androidx.compose.ui.res.stringResource
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.data.local.team.NBATeam
 import com.jiachian.nbatoday.data.local.team.teamOfficial
+import com.jiachian.nbatoday.data.remote.game.GameStatusCode
 import kotlin.math.pow
 
 @Composable
-fun Any?.getOrNA(): String = this?.toString() ?: stringResource(R.string.na)
+inline fun <reified T : Any> T?.getOrNA(): String = this?.toString() ?: stringResource(R.string.na)
+
+inline fun <reified T : Any> T?.isNull(): Boolean = this == null
+
+inline fun <reified T : Any> T?.getOrAssert(): T {
+    return this ?: throw AssertionError("${T::class.simpleName} is expectedly nonNull.")
+}
 
 @Composable
 fun Int?.getOrZero(): Int = this ?: 0
@@ -24,6 +31,15 @@ fun Int.toRank(): String {
         2 -> "2nd"
         3 -> "3rd"
         else -> "${this}th"
+    }
+}
+
+fun Int.toGameStatusCode(): GameStatusCode? {
+    return when (this) {
+        GameStatusCode.COMING_SOON.status -> GameStatusCode.COMING_SOON
+        GameStatusCode.PLAYING.status -> GameStatusCode.PLAYING
+        GameStatusCode.FINAL.status -> GameStatusCode.FINAL
+        else -> null
     }
 }
 

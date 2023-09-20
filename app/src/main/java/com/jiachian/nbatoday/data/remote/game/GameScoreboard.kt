@@ -3,6 +3,9 @@ package com.jiachian.nbatoday.data.remote.game
 import com.google.gson.annotations.SerializedName
 import com.jiachian.nbatoday.data.remote.leader.GameLeaders
 import com.jiachian.nbatoday.data.remote.team.GameTeam
+import com.jiachian.nbatoday.utils.getOrAssert
+import com.jiachian.nbatoday.utils.isNull
+import com.jiachian.nbatoday.utils.toGameStatusCode
 
 data class GameScoreboard(
     @SerializedName("scoreboard")
@@ -37,28 +40,33 @@ data class GameScoreboard(
     }
 
     fun toGameUpdateData(): List<GameUpdateData> {
-        val scoreboard = scoreboard ?: return emptyList()
-        val games = scoreboard.games ?: return emptyList()
+        val games = scoreboard?.games ?: return emptyList()
         return games.mapNotNull { game ->
-            val gameId = game.gameId ?: return@mapNotNull null
-            val gameStatus = when (game.gameStatus) {
-                GameStatusCode.COMING_SOON.status -> GameStatusCode.COMING_SOON
-                GameStatusCode.PLAYING.status -> GameStatusCode.PLAYING
-                GameStatusCode.FINAL.status -> GameStatusCode.FINAL
-                else -> null
-            } ?: return@mapNotNull null
-            val gameStatusText = game.gameStatusText ?: return@mapNotNull null
-            val homeTeam = game.homeTeam ?: return@mapNotNull null
-            val awayTeam = game.awayTeam ?: return@mapNotNull null
-            val gameHomeLeaders = game.gameLeaders?.homeLeaders ?: return@mapNotNull null
-            val gameAwayLeaders = game.gameLeaders.awayLeaders ?: return@mapNotNull null
-            val teamHomeLeaders = game.teamLeaders?.homeLeaders ?: return@mapNotNull null
-            val teamAwayLeaders = game.teamLeaders.awayLeaders ?: return@mapNotNull null
-            GameUpdateData(
-                gameId, gameStatus, gameStatusText, homeTeam, awayTeam,
-                GameLeaders(gameHomeLeaders, gameAwayLeaders),
-                GameLeaders(teamHomeLeaders, teamAwayLeaders)
-            )
+            val gameId = game.gameId
+            val gameStatus = game.gameStatus?.toGameStatusCode()
+            val gameStatusText = game.gameStatusText
+            val homeTeam = game.homeTeam
+            val awayTeam = game.awayTeam
+            val gameHomeLeaders = game.gameLeaders?.homeLeaders
+            val gameAwayLeaders = game.gameLeaders?.awayLeaders
+            val teamHomeLeaders = game.teamLeaders?.homeLeaders
+            val teamAwayLeaders = game.teamLeaders?.awayLeaders
+            val isGameNull = gameId.isNull() || gameStatus.isNull() || gameStatusText.isNull()
+            val isTeamNull = homeTeam.isNull() || awayTeam.isNull()
+            val isLeadersNull = gameHomeLeaders.isNull() || gameAwayLeaders.isNull() || teamHomeLeaders.isNull() || teamAwayLeaders.isNull()
+            if (isGameNull || isTeamNull || isLeadersNull) {
+                null
+            } else {
+                GameUpdateData(
+                    gameId = gameId.getOrAssert(),
+                    gameStatus = gameStatus.getOrAssert(),
+                    gameStatusText = gameStatusText.getOrAssert(),
+                    homeTeam = homeTeam.getOrAssert(),
+                    awayTeam = awayTeam.getOrAssert(),
+                    gameLeaders = GameLeaders(gameHomeLeaders, gameAwayLeaders),
+                    teamLeaders = GameLeaders(teamHomeLeaders, teamAwayLeaders)
+                )
+            }
         }
     }
 }
