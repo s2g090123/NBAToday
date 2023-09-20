@@ -3,6 +3,8 @@ package com.jiachian.nbatoday.data.remote.player
 import com.google.gson.annotations.SerializedName
 import com.jiachian.nbatoday.data.local.player.PlayerCareer
 import com.jiachian.nbatoday.data.local.player.PlayerCareerStatsUpdate
+import com.jiachian.nbatoday.utils.getOrNA
+import com.jiachian.nbatoday.utils.getOrZero
 
 data class RemotePlayerStats(
     @SerializedName("parameters") val parameters: Parameter?,
@@ -18,91 +20,91 @@ data class RemotePlayerStats(
         @SerializedName("rowSet") val rowData: List<List<String>>?
     )
 
+    private var result: Result? = null
+    private var headers: List<String>? = null
+
     fun toLocal(): PlayerCareerStatsUpdate? {
         val playerId = parameters?.playerId ?: return null
-        val results = resultSets ?: return null
-        val result = results.getOrNull(results.indexOfFirst { it.name == "ByYearPlayerDashboard" })
-            ?: return null
-        val headers = result.headers ?: return null
+        result = resultSets?.find { it.name == "ByYearPlayerDashboard" }
+        headers = result?.headers
         val stats = arrayListOf<PlayerCareer.PlayerCareerStats.Stats>()
         val ranks = arrayListOf<PlayerCareer.PlayerCareerStats.Rank>()
-        result.rowData?.forEach { data ->
-            stats.add(
-                PlayerCareer.PlayerCareerStats.Stats(
-                    data.getOrNull(headers.indexOf("GROUP_VALUE")) ?: return@forEach,
-                    data.getOrNull(headers.indexOf("TEAM_ID"))?.toIntOrNull() ?: return@forEach,
-                    data.getOrNull(headers.indexOf("TEAM_ABBREVIATION")) ?: return@forEach,
-                    data.getOrNull(headers.indexOf("GP"))?.toIntOrNull() ?: return@forEach,
-                    data.getOrNull(headers.indexOf("W"))?.toIntOrNull() ?: return@forEach,
-                    data.getOrNull(headers.indexOf("L"))?.toIntOrNull() ?: return@forEach,
-                    data.getOrNull(headers.indexOf("W_PCT"))?.toDoubleOrNull()?.times(100)
-                        ?: return@forEach,
-                    data.getOrNull(headers.indexOf("FGM"))?.toIntOrNull() ?: return@forEach,
-                    data.getOrNull(headers.indexOf("FGA"))?.toIntOrNull() ?: return@forEach,
-                    data.getOrNull(headers.indexOf("FG_PCT"))?.toDoubleOrNull()?.times(100)
-                        ?: return@forEach,
-                    data.getOrNull(headers.indexOf("FG3M"))?.toIntOrNull() ?: return@forEach,
-                    data.getOrNull(headers.indexOf("FG3A"))?.toIntOrNull() ?: return@forEach,
-                    data.getOrNull(headers.indexOf("FG3_PCT"))?.toDoubleOrNull()?.times(100)
-                        ?: return@forEach,
-                    data.getOrNull(headers.indexOf("FTM"))?.toIntOrNull() ?: return@forEach,
-                    data.getOrNull(headers.indexOf("FTA"))?.toIntOrNull() ?: return@forEach,
-                    data.getOrNull(headers.indexOf("FT_PCT"))?.toDoubleOrNull()?.times(100)
-                        ?: return@forEach,
-                    data.getOrNull(headers.indexOf("OREB"))?.toIntOrNull() ?: return@forEach,
-                    data.getOrNull(headers.indexOf("DREB"))?.toIntOrNull() ?: return@forEach,
-                    data.getOrNull(headers.indexOf("REB"))?.toIntOrNull() ?: return@forEach,
-                    data.getOrNull(headers.indexOf("AST"))?.toIntOrNull() ?: return@forEach,
-                    data.getOrNull(headers.indexOf("TOV"))?.toIntOrNull() ?: return@forEach,
-                    data.getOrNull(headers.indexOf("STL"))?.toIntOrNull() ?: return@forEach,
-                    data.getOrNull(headers.indexOf("BLK"))?.toIntOrNull() ?: return@forEach,
-                    data.getOrNull(headers.indexOf("PF"))?.toIntOrNull() ?: return@forEach,
-                    data.getOrNull(headers.indexOf("PTS"))?.toIntOrNull() ?: return@forEach,
-                    data.getOrNull(headers.indexOf("PLUS_MINUS"))?.toIntOrNull() ?: return@forEach,
-                )
-            )
-            ranks.add(
-                PlayerCareer.PlayerCareerStats.Rank(
-                    data.getOrNull(headers.indexOf("GROUP_VALUE")) ?: return@forEach,
-                    data.getOrNull(headers.indexOf("TEAM_ID"))?.toIntOrNull() ?: return@forEach,
-                    data.getOrNull(headers.indexOf("TEAM_ABBREVIATION")) ?: return@forEach,
-                    data.getOrNull(headers.indexOf("GP_RANK"))?.toIntOrNull() ?: return@forEach,
-                    data.getOrNull(headers.indexOf("W_RANK"))?.toIntOrNull() ?: return@forEach,
-                    data.getOrNull(headers.indexOf("L_RANK"))?.toIntOrNull() ?: return@forEach,
-                    data.getOrNull(headers.indexOf("W_PCT_RANK"))?.toIntOrNull()
-                        ?: return@forEach,
-                    data.getOrNull(headers.indexOf("FGM_RANK"))?.toIntOrNull() ?: return@forEach,
-                    data.getOrNull(headers.indexOf("FGA_RANK"))?.toIntOrNull() ?: return@forEach,
-                    data.getOrNull(headers.indexOf("FG_PCT_RANK"))?.toIntOrNull()
-                        ?: return@forEach,
-                    data.getOrNull(headers.indexOf("FG3M_RANK"))?.toIntOrNull() ?: return@forEach,
-                    data.getOrNull(headers.indexOf("FG3A_RANK"))?.toIntOrNull() ?: return@forEach,
-                    data.getOrNull(headers.indexOf("FG3_PCT_RANK"))?.toIntOrNull()
-                        ?: return@forEach,
-                    data.getOrNull(headers.indexOf("FTM_RANK"))?.toIntOrNull() ?: return@forEach,
-                    data.getOrNull(headers.indexOf("FTA_RANK"))?.toIntOrNull() ?: return@forEach,
-                    data.getOrNull(headers.indexOf("FT_PCT_RANK"))?.toIntOrNull()
-                        ?: return@forEach,
-                    data.getOrNull(headers.indexOf("OREB_RANK"))?.toIntOrNull() ?: return@forEach,
-                    data.getOrNull(headers.indexOf("DREB_RANK"))?.toIntOrNull() ?: return@forEach,
-                    data.getOrNull(headers.indexOf("REB_RANK"))?.toIntOrNull() ?: return@forEach,
-                    data.getOrNull(headers.indexOf("AST_RANK"))?.toIntOrNull() ?: return@forEach,
-                    data.getOrNull(headers.indexOf("TOV_RANK"))?.toIntOrNull() ?: return@forEach,
-                    data.getOrNull(headers.indexOf("STL_RANK"))?.toIntOrNull() ?: return@forEach,
-                    data.getOrNull(headers.indexOf("BLK_RANK"))?.toIntOrNull() ?: return@forEach,
-                    data.getOrNull(headers.indexOf("PF_RANK"))?.toIntOrNull() ?: return@forEach,
-                    data.getOrNull(headers.indexOf("PTS_RANK"))?.toIntOrNull() ?: return@forEach,
-                    data.getOrNull(headers.indexOf("PLUS_MINUS_RANK"))?.toIntOrNull()
-                        ?: return@forEach,
-                )
-            )
+        result?.rowData?.forEach { data ->
+            val careerStats = createPlayerCareerStats(data) ?: return@forEach
+            val careerRank = createPlayerCareerRank(data) ?: return@forEach
+            stats.add(careerStats)
+            ranks.add(careerRank)
         }
         return PlayerCareerStatsUpdate(
-            playerId,
-            PlayerCareer.PlayerCareerStats(
-                stats,
-                ranks
-            )
+            personId = playerId,
+            stats = PlayerCareer.PlayerCareerStats(stats, ranks)
+        )
+    }
+
+    private fun getPlayerResult(data: List<String>, name: String): String? {
+        val headers = headers ?: return null
+        return data.getOrNull(headers.indexOf(name))
+    }
+
+    private fun createPlayerCareerStats(data: List<String>): PlayerCareer.PlayerCareerStats.Stats? {
+        return PlayerCareer.PlayerCareerStats.Stats(
+            timeFrame = getPlayerResult(data, "GROUP_VALUE").getOrNA(),
+            teamId = getPlayerResult(data, "TEAM_ID")?.toIntOrNull() ?: return null,
+            teamNameAbbr = getPlayerResult(data, "TEAM_ABBREVIATION").getOrNA(),
+            gamePlayed = getPlayerResult(data, "GP")?.toIntOrNull().getOrZero(),
+            win = getPlayerResult(data, "W")?.toIntOrNull().getOrZero(),
+            lose = getPlayerResult(data, "L")?.toIntOrNull().getOrZero(),
+            winPercentage = getPlayerResult(data, "W_PCT")?.toDoubleOrNull()?.times(100).getOrZero(),
+            fieldGoalsMade = getPlayerResult(data, "FGM")?.toIntOrNull().getOrZero(),
+            fieldGoalsAttempted = getPlayerResult(data, "FGA")?.toIntOrNull().getOrZero(),
+            fieldGoalsPercentage = getPlayerResult(data, "FG_PCT")?.toDoubleOrNull()?.times(100).getOrZero(),
+            threePointersMade = getPlayerResult(data, "FG3M")?.toIntOrNull().getOrZero(),
+            threePointersAttempted = getPlayerResult(data, "FG3A")?.toIntOrNull().getOrZero(),
+            threePointersPercentage = getPlayerResult(data, "FG3_PCT")?.toDoubleOrNull()?.times(100).getOrZero(),
+            freeThrowsMade = getPlayerResult(data, "FTM")?.toIntOrNull().getOrZero(),
+            freeThrowsAttempted = getPlayerResult(data, "FTA")?.toIntOrNull().getOrZero(),
+            freeThrowsPercentage = getPlayerResult(data, "FT_PCT")?.toDoubleOrNull()?.times(100).getOrZero(),
+            reboundsOffensive = getPlayerResult(data, "OREB")?.toIntOrNull().getOrZero(),
+            reboundsDefensive = getPlayerResult(data, "DREB")?.toIntOrNull().getOrZero(),
+            reboundsTotal = getPlayerResult(data, "REB")?.toIntOrNull().getOrZero(),
+            assists = getPlayerResult(data, "AST")?.toIntOrNull().getOrZero(),
+            turnovers = getPlayerResult(data, "TOV")?.toIntOrNull().getOrZero(),
+            steals = getPlayerResult(data, "STL")?.toIntOrNull().getOrZero(),
+            blocks = getPlayerResult(data, "BLK")?.toIntOrNull().getOrZero(),
+            foulsPersonal = getPlayerResult(data, "PF")?.toIntOrNull().getOrZero(),
+            points = getPlayerResult(data, "PTS")?.toIntOrNull().getOrZero(),
+            plusMinus = getPlayerResult(data, "PLUS_MINUS")?.toIntOrNull().getOrZero(),
+        )
+    }
+
+    private fun createPlayerCareerRank(data: List<String>): PlayerCareer.PlayerCareerStats.Rank? {
+        return PlayerCareer.PlayerCareerStats.Rank(
+            timeFrame = getPlayerResult(data, "GROUP_VALUE").getOrNA(),
+            teamId = getPlayerResult(data, "TEAM_ID")?.toIntOrNull() ?: return null,
+            teamNameAbbr = getPlayerResult(data, "TEAM_ABBREVIATION").getOrNA(),
+            gamePlayedRank = getPlayerResult(data, "GP_RANK")?.toIntOrNull().getOrZero(),
+            winRank = getPlayerResult(data, "W_RANK")?.toIntOrNull().getOrZero(),
+            loseRank = getPlayerResult(data, "L_RANK")?.toIntOrNull().getOrZero(),
+            winPercentageRank = getPlayerResult(data, "W_PCT_RANK")?.toIntOrNull().getOrZero(),
+            fieldGoalsMadeRank = getPlayerResult(data, "FGM_RANK")?.toIntOrNull().getOrZero(),
+            fieldGoalsAttemptedRank = getPlayerResult(data, "FGA_RANK")?.toIntOrNull().getOrZero(),
+            fieldGoalsPercentageRank = getPlayerResult(data, "FG_PCT_RANK")?.toIntOrNull().getOrZero(),
+            threePointersMadeRank = getPlayerResult(data, "FG3M_RANK")?.toIntOrNull().getOrZero(),
+            threePointersAttemptedRank = getPlayerResult(data, "FG3A_RANK")?.toIntOrNull().getOrZero(),
+            threePointersPercentageRank = getPlayerResult(data, "FG3_PCT_RANK")?.toIntOrNull().getOrZero(),
+            freeThrowsMadeRank = getPlayerResult(data, "FTM_RANK")?.toIntOrNull().getOrZero(),
+            freeThrowsAttemptedRank = getPlayerResult(data, "FTA_RANK")?.toIntOrNull().getOrZero(),
+            freeThrowsPercentageRank = getPlayerResult(data, "FT_PCT_RANK")?.toIntOrNull().getOrZero(),
+            reboundsOffensiveRank = getPlayerResult(data, "OREB_RANK")?.toIntOrNull().getOrZero(),
+            reboundsDefensiveRank = getPlayerResult(data, "DREB_RANK")?.toIntOrNull().getOrZero(),
+            reboundsTotalRank = getPlayerResult(data, "REB_RANK")?.toIntOrNull().getOrZero(),
+            assistsRank = getPlayerResult(data, "AST_RANK")?.toIntOrNull().getOrZero(),
+            turnoversRank = getPlayerResult(data, "TOV_RANK")?.toIntOrNull().getOrZero(),
+            stealsRank = getPlayerResult(data, "STL_RANK")?.toIntOrNull().getOrZero(),
+            blocksRank = getPlayerResult(data, "BLK_RANK")?.toIntOrNull().getOrZero(),
+            foulsPersonalRank = getPlayerResult(data, "PF_RANK")?.toIntOrNull().getOrZero(),
+            pointsRank = getPlayerResult(data, "PTS_RANK")?.toIntOrNull().getOrZero(),
+            plusMinusRank = getPlayerResult(data, "PLUS_MINUS_RANK")?.toIntOrNull().getOrZero(),
         )
     }
 }
