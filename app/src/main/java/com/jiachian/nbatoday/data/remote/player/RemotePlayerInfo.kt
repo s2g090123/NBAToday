@@ -7,6 +7,8 @@ import com.jiachian.nbatoday.data.local.player.PlayerCareerInfoUpdate
 import com.jiachian.nbatoday.data.local.team.NBATeam
 import com.jiachian.nbatoday.data.local.team.teamOfficial
 import com.jiachian.nbatoday.utils.NbaUtils
+import com.jiachian.nbatoday.utils.getOrNA
+import com.jiachian.nbatoday.utils.getOrZero
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -22,69 +24,80 @@ data class RemotePlayerInfo(
     )
 
     fun toUpdateData(): PlayerCareerInfoUpdate? {
-        val results = resultSets ?: return null
-        val playerInfo =
-            results.getOrNull(results.indexOfFirst { it.name == "CommonPlayerInfo" }) ?: return null
-        val headline = results.getOrNull(results.indexOfFirst { it.name == "PlayerHeadlineStats" })
-            ?: return null
-        val playerInfoHeaders = playerInfo.headers ?: return null
-        val playerInfoRowData = playerInfo.rowData?.getOrNull(0) ?: return null
-        val headlineHeaders = headline.headers ?: return null
-        val headlineRowData = headline.rowData?.getOrNull(0) ?: return null
-        val cal = NbaUtils.getCalendar()
-        val currentDate = cal.time
-        val birthDate = playerInfoRowData.getOrNull(playerInfoHeaders.indexOf("BIRTHDATE"))?.let {
-            parseBirthdate(it)
-        } ?: currentDate
-        val teamId = playerInfoRowData.getOrNull(playerInfoHeaders.indexOf("TEAM_ID"))?.toIntOrNull() ?: return null
-        val team = NBATeam.getTeamById(teamId) ?: teamOfficial
         return PlayerCareerInfoUpdate(
-            playerInfoRowData.getOrNull(playerInfoHeaders.indexOf("PERSON_ID"))?.toIntOrNull() ?: return null,
-            PlayerCareer.PlayerCareerInfo(
-                playerInfoRowData.getOrNull(playerInfoHeaders.indexOf("DISPLAY_FIRST_LAST")) ?: return null,
-                playerInfoRowData.getOrNull(playerInfoHeaders.indexOf("DISPLAY_FI_LAST")) ?: return null,
-                getAge(birthDate),
-                formatBirthDate(birthDate),
-                playerInfoRowData.getOrNull(playerInfoHeaders.indexOf("COUNTRY")) ?: return null,
-                playerInfoRowData.getOrNull(playerInfoHeaders.indexOf("SCHOOL")) ?: return null,
-                playerInfoRowData.getOrNull(playerInfoHeaders.indexOf("HEIGHT"))?.split("-")?.let {
-                    heightToCM(
-                        it.getOrNull(0)?.toIntOrNull() ?: 0,
-                        it.getOrNull(1)?.toIntOrNull() ?: 0
-                    )
-                } ?: return null,
-                playerInfoRowData.getOrNull(playerInfoHeaders.indexOf("WEIGHT"))?.let {
-                    weightToKG(it.toIntOrNull() ?: 0)
-                } ?: return null,
-                playerInfoRowData.getOrNull(playerInfoHeaders.indexOf("SEASON_EXP"))?.toIntOrNull() ?: return null,
-                playerInfoRowData.getOrNull(playerInfoHeaders.indexOf("JERSEY"))?.toIntOrNull() ?: return null,
-                playerInfoRowData.getOrNull(playerInfoHeaders.indexOf("POSITION")) ?: return null,
-                team,
-                playerInfoRowData.getOrNull(playerInfoHeaders.indexOf("FROM_YEAR"))?.toIntOrNull() ?: return null,
-                playerInfoRowData.getOrNull(playerInfoHeaders.indexOf("TO_YEAR"))?.toIntOrNull() ?: return null,
-                playerInfoRowData.getOrNull(playerInfoHeaders.indexOf("DRAFT_YEAR"))?.toIntOrNull() ?: return null,
-                playerInfoRowData.getOrNull(playerInfoHeaders.indexOf("DRAFT_ROUND"))?.toIntOrNull() ?: return null,
-                playerInfoRowData.getOrNull(playerInfoHeaders.indexOf("DRAFT_NUMBER"))?.toIntOrNull() ?: return null,
-                playerInfoRowData.getOrNull(playerInfoHeaders.indexOf("GREATEST_75_FLAG"))?.let {
-                    it == "Y"
-                } ?: return null,
-                PlayerCareer.PlayerCareerInfo.HeadlineStats(
-                    headlineRowData.getOrNull(headlineHeaders.indexOf("TimeFrame")) ?: return null,
-                    headlineRowData.getOrNull(headlineHeaders.indexOf("PTS"))?.toDoubleOrNull() ?: return null,
-                    headlineRowData.getOrNull(headlineHeaders.indexOf("AST"))?.toDoubleOrNull() ?: return null,
-                    headlineRowData.getOrNull(headlineHeaders.indexOf("REB"))?.toDoubleOrNull() ?: return null,
-                    headlineRowData.getOrNull(headlineHeaders.indexOf("PIE"))?.toDoubleOrNull() ?: return null
-                )
-            )
+            getPlayerInfo("PERSON_ID")?.toIntOrNull() ?: return null,
+            createPlayerCareerInfo() ?: return null
+        )
+    }
+
+    private fun findResultSet(results: List<Result>, name: String): Result? {
+        return results.find { it.name == name }
+    }
+
+    private fun getPlayerInfo(name: String): String? {
+        val results = resultSets ?: return null
+        val playerInfo = findResultSet(results, "CommonPlayerInfo") ?: return null
+        val playerInfoRowData = playerInfo.rowData?.getOrNull(0) ?: return null
+        val playerInfoHeaders = playerInfo.headers ?: return null
+        return playerInfoRowData.getOrNull(playerInfoHeaders.indexOf(name))
+    }
+
+    private fun getPlayerStats(name: String): String? {
+        val results = resultSets ?: return null
+        val headline = findResultSet(results, "PlayerHeadlineStats") ?: return null
+        val headlineRowData = headline.rowData?.getOrNull(0) ?: return null
+        val headlineHeaders = headline.headers ?: return null
+        return headlineRowData.getOrNull(headlineHeaders.indexOf(name))
+    }
+
+    private fun createPlayerCareerInfo(): PlayerCareer.PlayerCareerInfo? {
+        val birthDate = getBirthDate()
+        val team = getPlayerInfo("TEAM_ID")?.toIntOrNull()?.let { teamId ->
+            NBATeam.getTeamById(teamId)
+        } ?: teamOfficial
+        return PlayerCareer.PlayerCareerInfo(
+            playerName = getPlayerInfo("DISPLAY_FIRST_LAST") ?: return null,
+            playerNameAbbr = getPlayerInfo("DISPLAY_FI_LAST").getOrNA(),
+            playerAge = getAge(birthDate),
+            birthDate = formatBirthDate(birthDate),
+            country = getPlayerInfo("COUNTRY").getOrNA(),
+            school = getPlayerInfo("SCHOOL").getOrNA(),
+            height = getHeight(),
+            weight = getWeight(),
+            seasonExperience = getPlayerInfo("SEASON_EXP")?.toIntOrNull().getOrZero(),
+            jersey = getPlayerInfo("JERSEY")?.toIntOrNull() ?: return null,
+            position = getPlayerInfo("POSITION").getOrNA(),
+            team = team,
+            fromYear = getPlayerInfo("FROM_YEAR")?.toIntOrNull().getOrZero(),
+            toYear = getPlayerInfo("TO_YEAR")?.toIntOrNull().getOrZero(),
+            draftYear = getPlayerInfo("DRAFT_YEAR")?.toIntOrNull().getOrZero(),
+            draftRound = getPlayerInfo("DRAFT_ROUND")?.toIntOrNull().getOrZero(),
+            draftNumber = getPlayerInfo("DRAFT_NUMBER")?.toIntOrNull().getOrZero(),
+            isGreatest75 = isGreatest75(),
+            headlineStats = createPlayerCareerStats() ?: return null
+        )
+    }
+
+    private fun createPlayerCareerStats(): PlayerCareer.PlayerCareerInfo.HeadlineStats? {
+        return PlayerCareer.PlayerCareerInfo.HeadlineStats(
+            getPlayerStats("TimeFrame") ?: return null,
+            getPlayerStats("PTS")?.toDoubleOrNull() ?: return null,
+            getPlayerStats("AST")?.toDoubleOrNull() ?: return null,
+            getPlayerStats("REB")?.toDoubleOrNull() ?: return null,
+            getPlayerStats("PIE")?.toDoubleOrNull() ?: return null
         )
     }
 
     @SuppressLint("SimpleDateFormat")
-    private fun parseBirthdate(birthdate: String): Date? {
-        val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").apply {
-            timeZone = TimeZone.getTimeZone("EST")
-        }
-        return sdf.parse(birthdate)
+    private fun getBirthDate(): Date {
+        val cal = NbaUtils.getCalendar()
+        val currentDate = cal.time
+        return getPlayerInfo("BIRTHDATE")?.let {
+            val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").apply {
+                timeZone = TimeZone.getTimeZone("EST")
+            }
+            sdf.parse(it)
+        } ?: currentDate
     }
 
     @SuppressLint("SimpleDateFormat")
@@ -111,11 +124,23 @@ data class RemotePlayerInfo(
         return age
     }
 
-    private fun heightToCM(foot: Int, inches: Int): Double {
-        return (foot * 12 + inches) * 2.54
+    private fun getHeight(): Double {
+        return getPlayerInfo("HEIGHT")?.split("-")?.let {
+            val foot = it.getOrNull(0)?.toIntOrNull() ?: 0
+            val inches = it.getOrNull(1)?.toIntOrNull() ?: 0
+            (foot * 12 + inches) * 2.54
+        } ?: return 0.0
     }
 
-    private fun weightToKG(lb: Int): Double {
-        return lb * 0.45
+    private fun getWeight(): Double {
+        return getPlayerInfo("WEIGHT")?.let { lb ->
+            (lb.toIntOrNull() ?: 0) * 0.45
+        } ?: return 0.0
+    }
+
+    private fun isGreatest75(): Boolean {
+        return getPlayerInfo("GREATEST_75_FLAG")?.let {
+            it == "Y"
+        } ?: return false
     }
 }

@@ -3,7 +3,7 @@ package com.jiachian.nbatoday.data.remote.game
 import com.google.gson.annotations.SerializedName
 import com.jiachian.nbatoday.data.remote.leader.GameLeaders
 import com.jiachian.nbatoday.data.remote.team.GameTeam
-import com.jiachian.nbatoday.utils.getOrAssert
+import com.jiachian.nbatoday.utils.getValueOrAssert
 import com.jiachian.nbatoday.utils.isNull
 import com.jiachian.nbatoday.utils.toGameStatusCode
 
@@ -58,11 +58,11 @@ data class GameScoreboard(
                 null
             } else {
                 GameUpdateData(
-                    gameId = gameId.getOrAssert(),
-                    gameStatus = gameStatus.getOrAssert(),
-                    gameStatusText = gameStatusText.getOrAssert(),
-                    homeTeam = homeTeam.getOrAssert(),
-                    awayTeam = awayTeam.getOrAssert(),
+                    gameId = gameId.getValueOrAssert(),
+                    gameStatus = gameStatus.getValueOrAssert(),
+                    gameStatusText = gameStatusText.getValueOrAssert(),
+                    homeTeam = homeTeam.getValueOrAssert(),
+                    awayTeam = awayTeam.getValueOrAssert(),
                     gameLeaders = GameLeaders(gameHomeLeaders, gameAwayLeaders),
                     teamLeaders = GameLeaders(teamHomeLeaders, teamAwayLeaders)
                 )

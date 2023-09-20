@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name" translatable="false">NBAToday</string>
     <string name="app_name_splash" translatable="false">NBA Today</string>
-    <string name="na" translatable="false">N/A</string>
 
     <string name="is_loading_app">Fetching all game schedules…</string>
     <string name="home_bottom_schedule">Schedule</string>
