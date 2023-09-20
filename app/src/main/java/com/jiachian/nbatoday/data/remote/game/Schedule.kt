@@ -7,7 +7,10 @@ import com.jiachian.nbatoday.data.local.NbaGame
 import com.jiachian.nbatoday.data.local.team.NBATeam
 import com.jiachian.nbatoday.data.local.team.teamOfficial
 import com.jiachian.nbatoday.data.remote.team.GameTeam
+import com.jiachian.nbatoday.utils.getOrNA
+import com.jiachian.nbatoday.utils.getOrZero
 import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.TimeZone
 
 data class Schedule(
@@ -72,17 +75,17 @@ data class Schedule(
                     @SerializedName("wins")
                     val wins: Int? // 勝場場次(從這場之前), e.g. 2
                 ) {
-                    fun toNbaAwayTeam(): GameTeam? {
+                    fun toNbaAwayTeam(): GameTeam {
                         val team = teamId?.let { NBATeam.getTeamById(it) } ?: teamOfficial
-                        val losses = losses ?: return null
-                        val score = score ?: return null
-                        val wins = wins ?: return null
+                        val losses = losses.getOrZero()
+                        val score = score.getOrZero()
+                        val wins = wins.getOrZero()
                         return GameTeam(
-                            team,
-                            losses,
-                            score,
-                            wins,
-                            emptyList()
+                            team = team,
+                            losses = losses,
+                            score = score,
+                            wins = wins,
+                            periods = emptyList()
                         )
                     }
                 }
@@ -103,17 +106,17 @@ data class Schedule(
                     @SerializedName("wins")
                     val wins: Int?
                 ) {
-                    fun toNbaHomeTeam(): GameTeam? {
+                    fun toNbaHomeTeam(): GameTeam {
                         val team = teamId?.let { NBATeam.getTeamById(it) } ?: teamOfficial
-                        val losses = losses ?: return null
-                        val score = score ?: return null
-                        val wins = wins ?: return null
+                        val losses = losses.getOrZero()
+                        val score = score.getOrZero()
+                        val wins = wins.getOrZero()
                         return GameTeam(
-                            team,
-                            losses,
-                            score,
-                            wins,
-                            emptyList()
+                            team = team,
+                            losses = losses,
+                            score = score,
+                            wins = wins,
+                            periods = emptyList()
                         )
                     }
                 }
@@ -135,15 +138,21 @@ data class Schedule(
                     val teamTricode: String? // 球員所屬球隊縮寫名稱, e.g. OKC
                 ) {
                     fun toNbaPointsLeader(): NbaGame.NbaPointsLeader? {
-                        val firstName = firstName ?: return null
-                        val lastName = lastName ?: return null
                         val personId = personId ?: return null
-                        val points = points ?: return null
                         val teamId = teamId ?: return null
-                        val teamName = teamName ?: return null
-                        val teamTricode = teamTricode ?: return null
+                        val firstName = firstName.getOrNA()
+                        val lastName = lastName.getOrNA()
+                        val points = points.getOrZero()
+                        val teamName = teamName.getOrNA()
+                        val teamTricode = teamTricode.getOrNA()
                         return NbaGame.NbaPointsLeader(
-                            firstName, lastName, personId, points, teamId, teamName, teamTricode
+                            firstName = firstName,
+                            lastName = lastName,
+                            personId = personId,
+                            points = points,
+                            teamId = teamId,
+                            teamName = teamName,
+                            teamTricode = teamTricode
                         )
                     }
                 }
@@ -159,57 +168,67 @@ data class Schedule(
             val games = mutableListOf<NbaGame>()
             gameDates?.forEach {
                 it?.games?.mapNotNull { game ->
-                    game ?: return@mapNotNull null
-                    val awayTeam = game.awayTeam?.toNbaAwayTeam() ?: return@mapNotNull null
-                    val homeTeam = game.homeTeam?.toNbaHomeTeam() ?: return@mapNotNull null
-                    val pointsLeaders = game.pointsLeaders?.mapNotNull { leader ->
-                        leader?.toNbaPointsLeader()
-                    } ?: return@mapNotNull null
-                    val day = game.day ?: return@mapNotNull null
-                    val gameCode = game.gameCode ?: return@mapNotNull null
-                    val gameId = game.gameId ?: return@mapNotNull null
-                    val gameStatus = game.gameStatus ?: return@mapNotNull null
-                    val gameStatusText = game.gameStatusText ?: return@mapNotNull null
-                    val gameSequence = game.gameSequence ?: return@mapNotNull null
-                    val gameDate = game.gameDateEst?.let { time ->
-                        try {
-                            dateFormat.parse(time)
-                        } catch (e: Exception) {
-                            null
-                        }
-                    } ?: return@mapNotNull null
-                    val gameDateTime = game.gameDateTimeEst?.let { time ->
-                        try {
-                            dateFormat.parse(time)
-                        } catch (e: Exception) {
-                            null
-                        }
-                    } ?: return@mapNotNull null
-                    val monthNum = game.monthNum ?: return@mapNotNull null
-                    val weekNumber = game.weekNumber ?: return@mapNotNull null
-                    NbaGame(
-                        leagueId,
-                        awayTeam,
-                        day,
-                        gameCode,
-                        gameId,
-                        gameStatus,
-                        gameStatusText,
-                        gameSequence,
-                        homeTeam,
-                        gameDate,
-                        gameDateTime,
-                        monthNum,
-                        pointsLeaders,
-                        weekNumber,
-                        null,
-                        null
-                    )
+                    createNbaGame(game, leagueId, dateFormat)
                 }?.also { nbaGames ->
                     games.addAll(nbaGames)
                 }
             }
             return games
+        }
+
+        private fun createNbaGame(
+            game: GameDate.Game?,
+            leagueId: String,
+            dateFormat: SimpleDateFormat
+        ): NbaGame? {
+            game ?: return null
+
+            val awayTeam = game.awayTeam?.toNbaAwayTeam() ?: return null
+            val homeTeam = game.homeTeam?.toNbaHomeTeam() ?: return null
+            val pointsLeaders = game.pointsLeaders?.mapNotNull { leader ->
+                leader?.toNbaPointsLeader()
+            } ?: return null
+
+            val day = game.day ?: return null
+            val gameId = game.gameId ?: return null
+            val gameStatus = game.gameStatus ?: return null
+            val gameCode = game.gameCode.getOrNA()
+            val gameStatusText = game.gameStatusText.getOrNA()
+            val gameSequence = game.gameSequence.getOrZero()
+
+            val gameDate = parseDate(game.gameDateEst, dateFormat) ?: return null
+            val gameDateTime = parseDate(game.gameDateTimeEst, dateFormat) ?: return null
+            val monthNum = game.monthNum.getOrZero()
+            val weekNumber = game.weekNumber.getOrZero()
+
+            return NbaGame(
+                leagueId = leagueId,
+                awayTeam = awayTeam,
+                day = day,
+                gameCode = gameCode,
+                gameId = gameId,
+                gameStatus = gameStatus,
+                gameStatusText = gameStatusText,
+                gameSequence = gameSequence,
+                homeTeam = homeTeam,
+                gameDate = gameDate,
+                gameDateTime = gameDateTime,
+                monthNum = monthNum,
+                pointsLeaders = pointsLeaders,
+                weekNumber = weekNumber,
+                gameLeaders = null,
+                teamLeaders = null
+            )
+        }
+
+        private fun parseDate(dateString: String?, dateFormat: SimpleDateFormat): Date? {
+            return dateString?.let { time ->
+                try {
+                    dateFormat.parse(time)
+                } catch (e: Exception) {
+                    null
+                }
+            }
         }
     }
 }
