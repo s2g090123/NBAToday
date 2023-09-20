@@ -23,30 +23,33 @@ data class RemotePlayerInfo(
         @SerializedName("rowSet") val rowData: List<List<String>>?
     )
 
+    private var infoResult: Result? = null
+    private var statsResult: Result? = null
+
     fun toUpdateData(): PlayerCareerInfoUpdate? {
+        infoResult = findResult(resultSets, "CommonPlayerInfo")
+        statsResult = findResult(resultSets, "PlayerHeadlineStats")
         return PlayerCareerInfoUpdate(
             getPlayerInfo("PERSON_ID")?.toIntOrNull() ?: return null,
             createPlayerCareerInfo() ?: return null
         )
     }
 
-    private fun findResultSet(results: List<Result>, name: String): Result? {
-        return results.find { it.name == name }
+    private fun findResult(results: List<Result>?, name: String): Result? {
+        return results?.find { it.name == name }
     }
 
     private fun getPlayerInfo(name: String): String? {
-        val results = resultSets ?: return null
-        val playerInfo = findResultSet(results, "CommonPlayerInfo") ?: return null
-        val playerInfoRowData = playerInfo.rowData?.getOrNull(0) ?: return null
-        val playerInfoHeaders = playerInfo.headers ?: return null
+        val infoResult = infoResult ?: return null
+        val playerInfoRowData = infoResult.rowData?.getOrNull(0) ?: return null
+        val playerInfoHeaders = infoResult.headers ?: return null
         return playerInfoRowData.getOrNull(playerInfoHeaders.indexOf(name))
     }
 
     private fun getPlayerStats(name: String): String? {
-        val results = resultSets ?: return null
-        val headline = findResultSet(results, "PlayerHeadlineStats") ?: return null
-        val headlineRowData = headline.rowData?.getOrNull(0) ?: return null
-        val headlineHeaders = headline.headers ?: return null
+        val statsResult = statsResult ?: return null
+        val headlineRowData = statsResult.rowData?.getOrNull(0) ?: return null
+        val headlineHeaders = statsResult.headers ?: return null
         return headlineRowData.getOrNull(headlineHeaders.indexOf(name))
     }
 
