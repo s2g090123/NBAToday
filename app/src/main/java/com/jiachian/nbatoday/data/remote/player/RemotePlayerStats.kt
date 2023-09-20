@@ -21,12 +21,10 @@ data class RemotePlayerStats(
     )
 
     private var result: Result? = null
-    private var headers: List<String>? = null
 
     fun toLocal(): PlayerCareerStatsUpdate? {
         val playerId = parameters?.playerId ?: return null
         result = resultSets?.find { it.name == "ByYearPlayerDashboard" }
-        headers = result?.headers
         val stats = arrayListOf<PlayerCareer.PlayerCareerStats.Stats>()
         val ranks = arrayListOf<PlayerCareer.PlayerCareerStats.Rank>()
         result?.rowData?.forEach { data ->
@@ -42,7 +40,7 @@ data class RemotePlayerStats(
     }
 
     private fun getPlayerResult(data: List<String>, name: String): String? {
-        val headers = headers ?: return null
+        val headers = result?.headers ?: return null
         return data.getOrNull(headers.indexOf(name))
     }
 
