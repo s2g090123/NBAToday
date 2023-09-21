@@ -35,12 +35,9 @@ data class RemoteTeamPlayerStats(
     fun toLocal(): List<PlayerStats> {
         val teamId = parameters?.teamId ?: return emptyList()
         val rowData = result?.rowData ?: return emptyList()
-        val output = mutableListOf<PlayerStats>()
-        rowData.forEach { data ->
-            val stats = createPlayerStats(data, teamId) ?: return@forEach
-            output.add(stats)
+        return rowData.mapNotNull { data ->
+            createPlayerStats(data, teamId) ?: return@mapNotNull null
         }
-        return output
     }
 
     private fun getPlayerResult(data: List<String>, name: String): String? {
@@ -57,16 +54,16 @@ data class RemoteTeamPlayerStats(
             gamePlayed = getPlayerResult(data, "GP")?.toIntOrNull().getOrZero(),
             win = getPlayerResult(data, "W")?.toIntOrNull().getOrZero(),
             lose = getPlayerResult(data, "L")?.toIntOrNull().getOrZero(),
-            winPercentage = getPlayerResult(data, "W_PCT")?.toDoubleOrNull()?.times(100).getOrZero(),
+            winPercentage = getPlayerResult(data, "W_PCT")?.toDoubleOrNull()?.toPercentage().getOrZero(),
             fieldGoalsMade = getPlayerResult(data, "FGM")?.toIntOrNull().getOrZero(),
             fieldGoalsAttempted = getPlayerResult(data, "FGA")?.toIntOrNull().getOrZero(),
-            fieldGoalsPercentage = getPlayerResult(data, "FG_PCT")?.toDoubleOrNull()?.times(100).getOrZero(),
+            fieldGoalsPercentage = getPlayerResult(data, "FG_PCT")?.toDoubleOrNull()?.toPercentage().getOrZero(),
             threePointersMade = getPlayerResult(data, "FG3M")?.toIntOrNull().getOrZero(),
             threePointersAttempted = getPlayerResult(data, "FG3A")?.toIntOrNull().getOrZero(),
-            threePointersPercentage = getPlayerResult(data, "FG3_PCT")?.toDoubleOrNull()?.times(100).getOrZero(),
+            threePointersPercentage = getPlayerResult(data, "FG3_PCT")?.toDoubleOrNull()?.toPercentage().getOrZero(),
             freeThrowsMade = getPlayerResult(data, "FTM")?.toIntOrNull().getOrZero(),
             freeThrowsAttempted = getPlayerResult(data, "FTA")?.toIntOrNull().getOrZero(),
-            freeThrowsPercentage = getPlayerResult(data, "FT_PCT")?.toDoubleOrNull()?.times(100).getOrZero(),
+            freeThrowsPercentage = getPlayerResult(data, "FT_PCT")?.toDoubleOrNull()?.toPercentage().getOrZero(),
             reboundsOffensive = getPlayerResult(data, "OREB")?.toIntOrNull().getOrZero(),
             reboundsDefensive = getPlayerResult(data, "DREB")?.toIntOrNull().getOrZero(),
             reboundsTotal = getPlayerResult(data, "REB")?.toIntOrNull().getOrZero(),
@@ -79,4 +76,6 @@ data class RemoteTeamPlayerStats(
             plusMinus = getPlayerResult(data, "PLUS_MINUS")?.toDoubleOrNull()?.toInt().getOrZero()
         )
     }
+
+    private fun Double.toPercentage(): Double = this * 100
 }

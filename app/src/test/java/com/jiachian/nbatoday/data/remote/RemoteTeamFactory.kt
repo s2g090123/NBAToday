@@ -82,7 +82,7 @@ object RemoteTeamFactory {
     fun getRemoteTeamStats(): RemoteTeamStats {
         return RemoteTeamStats(
             data = listOf(
-                RemoteTeamStats.Data(
+                RemoteTeamStats.Result(
                     name = "LeagueDashTeamStats",
                     headers = listOf(
                         "TEAM_ID",

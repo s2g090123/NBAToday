@@ -113,14 +113,14 @@ data class RemoteGameBoxScore(
                             blocksReceived = blocksReceived.getOrZero(),
                             fieldGoalsAttempted = fieldGoalsAttempted.getOrZero(),
                             fieldGoalsMade = fieldGoalsMade.getOrZero(),
-                            fieldGoalsPercentage = fieldGoalsPercentage?.parsePercentage().getOrZero(),
+                            fieldGoalsPercentage = fieldGoalsPercentage?.toPercentage().getOrZero(),
                             foulsOffensive = foulsOffensive.getOrZero(),
                             foulsDrawn = foulsDrawn.getOrZero(),
                             foulsPersonal = foulsPersonal.getOrZero(),
                             foulsTechnical = foulsTechnical.getOrZero(),
                             freeThrowsAttempted = freeThrowsAttempted.getOrZero(),
                             freeThrowsMade = freeThrowsMade.getOrZero(),
-                            freeThrowsPercentage = freeThrowsPercentage?.parsePercentage().getOrZero(),
+                            freeThrowsPercentage = freeThrowsPercentage?.toPercentage().getOrZero(),
                             minus = minus?.toInt().getOrZero(),
                             minutes = parseMinutes(),
                             plus = plus?.toInt().getOrZero(),
@@ -132,11 +132,11 @@ data class RemoteGameBoxScore(
                             steals = steals.getOrZero(),
                             threePointersAttempted = threePointersAttempted.getOrZero(),
                             threePointersMade = threePointersMade.getOrZero(),
-                            threePointersPercentage = threePointersPercentage?.parsePercentage().getOrZero(),
+                            threePointersPercentage = threePointersPercentage?.toPercentage().getOrZero(),
                             turnovers = turnovers.getOrZero(),
                             twoPointersAttempted = twoPointersAttempted.getOrZero(),
                             twoPointersMade = twoPointersMade.getOrZero(),
-                            twoPointersPercentage = twoPointersPercentage?.parsePercentage().getOrZero()
+                            twoPointersPercentage = twoPointersPercentage?.toPercentage().getOrZero()
                         )
                     }
 
@@ -234,7 +234,7 @@ data class RemoteGameBoxScore(
                         blocksReceived = blocksReceived.getOrZero(),
                         fieldGoalsAttempted = fieldGoalsAttempted.getOrZero(),
                         fieldGoalsMade = fieldGoalsMade.getOrZero(),
-                        fieldGoalsPercentage = fieldGoalsPercentage?.parsePercentage().getOrZero(),
+                        fieldGoalsPercentage = fieldGoalsPercentage?.toPercentage().getOrZero(),
                         foulsOffensive = foulsOffensive.getOrZero(),
                         foulsDrawn = foulsDrawn.getOrZero(),
                         foulsPersonal = foulsPersonal.getOrZero(),
@@ -242,7 +242,7 @@ data class RemoteGameBoxScore(
                         foulsTechnical = foulsTechnical.getOrZero(),
                         freeThrowsAttempted = freeThrowsAttempted.getOrZero(),
                         freeThrowsMade = freeThrowsMade.getOrZero(),
-                        freeThrowsPercentage = freeThrowsPercentage?.parsePercentage().getOrZero(),
+                        freeThrowsPercentage = freeThrowsPercentage?.toPercentage().getOrZero(),
                         points = points.getOrZero(),
                         reboundsDefensive = reboundsDefensive.getOrZero(),
                         reboundsOffensive = reboundsOffensive.getOrZero(),
@@ -251,13 +251,13 @@ data class RemoteGameBoxScore(
                         steals = steals.getOrZero(),
                         threePointersAttempted = threePointersAttempted.getOrZero(),
                         threePointersMade = threePointersMade.getOrZero(),
-                        threePointersPercentage = threePointersPercentage?.parsePercentage().getOrZero(),
+                        threePointersPercentage = threePointersPercentage?.toPercentage().getOrZero(),
                         turnovers = turnovers.getOrZero(),
                         turnoversTeam = turnoversTeam.getOrZero(),
                         turnoversTotal = turnoversTotal.getOrZero(),
                         twoPointersAttempted = twoPointersAttempted.getOrZero(),
                         twoPointersMade = twoPointersMade.getOrZero(),
-                        twoPointersPercentage = twoPointersPercentage?.parsePercentage().getOrZero(),
+                        twoPointersPercentage = twoPointersPercentage?.toPercentage().getOrZero(),
                         pointsFastBreak = pointsFastBreak.getOrZero(),
                         pointsFromTurnovers = pointsFromTurnovers.getOrZero(),
                         pointsInThePaint = pointsInThePaint.getOrZero(),
@@ -320,4 +320,4 @@ data class RemoteGameBoxScore(
     }
 }
 
-private fun Double.parsePercentage(): Double = times(1000).toInt().div(10.0)
+private fun Double.toPercentage(): Double = times(1000).toInt().div(10.0)

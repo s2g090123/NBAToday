@@ -62,16 +62,16 @@ data class RemotePlayerStats(
             gamePlayed = getPlayerResult(data, "GP")?.toIntOrNull().getOrZero(),
             win = getPlayerResult(data, "W")?.toIntOrNull().getOrZero(),
             lose = getPlayerResult(data, "L")?.toIntOrNull().getOrZero(),
-            winPercentage = getPlayerResult(data, "W_PCT")?.toDoubleOrNull()?.times(100).getOrZero(),
+            winPercentage = getPlayerResult(data, "W_PCT")?.toDoubleOrNull()?.toPercentage().getOrZero(),
             fieldGoalsMade = getPlayerResult(data, "FGM")?.toIntOrNull().getOrZero(),
             fieldGoalsAttempted = getPlayerResult(data, "FGA")?.toIntOrNull().getOrZero(),
-            fieldGoalsPercentage = getPlayerResult(data, "FG_PCT")?.toDoubleOrNull()?.times(100).getOrZero(),
+            fieldGoalsPercentage = getPlayerResult(data, "FG_PCT")?.toDoubleOrNull()?.toPercentage().getOrZero(),
             threePointersMade = getPlayerResult(data, "FG3M")?.toIntOrNull().getOrZero(),
             threePointersAttempted = getPlayerResult(data, "FG3A")?.toIntOrNull().getOrZero(),
-            threePointersPercentage = getPlayerResult(data, "FG3_PCT")?.toDoubleOrNull()?.times(100).getOrZero(),
+            threePointersPercentage = getPlayerResult(data, "FG3_PCT")?.toDoubleOrNull()?.toPercentage().getOrZero(),
             freeThrowsMade = getPlayerResult(data, "FTM")?.toIntOrNull().getOrZero(),
             freeThrowsAttempted = getPlayerResult(data, "FTA")?.toIntOrNull().getOrZero(),
-            freeThrowsPercentage = getPlayerResult(data, "FT_PCT")?.toDoubleOrNull()?.times(100).getOrZero(),
+            freeThrowsPercentage = getPlayerResult(data, "FT_PCT")?.toDoubleOrNull()?.toPercentage().getOrZero(),
             reboundsOffensive = getPlayerResult(data, "OREB")?.toIntOrNull().getOrZero(),
             reboundsDefensive = getPlayerResult(data, "DREB")?.toIntOrNull().getOrZero(),
             reboundsTotal = getPlayerResult(data, "REB")?.toIntOrNull().getOrZero(),
@@ -115,4 +115,6 @@ data class RemotePlayerStats(
             plusMinusRank = getPlayerResult(data, "PLUS_MINUS_RANK")?.toIntOrNull().getOrZero(),
         )
     }
+
+    private fun Double.toPercentage(): Double = this * 100
 }
