@@ -23,12 +23,29 @@ data class RemotePlayerInfo(
         @SerializedName("rowSet") val rowData: List<List<String>>?
     )
 
-    private var infoResult: Result? = null
-    private var statsResult: Result? = null
+    @Volatile
+    private var infoResultImp: Result? = null
+
+    @Volatile
+    private var statsResultImp: Result? = null
+
+    private val infoResult: Result?
+        @Synchronized
+        get() {
+            return infoResultImp ?: findResult(resultSets, "CommonPlayerInfo")?.also {
+                infoResultImp = it
+            }
+        }
+
+    private val statsResult: Result?
+        @Synchronized
+        get() {
+            return statsResultImp ?: findResult(resultSets, "PlayerHeadlineStats")?.also {
+                statsResultImp = it
+            }
+        }
 
     fun toUpdateData(): PlayerCareerInfoUpdate? {
-        infoResult = findResult(resultSets, "CommonPlayerInfo")
-        statsResult = findResult(resultSets, "PlayerHeadlineStats")
         return PlayerCareerInfoUpdate(
             getPlayerInfo("PERSON_ID")?.toIntOrNull() ?: return null,
             createPlayerCareerInfo() ?: return null

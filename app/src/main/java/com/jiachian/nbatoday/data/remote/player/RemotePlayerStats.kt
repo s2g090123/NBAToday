@@ -20,11 +20,21 @@ data class RemotePlayerStats(
         @SerializedName("rowSet") val rowData: List<List<String>>?
     )
 
-    private var result: Result? = null
+    @Volatile
+    private var resultImp: Result? = null
+
+    private val result: Result?
+        @Synchronized
+        get() {
+            return resultImp ?: resultSets?.find {
+                it.name == "ByYearPlayerDashboard"
+            }?.also {
+                resultImp = it
+            }
+        }
 
     fun toLocal(): PlayerCareerStatsUpdate? {
         val playerId = parameters?.playerId ?: return null
-        result = resultSets?.find { it.name == "ByYearPlayerDashboard" }
         val stats = arrayListOf<PlayerCareer.PlayerCareerStats.Stats>()
         val ranks = arrayListOf<PlayerCareer.PlayerCareerStats.Rank>()
         result?.rowData?.forEach { data ->
