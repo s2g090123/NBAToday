@@ -2,10 +2,13 @@ package com.jiachian.nbatoday.utils
 
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -53,12 +56,24 @@ inline fun FocusableColumn(
 }
 
 @Composable
-inline fun BackHandle(
-    crossinline onBack: () -> Unit,
+fun BackHandle(
+    onBack: () -> Unit,
     content: @Composable () -> Unit
 ) {
     content()
     BackHandler {
         onBack()
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun DisableOverscroll(
+    content: @Composable () -> Unit
+) {
+    CompositionLocalProvider(
+        LocalOverscrollConfiguration provides null
+    ) {
+        content()
     }
 }

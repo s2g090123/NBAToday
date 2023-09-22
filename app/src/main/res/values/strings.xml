@@ -167,4 +167,11 @@
     <string name="bet_reward_win_title">WOW</string>
     <string name="bet_reward_win_text">You won %d points due to the Lucky Wheel.</string>
     <string name="bet_reward_ok">OK</string>
+    <string name="day_monday_abbr" translatable="false">MON</string>
+    <string name="day_tuesday_abbr" translatable="false">TUE</string>
+    <string name="day_wednesday_abbr" translatable="false">WED</string>
+    <string name="day_thursday_abbr" translatable="false">THU</string>
+    <string name="day_friday_abbr" translatable="false">FRI</string>
+    <string name="day_saturday_abbr" translatable="false">SAT</string>
+    <string name="day_sunday_abbr" translatable="false">SUN</string>
 </resources>
