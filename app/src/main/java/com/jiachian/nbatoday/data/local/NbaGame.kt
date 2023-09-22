@@ -71,4 +71,16 @@ data class NbaGame(
             pointsLeaders
         )
     }
+
+    val isGameFinal: Boolean
+        get() = gameStatus == GameStatusCode.FINAL
+
+    val isGamePlayed: Boolean
+        get() = gameStatus != GameStatusCode.COMING_SOON
+
+    val isHomeTeamWin: Boolean
+        get() = homeTeam.score > awayTeam.score && isGameFinal
+
+    val isAwayTeamWin: Boolean
+        get() = homeTeam.score <= awayTeam.score && isGameFinal
 }

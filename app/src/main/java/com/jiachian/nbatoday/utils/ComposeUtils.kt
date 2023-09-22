@@ -1,6 +1,7 @@
 package com.jiachian.nbatoday.utils
 
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.material.MaterialTheme
@@ -48,5 +49,16 @@ inline fun FocusableColumn(
         modifier = modifier.noRippleClickable { }
     ) {
         content()
+    }
+}
+
+@Composable
+inline fun BackHandle(
+    crossinline onBack: () -> Unit,
+    content: @Composable () -> Unit
+) {
+    content()
+    BackHandler {
+        onBack()
     }
 }

@@ -109,22 +109,37 @@ class BetScreenTest {
             .onChildAt(0)
             .onChildren()
         root
-            .filterToOne(hasTestTag("betCard_text_homePoint"))
+            .filterToOne(hasTestTag("BetCard_BetCardTeamInfo_Home"))
+            .onChildren()
+            .filterToOne(hasTestTag("BetCardTeamInfo_Text_Points"))
             .assertTextEquals("-0")
         root
-            .filterToOne(hasTestTag("betCard_text_awayPoint"))
+            .filterToOne(hasTestTag("BetCard_BetCardTeamInfo_Away"))
+            .onChildren()
+            .filterToOne(hasTestTag("BetCardTeamInfo_Text_Points"))
             .assertTextEquals("+${BASIC_NUMBER * 2}")
         root
-            .filterToOne(hasTestTag("betCard_text_homeScore"))
+            .filterToOne(hasTestTag("BetCard_BetCardTeamInfo_Home"))
+            .onChildren()
+            .filterToOne(hasTestTag("BetCardTeamInfo_Text_Scores"))
             .assertTextEquals("$BASIC_NUMBER")
         root
-            .filterToOne(hasTestTag("betCard_text_awayScore"))
+            .filterToOne(hasTestTag("BetCard_BetCardTeamInfo_Away"))
+            .onChildren()
+            .filterToOne(hasTestTag("BetCardTeamInfo_Text_Scores"))
             .assertTextEquals("$BASIC_NUMBER")
         root
             .filterToOne(hasTestTag("betCard_text_gameStatus"))
             .assertTextEquals("Final\n1:1")
-        root.filterToOne(hasTestTag("betCard_ic_winner"))
-            .assertExists()
+        root
+            .filterToOne(hasTestTag("BetCard_BetCardTeamInfo_Home"))
+            .onChildren()
+            .filterToOne(hasTestTag("BetCardTeamInfo_Icon_Win"))
+            .assertDoesNotExist()
+        root
+            .filterToOne(hasTestTag("BetCard_BetCardTeamInfo_Away"))
+            .onChildren()
+            .filterToOne(hasTestTag("BetCardTeamInfo_Icon_Win"))
             .assertIsDisplayed()
     }
 
@@ -135,21 +150,37 @@ class BetScreenTest {
             .onChildAt(1)
             .onChildren()
         root
-            .filterToOne(hasTestTag("betCard_text_homePoint"))
+            .filterToOne(hasTestTag("BetCard_BetCardTeamInfo_Home"))
+            .onChildren()
+            .filterToOne(hasTestTag("BetCardTeamInfo_Text_Points"))
             .assertTextEquals("0")
         root
-            .filterToOne(hasTestTag("betCard_text_awayPoint"))
+            .filterToOne(hasTestTag("BetCard_BetCardTeamInfo_Away"))
+            .onChildren()
+            .filterToOne(hasTestTag("BetCardTeamInfo_Text_Points"))
             .assertTextEquals("$BASIC_NUMBER")
         root
-            .filterToOne(hasTestTag("betCard_text_homeScore"))
+            .filterToOne(hasTestTag("BetCard_BetCardTeamInfo_Home"))
+            .onChildren()
+            .filterToOne(hasTestTag("BetCardTeamInfo_Text_Scores"))
             .assertTextEquals("$BASIC_NUMBER")
         root
-            .filterToOne(hasTestTag("betCard_text_awayScore"))
+            .filterToOne(hasTestTag("BetCard_BetCardTeamInfo_Away"))
+            .onChildren()
+            .filterToOne(hasTestTag("BetCardTeamInfo_Text_Scores"))
             .assertTextEquals("$BASIC_NUMBER")
         root
             .filterToOne(hasTestTag("betCard_text_gameStatus"))
             .assertTextEquals("1:1")
-        root.filterToOne(hasTestTag("betCard_ic_winner"))
+        root
+            .filterToOne(hasTestTag("BetCard_BetCardTeamInfo_Home"))
+            .onChildren()
+            .filterToOne(hasTestTag("BetCardTeamInfo_Icon_Win"))
+            .assertDoesNotExist()
+        root
+            .filterToOne(hasTestTag("BetCard_BetCardTeamInfo_Away"))
+            .onChildren()
+            .filterToOne(hasTestTag("BetCardTeamInfo_Icon_Win"))
             .assertDoesNotExist()
     }
 
@@ -160,21 +191,37 @@ class BetScreenTest {
             .onChildAt(2)
             .onChildren()
         root
-            .filterToOne(hasTestTag("betCard_text_homePoint"))
+            .filterToOne(hasTestTag("BetCard_BetCardTeamInfo_Home"))
+            .onChildren()
+            .filterToOne(hasTestTag("BetCardTeamInfo_Text_Points"))
             .assertTextEquals("0")
         root
-            .filterToOne(hasTestTag("betCard_text_awayPoint"))
+            .filterToOne(hasTestTag("BetCard_BetCardTeamInfo_Away"))
+            .onChildren()
+            .filterToOne(hasTestTag("BetCardTeamInfo_Text_Points"))
             .assertTextEquals("$BASIC_NUMBER")
         root
-            .filterToOne(hasTestTag("betCard_text_homeScore"))
+            .filterToOne(hasTestTag("BetCard_BetCardTeamInfo_Home"))
+            .onChildren()
+            .filterToOne(hasTestTag("BetCardTeamInfo_Text_Scores"))
             .assertDoesNotExist()
         root
-            .filterToOne(hasTestTag("betCard_text_awayScore"))
+            .filterToOne(hasTestTag("BetCard_BetCardTeamInfo_Away"))
+            .onChildren()
+            .filterToOne(hasTestTag("BetCardTeamInfo_Text_Scores"))
             .assertDoesNotExist()
         root
             .filterToOne(hasTestTag("betCard_text_gameStatus"))
             .assertTextEquals("3:00\npm ET\n1:1")
-        root.filterToOne(hasTestTag("betCard_ic_winner"))
+        root
+            .filterToOne(hasTestTag("BetCard_BetCardTeamInfo_Home"))
+            .onChildren()
+            .filterToOne(hasTestTag("BetCardTeamInfo_Icon_Win"))
+            .assertDoesNotExist()
+        root
+            .filterToOne(hasTestTag("BetCard_BetCardTeamInfo_Away"))
+            .onChildren()
+            .filterToOne(hasTestTag("BetCardTeamInfo_Icon_Win"))
             .assertDoesNotExist()
     }
 
