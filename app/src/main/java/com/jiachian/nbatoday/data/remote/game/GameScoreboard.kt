@@ -1,8 +1,12 @@
 package com.jiachian.nbatoday.data.remote.game
 
 import com.google.gson.annotations.SerializedName
+import com.jiachian.nbatoday.data.local.team.NBATeam
+import com.jiachian.nbatoday.data.local.team.teamOfficial
 import com.jiachian.nbatoday.data.remote.leader.GameLeaders
 import com.jiachian.nbatoday.data.remote.team.GameTeam
+import com.jiachian.nbatoday.utils.getOrNA
+import com.jiachian.nbatoday.utils.getOrZero
 import com.jiachian.nbatoday.utils.getValueOrAssert
 import com.jiachian.nbatoday.utils.isNull
 import com.jiachian.nbatoday.utils.toGameStatusCode
@@ -33,10 +37,51 @@ data class GameScoreboard(
             @SerializedName("teamLeaders")
             val teamLeaders: GameLeaders?,
             @SerializedName("homeTeam")
-            val homeTeam: GameTeam?,
+            val homeTeam: RemoteGameTeam?,
             @SerializedName("awayTeam")
-            val awayTeam: GameTeam?
-        )
+            val awayTeam: RemoteGameTeam?
+        ) {
+            data class RemoteGameTeam(
+                @SerializedName("teamId")
+                val teamId: Int?,
+                @SerializedName("wins")
+                val wins: Int?,
+                @SerializedName("losses")
+                val losses: Int?,
+                @SerializedName("score")
+                val score: Int?,
+                @SerializedName("periods")
+                val periods: List<RemotePeriod>
+            ) {
+                data class RemotePeriod(
+                    @SerializedName("period")
+                    val period: Int?, // 第幾節, e.g. 1
+                    @SerializedName("periodType")
+                    val periodType: String?, // e.g. REGULAR or OVERTIME
+                    @SerializedName("score")
+                    val score: Int? // 得分, e.g 20
+                ) {
+                    fun toLocal(): GameTeam.Period {
+                        return GameTeam.Period(
+                            period = period.getOrZero(),
+                            periodType = periodType.getOrNA(),
+                            score = score.getOrZero()
+                        )
+                    }
+                }
+
+                fun toLocal(): GameTeam {
+                    val team = teamId?.let { NBATeam.getTeamById(it) } ?: teamOfficial
+                    return GameTeam(
+                        team = team,
+                        losses = losses.getOrZero(),
+                        score = score.getOrZero(),
+                        wins = wins.getOrZero(),
+                        periods = periods.map { it.toLocal() }
+                    )
+                }
+            }
+        }
     }
 
     fun toGameUpdateData(): List<GameUpdateData> {
@@ -45,8 +90,8 @@ data class GameScoreboard(
             val gameId = game.gameId
             val gameStatus = game.gameStatus?.toGameStatusCode()
             val gameStatusText = game.gameStatusText
-            val homeTeam = game.homeTeam
-            val awayTeam = game.awayTeam
+            val homeTeam = game.homeTeam?.toLocal()
+            val awayTeam = game.awayTeam?.toLocal()
             val gameHomeLeaders = game.gameLeaders?.homeLeaders
             val gameAwayLeaders = game.gameLeaders?.awayLeaders
             val teamHomeLeaders = game.teamLeaders?.homeLeaders
