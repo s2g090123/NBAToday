@@ -2,14 +2,9 @@ package com.jiachian.nbatoday.data.local.converter
 
 import androidx.room.TypeConverter
 import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import com.jiachian.nbatoday.data.local.team.NBATeam
 
-private val nbaTeamGson = GsonBuilder()
-    .registerTypeAdapter(NBATeam::class.java, NBATeamTypeAdapter())
-    .create()
-
-class NBATeamConverter(private val gson: Gson = nbaTeamGson) {
+class NBATeamConverter(private val gson: Gson = generalGson) {
 
     @TypeConverter
     fun from(value: NBATeam): String {

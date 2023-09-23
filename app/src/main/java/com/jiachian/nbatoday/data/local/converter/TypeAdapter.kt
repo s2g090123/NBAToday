@@ -14,7 +14,7 @@ import com.jiachian.nbatoday.data.local.team.teamOfficial
 import java.lang.reflect.Type
 
 val generalGson: Gson = GsonBuilder()
-    .registerTypeAdapter(NBATeam::class.java, NBATeamDeserializer())
+    .registerTypeAdapter(NBATeam::class.java, NBATeamTypeAdapter())
     .create()
 
 class NBATeamTypeAdapter : JsonDeserializer<NBATeam>, JsonSerializer<NBATeam> {
@@ -44,23 +44,5 @@ class NBATeamTypeAdapter : JsonDeserializer<NBATeam>, JsonSerializer<NBATeam> {
         val jsonObject = JsonObject()
         jsonObject.add(DATA, jsonSerializationContext.serialize(jsonElement))
         return jsonObject
-    }
-}
-
-class NBATeamDeserializer : JsonDeserializer<Any> {
-
-    companion object {
-        private const val TEAM_ID = "teamId"
-    }
-
-    @Throws(JsonParseException::class)
-    override fun deserialize(
-        jsonElement: JsonElement,
-        type: Type,
-        jsonDeserializationContext: JsonDeserializationContext
-    ): Any {
-        val jsonObject = jsonElement.asJsonObject
-        val teamId = jsonObject.get(TEAM_ID).asInt
-        return NBATeam.getTeamById(teamId) ?: teamOfficial
     }
 }
