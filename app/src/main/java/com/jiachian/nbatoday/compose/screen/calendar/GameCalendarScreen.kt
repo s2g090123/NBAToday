@@ -55,11 +55,11 @@ import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 import com.google.accompanist.flowlayout.FlowRow
 import com.jiachian.nbatoday.R
-import com.jiachian.nbatoday.compose.screen.home.GameStatusCard2
+import com.jiachian.nbatoday.compose.screen.card.GameStatusCard
+import com.jiachian.nbatoday.compose.widget.DisableOverscroll
 import com.jiachian.nbatoday.compose.widget.RefreshingScreen
 import com.jiachian.nbatoday.data.local.NbaGameAndBet
 import com.jiachian.nbatoday.data.remote.game.GameStatusCode
-import com.jiachian.nbatoday.utils.DisableOverscroll
 import com.jiachian.nbatoday.utils.NbaUtils
 import com.jiachian.nbatoday.utils.noRippleClickable
 import com.jiachian.nbatoday.utils.rippleClickable
@@ -293,7 +293,7 @@ private fun CalendarGames(
         modifier = modifier
     ) {
         itemsIndexed(games) { index, game ->
-            GameStatusCard2(
+            GameStatusCard(
                 modifier = Modifier
                     .padding(
                         start = 16.dp,
@@ -422,7 +422,6 @@ private fun TeamIconThumbnailsRow(
                     .decoderFactory(SvgDecoder.Factory())
                     .build(),
                 error = painterResource(it.game.homeTeam.team.logoRes),
-                placeholder = painterResource(it.game.homeTeam.team.logoRes),
                 contentDescription = null
             )
         }

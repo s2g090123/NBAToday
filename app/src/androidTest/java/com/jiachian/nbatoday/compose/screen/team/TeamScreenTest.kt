@@ -4,7 +4,6 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
-import androidx.compose.ui.test.printToLog
 import androidx.compose.ui.unit.dp
 import com.jiachian.nbatoday.BaseAndroidTest
 import com.jiachian.nbatoday.R
@@ -22,8 +21,8 @@ import com.jiachian.nbatoday.utils.onNodeWithTag
 import kotlin.math.pow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
-import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.instanceOf
+import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.nullValue
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
@@ -117,7 +116,6 @@ class TeamScreenTest : BaseAndroidTest() {
             )
         composeTestRule
             .onNodeWithMergedTag("TeamInformation_Column_PointsRank")
-            .printToLog("HAHA")
         composeTestRule
             .onNodeWithMergedTag("TeamInformation_Column_PointsRank")
             .onNodeWithTag("TeamInformation_Text_Rank")
@@ -218,19 +216,23 @@ class TeamScreenTest : BaseAndroidTest() {
                         .apply {
                             performClick()
                             assertThat(currentState, instanceOf(NbaState.BoxScore::class.java))
-                            onNodeWithTag("GameStatusCard2_Text_HomeTriCode")
+                            onNodeWithTag("ScoreBoard_TeamInfo_Home")
+                                .onNodeWithTag("TeamInfo_Text_TriCode")
                                 .assertTextEquals(game.game.homeTeam.team.abbreviation)
-                            onNodeWithTag("GameStatusCard2_Text_AwayTriCode")
+                            onNodeWithTag("ScoreBoard_TeamInfo_Away")
+                                .onNodeWithTag("TeamInfo_Text_TriCode")
                                 .assertTextEquals(game.game.awayTeam.team.abbreviation)
-                            onNodeWithTag("GameStatusCard2_Text_HomeScore")
+                            onNodeWithTag("ScoreBoard_TeamInfo_Home")
+                                .onNodeWithTag("TeamInfo_Text_Score")
                                 .assertTextEquals(game.game.homeTeam.score.toString())
-                            onNodeWithTag("GameStatusCard2_Text_AwayScore")
+                            onNodeWithTag("ScoreBoard_TeamInfo_Away")
+                                .onNodeWithTag("TeamInfo_Text_Score")
                                 .assertTextEquals(game.game.awayTeam.score.toString())
                             onNodeWithTag("GameStatusCard2_Text_GameStatus")
-                                .assertTextEquals(game.game.gameStatusText)
+                                .assertTextEquals(game.game.gameStatusFormatText)
                             onNodeWithTag("GameStatusCard2_Btn_Bet")
                                 .assertDoesNotExist()
-                            onNodeWithTag("GameStatusCard2_Btn_Expand")
+                            onNodeWithTag("ExpandContent_Btn_Expand")
                                 .assertDoesNotExist()
                         }
                 }
@@ -250,22 +252,24 @@ class TeamScreenTest : BaseAndroidTest() {
                         .apply {
                             performClick()
                             assertThat(currentState, nullValue())
-                            onNodeWithTag("GameStatusCard2_Text_HomeTriCode")
+                            onNodeWithTag("ScoreBoard_TeamInfo_Home")
+                                .onNodeWithTag("TeamInfo_Text_TriCode")
                                 .assertTextEquals(game.game.homeTeam.team.abbreviation)
-                            onNodeWithTag("GameStatusCard2_Text_AwayTriCode")
+                            onNodeWithTag("ScoreBoard_TeamInfo_Away")
+                                .onNodeWithTag("TeamInfo_Text_TriCode")
                                 .assertTextEquals(game.game.awayTeam.team.abbreviation)
-                            onNodeWithTag("GameStatusCard2_Text_HomeScore")
+                            onNodeWithTag("ScoreBoard_TeamInfo_Home")
+                                .onNodeWithTag("TeamInfo_Text_Score")
                                 .assertTextEquals(game.game.homeTeam.score.toString())
-                            onNodeWithTag("GameStatusCard2_Text_AwayScore")
+                            onNodeWithTag("ScoreBoard_TeamInfo_Away")
+                                .onNodeWithTag("TeamInfo_Text_Score")
                                 .assertTextEquals(game.game.awayTeam.score.toString())
                             onNodeWithTag("GameStatusCard2_Text_GameStatus")
-                                .assertTextEquals(
-                                    game.game.gameStatusText.replaceFirst(" ", "\n").trim()
-                                )
+                                .assertTextEquals(game.game.gameStatusFormatText)
                             onNodeWithTag("GameStatusCard2_Btn_Bet")
                                 .assertExists()
                                 .assertIsDisplayed()
-                            onNodeWithTag("GameStatusCard2_Btn_Expand")
+                            onNodeWithTag("ExpandContent_Btn_Expand")
                                 .assertDoesNotExist()
                         }
                 }
@@ -289,10 +293,12 @@ class TeamScreenTest : BaseAndroidTest() {
             .onDialog()
             .onNodeWithTag("LoginDialog_Dialog")
         loginDialog
-            .onNodeWithTag("LoginDialog_EditText_Account")
+            .onNodeWithTag("LoginDialog_AccountTextField")
+            .onNodeWithTag("AccountTextField_TextField_Account")
             .performTextInput(USER_ACCOUNT)
         loginDialog
-            .onNodeWithTag("LoginDialog_EditText_Password")
+            .onNodeWithTag("LoginDialog_PasswordTextField")
+            .onNodeWithTag("PasswordTextField_TextFiled_Password")
             .performTextInput(USER_PASSWORD)
         loginDialog
             .onNodeWithTag("LoginDialog_Btn_Login")
@@ -302,7 +308,8 @@ class TeamScreenTest : BaseAndroidTest() {
             .onDialog()
             .onNodeWithTag("BetDialog_Dialog")
         betDialog
-            .onNodeWithTag("BetDialog_EditText_HomeBet")
+            .onNodeWithTag("BetDialogContent_BetDialogTeamEdit_Home")
+            .onNodeWithTag("BetDialogTeamEdit_TextField_Bet")
             .performTextInput(USER_POINTS.toString())
         betDialog
             .onNodeWithTag("BetDialog_Btn_Confirm")

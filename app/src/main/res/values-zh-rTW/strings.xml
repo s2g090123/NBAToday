@@ -81,7 +81,7 @@
     <string name="player_career_info_experience">經歷</string>
     <string name="player_career_stats_split">歷年數據</string>
     <string name="player_career_rank_split">歷年排名</string>
-    <string name="player_career_info_draft_format">%d 第%d輪 第%d順位</string>
+    <string name="player_career_info_draft_format">%1$d 第%2$d輪 第%3$d順位</string>
     <string name="user_login_hint">登入後解鎖更多功能</string>
     <string name="user_login">登入</string>
     <string name="user_logout">登出</string>
@@ -89,10 +89,10 @@
     <string name="user_login_warning">帳號或密碼不可為空</string>
     <string name="user_login_account_hint">帳號</string>
     <string name="user_login_password_hint">密碼</string>
-    <string name="user_points">持有點數：%d</string>
+    <string name="user_points">持有點數：%1$d</string>
     <string name="bet_vs">vs.</string>
     <string name="bet_confirm">確認</string>
-    <string name="bet_remain">剩餘點數： %d</string>
+    <string name="bet_remain">剩餘點數： %1$d</string>
     <string name="bet_warning_title">警告</string>
     <string name="bet_warning_text">下注後將無法撤銷或更改下注金額，是否要進行下注？</string>
     <string name="bet_warning_confirm">確認</string>
@@ -101,13 +101,14 @@
     <string name="bet_point_require">請至少下注一隊</string>
     <string name="bet_no_record">沒有任何下注紀錄</string>
     <string name="bet_ask_turn_table_title">使用幸運轉盤</string>
-    <string name="bet_ask_turn_table_text">您目前已贏得%d點數，損失%d點數，是否繼續下注於幸運轉盤？</string>
+    <string name="bet_ask_turn_table_text">您目前已贏得%1$d點數，損失%2$d點數，是否繼續下注於幸運轉盤？</string>
     <string name="bet_ask_turn_table_continue">繼續</string>
     <string name="bet_ask_turn_table_cancel">取消</string>
     <string name="bet_turn_table_start">開始</string>
     <string name="bet_reward_lose_title">哭啊</string>
-    <string name="bet_reward_lose_text">您因為幸運輪盤損失%d點數</string>
+    <string name="bet_reward_lose_text">您因為幸運輪盤損失%1$d點數</string>
     <string name="bet_reward_win_title">爽啊</string>
-    <string name="bet_reward_win_text">您因為幸運輪盤贏得%d點數</string>
+    <string name="bet_reward_win_text">您因為幸運輪盤贏得%1$d點數</string>
     <string name="bet_reward_ok">確定</string>
+    <string name="bet_toast_already_bet_before">你先前已經下注過了</string>
 </resources>

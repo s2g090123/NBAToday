@@ -73,7 +73,7 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
 import com.jiachian.nbatoday.R
-import com.jiachian.nbatoday.compose.screen.home.GameStatusCard2
+import com.jiachian.nbatoday.compose.screen.card.GameStatusCard
 import com.jiachian.nbatoday.compose.widget.RefreshingScreen
 import com.jiachian.nbatoday.data.local.NbaGameAndBet
 import com.jiachian.nbatoday.data.local.player.PlayerStats
@@ -1134,7 +1134,7 @@ private fun GamesPage(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         itemsIndexed(games) { index, game ->
-            GameStatusCard2(
+            GameStatusCard(
                 modifier = Modifier
                     .testTag("GamesPage_GameStatusCard2")
                     .padding(

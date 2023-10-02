@@ -111,32 +111,35 @@ class HomeScreenTest : BaseAndroidTest() {
             .performClick()
             .apply {
                 assertThat(currentState, instanceOf(NbaState.BoxScore::class.java))
-                onNodeWithTag("GameStatusCard2_Text_HomeTriCode")
+                val teamInfoHome = onNodeWithTag("ScoreBoard_TeamInfo_Home")
+                val teamInfoAway = onNodeWithTag("ScoreBoard_TeamInfo_Away")
+                teamInfoHome
+                    .onNodeWithTag("TeamInfo_Text_TriCode")
                     .assertTextEquals(firstGame.game.homeTeam.team.abbreviation)
-                onNodeWithTag("GameStatusCard2_Text_AwayTriCode")
+                teamInfoAway
+                    .onNodeWithTag("TeamInfo_Text_TriCode")
                     .assertTextEquals(firstGame.game.awayTeam.team.abbreviation)
-                onNodeWithTag("GameStatusCard2_Text_HomeScore")
+                teamInfoHome
+                    .onNodeWithTag("TeamInfo_Text_Score")
                     .assertTextEquals(firstGame.game.homeTeam.score.toString())
-                onNodeWithTag("GameStatusCard2_Text_AwayScore")
+                teamInfoAway.onNodeWithTag("TeamInfo_Text_Score")
                     .assertTextEquals(firstGame.game.awayTeam.score.toString())
                 onNodeWithTag("GameStatusCard2_Text_GameStatus")
                     .assertTextEquals(firstGame.game.gameStatusText)
                 onNodeWithTag("GameStatusCard2_Btn_Bet")
                     .assertDoesNotExist()
-                onNodeWithTag("GameStatusCard2_Btn_Expand")
+                onNodeWithTag("ExpandContent_Btn_Expand")
                     .assertIsDisplayed()
                     .performClick()
-                onNodeWithTag("GameStatusCard2_Btn_Collapse")
+                onNodeWithTag("ExpandContent_Btn_Collapse")
                     .assertIsDisplayed()
                     .performClick()
-
-                onNodeWithTag("GameStatusCard2_Btn_Collapse")
-                    .onNodeWithTag("GameStatusCard2_LeaderInfo")
-                    .onNodeWithTag("LeaderInfo_Info")
-                    .onNodeWithTag("LeaderInfo_Leaders", 0)
+                onNodeWithTag("ExpandContent_Btn_Collapse")
+                    .onNodeWithTag("ExpandContent_LeaderInfo")
+                    .onNodeWithTag("LeaderInfo_LeaderRow_Home")
                     .apply {
                         val pointsLeader = firstGame.game.gameLeaders?.homeLeaders.getOrAssert()
-                        onNodeWithTag("LeaderInfo_Text_PlayerInfo")
+                        onNodeWithTag("LeaderRow_Text_PlayerInfo")
                             .assertTextEquals(
                                 context.getString(
                                     R.string.player_info,
@@ -145,20 +148,19 @@ class HomeScreenTest : BaseAndroidTest() {
                                     pointsLeader.position
                                 )
                             )
-                        onNodeWithTag("LeaderInfo_Text_Ast")
+                        onNodeWithTag("LeaderRow_Text_Ast")
                             .assertTextEquals(pointsLeader.assists.toInt().toString())
-                        onNodeWithTag("LeaderInfo_Text_Reb")
+                        onNodeWithTag("LeaderRow_Text_Reb")
                             .assertTextEquals(pointsLeader.rebounds.toInt().toString())
-                        onNodeWithTag("LeaderInfo_Text_Pts")
+                        onNodeWithTag("LeaderRow_Text_Pts")
                             .assertTextEquals(pointsLeader.points.toInt().toString())
                     }
-                onNodeWithTag("GameStatusCard2_Btn_Collapse")
-                    .onNodeWithTag("GameStatusCard2_LeaderInfo")
-                    .onNodeWithTag("LeaderInfo_Info")
-                    .onNodeWithTag("LeaderInfo_Leaders", 1)
+                onNodeWithTag("ExpandContent_Btn_Collapse")
+                    .onNodeWithTag("ExpandContent_LeaderInfo")
+                    .onNodeWithTag("LeaderInfo_LeaderRow_Away")
                     .apply {
                         val pointsLeader = firstGame.game.gameLeaders?.awayLeaders.getOrAssert()
-                        onNodeWithTag("LeaderInfo_Text_PlayerInfo")
+                        onNodeWithTag("LeaderRow_Text_PlayerInfo")
                             .assertTextEquals(
                                 context.getString(
                                     R.string.player_info,
@@ -167,11 +169,11 @@ class HomeScreenTest : BaseAndroidTest() {
                                     pointsLeader.position
                                 )
                             )
-                        onNodeWithTag("LeaderInfo_Text_Ast")
+                        onNodeWithTag("LeaderRow_Text_Ast")
                             .assertTextEquals(pointsLeader.assists.toInt().toString())
-                        onNodeWithTag("LeaderInfo_Text_Reb")
+                        onNodeWithTag("LeaderRow_Text_Reb")
                             .assertTextEquals(pointsLeader.rebounds.toInt().toString())
-                        onNodeWithTag("LeaderInfo_Text_Pts")
+                        onNodeWithTag("LeaderRow_Text_Pts")
                             .assertTextEquals(pointsLeader.points.toInt().toString())
                     }
             }
@@ -180,32 +182,37 @@ class HomeScreenTest : BaseAndroidTest() {
             .performClick()
             .apply {
                 assertThat(currentState, instanceOf(NbaState.BoxScore::class.java))
-                onNodeWithTag("GameStatusCard2_Text_HomeTriCode")
+                val teamInfoHome = onNodeWithTag("ScoreBoard_TeamInfo_Home")
+                val teamInfoAway = onNodeWithTag("ScoreBoard_TeamInfo_Away")
+                teamInfoHome
+                    .onNodeWithTag("TeamInfo_Text_TriCode")
                     .assertTextEquals(secondGame.game.homeTeam.team.abbreviation)
-                onNodeWithTag("GameStatusCard2_Text_AwayTriCode")
+                teamInfoAway
+                    .onNodeWithTag("TeamInfo_Text_TriCode")
                     .assertTextEquals(secondGame.game.awayTeam.team.abbreviation)
-                onNodeWithTag("GameStatusCard2_Text_HomeScore")
+                teamInfoHome
+                    .onNodeWithTag("TeamInfo_Text_Score")
                     .assertTextEquals(secondGame.game.homeTeam.score.toString())
-                onNodeWithTag("GameStatusCard2_Text_AwayScore")
+                teamInfoAway
+                    .onNodeWithTag("TeamInfo_Text_Score")
                     .assertTextEquals(secondGame.game.awayTeam.score.toString())
                 onNodeWithTag("GameStatusCard2_Text_GameStatus")
-                    .assertTextEquals(secondGame.game.gameStatusText)
+                    .assertTextEquals(secondGame.game.gameStatusFormatText)
                 onNodeWithTag("GameStatusCard2_Btn_Bet")
                     .assertDoesNotExist()
-                onNodeWithTag("GameStatusCard2_Btn_Expand")
+                onNodeWithTag("ExpandContent_Btn_Expand")
                     .assertIsDisplayed()
                     .performClick()
-                onNodeWithTag("GameStatusCard2_Btn_Collapse")
+                onNodeWithTag("ExpandContent_Btn_Collapse")
                     .assertIsDisplayed()
                     .performClick()
 
-                onNodeWithTag("GameStatusCard2_Btn_Collapse")
-                    .onNodeWithTag("GameStatusCard2_LeaderInfo")
-                    .onNodeWithTag("LeaderInfo_Info")
-                    .onNodeWithTag("LeaderInfo_Leaders", 0)
+                onNodeWithTag("ExpandContent_Btn_Collapse")
+                    .onNodeWithTag("ExpandContent_LeaderInfo")
+                    .onNodeWithTag("LeaderInfo_LeaderRow_Home")
                     .apply {
                         val pointsLeader = secondGame.game.gameLeaders?.homeLeaders.getOrAssert()
-                        onNodeWithTag("LeaderInfo_Text_PlayerInfo")
+                        onNodeWithTag("LeaderRow_Text_PlayerInfo")
                             .assertTextEquals(
                                 context.getString(
                                     R.string.player_info,
@@ -214,20 +221,19 @@ class HomeScreenTest : BaseAndroidTest() {
                                     pointsLeader.position
                                 )
                             )
-                        onNodeWithTag("LeaderInfo_Text_Ast")
+                        onNodeWithTag("LeaderRow_Text_Ast")
                             .assertTextEquals(pointsLeader.assists.toInt().toString())
-                        onNodeWithTag("LeaderInfo_Text_Reb")
+                        onNodeWithTag("LeaderRow_Text_Reb")
                             .assertTextEquals(pointsLeader.rebounds.toInt().toString())
-                        onNodeWithTag("LeaderInfo_Text_Pts")
+                        onNodeWithTag("LeaderRow_Text_Pts")
                             .assertTextEquals(pointsLeader.points.toInt().toString())
                     }
-                onNodeWithTag("GameStatusCard2_Btn_Collapse")
-                    .onNodeWithTag("GameStatusCard2_LeaderInfo")
-                    .onNodeWithTag("LeaderInfo_Info")
-                    .onNodeWithTag("LeaderInfo_Leaders", 1)
+                onNodeWithTag("ExpandContent_Btn_Collapse")
+                    .onNodeWithTag("ExpandContent_LeaderInfo")
+                    .onNodeWithTag("LeaderInfo_LeaderRow_Away")
                     .apply {
                         val pointsLeader = secondGame.game.gameLeaders?.awayLeaders.getOrAssert()
-                        onNodeWithTag("LeaderInfo_Text_PlayerInfo")
+                        onNodeWithTag("LeaderRow_Text_PlayerInfo")
                             .assertTextEquals(
                                 context.getString(
                                     R.string.player_info,
@@ -236,11 +242,11 @@ class HomeScreenTest : BaseAndroidTest() {
                                     pointsLeader.position
                                 )
                             )
-                        onNodeWithTag("LeaderInfo_Text_Ast")
+                        onNodeWithTag("LeaderRow_Text_Ast")
                             .assertTextEquals(pointsLeader.assists.toInt().toString())
-                        onNodeWithTag("LeaderInfo_Text_Reb")
+                        onNodeWithTag("LeaderRow_Text_Reb")
                             .assertTextEquals(pointsLeader.rebounds.toInt().toString())
-                        onNodeWithTag("LeaderInfo_Text_Pts")
+                        onNodeWithTag("LeaderRow_Text_Pts")
                             .assertTextEquals(pointsLeader.points.toInt().toString())
                     }
             }
@@ -265,35 +271,42 @@ class HomeScreenTest : BaseAndroidTest() {
             .onNodeWithTag("SchedulePage_LZ_Body")
         bodyRoot
             .onNodeWithTag("SchedulePage_GameStatusCard2", 0)
+            .onNodeWithTag("ScoreBoard_TeamInfo_Home")
+            .performClick()
+        assertThat(currentState, instanceOf(NbaState.Team::class.java))
+        bodyRoot
+            .onNodeWithTag("SchedulePage_GameStatusCard2", 0)
             .performClick()
             .apply {
-                assertThat(currentState, instanceOf(NbaState.Team::class.java))
-                onNodeWithTag("GameStatusCard2_Text_HomeTriCode")
+                onNodeWithTag("ScoreBoard_TeamInfo_Home")
+                    .onNodeWithTag("TeamInfo_Text_TriCode")
                     .assertTextEquals(firstGame.game.homeTeam.team.abbreviation)
-                onNodeWithTag("GameStatusCard2_Text_AwayTriCode")
+                onNodeWithTag("ScoreBoard_TeamInfo_Away")
+                    .onNodeWithTag("TeamInfo_Text_TriCode")
                     .assertTextEquals(firstGame.game.awayTeam.team.abbreviation)
-                onNodeWithTag("GameStatusCard2_Text_HomeScore")
+                onNodeWithTag("ScoreBoard_TeamInfo_Home")
+                    .onNodeWithTag("TeamInfo_Text_Score")
                     .assertTextEquals(firstGame.game.homeTeam.score.toString())
-                onNodeWithTag("GameStatusCard2_Text_AwayScore")
+                onNodeWithTag("ScoreBoard_TeamInfo_Away")
+                    .onNodeWithTag("TeamInfo_Text_Score")
                     .assertTextEquals(firstGame.game.awayTeam.score.toString())
                 onNodeWithTag("GameStatusCard2_Text_GameStatus")
                     .assertTextEquals(firstGame.game.gameStatusText.replaceFirst(" ", "\n"))
                 onNodeWithTag("GameStatusCard2_Btn_Bet")
                     .assertIsDisplayed()
-                onNodeWithTag("GameStatusCard2_Btn_Expand")
+                onNodeWithTag("ExpandContent_Btn_Expand")
                     .assertIsDisplayed()
                     .performClick()
-                onNodeWithTag("GameStatusCard2_Btn_Collapse")
+                onNodeWithTag("ExpandContent_Btn_Collapse")
                     .assertIsDisplayed()
                     .performClick()
 
-                onNodeWithTag("GameStatusCard2_Btn_Collapse")
-                    .onNodeWithTag("GameStatusCard2_LeaderInfo")
-                    .onNodeWithTag("LeaderInfo_Info")
-                    .onNodeWithTag("LeaderInfo_Leaders", 0)
+                onNodeWithTag("ExpandContent_Btn_Collapse")
+                    .onNodeWithTag("ExpandContent_LeaderInfo")
+                    .onNodeWithTag("LeaderInfo_LeaderRow_Home")
                     .apply {
                         val pointsLeader = firstGame.game.gameLeaders?.homeLeaders.getOrAssert()
-                        onNodeWithTag("LeaderInfo_Text_PlayerInfo")
+                        onNodeWithTag("LeaderRow_Text_PlayerInfo")
                             .assertTextEquals(
                                 context.getString(
                                     R.string.player_info,
@@ -302,20 +315,19 @@ class HomeScreenTest : BaseAndroidTest() {
                                     pointsLeader.position
                                 )
                             )
-                        onNodeWithTag("LeaderInfo_Text_Ast")
+                        onNodeWithTag("LeaderRow_Text_Ast")
                             .assertTextEquals(pointsLeader.assists.toString())
-                        onNodeWithTag("LeaderInfo_Text_Reb")
+                        onNodeWithTag("LeaderRow_Text_Reb")
                             .assertTextEquals(pointsLeader.rebounds.toString())
-                        onNodeWithTag("LeaderInfo_Text_Pts")
+                        onNodeWithTag("LeaderRow_Text_Pts")
                             .assertTextEquals(pointsLeader.points.toString())
                     }
-                onNodeWithTag("GameStatusCard2_Btn_Collapse")
-                    .onNodeWithTag("GameStatusCard2_LeaderInfo")
-                    .onNodeWithTag("LeaderInfo_Info")
-                    .onNodeWithTag("LeaderInfo_Leaders", 1)
+                onNodeWithTag("ExpandContent_Btn_Collapse")
+                    .onNodeWithTag("ExpandContent_LeaderInfo")
+                    .onNodeWithTag("LeaderInfo_LeaderRow_Away")
                     .apply {
                         val pointsLeader = firstGame.game.gameLeaders?.awayLeaders.getOrAssert()
-                        onNodeWithTag("LeaderInfo_Text_PlayerInfo")
+                        onNodeWithTag("LeaderRow_Text_PlayerInfo")
                             .assertTextEquals(
                                 context.getString(
                                     R.string.player_info,
@@ -324,11 +336,11 @@ class HomeScreenTest : BaseAndroidTest() {
                                     pointsLeader.position
                                 )
                             )
-                        onNodeWithTag("LeaderInfo_Text_Ast")
+                        onNodeWithTag("LeaderRow_Text_Ast")
                             .assertTextEquals(pointsLeader.assists.toString())
-                        onNodeWithTag("LeaderInfo_Text_Reb")
+                        onNodeWithTag("LeaderRow_Text_Reb")
                             .assertTextEquals(pointsLeader.rebounds.toString())
-                        onNodeWithTag("LeaderInfo_Text_Pts")
+                        onNodeWithTag("LeaderRow_Text_Pts")
                             .assertTextEquals(pointsLeader.points.toString())
                     }
             }
@@ -356,32 +368,34 @@ class HomeScreenTest : BaseAndroidTest() {
             .performClick()
             .apply {
                 assertThat(currentState, instanceOf(NbaState.BoxScore::class.java))
-                onNodeWithTag("GameStatusCard2_Text_HomeTriCode")
+                onNodeWithTag("ScoreBoard_TeamInfo_Home")
+                    .onNodeWithTag("TeamInfo_Text_TriCode")
                     .assertTextEquals(firstGame.game.homeTeam.team.abbreviation)
-                onNodeWithTag("GameStatusCard2_Text_AwayTriCode")
+                onNodeWithTag("ScoreBoard_TeamInfo_Away")
+                    .onNodeWithTag("TeamInfo_Text_TriCode")
                     .assertTextEquals(firstGame.game.awayTeam.team.abbreviation)
-                onNodeWithTag("GameStatusCard2_Text_HomeScore")
+                onNodeWithTag("ScoreBoard_TeamInfo_Home")
+                    .onNodeWithTag("TeamInfo_Text_Score")
                     .assertTextEquals(firstGame.game.homeTeam.score.toString())
-                onNodeWithTag("GameStatusCard2_Text_AwayScore")
+                onNodeWithTag("ScoreBoard_TeamInfo_Away")
+                    .onNodeWithTag("TeamInfo_Text_Score")
                     .assertTextEquals(firstGame.game.awayTeam.score.toString())
                 onNodeWithTag("GameStatusCard2_Text_GameStatus")
                     .assertTextEquals(firstGame.game.gameStatusText)
                 onNodeWithTag("GameStatusCard2_Btn_Bet")
                     .assertDoesNotExist()
-                onNodeWithTag("GameStatusCard2_Btn_Expand")
+                onNodeWithTag("ExpandContent_Btn_Expand")
                     .assertIsDisplayed()
                     .performClick()
-                onNodeWithTag("GameStatusCard2_Btn_Collapse")
+                onNodeWithTag("ExpandContent_Btn_Collapse")
                     .assertIsDisplayed()
                     .performClick()
-
-                onNodeWithTag("GameStatusCard2_Btn_Collapse")
-                    .onNodeWithTag("GameStatusCard2_LeaderInfo")
-                    .onNodeWithTag("LeaderInfo_Info")
-                    .onNodeWithTag("LeaderInfo_Leaders", 0)
+                onNodeWithTag("ExpandContent_Btn_Collapse")
+                    .onNodeWithTag("ExpandContent_LeaderInfo")
+                    .onNodeWithTag("LeaderInfo_LeaderRow_Home")
                     .apply {
                         val pointsLeader = firstGame.game.gameLeaders?.homeLeaders.getOrAssert()
-                        onNodeWithTag("LeaderInfo_Text_PlayerInfo")
+                        onNodeWithTag("LeaderRow_Text_PlayerInfo")
                             .assertTextEquals(
                                 context.getString(
                                     R.string.player_info,
@@ -390,20 +404,19 @@ class HomeScreenTest : BaseAndroidTest() {
                                     pointsLeader.position
                                 )
                             )
-                        onNodeWithTag("LeaderInfo_Text_Ast")
+                        onNodeWithTag("LeaderRow_Text_Ast")
                             .assertTextEquals(pointsLeader.assists.toInt().toString())
-                        onNodeWithTag("LeaderInfo_Text_Reb")
+                        onNodeWithTag("LeaderRow_Text_Reb")
                             .assertTextEquals(pointsLeader.rebounds.toInt().toString())
-                        onNodeWithTag("LeaderInfo_Text_Pts")
+                        onNodeWithTag("LeaderRow_Text_Pts")
                             .assertTextEquals(pointsLeader.points.toInt().toString())
                     }
-                onNodeWithTag("GameStatusCard2_Btn_Collapse")
-                    .onNodeWithTag("GameStatusCard2_LeaderInfo")
-                    .onNodeWithTag("LeaderInfo_Info")
-                    .onNodeWithTag("LeaderInfo_Leaders", 1)
+                onNodeWithTag("ExpandContent_Btn_Collapse")
+                    .onNodeWithTag("ExpandContent_LeaderInfo")
+                    .onNodeWithTag("LeaderInfo_LeaderRow_Away")
                     .apply {
                         val pointsLeader = firstGame.game.gameLeaders?.awayLeaders.getOrAssert()
-                        onNodeWithTag("LeaderInfo_Text_PlayerInfo")
+                        onNodeWithTag("LeaderRow_Text_PlayerInfo")
                             .assertTextEquals(
                                 context.getString(
                                     R.string.player_info,
@@ -412,11 +425,11 @@ class HomeScreenTest : BaseAndroidTest() {
                                     pointsLeader.position
                                 )
                             )
-                        onNodeWithTag("LeaderInfo_Text_Ast")
+                        onNodeWithTag("LeaderRow_Text_Ast")
                             .assertTextEquals(pointsLeader.assists.toInt().toString())
-                        onNodeWithTag("LeaderInfo_Text_Reb")
+                        onNodeWithTag("LeaderRow_Text_Reb")
                             .assertTextEquals(pointsLeader.rebounds.toInt().toString())
-                        onNodeWithTag("LeaderInfo_Text_Pts")
+                        onNodeWithTag("LeaderRow_Text_Pts")
                             .assertTextEquals(pointsLeader.points.toInt().toString())
                     }
             }
@@ -448,9 +461,11 @@ class HomeScreenTest : BaseAndroidTest() {
             .onDialog()
             .onNodeWithTag("LoginDialog_Dialog")
         loginDialog.apply {
-            onNodeWithTag("LoginDialog_EditText_Account")
+            onNodeWithTag("LoginDialog_AccountTextField")
+                .onNodeWithTag("AccountTextField_TextField_Account")
                 .performTextInput(USER_ACCOUNT)
-            onNodeWithTag("LoginDialog_EditText_Password")
+            onNodeWithTag("LoginDialog_PasswordTextField")
+                .onNodeWithTag("PasswordTextField_TextFiled_Password")
                 .performTextInput(USER_PASSWORD)
             onNodeWithTag("LoginDialog_Btn_Login")
                 .performClick()
@@ -464,7 +479,8 @@ class HomeScreenTest : BaseAndroidTest() {
             .onDialog()
             .onNodeWithTag("BetDialog_Dialog")
         betDialog.apply {
-            onNodeWithTag("BetDialog_Text_HomeRecord")
+            onNodeWithTag("BetDialogContent_BetDialogTeamEdit_Home")
+                .onNodeWithTag("BetDialogTeamEdit_Text_Record")
                 .assertTextEquals(
                     context.getString(
                         R.string.bet_win_lose_record,
@@ -472,7 +488,8 @@ class HomeScreenTest : BaseAndroidTest() {
                         firstGame.game.homeTeam.losses
                     )
                 )
-            onNodeWithTag("BetDialog_Text_AwayRecord")
+            onNodeWithTag("BetDialogContent_BetDialogTeamEdit_Away")
+                .onNodeWithTag("BetDialogTeamEdit_Text_Record")
                 .assertTextEquals(
                     context.getString(
                         R.string.bet_win_lose_record,
@@ -480,11 +497,13 @@ class HomeScreenTest : BaseAndroidTest() {
                         firstGame.game.awayTeam.losses
                     )
                 )
-            onNodeWithTag("BetDialog_EditText_HomeBet")
+            onNodeWithTag("BetDialogContent_BetDialogTeamEdit_Home")
+                .onNodeWithTag("BetDialogTeamEdit_TextField_Bet")
                 .performTextInput("500")
             onNodeWithTag("BetDialog_Text_Remainder")
                 .assertTextEquals(context.getString(R.string.bet_remain, USER_POINTS - 500))
-            onNodeWithTag("BetDialog_EditText_AwayBet")
+            onNodeWithTag("BetDialogContent_BetDialogTeamEdit_Away")
+                .onNodeWithTag("BetDialogTeamEdit_TextField_Bet")
                 .performTextInput("500")
             onNodeWithTag("BetDialog_Text_Remainder")
                 .assertTextEquals(context.getString(R.string.bet_remain, USER_POINTS - 1000))
@@ -529,8 +548,8 @@ class HomeScreenTest : BaseAndroidTest() {
         }
         val statsRoot = page
             .onNodeWithTag("TeamStanding_Column_StatsRoot")
-            .onNodeWithTag("TeamStanding_LC_Stats")
-            .onNodeWithTag("TeamStanding_Row_Stats")
+            .onNodeWithTag("TeamStanding_LC_Stats", 0)
+            .onNodeWithTag("TeamStandingStatsTable_TeamStatsRow")
         statsRoot.apply {
             viewModel.standingLabel.value.forEachIndexed { index, label ->
                 onNodeWithTag("TeamStanding_Text_Stats", index)
@@ -570,24 +589,26 @@ class HomeScreenTest : BaseAndroidTest() {
         composeTestRule
             .onNodeWithMergedTag("HomeBottom_Btn_User")
             .performClick()
-        val root = composeTestRule
-            .onNodeWithMergedTag("UserPage_Column_NotLoginRoot")
-        root
-            .onNodeWithTag("UserPage_Btn_Login")
+        composeTestRule
+            .onNodeWithMergedTag("UserPage_Btn_Login")
             .performClick()
         composeTestRule.assertDialogExist()
         val loginDialog = composeTestRule
             .onDialog()
             .onNodeWithTag("LoginDialog_Dialog")
         loginDialog.apply {
-            onNodeWithTag("LoginDialog_EditText_Account")
+            onNodeWithTag("LoginDialog_AccountTextField")
+                .onNodeWithTag("AccountTextField_TextField_Account")
                 .performTextInput(USER_ACCOUNT)
-            onNodeWithTag("LoginDialog_EditText_Password")
+            onNodeWithTag("LoginDialog_PasswordTextField")
+                .onNodeWithTag("PasswordTextField_TextFiled_Password")
                 .performTextInput(USER_PASSWORD)
             onNodeWithTag("LoginDialog_Btn_Login")
                 .performClick()
         }
-        root.assertDoesNotExist()
+        composeTestRule
+            .onNodeWithMergedTag("UserPage_Btn_Login")
+            .assertDoesNotExist()
     }
 
     @Test
@@ -595,24 +616,26 @@ class HomeScreenTest : BaseAndroidTest() {
         composeTestRule
             .onNodeWithMergedTag("HomeBottom_Btn_User")
             .performClick()
-        val root = composeTestRule
-            .onNodeWithMergedTag("UserPage_Column_NotLoginRoot")
-        root
-            .onNodeWithTag("UserPage_Btn_Login")
+        composeTestRule
+            .onNodeWithMergedTag("UserPage_Btn_Login")
             .performClick()
         composeTestRule.assertDialogExist()
         val loginDialog = composeTestRule
             .onDialog()
             .onNodeWithTag("LoginDialog_Dialog")
         loginDialog.apply {
-            onNodeWithTag("LoginDialog_EditText_Account")
+            onNodeWithTag("LoginDialog_AccountTextField")
+                .onNodeWithTag("AccountTextField_TextField_Account")
                 .performTextInput(USER_ACCOUNT)
-            onNodeWithTag("LoginDialog_EditText_Password")
+            onNodeWithTag("LoginDialog_PasswordTextField")
+                .onNodeWithTag("PasswordTextField_TextFiled_Password")
                 .performTextInput(USER_PASSWORD)
             onNodeWithTag("LoginDialog_Btn_Register")
                 .performClick()
         }
-        root.assertDoesNotExist()
+        composeTestRule
+            .onNodeWithMergedTag("UserPage_Btn_Login")
+            .assertDoesNotExist()
     }
 
     @Test
@@ -621,17 +644,18 @@ class HomeScreenTest : BaseAndroidTest() {
             .onNodeWithMergedTag("HomeBottom_Btn_User")
             .performClick()
         composeTestRule
-            .onNodeWithMergedTag("UserPage_Column_NotLoginRoot")
-            .onNodeWithTag("UserPage_Btn_Login")
+            .onNodeWithMergedTag("UserPage_Btn_Login")
             .performClick()
         composeTestRule.assertDialogExist()
         val loginDialog = composeTestRule
             .onDialog()
             .onNodeWithTag("LoginDialog_Dialog")
         loginDialog.apply {
-            onNodeWithTag("LoginDialog_EditText_Account")
+            onNodeWithTag("LoginDialog_AccountTextField")
+                .onNodeWithTag("AccountTextField_TextField_Account")
                 .performTextInput(USER_ACCOUNT)
-            onNodeWithTag("LoginDialog_EditText_Password")
+            onNodeWithTag("LoginDialog_PasswordTextField")
+                .onNodeWithTag("PasswordTextField_TextFiled_Password")
                 .performTextInput(USER_PASSWORD)
             onNodeWithTag("LoginDialog_Btn_Login")
                 .performClick()
@@ -640,9 +664,7 @@ class HomeScreenTest : BaseAndroidTest() {
             .onNodeWithMergedTag("AccountInfo_Btn_Logout")
             .performClick()
         composeTestRule
-            .onNodeWithMergedTag("UserPage_Column_NotLoginRoot")
-            .onNodeWithTag("UserPage_Btn_Login")
-            .assertExists()
+            .onNodeWithMergedTag("UserPage_Btn_Login")
             .assertIsDisplayed()
     }
 
@@ -652,17 +674,18 @@ class HomeScreenTest : BaseAndroidTest() {
             .onNodeWithMergedTag("HomeBottom_Btn_User")
             .performClick()
         composeTestRule
-            .onNodeWithMergedTag("UserPage_Column_NotLoginRoot")
-            .onNodeWithTag("UserPage_Btn_Login")
+            .onNodeWithMergedTag("UserPage_Btn_Login")
             .performClick()
         composeTestRule.assertDialogExist()
         val loginDialog = composeTestRule
             .onDialog()
             .onNodeWithTag("LoginDialog_Dialog")
         loginDialog.apply {
-            onNodeWithTag("LoginDialog_EditText_Account")
+            onNodeWithTag("LoginDialog_AccountTextField")
+                .onNodeWithTag("AccountTextField_TextField_Account")
                 .performTextInput(USER_ACCOUNT)
-            onNodeWithTag("LoginDialog_EditText_Password")
+            onNodeWithTag("LoginDialog_PasswordTextField")
+                .onNodeWithTag("PasswordTextField_TextFiled_Password")
                 .performTextInput(USER_PASSWORD)
             onNodeWithTag("LoginDialog_Btn_Login")
                 .performClick()
@@ -679,17 +702,18 @@ class HomeScreenTest : BaseAndroidTest() {
             .onNodeWithMergedTag("HomeBottom_Btn_User")
             .performClick()
         composeTestRule
-            .onNodeWithMergedTag("UserPage_Column_NotLoginRoot")
-            .onNodeWithTag("UserPage_Btn_Login")
+            .onNodeWithMergedTag("UserPage_Btn_Login")
             .performClick()
         composeTestRule.assertDialogExist()
         val loginDialog = composeTestRule
             .onDialog()
             .onNodeWithTag("LoginDialog_Dialog")
         loginDialog.apply {
-            onNodeWithTag("LoginDialog_EditText_Account")
+            onNodeWithTag("LoginDialog_AccountTextField")
+                .onNodeWithTag("AccountTextField_TextField_Account")
                 .performTextInput(USER_ACCOUNT)
-            onNodeWithTag("LoginDialog_EditText_Password")
+            onNodeWithTag("LoginDialog_PasswordTextField")
+                .onNodeWithTag("PasswordTextField_TextFiled_Password")
                 .performTextInput(USER_PASSWORD)
             onNodeWithTag("LoginDialog_Btn_Login")
                 .performClick()

@@ -123,16 +123,20 @@ class GameCalendarScreenTest {
             .assertCountEquals(games.size)
             .onFirst()
         firstCardRoot
-            .onNodeWithTag("GameStatusCard2_Text_HomeTriCode")
+            .onNodeWithTag("ScoreBoard_TeamInfo_Home")
+            .onNodeWithTag("TeamInfo_Text_TriCode")
             .assertTextEquals(firstGame.game.homeTeam.team.abbreviation)
         firstCardRoot
-            .onNodeWithTag("GameStatusCard2_Text_AwayTriCode")
+            .onNodeWithTag("ScoreBoard_TeamInfo_Away")
+            .onNodeWithTag("TeamInfo_Text_TriCode")
             .assertTextEquals(firstGame.game.awayTeam.team.abbreviation)
         firstCardRoot
-            .onNodeWithTag("GameStatusCard2_Text_HomeScore")
+            .onNodeWithTag("ScoreBoard_TeamInfo_Home")
+            .onNodeWithTag("TeamInfo_Text_Score")
             .assertTextEquals(firstGame.game.homeTeam.score.toString())
         firstCardRoot
-            .onNodeWithTag("GameStatusCard2_Text_AwayScore")
+            .onNodeWithTag("ScoreBoard_TeamInfo_Away")
+            .onNodeWithTag("TeamInfo_Text_Score")
             .assertTextEquals(firstGame.game.awayTeam.score.toString())
         firstCardRoot
             .onNodeWithTag("GameStatusCard2_Text_GameStatus")
@@ -141,32 +145,36 @@ class GameCalendarScreenTest {
             .onNodeWithTag("GameStatusCard2_Btn_bet")
             .assertDoesNotExist()
         firstCardRoot
-            .onNodeWithTag("GameStatusCard2_Btn_Expand")
+            .onNodeWithTag("ExpandContent_Btn_Expand")
             .assertDoesNotExist()
 
         val secondCardRoot = gamesRoot
             .onChildren()
             .assertCountEquals(games.size)[1]
         secondCardRoot
-            .onNodeWithTag("GameStatusCard2_Text_HomeTriCode")
+            .onNodeWithTag("ScoreBoard_TeamInfo_Home")
+            .onNodeWithTag("TeamInfo_Text_TriCode")
             .assertTextEquals(secondGame.game.homeTeam.team.abbreviation)
         secondCardRoot
-            .onNodeWithTag("GameStatusCard2_Text_AwayTriCode")
+            .onNodeWithTag("ScoreBoard_TeamInfo_Away")
+            .onNodeWithTag("TeamInfo_Text_TriCode")
             .assertTextEquals(secondGame.game.awayTeam.team.abbreviation)
         secondCardRoot
-            .onNodeWithTag("GameStatusCard2_Text_HomeScore")
+            .onNodeWithTag("ScoreBoard_TeamInfo_Home")
+            .onNodeWithTag("TeamInfo_Text_Score")
             .assertTextEquals(secondGame.game.homeTeam.score.toString())
         secondCardRoot
-            .onNodeWithTag("GameStatusCard2_Text_AwayScore")
+            .onNodeWithTag("ScoreBoard_TeamInfo_Away")
+            .onNodeWithTag("TeamInfo_Text_Score")
             .assertTextEquals(secondGame.game.awayTeam.score.toString())
         secondCardRoot
             .onNodeWithTag("GameStatusCard2_Text_GameStatus")
-            .assertTextEquals(secondGame.game.gameStatusText)
+            .assertTextEquals(secondGame.game.gameStatusFormatText)
         secondCardRoot
             .onNodeWithTag("GameStatusCard2_Btn_bet")
             .assertDoesNotExist()
         secondCardRoot
-            .onNodeWithTag("GameStatusCard2_Btn_Expand")
+            .onNodeWithTag("ExpandContent_Btn_Expand")
             .assertDoesNotExist()
     }
 
@@ -201,16 +209,20 @@ class GameCalendarScreenTest {
             .assertCountEquals(games.size)
             .onFirst()
         firstCardRoot
-            .onNodeWithTag("GameStatusCard2_Text_HomeTriCode")
+            .onNodeWithTag("ScoreBoard_TeamInfo_Home")
+            .onNodeWithTag("TeamInfo_Text_TriCode")
             .assertTextEquals(game.game.homeTeam.team.abbreviation)
         firstCardRoot
-            .onNodeWithTag("GameStatusCard2_Text_AwayTriCode")
+            .onNodeWithTag("ScoreBoard_TeamInfo_Away")
+            .onNodeWithTag("TeamInfo_Text_TriCode")
             .assertTextEquals(game.game.awayTeam.team.abbreviation)
         firstCardRoot
-            .onNodeWithTag("GameStatusCard2_Text_HomeScore")
+            .onNodeWithTag("ScoreBoard_TeamInfo_Home")
+            .onNodeWithTag("TeamInfo_Text_Score")
             .assertTextEquals(game.game.homeTeam.score.toString())
         firstCardRoot
-            .onNodeWithTag("GameStatusCard2_Text_AwayScore")
+            .onNodeWithTag("ScoreBoard_TeamInfo_Away")
+            .onNodeWithTag("TeamInfo_Text_Score")
             .assertTextEquals(game.game.awayTeam.score.toString())
         firstCardRoot
             .onNodeWithTag("GameStatusCard2_Text_GameStatus")
@@ -219,7 +231,7 @@ class GameCalendarScreenTest {
             .onNodeWithTag("GameStatusCard2_Btn_bet")
             .assertDoesNotExist()
         firstCardRoot
-            .onNodeWithTag("GameStatusCard2_Btn_Expand")
+            .onNodeWithTag("ExpandContent_Btn_Expand")
             .assertDoesNotExist()
     }
 
@@ -264,16 +276,20 @@ class GameCalendarScreenTest {
             .assertCountEquals(1)
             .onFirst()
         cardRoot
-            .onNodeWithTag("GameStatusCard2_Text_HomeTriCode")
+            .onNodeWithTag("ScoreBoard_TeamInfo_Home")
+            .onNodeWithTag("TeamInfo_Text_TriCode")
             .assertTextEquals(lastGame.homeTeam.team.abbreviation)
         cardRoot
-            .onNodeWithTag("GameStatusCard2_Text_AwayTriCode")
+            .onNodeWithTag("ScoreBoard_TeamInfo_Away")
+            .onNodeWithTag("TeamInfo_Text_TriCode")
             .assertTextEquals(lastGame.awayTeam.team.abbreviation)
         cardRoot
-            .onNodeWithTag("GameStatusCard2_Text_HomeScore")
+            .onNodeWithTag("ScoreBoard_TeamInfo_Home")
+            .onNodeWithTag("TeamInfo_Text_Score")
             .assertTextEquals(lastGame.homeTeam.score.toString())
         cardRoot
-            .onNodeWithTag("GameStatusCard2_Text_AwayScore")
+            .onNodeWithTag("ScoreBoard_TeamInfo_Away")
+            .onNodeWithTag("TeamInfo_Text_Score")
             .assertTextEquals(lastGame.awayTeam.score.toString())
         cardRoot
             .onNodeWithTag("GameStatusCard2_Text_GameStatus")
@@ -282,7 +298,7 @@ class GameCalendarScreenTest {
             .onNodeWithTag("GameStatusCard2_Btn_bet")
             .assertDoesNotExist()
         cardRoot
-            .onNodeWithTag("GameStatusCard2_Btn_Expand")
+            .onNodeWithTag("ExpandContent_Btn_Expand")
             .assertDoesNotExist()
     }
 
@@ -327,16 +343,20 @@ class GameCalendarScreenTest {
             .assertCountEquals(1)
             .onFirst()
         cardRoot
-            .onNodeWithTag("GameStatusCard2_Text_HomeTriCode")
+            .onNodeWithTag("ScoreBoard_TeamInfo_Home")
+            .onNodeWithTag("TeamInfo_Text_TriCode")
             .assertTextEquals(nextGame.homeTeam.team.abbreviation)
         cardRoot
-            .onNodeWithTag("GameStatusCard2_Text_AwayTriCode")
+            .onNodeWithTag("ScoreBoard_TeamInfo_Away")
+            .onNodeWithTag("TeamInfo_Text_TriCode")
             .assertTextEquals(nextGame.awayTeam.team.abbreviation)
         cardRoot
-            .onNodeWithTag("GameStatusCard2_Text_HomeScore")
+            .onNodeWithTag("ScoreBoard_TeamInfo_Home")
+            .onNodeWithTag("TeamInfo_Text_Score")
             .assertTextEquals(nextGame.homeTeam.score.toString())
         cardRoot
-            .onNodeWithTag("GameStatusCard2_Text_AwayScore")
+            .onNodeWithTag("ScoreBoard_TeamInfo_Away")
+            .onNodeWithTag("TeamInfo_Text_Score")
             .assertTextEquals(nextGame.awayTeam.score.toString())
         cardRoot
             .onNodeWithTag("GameStatusCard2_Text_GameStatus")
@@ -345,7 +365,7 @@ class GameCalendarScreenTest {
             .onNodeWithTag("GameStatusCard2_Btn_bet")
             .assertDoesNotExist()
         cardRoot
-            .onNodeWithTag("GameStatusCard2_Btn_Expand")
+            .onNodeWithTag("ExpandContent_Btn_Expand")
             .assertDoesNotExist()
     }
 

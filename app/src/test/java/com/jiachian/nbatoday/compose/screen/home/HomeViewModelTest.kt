@@ -26,8 +26,8 @@ import java.util.Date
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
-import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.instanceOf
+import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.notNullValue
 import org.hamcrest.CoreMatchers.nullValue
 import org.hamcrest.MatcherAssert.assertThat
@@ -110,7 +110,7 @@ class HomeViewModelTest {
 
     @Test
     fun home_getStandingIndex_expectsZero() {
-        assertThat(viewModel.selectConference.value, `is`(NBATeam.Conference.EAST))
+        assertThat(viewModel.selectedConference.value, `is`(NBATeam.Conference.EAST))
     }
 
     @Test
@@ -179,14 +179,14 @@ class HomeViewModelTest {
 
     @Test
     fun home_updateStandingConference_selectsEast() {
-        viewModel.updateStandingConference(NBATeam.Conference.EAST)
-        assertThat(viewModel.selectConference.value, `is`(NBATeam.Conference.EAST))
+        viewModel.selectConference(NBATeam.Conference.EAST)
+        assertThat(viewModel.selectedConference.value, `is`(NBATeam.Conference.EAST))
     }
 
     @Test
     fun home_updateStandingConference_selectsWest() {
-        viewModel.updateStandingConference(NBATeam.Conference.WEST)
-        assertThat(viewModel.selectConference.value, `is`(NBATeam.Conference.WEST))
+        viewModel.selectConference(NBATeam.Conference.WEST)
+        assertThat(viewModel.selectedConference.value, `is`(NBATeam.Conference.WEST))
     }
 
     @Test

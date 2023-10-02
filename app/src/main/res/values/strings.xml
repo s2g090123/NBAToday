@@ -137,7 +137,7 @@
     <string name="player_career_info_experience">EXPERIENCE</string>
     <string name="player_career_stats_split">STATS SPLIT</string>
     <string name="player_career_rank_split">RANK SPLIT</string>
-    <string name="player_career_info_draft_format">%d R%d Pick %d</string>
+    <string name="player_career_info_draft_format">%1$d R%2$d Pick %3$d</string>
     <string name="user_login_hint">Log in to access exclusive features</string>
     <string name="user_login">LOGIN</string>
     <string name="user_logout">LOGOUT</string>
@@ -145,11 +145,11 @@
     <string name="user_login_warning">Account or password can not blank</string>
     <string name="user_login_account_hint">Account</string>
     <string name="user_login_password_hint">Password</string>
-    <string name="user_points">Credits held：%d</string>
+    <string name="user_points">Credits held：%1$d</string>
     <string name="bet_vs">vs.</string>
     <string name="bet_win_lose_record" translatable="false">(%1$d/%2$d)</string>
     <string name="bet_confirm">CONFIRM</string>
-    <string name="bet_remain">Remaining Credits： %d</string>
+    <string name="bet_remain">Remaining Credits： %1$d</string>
     <string name="bet_warning_title">Warning</string>
     <string name="bet_warning_text">After placing a bet, it cannot be cancelled or changed. Are you sure you want to place the bet?</string>
     <string name="bet_warning_confirm">CONFIRM</string>
@@ -158,15 +158,17 @@
     <string name="bet_point_require">Please bet on at least one team</string>
     <string name="bet_no_record">No betting record found.</string>
     <string name="bet_ask_turn_table_title">Use Lucky Wheel</string>
-    <string name="bet_ask_turn_table_text">You have won %d points and lost %d points. Do you want to continue betting on the Lucky Wheel?</string>
+    <string name="bet_ask_turn_table_text">You have won %1$d points and lost %2$d points. Do you want to continue betting on the Lucky Wheel?</string>
     <string name="bet_ask_turn_table_continue">CONTINUE</string>
     <string name="bet_ask_turn_table_cancel">CANCEL</string>
     <string name="bet_turn_table_start">START</string>
     <string name="bet_reward_lose_title">WOW</string>
-    <string name="bet_reward_lose_text">You lost %d points due to the Lucky Wheel.</string>
+    <string name="bet_reward_lose_text">You lost %1$d points due to the Lucky Wheel.</string>
     <string name="bet_reward_win_title">WOW</string>
-    <string name="bet_reward_win_text">You won %d points due to the Lucky Wheel.</string>
+    <string name="bet_reward_win_text">You won %1$d points due to the Lucky Wheel.</string>
     <string name="bet_reward_ok">OK</string>
+    <string name="bet_toast_already_bet_before">You had placed a bet before</string>
+    <string name="bet_odds" translatable="false">%1$d:%2$d</string>
     <string name="day_monday_abbr" translatable="false">MON</string>
     <string name="day_tuesday_abbr" translatable="false">TUE</string>
     <string name="day_wednesday_abbr" translatable="false">WED</string>

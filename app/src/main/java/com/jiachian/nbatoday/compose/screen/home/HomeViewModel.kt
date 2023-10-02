@@ -13,11 +13,11 @@ import com.jiachian.nbatoday.compose.screen.player.PlayerInfoViewModel
 import com.jiachian.nbatoday.compose.screen.score.BoxScoreViewModel
 import com.jiachian.nbatoday.compose.screen.team.TeamViewModel
 import com.jiachian.nbatoday.compose.state.NbaState
-import com.jiachian.nbatoday.compose.theme.NBAColors
 import com.jiachian.nbatoday.compose.theme.updateColors
 import com.jiachian.nbatoday.data.BaseRepository
 import com.jiachian.nbatoday.data.datastore.BaseDataStore
 import com.jiachian.nbatoday.data.local.NbaGame
+import com.jiachian.nbatoday.data.local.NbaGameAndBet
 import com.jiachian.nbatoday.data.local.team.NBATeam
 import com.jiachian.nbatoday.data.local.team.TeamStats
 import com.jiachian.nbatoday.data.local.team.teamOfficial
@@ -279,7 +279,7 @@ class HomeViewModel(
     private val isRefreshingTeamStatsImp = MutableStateFlow(false)
     val isRefreshingTeamStats = isRefreshingTeamStatsImp.asStateFlow()
     private val selectConferenceImp = MutableStateFlow(NBATeam.Conference.EAST)
-    val selectConference = selectConferenceImp.asStateFlow()
+    val selectedConference = selectConferenceImp.asStateFlow()
     val standingLabel = derivedStateOf {
         listOf(
             StandingLabel(40.dp, "GP", TextAlign.End, StandingSort.GP),
@@ -384,12 +384,12 @@ class HomeViewModel(
         }
     }
 
-    fun updateStandingConference(conference: NBATeam.Conference) {
+    fun selectConference(conference: NBATeam.Conference) {
         selectConferenceImp.value = conference
     }
 
-    fun updateStandingSort(label: StandingLabel) {
-        standingSortImp.value = label.sort
+    fun updateStandingSort(sorting: StandingSort) {
+        standingSortImp.value = sorting
     }
 
     fun openTeamStats(team: NBATeam) {
@@ -406,10 +406,10 @@ class HomeViewModel(
         )
     }
 
-    fun updateTheme(teamId: Int, color: NBAColors) {
-        updateColors(color)
+    fun updateTheme(team: NBATeam) {
+        updateColors(team.colors)
         coroutineScope.launch(dispatcherProvider.io) {
-            dataStore.updateThemeColor(teamId)
+            dataStore.updateThemeColor(team.teamId)
         }
     }
 
@@ -489,5 +489,13 @@ class HomeViewModel(
         val labelText = label.text
         val accessor = labelToEvaluationAccessor[labelText] ?: return ""
         return accessor(stats)
+    }
+
+    fun clickScheduleGame(game: NbaGameAndBet) {
+        if (!game.game.isGamePlayed) {
+            openTeamStats(game.game.homeTeam.team)
+        } else {
+            openGameBoxScore(game.game)
+        }
     }
 }

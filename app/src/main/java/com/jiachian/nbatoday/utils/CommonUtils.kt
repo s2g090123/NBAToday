@@ -1,5 +1,8 @@
 package com.jiachian.nbatoday.utils
 
+import android.content.Context
+import android.widget.Toast
+import androidx.annotation.StringRes
 import com.jiachian.nbatoday.data.local.team.NBATeam
 import com.jiachian.nbatoday.data.local.team.teamOfficial
 import com.jiachian.nbatoday.data.remote.game.GameStatusCode
@@ -14,6 +17,8 @@ inline fun <reified T : Any> T?.getValueOrAssert(): T {
 }
 
 fun Int?.getOrZero(): Int = this ?: 0
+
+fun Long?.getOrZero(): Long = this ?: 0
 
 fun Double?.getOrZero(): Double = this ?: 0.0
 
@@ -40,4 +45,16 @@ fun Int.toGameStatusCode(): GameStatusCode? {
 fun Double.decimalFormat(radix: Int = 1): String {
     val value = (this * 10.0.pow(radix)).toInt() / 10.0.pow(radix)
     return value.toString()
+}
+
+fun showToast(
+    context: Context,
+    @StringRes stringRes: Int,
+    duration: Int = Toast.LENGTH_SHORT
+) {
+    Toast.makeText(
+        context,
+        context.getString(stringRes),
+        duration
+    ).show()
 }

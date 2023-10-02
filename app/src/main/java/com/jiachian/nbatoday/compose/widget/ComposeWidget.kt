@@ -1,17 +1,26 @@
 package com.jiachian.nbatoday.compose.widget
 
 import androidx.activity.compose.BackHandler
+import androidx.annotation.DrawableRes
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Icon
 import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,13 +33,21 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import coil.compose.AsyncImage
+import com.jiachian.nbatoday.R
+import com.jiachian.nbatoday.annotation.ExcludeFromJacocoGeneratedReport
+import com.jiachian.nbatoday.compose.coil.SvgRequest
+import com.jiachian.nbatoday.data.local.team.NBATeam
+import com.jiachian.nbatoday.utils.NbaUtils
 import com.jiachian.nbatoday.utils.color
 import com.jiachian.nbatoday.utils.noRippleClickable
 
@@ -160,4 +177,93 @@ fun CustomOutlinedTextField(
             }
         }
     }
+}
+
+@ExcludeFromJacocoGeneratedReport
+@Composable
+inline fun FocusableColumn(
+    modifier: Modifier = Modifier,
+    content: @Composable ColumnScope.() -> Unit
+) {
+    Column(
+        modifier = modifier.noRippleClickable { }
+    ) {
+        content()
+    }
+}
+
+@Composable
+fun BackHandle(
+    onBack: () -> Unit,
+    content: @Composable () -> Unit
+) {
+    content()
+    BackHandler {
+        onBack()
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun DisableOverscroll(
+    content: @Composable () -> Unit
+) {
+    CompositionLocalProvider(
+        LocalOverscrollConfiguration provides null
+    ) {
+        content()
+    }
+}
+
+@Composable
+fun IconButton(
+    modifier: Modifier = Modifier,
+    @DrawableRes drawableRes: Int,
+    tint: Color = MaterialTheme.colors.primaryVariant,
+    onClick: () -> Unit
+) {
+    androidx.compose.material.IconButton(
+        modifier = modifier
+            .size(48.dp)
+            .padding(12.dp),
+        onClick = onClick
+    ) {
+        Icon(
+            painter = painterResource(drawableRes),
+            contentDescription = null,
+            tint = tint
+        )
+    }
+}
+
+@Composable
+fun TeamLogoImage(
+    modifier: Modifier = Modifier,
+    team: NBATeam
+) {
+    AsyncImage(
+        modifier = modifier,
+        model = SvgRequest.Builder(LocalContext.current)
+            .data(NbaUtils.getTeamLogoUrlById(team.teamId))
+            .build(),
+        error = painterResource(team.logoRes),
+        placeholder = painterResource(team.logoRes),
+        contentDescription = null
+    )
+}
+
+@Composable
+fun PlayerImage(
+    modifier: Modifier = Modifier,
+    playerId: Int
+) {
+    AsyncImage(
+        modifier = modifier,
+        model = SvgRequest.Builder(LocalContext.current)
+            .data(NbaUtils.getPlayerImageUrlById(playerId))
+            .build(),
+        error = painterResource(R.drawable.ic_black_person),
+        placeholder = painterResource(R.drawable.ic_black_person),
+        contentDescription = null
+    )
 }

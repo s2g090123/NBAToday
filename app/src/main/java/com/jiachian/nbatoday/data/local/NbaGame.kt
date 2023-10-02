@@ -83,4 +83,7 @@ data class NbaGame(
 
     val isAwayTeamWin: Boolean
         get() = homeTeam.score <= awayTeam.score && isGameFinal
+
+    val gameStatusFormatText: String
+        get() = gameStatusText.replaceFirst(" ", "\n").trim()
 }
