@@ -18,11 +18,17 @@ import org.hamcrest.CoreMatchers.nullValue
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.empty
 import org.junit.After
+import org.junit.Before
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class NbaDataStoreTest {
     private val dataStore = NbaDataStore(ApplicationProvider.getApplicationContext())
+
+    @Before
+    fun setup() = runTest {
+        dataStore.clear()
+    }
 
     @After
     fun teardown() = runTest {
