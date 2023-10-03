@@ -42,9 +42,8 @@ fun Int.toGameStatusCode(): GameStatusCode? {
     }
 }
 
-fun Double.decimalFormat(radix: Int = 1): String {
-    val value = (this * 10.0.pow(radix)).toInt() / 10.0.pow(radix)
-    return value.toString()
+fun Double.decimalFormat(radix: Int = 1): Double {
+    return (this * 10.0.pow(radix)).toInt() / 10.0.pow(radix)
 }
 
 fun showToast(

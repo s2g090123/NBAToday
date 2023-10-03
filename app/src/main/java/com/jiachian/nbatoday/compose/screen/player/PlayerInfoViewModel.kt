@@ -1,6 +1,5 @@
 package com.jiachian.nbatoday.compose.screen.player
 
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
@@ -13,6 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -30,33 +30,7 @@ class PlayerInfoViewModel(
     val playerCareer = repository.getPlayerCareer(playerId)
         .stateIn(coroutineScope, SharingStarted.Lazily, null)
 
-    private val labelToEvaluationAccessor = mapOf(
-        "GP" to { stats: Stats -> stats.gamePlayed.toString() },
-        "W" to { stats: Stats -> stats.win.toString() },
-        "L" to { stats: Stats -> stats.lose.toString() },
-        "WIN%" to { stats: Stats -> stats.winPercentage.toString() },
-        "PTS" to { stats: Stats -> (stats.points.toDouble() / stats.gamePlayed).toString() },
-        "FGM" to { stats: Stats -> (stats.fieldGoalsMade.toDouble() / stats.gamePlayed).toString() },
-        "FGA" to { stats: Stats -> (stats.fieldGoalsAttempted.toDouble() / stats.gamePlayed).toString() },
-        "FG%" to { stats: Stats -> stats.fieldGoalsPercentage.toString() },
-        "3PM" to { stats: Stats -> (stats.threePointersMade.toDouble() / stats.gamePlayed).toString() },
-        "3PA" to { stats: Stats -> (stats.threePointersAttempted.toDouble() / stats.gamePlayed).toString() },
-        "3P%" to { stats: Stats -> stats.threePointersPercentage.toString() },
-        "FTM" to { stats: Stats -> (stats.freeThrowsMade.toDouble() / stats.gamePlayed).toString() },
-        "FTA" to { stats: Stats -> (stats.freeThrowsAttempted.toDouble() / stats.gamePlayed).toString() },
-        "FT%" to { stats: Stats -> stats.freeThrowsPercentage.toString() },
-        "OREB" to { stats: Stats -> (stats.reboundsOffensive.toDouble() / stats.gamePlayed).toString() },
-        "DREB" to { stats: Stats -> (stats.reboundsDefensive.toDouble() / stats.gamePlayed).toString() },
-        "REB" to { stats: Stats -> (stats.reboundsTotal.toDouble() / stats.gamePlayed).toString() },
-        "AST" to { stats: Stats -> (stats.assists.toDouble() / stats.gamePlayed).toString() },
-        "TOV" to { stats: Stats -> (stats.turnovers.toDouble() / stats.gamePlayed).toString() },
-        "STL" to { stats: Stats -> (stats.steals.toDouble() / stats.gamePlayed).toString() },
-        "BLK" to { stats: Stats -> (stats.blocks.toDouble() / stats.gamePlayed).toString() },
-        "PF" to { stats: Stats -> (stats.foulsPersonal.toDouble() / stats.gamePlayed).toString() },
-        "+/-" to { stats: Stats -> stats.plusMinus.toString() }
-    )
-
-    val statsLabels = derivedStateOf {
+    val statsLabels = MutableStateFlow(
         listOf(
             CareerStatsLabel(40.dp, "GP", TextAlign.End, CareerStatsSort.GP),
             CareerStatsLabel(40.dp, "W", TextAlign.End, CareerStatsSort.W),
@@ -82,12 +56,12 @@ class PlayerInfoViewModel(
             CareerStatsLabel(48.dp, "PF", TextAlign.End, CareerStatsSort.PF),
             CareerStatsLabel(48.dp, "+/-", TextAlign.End, CareerStatsSort.PLUSMINUS)
         )
-    }
+    )
 
     private val statsSortImp = MutableStateFlow(CareerStatsSort.TIME_FRAME)
     val statsSort = statsSortImp.asStateFlow()
 
-    val careerStats = combine(
+    private val careerStats = combine(
         playerCareer,
         statsSort
     ) { stats, sort ->
@@ -252,6 +226,7 @@ class PlayerInfoViewModel(
                     it.winPercentage
                 }
             )
+
             CareerStatsSort.PLUSMINUS -> careerStats.sortedWith(
                 compareByDescending<Stats> {
                     it.plusMinus
@@ -259,6 +234,26 @@ class PlayerInfoViewModel(
                     it.winPercentage
                 }
             )
+        }
+    }.stateIn(coroutineScope, SharingStarted.Lazily, emptyList())
+
+    val timeFrameRowData = careerStats.map {
+        it.map { stats ->
+            CareerTimeFrameRowData(
+                timeFrame = stats.timeFrame,
+                teamNameAbbr = stats.teamNameAbbr
+            )
+        }
+    }.stateIn(coroutineScope, SharingStarted.Lazily, emptyList())
+
+    val statsRowData = combine(
+        careerStats,
+        statsSort
+    ) { stats, sorting ->
+        stats.map { stat ->
+            statsLabels.value.map { label ->
+                label.getRowData(stat, sorting)
+            }
         }
     }.stateIn(coroutineScope, SharingStarted.Lazily, emptyList())
 
@@ -274,11 +269,5 @@ class PlayerInfoViewModel(
 
     fun updateStatsSort(sort: CareerStatsSort) {
         statsSortImp.value = sort
-    }
-
-    fun getEvaluationTextByLabel(label: CareerStatsLabel, stats: Stats): String {
-        val labelText = label.text
-        val accessor = labelToEvaluationAccessor[labelText] ?: return ""
-        return accessor(stats)
     }
 }

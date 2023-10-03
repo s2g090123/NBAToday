@@ -50,8 +50,8 @@ object RemoteGameFactory {
                         gameTime = GAME_DATE,
                         gameLeaders = GameLeaderFactory.getGameLeaders(),
                         teamLeaders = GameLeaderFactory.getGameLeaders(),
-                        homeTeam = GameTeamFactory.getDefaultHomeTeam(),
-                        awayTeam = GameTeamFactory.getDefaultAwayTeam()
+                        homeTeam = GameTeamFactory.getDefaultRemoteHomeTeam(),
+                        awayTeam = GameTeamFactory.getDefaultRemoteAwayTeam()
                     )
                 )
             )

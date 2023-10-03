@@ -8,6 +8,7 @@ import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.state.NbaState
 import com.jiachian.nbatoday.data.PlayerCareerFactory
 import com.jiachian.nbatoday.data.TestRepository
+import com.jiachian.nbatoday.utils.onAllNodesWithMergedTag
 import com.jiachian.nbatoday.utils.onNodeWithMergedTag
 import com.jiachian.nbatoday.utils.onNodeWithTag
 import kotlin.math.pow
@@ -82,35 +83,27 @@ class PlayerCareerScreenTest : BaseAndroidTest() {
             .assertExists()
             .assertIsDisplayed()
         composeTestRule
-            .onNodeWithMergedTag("PlayerCareerInfo_Text_PPG")
-            .assertTextEquals(playerCareer.info.headlineStats.points.toString())
+            .onAllNodesWithMergedTag("PlayerInfoBox_Text_Value")[0]
+            .assertTextEquals(playerCareer.info.points.toString())
         composeTestRule
-            .onNodeWithMergedTag("PlayerCareerInfo_Text_RPG")
-            .assertTextEquals(playerCareer.info.headlineStats.rebounds.toString())
+            .onAllNodesWithMergedTag("PlayerInfoBox_Text_Value")[1]
+            .assertTextEquals(playerCareer.info.rebounds.toString())
         composeTestRule
-            .onNodeWithMergedTag("PlayerCareerInfo_Text_APG")
-            .assertTextEquals(playerCareer.info.headlineStats.assists.toString())
+            .onAllNodesWithMergedTag("PlayerInfoBox_Text_Value")[2]
+            .assertTextEquals(playerCareer.info.assists.toString())
         composeTestRule
-            .onNodeWithMergedTag("PlayerCareerInfo_Text_PIE")
-            .assertTextEquals((playerCareer.info.headlineStats.impact * 100).decimalFormat())
+            .onAllNodesWithMergedTag("PlayerInfoBox_Text_Value")[3]
+            .assertTextEquals(playerCareer.info.impact.toString())
         composeTestRule
-            .onNodeWithMergedTag("PlayerCareerInfo_Text_Height")
+            .onAllNodesWithMergedTag("PlayerInfoBox_Text_Value")[4]
             .assertTextEquals(
                 context.getString(
                     R.string.player_career_info_height_value,
-                    (playerCareer.info.height / 100).decimalFormat(2)
+                    playerCareer.info.heightFormat.toString()
                 )
             )
         composeTestRule
-            .onNodeWithMergedTag("PlayerCareerInfo_Text_Height")
-            .assertTextEquals(
-                context.getString(
-                    R.string.player_career_info_height_value,
-                    (playerCareer.info.height / 100).decimalFormat(2)
-                )
-            )
-        composeTestRule
-            .onNodeWithMergedTag("PlayerCareerInfo_Text_Weight")
+            .onAllNodesWithMergedTag("PlayerInfoBox_Text_Value")[5]
             .assertTextEquals(
                 context.getString(
                     R.string.player_career_info_weight_value,
@@ -118,19 +111,19 @@ class PlayerCareerScreenTest : BaseAndroidTest() {
                 )
             )
         composeTestRule
-            .onNodeWithMergedTag("PlayerCareerInfo_Text_Country")
+            .onAllNodesWithMergedTag("PlayerInfoBox_Text_Value")[6]
             .assertTextEquals(playerCareer.info.country)
         composeTestRule
-            .onNodeWithMergedTag("PlayerCareerInfo_Text_LastAttended")
+            .onAllNodesWithMergedTag("PlayerInfoBox_Text_Value")[7]
             .assertTextEquals(playerCareer.info.school)
         composeTestRule
-            .onNodeWithMergedTag("PlayerCareerInfo_Text_Age")
+            .onAllNodesWithMergedTag("PlayerInfoBox_Text_Value")[8]
             .assertTextEquals(playerCareer.info.playerAge.toString())
         composeTestRule
-            .onNodeWithMergedTag("PlayerCareerInfo_Text_Birth")
+            .onAllNodesWithMergedTag("PlayerInfoBox_Text_Value")[9]
             .assertTextEquals(playerCareer.info.birthDate)
         composeTestRule
-            .onNodeWithMergedTag("PlayerCareerInfo_Text_Draft")
+            .onAllNodesWithMergedTag("PlayerInfoBox_Text_Value")[10]
             .assertTextEquals(
                 context.getString(
                     R.string.player_career_info_draft_format,
@@ -140,7 +133,7 @@ class PlayerCareerScreenTest : BaseAndroidTest() {
                 )
             )
         composeTestRule
-            .onNodeWithMergedTag("PlayerCareerInfo_Text_Experience")
+            .onAllNodesWithMergedTag("PlayerInfoBox_Text_Value")[11]
             .assertTextEquals(playerCareer.info.seasonExperience.toString())
     }
 

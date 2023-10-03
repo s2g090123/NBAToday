@@ -322,7 +322,7 @@ private fun TeamRankBox(
         )
         Text(
             modifier = Modifier.testTag("TeamInformation_Text_Average"),
-            text = average.decimalFormat(),
+            text = average.decimalFormat().toString(),
             fontWeight = FontWeight.Medium,
             fontSize = 18.sp,
             color = textColor
@@ -964,115 +964,115 @@ private fun PlayerStatsTable(
                         isSelected = sort == PlayerSort.WINP,
                         width = 64.dp,
                         color = color,
-                        text = stats.winPercentage.decimalFormat()
+                        text = stats.winPercentage.decimalFormat().toString()
                     )
                     PlayerStatsText(
                         isSelected = sort == PlayerSort.PTS,
                         width = 64.dp,
                         color = color,
-                        text = stats.pointsAverage.decimalFormat()
+                        text = stats.pointsAverage.decimalFormat().toString()
                     )
                     PlayerStatsText(
                         isSelected = sort == PlayerSort.FGM,
                         width = 64.dp,
                         color = color,
-                        text = stats.fieldGoalsMadeAverage.decimalFormat()
+                        text = stats.fieldGoalsMadeAverage.decimalFormat().toString()
                     )
                     PlayerStatsText(
                         isSelected = sort == PlayerSort.FGA,
                         width = 64.dp,
                         color = color,
-                        text = stats.fieldGoalsAttemptedAverage.decimalFormat()
+                        text = stats.fieldGoalsAttemptedAverage.decimalFormat().toString()
                     )
                     PlayerStatsText(
                         isSelected = sort == PlayerSort.FGP,
                         width = 64.dp,
                         color = color,
-                        text = stats.fieldGoalsPercentage.decimalFormat()
+                        text = stats.fieldGoalsPercentage.decimalFormat().toString()
                     )
                     PlayerStatsText(
                         isSelected = sort == PlayerSort.PM3,
                         width = 64.dp,
                         color = color,
-                        text = stats.threePointersMadeAverage.decimalFormat()
+                        text = stats.threePointersMadeAverage.decimalFormat().toString()
                     )
                     PlayerStatsText(
                         isSelected = sort == PlayerSort.PA3,
                         width = 64.dp,
                         color = color,
-                        text = stats.threePointersAttemptedAverage.decimalFormat()
+                        text = stats.threePointersAttemptedAverage.decimalFormat().toString()
                     )
                     PlayerStatsText(
                         isSelected = sort == PlayerSort.PP3,
                         width = 64.dp,
                         color = color,
-                        text = stats.threePointersPercentage.decimalFormat()
+                        text = stats.threePointersPercentage.decimalFormat().toString()
                     )
                     PlayerStatsText(
                         isSelected = sort == PlayerSort.FTM,
                         width = 64.dp,
                         color = color,
-                        text = stats.freeThrowsMadeAverage.decimalFormat()
+                        text = stats.freeThrowsMadeAverage.decimalFormat().toString()
                     )
                     PlayerStatsText(
                         isSelected = sort == PlayerSort.FTA,
                         width = 64.dp,
                         color = color,
-                        text = stats.freeThrowsAttemptedAverage.decimalFormat()
+                        text = stats.freeThrowsAttemptedAverage.decimalFormat().toString()
                     )
                     PlayerStatsText(
                         isSelected = sort == PlayerSort.FTP,
                         width = 64.dp,
                         color = color,
-                        text = stats.freeThrowsPercentage.decimalFormat()
+                        text = stats.freeThrowsPercentage.decimalFormat().toString()
                     )
                     PlayerStatsText(
                         isSelected = sort == PlayerSort.OREB,
                         width = 48.dp,
                         color = color,
-                        text = stats.reboundsOffensiveAverage.decimalFormat()
+                        text = stats.reboundsOffensiveAverage.decimalFormat().toString()
                     )
                     PlayerStatsText(
                         isSelected = sort == PlayerSort.DREB,
                         width = 48.dp,
                         color = color,
-                        text = stats.reboundsDefensiveAverage.decimalFormat()
+                        text = stats.reboundsDefensiveAverage.decimalFormat().toString()
                     )
                     PlayerStatsText(
                         isSelected = sort == PlayerSort.REB,
                         width = 48.dp,
                         color = color,
-                        text = stats.reboundsTotalAverage.decimalFormat()
+                        text = stats.reboundsTotalAverage.decimalFormat().toString()
                     )
                     PlayerStatsText(
                         isSelected = sort == PlayerSort.AST,
                         width = 48.dp,
                         color = color,
-                        text = stats.assistsAverage.decimalFormat()
+                        text = stats.assistsAverage.decimalFormat().toString()
                     )
                     PlayerStatsText(
                         isSelected = sort == PlayerSort.TOV,
                         width = 48.dp,
                         color = color,
-                        text = stats.turnoversAverage.decimalFormat()
+                        text = stats.turnoversAverage.decimalFormat().toString()
                     )
                     PlayerStatsText(
                         isSelected = sort == PlayerSort.STL,
                         width = 48.dp,
                         color = color,
-                        text = stats.stealsAverage.decimalFormat()
+                        text = stats.stealsAverage.decimalFormat().toString()
                     )
                     PlayerStatsText(
                         isSelected = sort == PlayerSort.BLK,
                         width = 48.dp,
                         color = color,
-                        text = stats.blocksAverage.decimalFormat()
+                        text = stats.blocksAverage.decimalFormat().toString()
                     )
                     PlayerStatsText(
                         isSelected = sort == PlayerSort.PF,
                         width = 48.dp,
                         color = color,
-                        text = stats.foulsPersonalAverage.decimalFormat()
+                        text = stats.foulsPersonalAverage.decimalFormat().toString()
                     )
                     PlayerStatsText(
                         isSelected = sort == PlayerSort.PLUSMINUS,

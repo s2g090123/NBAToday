@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.jiachian.nbatoday.data.local.team.NBATeam
+import com.jiachian.nbatoday.utils.decimalFormat
 
 @Entity(tableName = "nba_player_career_stats")
 data class PlayerCareer(
@@ -40,6 +41,24 @@ data class PlayerCareer(
             @ColumnInfo(name = "rebounds") val rebounds: Double,
             @ColumnInfo(name = "impact_estimate") val impact: Double // 球員影響值(%)
         )
+
+        val points: Double
+            get() = headlineStats.points
+
+        val assists: Double
+            get() = headlineStats.assists
+
+        val rebounds: Double
+            get() = headlineStats.rebounds
+
+        val impact: Double
+            get() = (headlineStats.impact * 100).decimalFormat()
+
+        val heightFormat: Double
+            get() = (height / 100).decimalFormat(2)
+
+        val weightFormat: Double
+            get() = weight.decimalFormat()
     }
 
     data class PlayerCareerStats(

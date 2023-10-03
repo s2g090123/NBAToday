@@ -197,7 +197,7 @@ class HomeViewModelTest {
             TextAlign.Center,
             StandingSort.GP
         )
-        viewModel.updateStandingSort(label)
+        viewModel.updateStandingSort(label.sort)
         assertThat(viewModel.standingSort.value, `is`(StandingSort.GP))
     }
 
@@ -209,7 +209,7 @@ class HomeViewModelTest {
 
     @Test
     fun home_updateTheme_expectsCelticsColors() {
-        viewModel.updateTheme(teamCeltics.teamId, CelticsColors)
+        viewModel.updateTheme(teamCeltics)
         assertThat(dataStore.themeColors.value, `is`(CelticsColors))
     }
 
