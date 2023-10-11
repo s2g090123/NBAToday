@@ -24,7 +24,7 @@ data class GameUpdateData(
     @ColumnInfo(name = "away_team")
     val awayTeam: GameTeam,
     @ColumnInfo(name = "game_leaders")
-    val gameLeaders: GameLeaders?,
+    val gameLeaders: GameLeaders,
     @ColumnInfo(name = "team_leaders")
-    val teamLeaders: GameLeaders?
+    val teamLeaders: GameLeaders
 )

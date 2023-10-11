@@ -20,11 +20,12 @@ import com.jiachian.nbatoday.data.local.team.NBATeam
 import com.jiachian.nbatoday.data.remote.game.GameScoreUpdateData
 import com.jiachian.nbatoday.data.remote.game.GameStatusCode
 import com.jiachian.nbatoday.data.remote.game.GameUpdateData
+import com.jiachian.nbatoday.utils.getOrAssert
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
-import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.hasItem
+import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.nullValue
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
@@ -115,8 +116,8 @@ class NbaLocalDataSourceTest {
                     gameStatusText = finalGame.gameStatusText,
                     homeTeam = finalGame.homeTeam,
                     awayTeam = finalGame.awayTeam,
-                    gameLeaders = finalGame.gameLeaders,
-                    teamLeaders = finalGame.teamLeaders
+                    gameLeaders = finalGame.gameLeaders.getOrAssert(),
+                    teamLeaders = finalGame.teamLeaders.getOrAssert()
                 )
             )
         )

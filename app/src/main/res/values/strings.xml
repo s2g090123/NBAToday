@@ -40,7 +40,21 @@
     <string name="box_score_leader_statistics_name">Name</string>
     <string name="box_score_leader_statistics_position">Position</string>
     <string name="box_score_leader_statistics_time">Minutes played</string>
+    <string name="box_score_leader_statistics_points">Points</string>
     <string name="box_score_leader_statistics_plusMinusPoints">+/-</string>
+    <string name="box_score_leader_statistics_fieldGoal">FG(%)</string>
+    <string name="box_score_leader_statistics_twoPoints">2P(%)</string>
+    <string name="box_score_leader_statistics_threePoints">3P(%)</string>
+    <string name="box_score_leader_statistics_freeThrows">FT(%)</string>
+    <string name="box_score_leader_statistics_rebounds">REB</string>
+    <string name="box_score_leader_statistics_reboundsDef">DREB</string>
+    <string name="box_score_leader_statistics_reboundsOff">OREB</string>
+    <string name="box_score_leader_statistics_assists">AST</string>
+    <string name="box_score_leader_statistics_blocks">BLK</string>
+    <string name="box_score_leader_statistics_steals">STL</string>
+    <string name="box_score_leader_statistics_turnovers">TO</string>
+    <string name="box_score_leader_statistics_foulsPersonal">Personal foul</string>
+    <string name="box_score_leader_statistics_foulsTechnical">Technical foul</string>
     <string name="label_min" translatable="false">MIN</string>
     <string name="label_fgm" translatable="false">FGM-A</string>
     <string name="label_3pm" translatable="false">3PM-A</string>

@@ -255,15 +255,45 @@ fun TeamLogoImage(
 @Composable
 fun PlayerImage(
     modifier: Modifier = Modifier,
-    playerId: Int
+    playerId: Int?
 ) {
+    val imageUrl by remember(playerId) {
+        val url = playerId?.let { NbaUtils.getPlayerImageUrlById(it) }
+        mutableStateOf(url)
+    }
     AsyncImage(
         modifier = modifier,
         model = SvgRequest.Builder(LocalContext.current)
-            .data(NbaUtils.getPlayerImageUrlById(playerId))
+            .data(imageUrl)
             .build(),
         error = painterResource(R.drawable.ic_black_person),
         placeholder = painterResource(R.drawable.ic_black_person),
         contentDescription = null
     )
+}
+
+@Composable
+fun RefreshScreen(
+    modifier: Modifier = Modifier,
+    color: Color = MaterialTheme.colors.secondary
+) {
+    Box(modifier = modifier) {
+        CircularProgressIndicator(
+            modifier = Modifier.align(Alignment.Center),
+            color = color
+        )
+    }
+}
+
+@Composable
+fun <T> NullCheckScreen(
+    data: T?,
+    ifNull: @Composable () -> Unit,
+    ifNotNull: @Composable (T) -> Unit
+) {
+    if (data == null) {
+        ifNull()
+    } else {
+        ifNotNull(data)
+    }
 }

@@ -4,9 +4,9 @@ import androidx.room.ColumnInfo
 
 data class GameLeaders(
     @ColumnInfo(name = "home_leaders")
-    val homeLeaders: GameLeader?,
+    val homeLeaders: GameLeader,
     @ColumnInfo(name = "away_leaders")
-    val awayLeaders: GameLeader?
+    val awayLeaders: GameLeader
 ) {
     data class GameLeader(
         @ColumnInfo(name = "person_id")

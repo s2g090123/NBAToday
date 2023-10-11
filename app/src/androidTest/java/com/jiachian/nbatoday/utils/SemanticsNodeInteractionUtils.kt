@@ -1,23 +1,20 @@
 package com.jiachian.nbatoday.utils
 
 import androidx.compose.ui.test.SemanticsNodeInteraction
-import androidx.compose.ui.test.assert
 import androidx.compose.ui.test.filter
-import androidx.compose.ui.test.hasScrollAction
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.onChildren
-import androidx.compose.ui.test.performScrollToNode
+import androidx.compose.ui.test.performScrollTo
 
 fun SemanticsNodeInteraction.onNodeWithTag(tag: String, index: Int): SemanticsNodeInteraction {
-    try {
-        assert(hasScrollAction())
-        performScrollToTag(tag)
-    } catch (t: Throwable) {
-    }
     return onChildren()
         .filter(hasTestTag(tag))[index]
+        .also {
+            try {
+                it.performScrollTo()
+            } catch (t: Throwable) {
+            }
+        }
 }
 
 fun SemanticsNodeInteraction.onNodeWithTag(tag: String) = onNodeWithTag(tag, 0)
-
-fun SemanticsNodeInteraction.performScrollToTag(tag: String) = performScrollToNode(hasTestTag(tag))

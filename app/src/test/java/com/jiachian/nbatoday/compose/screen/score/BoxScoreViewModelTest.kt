@@ -1,5 +1,6 @@
 package com.jiachian.nbatoday.compose.screen.score
 
+import com.jiachian.nbatoday.compose.screen.score.tab.BoxScoreTab
 import com.jiachian.nbatoday.data.BoxScoreFactory
 import com.jiachian.nbatoday.data.NbaGameFactory
 import com.jiachian.nbatoday.data.TestRepository

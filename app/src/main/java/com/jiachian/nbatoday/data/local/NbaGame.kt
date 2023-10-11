@@ -86,4 +86,30 @@ data class NbaGame(
 
     val gameStatusFormatText: String
         get() = gameStatusText.replaceFirst(" ", "\n").trim()
+
+    val homeLeaderPersonId: Int
+        get() {
+            val gameLeader = gameLeaders?.homeLeaders
+            val teamLeader = teamLeaders?.homeLeaders
+            return if (isGamePlayed) {
+                gameLeader?.personId
+            } else {
+                teamLeader?.personId
+            }.let { id ->
+                id ?: pointsLeaders.firstOrNull { it.teamId == homeTeam.team.teamId }?.personId ?: 0
+            }
+        }
+
+    val awayLeadersPersonId: Int
+        get() {
+            val gameLeader = gameLeaders?.awayLeaders
+            val teamLeader = teamLeaders?.awayLeaders
+            return if (isGamePlayed) {
+                gameLeader?.personId
+            } else {
+                teamLeader?.personId
+            }.let { id ->
+                id ?: pointsLeaders.firstOrNull { it.teamId == awayTeam.team.teamId }?.personId ?: 0
+            }
+        }
 }

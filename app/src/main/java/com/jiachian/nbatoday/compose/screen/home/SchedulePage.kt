@@ -80,7 +80,7 @@ fun SchedulePage(
             }
         }
         ScheduleTabRow(
-            currentPage = pagerState.currentPage,
+            currentPage = index,
             dates = dateData,
             selectPage = viewModel::updateScheduleIndex
         )

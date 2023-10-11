@@ -4,10 +4,10 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import com.jiachian.nbatoday.BaseAndroidTest
 import com.jiachian.nbatoday.R
+import com.jiachian.nbatoday.compose.screen.label.LabelHelper
+import com.jiachian.nbatoday.compose.screen.score.label.ScoreLabel
 import com.jiachian.nbatoday.data.BoxScoreFactory
 import com.jiachian.nbatoday.data.NbaGameFactory
 import com.jiachian.nbatoday.data.TestRepository
@@ -36,25 +36,6 @@ class BoxScoreScreenTest : BaseAndroidTest() {
     private var showPlayerId: Int? = null
     private val game = NbaGameFactory.getFinalGame()
     private val score = BoxScoreFactory.getFinalGameBoxScore()
-
-    private val scoreLabel = listOf(
-        ScoreLabel(72.dp, R.string.label_min, TextAlign.Center, R.string.box_score_about_min),
-        ScoreLabel(72.dp, R.string.label_fgm, TextAlign.End, R.string.box_score_about_FGMA),
-        ScoreLabel(72.dp, R.string.label_3pm, TextAlign.End, R.string.box_score_about_3PMA),
-        ScoreLabel(72.dp, R.string.label_ftm, TextAlign.End, R.string.box_score_about_FTMA),
-        ScoreLabel(40.dp, R.string.label_plus_minus, TextAlign.End, R.string.box_score_about_plusMinus),
-        ScoreLabel(40.dp, R.string.label_or, TextAlign.End, R.string.box_score_about_OR),
-        ScoreLabel(40.dp, R.string.label_dr, TextAlign.End, R.string.box_score_about_DR),
-        ScoreLabel(40.dp, R.string.label_tr, TextAlign.End, R.string.box_score_about_TR),
-        ScoreLabel(40.dp, R.string.label_as, TextAlign.End, R.string.box_score_about_AS),
-        ScoreLabel(40.dp, R.string.label_pf, TextAlign.End, R.string.box_score_about_PF),
-        ScoreLabel(40.dp, R.string.label_st, TextAlign.End, R.string.box_score_about_ST),
-        ScoreLabel(40.dp, R.string.label_to, TextAlign.End, R.string.box_score_about_TO),
-        ScoreLabel(40.dp, R.string.label_bs, TextAlign.End, R.string.box_score_about_BS),
-        ScoreLabel(40.dp, R.string.label_ba, TextAlign.End, R.string.box_score_about_BA),
-        ScoreLabel(48.dp, R.string.label_pts, TextAlign.End, R.string.box_score_about_PTS),
-        ScoreLabel(48.dp, R.string.label_eff, TextAlign.End, R.string.box_score_about_EFF)
-    )
 
     @Before
     fun setup() = runTest {
@@ -110,10 +91,12 @@ class BoxScoreScreenTest : BaseAndroidTest() {
             .onNodeWithMergedTag("ScoreTotal_Text_Status")
             .assertTextEquals(game.gameStatusText)
         composeTestRule
-            .onNodeWithMergedTag("ScoreTotal_Text_HomeName")
+            .onNodeWithMergedTag("ScoreTotal_TeamInfo_Home")
+            .onNodeWithTag("TeamInfo_Text_Name")
             .assertTextEquals(home.team.teamName)
         composeTestRule
-            .onNodeWithMergedTag("ScoreTotal_Text_AwayName")
+            .onNodeWithMergedTag("ScoreTotal_TeamInfo_Away")
+            .onNodeWithTag("TeamInfo_Text_Name")
             .assertTextEquals(away.team.teamName)
         val scorePeriod = composeTestRule
             .onNodeWithMergedTag("ScoreScreen_ScorePeriod")
@@ -153,6 +136,7 @@ class BoxScoreScreenTest : BaseAndroidTest() {
 
     @Test
     fun boxScore_checksHomePlayerStatsUI() {
+        val scoreLabel = LabelHelper.createScoreLabel()
         val home = score.homeTeam.getOrAssert()
         composeTestRule
             .onNodeWithMergedTag("ScoreDetail_Tab_Home")
@@ -214,6 +198,7 @@ class BoxScoreScreenTest : BaseAndroidTest() {
 
     @Test
     fun boxScore_checksAwayPlayerStatsUI() {
+        val scoreLabel = LabelHelper.createScoreLabel()
         val away = score.awayTeam.getOrAssert()
         composeTestRule
             .onNodeWithMergedTag("ScoreDetail_Tab_Away")
@@ -284,137 +269,119 @@ class BoxScoreScreenTest : BaseAndroidTest() {
             .onNodeWithMergedTag("ScoreDetail_Pager")
             .onNodeWithTag("ScoreDetail_TeamStatistics")
             .apply {
-                onNodeWithTag("TeamStatistics_Text_HomePoints")
+                onNodeWithTag("TeamStatistics_TeamStatsRow", 0)
+                    .onNodeWithTag("TeamStatsRow_Text_Home")
                     .assertTextEquals(home.points.toString())
-                onNodeWithTag("TeamStatistics_Text_AwayPoints")
+                onNodeWithTag("TeamStatistics_TeamStatsRow", 0)
+                    .onNodeWithTag("TeamStatsRow_Text_Away")
                     .assertTextEquals(away.points.toString())
-                onNodeWithTag("TeamStatistics_Text_HomeFGM")
-                    .assertTextEquals(
-                        context.getString(
-                            R.string.box_score_team_FGM,
-                            home.fieldGoalsMade,
-                            home.fieldGoalsAttempted,
-                            home.fieldGoalsPercentage
-                        )
-                    )
-                onNodeWithTag("TeamStatistics_Text_AwayFGM")
-                    .assertTextEquals(
-                        context.getString(
-                            R.string.box_score_team_FGM,
-                            away.fieldGoalsMade,
-                            away.fieldGoalsAttempted,
-                            away.fieldGoalsPercentage
-                        )
-                    )
-                onNodeWithTag("TeamStatistics_Text_Home2PM")
-                    .assertTextEquals(
-                        context.getString(
-                            R.string.box_score_team_2PM,
-                            home.twoPointersMade,
-                            home.twoPointersAttempted,
-                            home.twoPointersPercentage
-                        )
-                    )
-                onNodeWithTag("TeamStatistics_Text_Away2PM")
-                    .assertTextEquals(
-                        context.getString(
-                            R.string.box_score_team_2PM,
-                            away.twoPointersMade,
-                            away.twoPointersAttempted,
-                            away.twoPointersPercentage
-                        )
-                    )
-                onNodeWithTag("TeamStatistics_Text_Home3PM")
-                    .assertTextEquals(
-                        context.getString(
-                            R.string.box_score_team_3PM,
-                            home.threePointersMade,
-                            home.threePointersAttempted,
-                            home.threePointersPercentage
-                        )
-                    )
-                onNodeWithTag("TeamStatistics_Text_Away3PM")
-                    .assertTextEquals(
-                        context.getString(
-                            R.string.box_score_team_3PM,
-                            away.threePointersMade,
-                            away.threePointersAttempted,
-                            away.threePointersPercentage
-                        )
-                    )
-                onNodeWithTag("TeamStatistics_Text_HomeFTM")
-                    .assertTextEquals(
-                        context.getString(
-                            R.string.box_score_team_FTM,
-                            home.freeThrowsMade,
-                            home.freeThrowsAttempted,
-                            home.freeThrowsPercentage
-                        )
-                    )
-                onNodeWithTag("TeamStatistics_Text_AwayFTM")
-                    .assertTextEquals(
-                        context.getString(
-                            R.string.box_score_team_FTM,
-                            away.freeThrowsMade,
-                            away.freeThrowsAttempted,
-                            away.freeThrowsPercentage
-                        )
-                    )
-                onNodeWithTag("TeamStatistics_Text_HomeRebPersonal")
+                onNodeWithTag("TeamStatistics_TeamStatsRow", 1)
+                    .onNodeWithTag("TeamStatsRow_Text_Home")
+                    .assertTextEquals(home.fieldGoalsFormat)
+                onNodeWithTag("TeamStatistics_TeamStatsRow", 1)
+                    .onNodeWithTag("TeamStatsRow_Text_Away")
+                    .assertTextEquals(away.fieldGoalsFormat)
+                onNodeWithTag("TeamStatistics_TeamStatsRow", 2)
+                    .onNodeWithTag("TeamStatsRow_Text_Home")
+                    .assertTextEquals(home.twoPointsFormat)
+                onNodeWithTag("TeamStatistics_TeamStatsRow", 2)
+                    .onNodeWithTag("TeamStatsRow_Text_Away")
+                    .assertTextEquals(away.twoPointsFormat)
+                onNodeWithTag("TeamStatistics_TeamStatsRow", 3)
+                    .onNodeWithTag("TeamStatsRow_Text_Home")
+                    .assertTextEquals(home.threePointsFormat)
+                onNodeWithTag("TeamStatistics_TeamStatsRow", 3)
+                    .onNodeWithTag("TeamStatsRow_Text_Away")
+                    .assertTextEquals(away.threePointsFormat)
+                onNodeWithTag("TeamStatistics_TeamStatsRow", 4)
+                    .onNodeWithTag("TeamStatsRow_Text_Home")
+                    .assertTextEquals(home.freeThrowFormat)
+                onNodeWithTag("TeamStatistics_TeamStatsRow", 4)
+                    .onNodeWithTag("TeamStatsRow_Text_Away")
+                    .assertTextEquals(away.freeThrowFormat)
+                onNodeWithTag("TeamStatistics_TeamStatsRow", 5)
+                    .onNodeWithTag("TeamStatsRow_Text_Home")
                     .assertTextEquals(home.reboundsPersonal.toString())
-                onNodeWithTag("TeamStatistics_Text_AwayRebPersonal")
+                onNodeWithTag("TeamStatistics_TeamStatsRow", 5)
+                    .onNodeWithTag("TeamStatsRow_Text_Away")
                     .assertTextEquals(away.reboundsPersonal.toString())
-                onNodeWithTag("TeamStatistics_Text_HomeRebDefensive")
+                onNodeWithTag("TeamStatistics_TeamStatsRow", 6)
+                    .onNodeWithTag("TeamStatsRow_Text_Home")
                     .assertTextEquals(home.reboundsDefensive.toString())
-                onNodeWithTag("TeamStatistics_Text_AwayRebDefensive")
+                onNodeWithTag("TeamStatistics_TeamStatsRow", 6)
+                    .onNodeWithTag("TeamStatsRow_Text_Away")
                     .assertTextEquals(away.reboundsDefensive.toString())
-                onNodeWithTag("TeamStatistics_Text_HomeRebOffensive")
+                onNodeWithTag("TeamStatistics_TeamStatsRow", 7)
+                    .onNodeWithTag("TeamStatsRow_Text_Home")
                     .assertTextEquals(home.reboundsOffensive.toString())
-                onNodeWithTag("TeamStatistics_Text_AwayRebOffensive")
+                onNodeWithTag("TeamStatistics_TeamStatsRow", 7)
+                    .onNodeWithTag("TeamStatsRow_Text_Away")
                     .assertTextEquals(away.reboundsOffensive.toString())
-                onNodeWithTag("TeamStatistics_Text_HomeAssists")
+                onNodeWithTag("TeamStatistics_TeamStatsRow", 8)
+                    .onNodeWithTag("TeamStatsRow_Text_Home")
                     .assertTextEquals(home.assists.toString())
-                onNodeWithTag("TeamStatistics_Text_AwayAssists")
+                onNodeWithTag("TeamStatistics_TeamStatsRow", 8)
+                    .onNodeWithTag("TeamStatsRow_Text_Away")
                     .assertTextEquals(away.assists.toString())
-                onNodeWithTag("TeamStatistics_Text_HomeBlocks")
+                onNodeWithTag("TeamStatistics_TeamStatsRow", 9)
+                    .onNodeWithTag("TeamStatsRow_Text_Home")
                     .assertTextEquals(home.blocks.toString())
-                onNodeWithTag("TeamStatistics_Text_AwayBlocks")
+                onNodeWithTag("TeamStatistics_TeamStatsRow", 9)
+                    .onNodeWithTag("TeamStatsRow_Text_Away")
                     .assertTextEquals(away.blocks.toString())
-                onNodeWithTag("TeamStatistics_Text_HomeSteals")
+                onNodeWithTag("TeamStatistics_TeamStatsRow", 10)
+                    .onNodeWithTag("TeamStatsRow_Text_Home")
                     .assertTextEquals(home.steals.toString())
-                onNodeWithTag("TeamStatistics_Text_AwaySteals")
+                onNodeWithTag("TeamStatistics_TeamStatsRow", 10)
+                    .onNodeWithTag("TeamStatsRow_Text_Away")
                     .assertTextEquals(away.steals.toString())
-                onNodeWithTag("TeamStatistics_Text_HomeTurnOvers")
+                onNodeWithTag("TeamStatistics_TeamStatsRow", 11)
+                    .onNodeWithTag("TeamStatsRow_Text_Home")
                     .assertTextEquals(home.turnovers.toString())
-                onNodeWithTag("TeamStatistics_Text_AwayTurnOvers")
+                onNodeWithTag("TeamStatistics_TeamStatsRow", 11)
+                    .onNodeWithTag("TeamStatsRow_Text_Away")
                     .assertTextEquals(away.turnovers.toString())
-                onNodeWithTag("TeamStatistics_Text_HomeFastPoints")
+                onNodeWithTag("TeamStatistics_TeamStatsRow", 12)
+                    .onNodeWithTag("TeamStatsRow_Text_Home")
                     .assertTextEquals(home.pointsFastBreak.toString())
-                onNodeWithTag("TeamStatistics_Text_AwayFastPoints")
+                onNodeWithTag("TeamStatistics_TeamStatsRow", 12)
+                    .onNodeWithTag("TeamStatsRow_Text_Away")
                     .assertTextEquals(away.pointsFastBreak.toString())
-                onNodeWithTag("TeamStatistics_Text_HomePointsTurnOver")
+                onNodeWithTag("TeamStatistics_TeamStatsRow", 13)
+                    .onNodeWithTag("TeamStatsRow_Text_Home")
                     .assertTextEquals(home.pointsFromTurnovers.toString())
-                onNodeWithTag("TeamStatistics_Text_AwayPointsTurnOver")
+                onNodeWithTag("TeamStatistics_TeamStatsRow", 13)
+                    .onNodeWithTag("TeamStatsRow_Text_Away")
                     .assertTextEquals(away.pointsFromTurnovers.toString())
-                onNodeWithTag("TeamStatistics_Text_HomePointsPaint")
+                onNodeWithTag("TeamStatistics_TeamStatsRow", 14)
+                    .onNodeWithTag("TeamStatsRow_Text_Home")
                     .assertTextEquals(home.pointsInThePaint.toString())
-                onNodeWithTag("TeamStatistics_Text_AwayPointsPaint")
+                onNodeWithTag("TeamStatistics_TeamStatsRow", 14)
+                    .onNodeWithTag("TeamStatsRow_Text_Away")
                     .assertTextEquals(away.pointsInThePaint.toString())
-                onNodeWithTag("TeamStatistics_Text_HomePointsSecond")
+                onNodeWithTag("TeamStatistics_TeamStatsRow", 15)
+                    .onNodeWithTag("TeamStatsRow_Text_Home")
                     .assertTextEquals(home.pointsSecondChance.toString())
-                onNodeWithTag("TeamStatistics_Text_AwayPointsSecond")
+                onNodeWithTag("TeamStatistics_TeamStatsRow", 15)
+                    .onNodeWithTag("TeamStatsRow_Text_Away")
                     .assertTextEquals(away.pointsSecondChance.toString())
-                onNodeWithTag("TeamStatistics_Text_HomeBenchPoints")
+                onNodeWithTag("TeamStatistics_TeamStatsRow", 16)
+                    .onNodeWithTag("TeamStatsRow_Text_Home")
                     .assertTextEquals(home.benchPoints.toString())
-                onNodeWithTag("TeamStatistics_Text_AwayBenchPoints")
+                onNodeWithTag("TeamStatistics_TeamStatsRow", 16)
+                    .onNodeWithTag("TeamStatsRow_Text_Away")
                     .assertTextEquals(away.benchPoints.toString())
-                onNodeWithTag("TeamStatistics_Text_HomeFoulsPersonal")
+                onNodeWithTag("TeamStatistics_TeamStatsRow", 17)
+                    .onNodeWithTag("TeamStatsRow_Text_Home")
                     .assertTextEquals(home.foulsPersonal.toString())
-                onNodeWithTag("TeamStatistics_Text_AwayFoulsPersonal")
+                onNodeWithTag("TeamStatistics_TeamStatsRow", 17)
+                    .onNodeWithTag("TeamStatsRow_Text_Away")
                     .assertTextEquals(away.foulsPersonal.toString())
-                onNodeWithTag("TeamStatistics_Text_HomeFoulsTechnical")
+                onNodeWithTag("TeamStatistics_TeamStatsRow", 18)
+                    .onNodeWithTag("TeamStatsRow_Text_Home")
                     .assertTextEquals(home.foulsTechnical.toString())
-                onNodeWithTag("TeamStatistics_Text_AwayFoulsTechnical")
+                onNodeWithTag("TeamStatistics_TeamStatsRow", 18)
+                    .onNodeWithTag("TeamStatsRow_Text_Away")
                     .assertTextEquals(away.foulsTechnical.toString())
             }
     }
@@ -433,133 +400,113 @@ class BoxScoreScreenTest : BaseAndroidTest() {
             .onNodeWithMergedTag("ScoreDetail_Pager")
             .onNodeWithTag("ScoreDetail_LeaderStatistics")
             .apply {
-                onNodeWithTag("LeaderStatistics_Text_HomePlayerName")
+                onNodeWithTag("LeaderStatistics_LeaderStatisticsRow", 0)
+                    .onNodeWithTag("LeaderStatisticsRow_Text_Home")
                     .assertTextEquals(homeLeader.nameAbbr)
-                onNodeWithTag("LeaderStatistics_Text_AwayPlayerName")
+                onNodeWithTag("LeaderStatistics_LeaderStatisticsRow", 0)
+                    .onNodeWithTag("LeaderStatisticsRow_Text_Away")
                     .assertTextEquals(awayLeader.nameAbbr)
-                onNodeWithTag("LeaderStatistics_Text_HomePlayerPosition")
+                onNodeWithTag("LeaderStatistics_LeaderStatisticsRow", 1)
+                    .onNodeWithTag("LeaderStatisticsRow_Text_Home")
                     .assertTextEquals(homeLeader.position)
-                onNodeWithTag("LeaderStatistics_Text_AwayPlayerPosition")
+                onNodeWithTag("LeaderStatistics_LeaderStatisticsRow", 1)
+                    .onNodeWithTag("LeaderStatisticsRow_Text_Away")
                     .assertTextEquals(awayLeader.position)
-                onNodeWithTag("LeaderStatistics_Text_HomeMinutes")
+                onNodeWithTag("LeaderStatistics_LeaderStatisticsRow", 2)
+                    .onNodeWithTag("LeaderStatisticsRow_Text_Home")
                     .assertTextEquals(homeStats.minutes)
-                onNodeWithTag("LeaderStatistics_Text_AwayMinutes")
+                onNodeWithTag("LeaderStatistics_LeaderStatisticsRow", 2)
+                    .onNodeWithTag("LeaderStatisticsRow_Text_Away")
                     .assertTextEquals(awayStats.minutes)
-                onNodeWithTag("LeaderStatistics_Text_HomePoints")
+                onNodeWithTag("LeaderStatistics_LeaderStatisticsRow", 3)
+                    .onNodeWithTag("LeaderStatisticsRow_Text_Home")
                     .assertTextEquals(homeStats.points.toString())
-                onNodeWithTag("LeaderStatistics_Text_AwayPoints")
+                onNodeWithTag("LeaderStatistics_LeaderStatisticsRow", 3)
+                    .onNodeWithTag("LeaderStatisticsRow_Text_Away")
                     .assertTextEquals(awayStats.points.toString())
-                onNodeWithTag("LeaderStatistics_Text_HomePlusMinus")
+                onNodeWithTag("LeaderStatistics_LeaderStatisticsRow", 4)
+                    .onNodeWithTag("LeaderStatisticsRow_Text_Home")
                     .assertTextEquals(homeStats.plusMinusPoints.toString())
-                onNodeWithTag("LeaderStatistics_Text_AwayPlusMinus")
+                onNodeWithTag("LeaderStatistics_LeaderStatisticsRow", 4)
+                    .onNodeWithTag("LeaderStatisticsRow_Text_Away")
                     .assertTextEquals(awayStats.plusMinusPoints.toString())
-                onNodeWithTag("LeaderStatistics_Text_HomeFGM")
-                    .assertTextEquals(
-                        context.getString(
-                            R.string.box_score_player_FGM,
-                            homeStats.fieldGoalsMade,
-                            homeStats.fieldGoalsAttempted,
-                            homeStats.fieldGoalsPercentage
-                        )
-                    )
-                onNodeWithTag("LeaderStatistics_Text_AwayFGM")
-                    .assertTextEquals(
-                        context.getString(
-                            R.string.box_score_player_FGM,
-                            awayStats.fieldGoalsMade,
-                            awayStats.fieldGoalsAttempted,
-                            awayStats.fieldGoalsPercentage
-                        )
-                    )
-                onNodeWithTag("LeaderStatistics_Text_Home2PM")
-                    .assertTextEquals(
-                        context.getString(
-                            R.string.box_score_player_2PM,
-                            homeStats.twoPointersMade,
-                            homeStats.twoPointersAttempted,
-                            homeStats.twoPointersPercentage
-                        )
-                    )
-                onNodeWithTag("LeaderStatistics_Text_Away2PM")
-                    .assertTextEquals(
-                        context.getString(
-                            R.string.box_score_player_2PM,
-                            awayStats.twoPointersMade,
-                            awayStats.twoPointersAttempted,
-                            awayStats.twoPointersPercentage
-                        )
-                    )
-                onNodeWithTag("LeaderStatistics_Text_Home3PM")
-                    .assertTextEquals(
-                        context.getString(
-                            R.string.box_score_player_3PM,
-                            homeStats.threePointersMade,
-                            homeStats.threePointersAttempted,
-                            homeStats.threePointersPercentage
-                        )
-                    )
-                onNodeWithTag("LeaderStatistics_Text_Away3PM")
-                    .assertTextEquals(
-                        context.getString(
-                            R.string.box_score_player_3PM,
-                            awayStats.threePointersMade,
-                            awayStats.threePointersAttempted,
-                            awayStats.threePointersPercentage
-                        )
-                    )
-                onNodeWithTag("LeaderStatistics_Text_HomeFTM")
-                    .assertTextEquals(
-                        context.getString(
-                            R.string.box_score_player_FTM,
-                            homeStats.freeThrowsMade,
-                            homeStats.freeThrowsAttempted,
-                            homeStats.freeThrowsPercentage
-                        )
-                    )
-                onNodeWithTag("LeaderStatistics_Text_AwayFTM")
-                    .assertTextEquals(
-                        context.getString(
-                            R.string.box_score_player_FTM,
-                            awayStats.freeThrowsMade,
-                            awayStats.freeThrowsAttempted,
-                            awayStats.freeThrowsPercentage
-                        )
-                    )
-                onNodeWithTag("LeaderStatistics_Text_HomeRebTotal")
+                onNodeWithTag("LeaderStatistics_LeaderStatisticsRow", 5)
+                    .onNodeWithTag("LeaderStatisticsRow_Text_Home")
+                    .assertTextEquals(homeStats.fieldGoalsFormat)
+                onNodeWithTag("LeaderStatistics_LeaderStatisticsRow", 5)
+                    .onNodeWithTag("LeaderStatisticsRow_Text_Away")
+                    .assertTextEquals(awayStats.fieldGoalsFormat)
+                onNodeWithTag("LeaderStatistics_LeaderStatisticsRow", 6)
+                    .onNodeWithTag("LeaderStatisticsRow_Text_Home")
+                    .assertTextEquals(homeStats.twoPointsFormat)
+                onNodeWithTag("LeaderStatistics_LeaderStatisticsRow", 6)
+                    .onNodeWithTag("LeaderStatisticsRow_Text_Away")
+                    .assertTextEquals(awayStats.twoPointsFormat)
+                onNodeWithTag("LeaderStatistics_LeaderStatisticsRow", 7)
+                    .onNodeWithTag("LeaderStatisticsRow_Text_Home")
+                    .assertTextEquals(homeStats.threePointsFormat)
+                onNodeWithTag("LeaderStatistics_LeaderStatisticsRow", 7)
+                    .onNodeWithTag("LeaderStatisticsRow_Text_Away")
+                    .assertTextEquals(awayStats.threePointsFormat)
+                onNodeWithTag("LeaderStatistics_LeaderStatisticsRow", 8)
+                    .onNodeWithTag("LeaderStatisticsRow_Text_Home")
+                    .assertTextEquals(homeStats.freeThrowFormat)
+                onNodeWithTag("LeaderStatistics_LeaderStatisticsRow", 8)
+                    .onNodeWithTag("LeaderStatisticsRow_Text_Away")
+                    .assertTextEquals(awayStats.freeThrowFormat)
+                onNodeWithTag("LeaderStatistics_LeaderStatisticsRow", 9)
+                    .onNodeWithTag("LeaderStatisticsRow_Text_Home")
                     .assertTextEquals(homeStats.reboundsTotal.toString())
-                onNodeWithTag("LeaderStatistics_Text_AwayRebTotal")
+                onNodeWithTag("LeaderStatistics_LeaderStatisticsRow", 9)
+                    .onNodeWithTag("LeaderStatisticsRow_Text_Away")
                     .assertTextEquals(awayStats.reboundsTotal.toString())
-                onNodeWithTag("LeaderStatistics_Text_HomeRebDefensive")
+                onNodeWithTag("LeaderStatistics_LeaderStatisticsRow", 10)
+                    .onNodeWithTag("LeaderStatisticsRow_Text_Home")
                     .assertTextEquals(homeStats.reboundsDefensive.toString())
-                onNodeWithTag("LeaderStatistics_Text_AwayRebDefensive")
+                onNodeWithTag("LeaderStatistics_LeaderStatisticsRow", 10)
+                    .onNodeWithTag("LeaderStatisticsRow_Text_Away")
                     .assertTextEquals(awayStats.reboundsDefensive.toString())
-                onNodeWithTag("LeaderStatistics_Text_HomeRebOffensive")
+                onNodeWithTag("LeaderStatistics_LeaderStatisticsRow", 11)
+                    .onNodeWithTag("LeaderStatisticsRow_Text_Home")
                     .assertTextEquals(homeStats.reboundsOffensive.toString())
-                onNodeWithTag("LeaderStatistics_Text_AwayRebOffensive")
+                onNodeWithTag("LeaderStatistics_LeaderStatisticsRow", 11)
+                    .onNodeWithTag("LeaderStatisticsRow_Text_Away")
                     .assertTextEquals(awayStats.reboundsOffensive.toString())
-                onNodeWithTag("LeaderStatistics_Text_HomeAssists")
+                onNodeWithTag("LeaderStatistics_LeaderStatisticsRow", 12)
+                    .onNodeWithTag("LeaderStatisticsRow_Text_Home")
                     .assertTextEquals(homeStats.assists.toString())
-                onNodeWithTag("LeaderStatistics_Text_AwayAssists")
+                onNodeWithTag("LeaderStatistics_LeaderStatisticsRow", 12)
+                    .onNodeWithTag("LeaderStatisticsRow_Text_Away")
                     .assertTextEquals(awayStats.assists.toString())
-                onNodeWithTag("LeaderStatistics_Text_HomeBlocks")
+                onNodeWithTag("LeaderStatistics_LeaderStatisticsRow", 13)
+                    .onNodeWithTag("LeaderStatisticsRow_Text_Home")
                     .assertTextEquals(homeStats.blocks.toString())
-                onNodeWithTag("LeaderStatistics_Text_AwayBlocks")
+                onNodeWithTag("LeaderStatistics_LeaderStatisticsRow", 13)
+                    .onNodeWithTag("LeaderStatisticsRow_Text_Away")
                     .assertTextEquals(awayStats.blocks.toString())
-                onNodeWithTag("LeaderStatistics_Text_HomeSteals")
+                onNodeWithTag("LeaderStatistics_LeaderStatisticsRow", 14)
+                    .onNodeWithTag("LeaderStatisticsRow_Text_Home")
                     .assertTextEquals(homeStats.steals.toString())
-                onNodeWithTag("LeaderStatistics_Text_AwaySteals")
+                onNodeWithTag("LeaderStatistics_LeaderStatisticsRow", 14)
+                    .onNodeWithTag("LeaderStatisticsRow_Text_Away")
                     .assertTextEquals(awayStats.steals.toString())
-                onNodeWithTag("LeaderStatistics_Text_HomeTurnOvers")
+                onNodeWithTag("LeaderStatistics_LeaderStatisticsRow", 15)
+                    .onNodeWithTag("LeaderStatisticsRow_Text_Home")
                     .assertTextEquals(homeStats.turnovers.toString())
-                onNodeWithTag("LeaderStatistics_Text_AwayTurnOvers")
+                onNodeWithTag("LeaderStatistics_LeaderStatisticsRow", 15)
+                    .onNodeWithTag("LeaderStatisticsRow_Text_Away")
                     .assertTextEquals(awayStats.turnovers.toString())
-                onNodeWithTag("LeaderStatistics_Text_HomeFoulPersonal")
+                onNodeWithTag("LeaderStatistics_LeaderStatisticsRow", 16)
+                    .onNodeWithTag("LeaderStatisticsRow_Text_Home")
                     .assertTextEquals(homeStats.foulsPersonal.toString())
-                onNodeWithTag("LeaderStatistics_Text_AwayFoulPersonal")
+                onNodeWithTag("LeaderStatistics_LeaderStatisticsRow", 16)
+                    .onNodeWithTag("LeaderStatisticsRow_Text_Away")
                     .assertTextEquals(awayStats.foulsPersonal.toString())
-                onNodeWithTag("LeaderStatistics_Text_HomeFoulTechnical")
+                onNodeWithTag("LeaderStatistics_LeaderStatisticsRow", 17)
+                    .onNodeWithTag("LeaderStatisticsRow_Text_Home")
                     .assertTextEquals(homeStats.foulsTechnical.toString())
-                onNodeWithTag("LeaderStatistics_Text_AwayFoulTechnical")
+                onNodeWithTag("LeaderStatistics_LeaderStatisticsRow", 17)
+                    .onNodeWithTag("LeaderStatisticsRow_Text_Away")
                     .assertTextEquals(awayStats.foulsTechnical.toString())
             }
     }

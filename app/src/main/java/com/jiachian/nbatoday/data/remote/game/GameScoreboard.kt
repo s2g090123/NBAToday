@@ -92,14 +92,13 @@ data class GameScoreboard(
             val gameStatusText = game.gameStatusText
             val homeTeam = game.homeTeam?.toLocal()
             val awayTeam = game.awayTeam?.toLocal()
-            val gameHomeLeaders = game.gameLeaders?.homeLeaders
-            val gameAwayLeaders = game.gameLeaders?.awayLeaders
-            val teamHomeLeaders = game.teamLeaders?.homeLeaders
-            val teamAwayLeaders = game.teamLeaders?.awayLeaders
+            val gameHomeLeaders = game.gameLeaders?.homeLeaders ?: return@mapNotNull null
+            val gameAwayLeaders = game.gameLeaders.awayLeaders
+            val teamHomeLeaders = game.teamLeaders?.homeLeaders ?: return@mapNotNull null
+            val teamAwayLeaders = game.teamLeaders.awayLeaders
             val isGameNull = gameId.isNull() || gameStatus.isNull() || gameStatusText.isNull()
             val isTeamNull = homeTeam.isNull() || awayTeam.isNull()
-            val isLeadersNull = gameHomeLeaders.isNull() || gameAwayLeaders.isNull() || teamHomeLeaders.isNull() || teamAwayLeaders.isNull()
-            if (isGameNull || isTeamNull || isLeadersNull) {
+            if (isGameNull || isTeamNull) {
                 null
             } else {
                 GameUpdateData(

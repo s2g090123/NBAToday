@@ -150,6 +150,7 @@ data class RemoteGameBoxScore(
                 }
 
                 fun toLocal(): GameBoxScore.BoxScoreTeam.Player? {
+                    statistics ?: return null
                     val notPlaying = when (notPlayingReason) {
                         "INACTIVE_INJURY" -> "Injury"
                         "INACTIVE_GLEAGUE_TWOWAY" -> "G League Two Way"
@@ -159,7 +160,7 @@ data class RemoteGameBoxScore(
                         "INACTIVE_GLEAGUE_ON_ASSIGNMENT" -> "G League On Assignment"
                         "INACTIVE_HEALTH_AND_SAFETY_PROTOCOLS" -> "Health And Safety Protocols"
                         else -> notPlayingReason
-                    }
+                    } ?: ""
                     return GameBoxScore.BoxScoreTeam.Player(
                         status = status ?: PlayerActiveStatus.INACTIVE,
                         notPlayingReason = notPlaying,
@@ -170,7 +171,7 @@ data class RemoteGameBoxScore(
                         starter = isStarter(),
                         onCourt = isOnCourt(),
                         played = isPlayed(),
-                        statistics = statistics?.toLocal(),
+                        statistics = statistics.toLocal(),
                         name = name.getOrNA(),
                         nameAbbr = nameI.getOrNA(),
                         firstName = firstName.getOrNA(),
@@ -287,14 +288,17 @@ data class RemoteGameBoxScore(
 
         @SuppressLint("SimpleDateFormat")
         fun toLocal(): GameBoxScore? {
+            gameId ?: return null
+            homeTeam ?: return null
+            awayTeam ?: return null
             return GameBoxScore(
-                gameId = gameId ?: return null,
+                gameId = gameId,
                 gameDate = getGameDate(),
                 gameCode = gameCode.getOrNA(),
                 gameStatusText = gameStatusText.getOrNA(),
                 gameStatus = gameStatus ?: GameStatusCode.COMING_SOON,
-                homeTeam = homeTeam?.toLocal(),
-                awayTeam = awayTeam?.toLocal()
+                homeTeam = homeTeam.toLocal(),
+                awayTeam = awayTeam.toLocal()
             )
         }
 

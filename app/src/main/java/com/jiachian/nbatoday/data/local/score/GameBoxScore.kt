@@ -3,9 +3,11 @@ package com.jiachian.nbatoday.data.local.score
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.jiachian.nbatoday.compose.screen.score.data.ScoreRowData
 import com.jiachian.nbatoday.data.local.team.NBATeam
 import com.jiachian.nbatoday.data.remote.game.GameStatusCode
 import com.jiachian.nbatoday.data.remote.score.PlayerActiveStatus
+import com.jiachian.nbatoday.utils.decimalFormat
 
 @Entity(tableName = "nba_game_box_score")
 data class GameBoxScore(
@@ -20,9 +22,9 @@ data class GameBoxScore(
     @ColumnInfo(name = "game_status")
     val gameStatus: GameStatusCode,
     @ColumnInfo(name = "home_team")
-    val homeTeam: BoxScoreTeam?,
+    val homeTeam: BoxScoreTeam,
     @ColumnInfo(name = "away_team")
-    val awayTeam: BoxScoreTeam?
+    val awayTeam: BoxScoreTeam
 ) {
 
     val statusText: String
@@ -48,6 +50,10 @@ data class GameBoxScore(
         @ColumnInfo(name = "statistics")
         val statistics: Statistics?
     ) {
+        fun getMostPointsPlayer(): Player? {
+            return players.maxByOrNull { it.statistics.points }
+        }
+
         data class Period(
             @ColumnInfo(name = "period")
             val period: Int, // 第幾節, e.g. 1
@@ -61,7 +67,7 @@ data class GameBoxScore(
             @ColumnInfo(name = "status")
             val status: PlayerActiveStatus,
             @ColumnInfo(name = "not_playing_reason")
-            val notPlayingReason: String?, // status為INACTIVE時才有值, e.g. INACTIVE_INJURY
+            val notPlayingReason: String, // status為INACTIVE時才有值, e.g. INACTIVE_INJURY
             @ColumnInfo(name = "order")
             val order: Int, // 排序, e.g. 1
             @ColumnInfo(name = "personId")
@@ -77,7 +83,7 @@ data class GameBoxScore(
             @ColumnInfo(name = "played")
             val played: Boolean, // 是否已上場
             @ColumnInfo(name = "statistics")
-            val statistics: Statistics?,
+            val statistics: Statistics,
             @ColumnInfo(name = "name")
             val name: String, // e.g. Kelly Oubre Jr.
             @ColumnInfo(name = "name_abbr")
@@ -158,6 +164,33 @@ data class GameBoxScore(
                     get() = "$threePointersMade-$threePointersAttempted"
                 val freeThrowProportion
                     get() = "$freeThrowsMade-$freeThrowsAttempted"
+
+                val fieldGoalsFormat: String
+                    get() = "$fieldGoalsMade/$fieldGoalsAttempted(${fieldGoalsPercentage.decimalFormat()}%)"
+
+                val twoPointsFormat: String
+                    get() = "$twoPointersMade/$twoPointersAttempted(${twoPointersPercentage.decimalFormat()}%)"
+
+                val threePointsFormat: String
+                    get() = "$threePointersMade/$threePointersAttempted(${threePointersPercentage.decimalFormat()}%)"
+
+                val freeThrowFormat: String
+                    get() = "$freeThrowsMade/$freeThrowsAttempted(${freeThrowsPercentage.decimalFormat()}%)"
+            }
+
+            val notPlaying: Boolean
+                get() = status == PlayerActiveStatus.INACTIVE
+
+            fun createRowData(statsRowData: List<ScoreRowData.RowData>): ScoreRowData {
+                val position = if (starter) position.last().toString() else ""
+                return ScoreRowData(
+                    playerId = personId,
+                    nameAbbr = nameAbbr,
+                    rowData = statsRowData,
+                    position = position,
+                    notPlaying = notPlaying,
+                    notPlayingReason = notPlayingReason
+                )
             }
         }
 
@@ -230,6 +263,18 @@ data class GameBoxScore(
             val pointsSecondChance: Int, // 二次進攻得分, e.g. 10
             @ColumnInfo(name = "bench_points")
             val benchPoints: Int, // 板凳得分, e.g. 10
-        )
+        ) {
+            val fieldGoalsFormat: String
+                get() = "$fieldGoalsMade/$fieldGoalsAttempted(${fieldGoalsPercentage.decimalFormat()}%)"
+
+            val twoPointsFormat: String
+                get() = "$twoPointersMade/$twoPointersAttempted(${twoPointersPercentage.decimalFormat()}%)"
+
+            val threePointsFormat: String
+                get() = "$threePointersMade/$threePointersAttempted(${threePointersPercentage.decimalFormat()}%)"
+
+            val freeThrowFormat: String
+                get() = "$freeThrowsMade/$freeThrowsAttempted(${freeThrowsPercentage.decimalFormat()}%)"
+        }
     }
 }

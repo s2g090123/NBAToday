@@ -93,7 +93,7 @@ object BoxScoreFactory {
         return listOf(
             GameBoxScore.BoxScoreTeam.Player(
                 status = PlayerActiveStatus.ACTIVE,
-                notPlayingReason = null,
+                notPlayingReason = "",
                 order = 1,
                 personId = HOME_PLAYER_ID,
                 jerseyNum = BASIC_NUMBER.toString(),
@@ -114,7 +114,7 @@ object BoxScoreFactory {
         return listOf(
             GameBoxScore.BoxScoreTeam.Player(
                 status = PlayerActiveStatus.ACTIVE,
-                notPlayingReason = null,
+                notPlayingReason = "",
                 order = 1,
                 personId = AWAY_PLAYER_ID,
                 jerseyNum = BASIC_NUMBER.toString(),
