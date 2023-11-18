@@ -1,11 +1,10 @@
 package com.jiachian.nbatoday.compose.screen.team
 
 import android.widget.Toast
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -30,8 +29,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
@@ -39,7 +36,6 @@ import androidx.compose.material.TabRowDefaults
 import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -56,30 +52,26 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
-import coil.compose.AsyncImage
-import coil.decode.SvgDecoder
-import coil.request.ImageRequest
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.screen.card.GameStatusCard
+import com.jiachian.nbatoday.compose.widget.BackHandle
+import com.jiachian.nbatoday.compose.widget.DisableOverscroll
+import com.jiachian.nbatoday.compose.widget.IconButton
 import com.jiachian.nbatoday.compose.widget.RefreshingScreen
+import com.jiachian.nbatoday.compose.widget.TeamLogoImage
 import com.jiachian.nbatoday.data.local.NbaGameAndBet
 import com.jiachian.nbatoday.data.local.player.PlayerStats
 import com.jiachian.nbatoday.data.local.team.TeamStats
-import com.jiachian.nbatoday.data.remote.game.GameStatusCode
-import com.jiachian.nbatoday.utils.NbaUtils
 import com.jiachian.nbatoday.utils.decimalFormat
 import com.jiachian.nbatoday.utils.noRippleClickable
 import com.jiachian.nbatoday.utils.px2Dp
@@ -94,38 +86,38 @@ fun TeamScreen(
 ) {
     val isRefreshing by viewModel.isRefreshing.collectAsState()
     val isTeamRefreshing by viewModel.isTeamRefreshing.collectAsState()
+    val isDataLoaded by viewModel.isDataLoaded.collectAsState()
+    BackHandle(onBack = onBack) {
+        when {
+            isTeamRefreshing || !isDataLoaded -> {
+                RefreshScreen(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(viewModel.colors.primary)
+                        .noRippleClickable { },
+                    viewModel = viewModel,
+                    onBack = onBack
+                )
+            }
 
-    when {
-        isTeamRefreshing -> {
-            RefreshScreen(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(viewModel.colors.primary)
-                    .noRippleClickable { },
-                viewModel = viewModel,
-                onBack = onBack
+            else -> {
+                TeamDetailScreen(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(viewModel.colors.primary)
+                        .noRippleClickable { }
+                        .verticalScroll(rememberScrollState()),
+                    viewModel = viewModel,
+                    onBack = onBack
+                )
+            }
+        }
+        if (isRefreshing) {
+            RefreshingScreen(
+                modifier = Modifier.fillMaxSize(),
+                color = MaterialTheme.colors.secondary
             )
         }
-        else -> {
-            TeamDetailScreen(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(viewModel.colors.primary)
-                    .noRippleClickable { }
-                    .verticalScroll(rememberScrollState()),
-                viewModel = viewModel,
-                onBack = onBack
-            )
-        }
-    }
-    if (isRefreshing) {
-        RefreshingScreen(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colors.secondary
-        )
-    }
-    BackHandler {
-        onBack()
     }
 }
 
@@ -135,33 +127,117 @@ private fun TeamDetailScreen(
     viewModel: TeamViewModel,
     onBack: () -> Unit
 ) {
-    val teamStats by viewModel.teamStats.collectAsState()
-
     Column(modifier = modifier) {
         IconButton(
             modifier = Modifier
                 .testTag("TeamDetailScreen_Btn_Back")
                 .padding(top = 8.dp, start = 8.dp),
-            onClick = onBack
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.ic_black_back),
-                contentDescription = null,
-                tint = viewModel.colors.extra2
-            )
-        }
-        teamStats?.let {
-            TeamInformation(
-                modifier = Modifier.fillMaxWidth(),
-                viewModel = viewModel,
-                stats = it
-            )
-        }
+            drawableRes = R.drawable.ic_black_back,
+            tint = viewModel.colors.extra2,
+            onClick = onBack,
+        )
+        TeamInformation(
+            modifier = Modifier.fillMaxWidth(),
+            viewModel = viewModel,
+        )
         TeamStatsScreen(
             modifier = Modifier
                 .padding(top = 16.dp)
                 .fillMaxSize(),
-            viewModel = viewModel
+            viewModel = viewModel,
+        )
+    }
+}
+
+@Composable
+private fun TeamNameAndStanding(
+    modifier: Modifier = Modifier,
+    stats: TeamStats,
+    teamRank: Int,
+    textColor: Color,
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        TeamLogoImage(
+            modifier = Modifier
+                .padding(start = 8.dp)
+                .size(120.dp),
+            team = stats.team,
+        )
+        Column(
+            modifier = Modifier
+                .padding(vertical = 16.dp, horizontal = 8.dp)
+                .fillMaxHeight(),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                modifier = Modifier.testTag("TeamInformation_Text_TeamName"),
+                text = stats.team.teamFullName,
+                fontWeight = FontWeight.Bold,
+                fontSize = 24.sp,
+                color = textColor
+            )
+            Text(
+                modifier = Modifier.testTag("TeamInformation_Text_TeamRecord"),
+                text = stringResource(
+                    R.string.team_rank_record,
+                    stats.win,
+                    stats.lose,
+                    teamRank.toRank(),
+                    stats.teamConference.toString()
+                ),
+                fontWeight = FontWeight.Medium,
+                fontSize = 20.sp,
+                color = textColor
+            )
+        }
+    }
+}
+
+@Composable
+private fun TeamStatsDetail(
+    modifier: Modifier = Modifier,
+    stats: TeamStats,
+    pointsRank: Int,
+    reboundsRank: Int,
+    assistsRank: Int,
+    plusMinusRank: Int,
+    textColor: Color,
+) {
+    Row(modifier = modifier) {
+        TeamRankBox(
+            modifier = Modifier.testTag("TeamInformation_Column_PointsRank"),
+            label = stringResource(R.string.team_rank_points_abbr),
+            rank = pointsRank,
+            average = stats.pointsAverage,
+            textColor = textColor,
+            divider = true,
+        )
+        TeamRankBox(
+            modifier = Modifier.testTag("TeamInformation_Column_ReboundsRank"),
+            label = stringResource(R.string.team_rank_rebounds_abbr),
+            rank = reboundsRank,
+            average = stats.reboundsAverage,
+            textColor = textColor,
+            divider = true,
+        )
+        TeamRankBox(
+            modifier = Modifier.testTag("TeamInformation_Column_AssistsRank"),
+            label = stringResource(R.string.team_rank_assists_abbr),
+            rank = assistsRank,
+            average = stats.assistsAverage,
+            textColor = textColor,
+            divider = true
+        )
+        TeamRankBox(
+            modifier = Modifier.testTag("TeamInformation_Column_PlusMinusRank"),
+            label = stringResource(R.string.team_rank_plusMinus_abbr),
+            rank = plusMinusRank,
+            average = stats.plusMinusAverage,
+            textColor = textColor,
+            divider = false
         )
     }
 }
@@ -169,127 +245,31 @@ private fun TeamDetailScreen(
 @Composable
 private fun TeamInformation(
     modifier: Modifier = Modifier,
-    viewModel: TeamViewModel,
-    stats: TeamStats
+    viewModel: TeamViewModel
 ) {
+    val stats by viewModel.teamStats.collectAsState()
     val teamRank by viewModel.teamRank.collectAsState()
     val teamPointsRank by viewModel.teamPointsRank.collectAsState()
     val teamReboundsRank by viewModel.teamReboundsRank.collectAsState()
     val teamAssistsRank by viewModel.teamAssistsRank.collectAsState()
     val teamPlusMinusRank by viewModel.teamPlusMinusRank.collectAsState()
-
-    ConstraintLayout(modifier = modifier) {
-        val (teamLogo, teamName, teamRecord, teamPoint) = createRefs()
-
-        AsyncImage(
-            modifier = Modifier
-                .constrainAs(teamLogo) {
-                    top.linkTo(parent.top)
-                    start.linkTo(parent.start, 8.dp)
-                }
-                .size(120.dp),
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(NbaUtils.getTeamLogoUrlById(stats.teamId))
-                .decoderFactory(SvgDecoder.Factory())
-                .build(),
-            error = painterResource(stats.team.logoRes),
-            placeholder = painterResource(stats.team.logoRes),
-            contentDescription = null
-        )
-        Text(
-            modifier = Modifier
-                .testTag("TeamInformation_Text_TeamName")
-                .constrainAs(teamName) {
-                    top.linkTo(teamLogo.top, 16.dp)
-                    linkTo(teamLogo.end, parent.end, 8.dp, 8.dp)
-                    width = Dimension.fillToConstraints
-                },
-            text = stats.team.teamFullName,
-            fontWeight = FontWeight.Bold,
-            fontSize = 24.sp,
-            color = viewModel.colors.extra2
-        )
-        Text(
-            modifier = Modifier
-                .testTag("TeamInformation_Text_TeamRecord")
-                .constrainAs(teamRecord) {
-                    bottom.linkTo(teamLogo.bottom, 16.dp)
-                    linkTo(teamLogo.end, parent.end, 8.dp, 8.dp)
-                    width = Dimension.fillToConstraints
-                },
-            text = stringResource(
-                R.string.team_rank_record,
-                stats.win,
-                stats.lose,
-                teamRank.toRank(),
-                stats.teamConference.toString()
-            ),
-            fontWeight = FontWeight.Medium,
-            fontSize = 20.sp,
-            color = viewModel.colors.extra2
-        )
-        Row(
-            modifier = Modifier
-                .constrainAs(teamPoint) {
-                    top.linkTo(teamLogo.bottom, 8.dp)
-                    start.linkTo(parent.start, 16.dp)
-                }
-                .height(IntrinsicSize.Min)
-                .fillMaxWidth()
-        ) {
-            TeamRankBox(
-                modifier = Modifier
-                    .testTag("TeamInformation_Column_PointsRank")
-                    .padding(vertical = 8.dp, horizontal = 16.dp),
-                label = stringResource(R.string.team_rank_points_abbr),
-                rank = teamPointsRank,
-                average = stats.pointsAverage,
-                textColor = viewModel.colors.extra2
+    stats?.let {
+        Column(modifier = modifier) {
+            TeamNameAndStanding(
+                stats = it,
+                teamRank = teamRank,
+                textColor = viewModel.colors.extra2,
             )
-            Divider(
+            TeamStatsDetail(
                 modifier = Modifier
-                    .fillMaxHeight()
-                    .width(1.dp),
-                color = viewModel.colors.extra2.copy(0.25f)
-            )
-            TeamRankBox(
-                modifier = Modifier
-                    .testTag("TeamInformation_Column_ReboundsRank")
-                    .padding(vertical = 8.dp, horizontal = 16.dp),
-                label = stringResource(R.string.team_rank_rebounds_abbr),
-                rank = teamReboundsRank,
-                average = stats.reboundsAverage,
-                textColor = viewModel.colors.extra2
-            )
-            Divider(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .width(1.dp),
-                color = viewModel.colors.extra2.copy(0.25f)
-            )
-            TeamRankBox(
-                modifier = Modifier
-                    .testTag("TeamInformation_Column_AssistsRank")
-                    .padding(vertical = 8.dp, horizontal = 16.dp),
-                label = stringResource(R.string.team_rank_assists_abbr),
-                rank = teamAssistsRank,
-                average = stats.assistsAverage,
-                textColor = viewModel.colors.extra2
-            )
-            Divider(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .width(1.dp),
-                color = viewModel.colors.extra2.copy(0.25f)
-            )
-            TeamRankBox(
-                modifier = Modifier
-                    .testTag("TeamInformation_Column_PlusMinusRank")
-                    .padding(vertical = 8.dp, horizontal = 16.dp),
-                label = stringResource(R.string.team_rank_plusMinus_abbr),
-                rank = teamPlusMinusRank,
-                average = stats.plusMinusAverage,
-                textColor = viewModel.colors.extra2
+                    .padding(top = 8.dp, start = 16.dp, end = 16.dp)
+                    .height(IntrinsicSize.Min),
+                stats = it,
+                pointsRank = teamPointsRank,
+                reboundsRank = teamReboundsRank,
+                assistsRank = teamAssistsRank,
+                plusMinusRank = teamPlusMinusRank,
+                textColor = viewModel.colors.extra2,
             )
         }
     }
@@ -301,32 +281,46 @@ private fun TeamRankBox(
     label: String,
     rank: Int,
     average: Double,
-    textColor: Color
+    textColor: Color,
+    divider: Boolean,
 ) {
-    Column(
+    Row(
         modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(
-            text = label,
-            fontWeight = FontWeight.Medium,
-            fontSize = 18.sp,
-            color = textColor
-        )
-        Text(
-            modifier = Modifier.testTag("TeamInformation_Text_Rank"),
-            text = rank.toRank(),
-            fontWeight = FontWeight.Medium,
-            fontSize = 18.sp,
-            color = textColor
-        )
-        Text(
-            modifier = Modifier.testTag("TeamInformation_Text_Average"),
-            text = average.decimalFormat().toString(),
-            fontWeight = FontWeight.Medium,
-            fontSize = 18.sp,
-            color = textColor
-        )
+        Column(
+            modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(
+                text = label,
+                fontWeight = FontWeight.Medium,
+                fontSize = 18.sp,
+                color = textColor
+            )
+            Text(
+                modifier = Modifier.testTag("TeamInformation_Text_Rank"),
+                text = rank.toRank(),
+                fontWeight = FontWeight.Medium,
+                fontSize = 18.sp,
+                color = textColor
+            )
+            Text(
+                modifier = Modifier.testTag("TeamInformation_Text_Average"),
+                text = average.decimalFormat().toString(),
+                fontWeight = FontWeight.Medium,
+                fontSize = 18.sp,
+                color = textColor
+            )
+        }
+        if (divider) {
+            Divider(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .width(1.dp),
+                color = textColor.copy(0.25f)
+            )
+        }
     }
 }
 
@@ -363,6 +357,7 @@ private fun TeamStatsScreen(
                         players = players
                     )
                 }
+
                 1 -> GamesPage(
                     modifier = Modifier
                         .testTag("TeamStatsScreen_GamesPage_Previous")
@@ -371,6 +366,7 @@ private fun TeamStatsScreen(
                     viewModel = viewModel,
                     games = gamesBefore
                 )
+
                 2 -> GamesPage(
                     modifier = Modifier
                         .testTag("TeamStatsScreen_GamesPage_Next")
@@ -446,7 +442,40 @@ private fun TeamStatsTab(
     )
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun PlayerNamesHeader(
+    modifier: Modifier = Modifier,
+    dividerColor: Color,
+) {
+    Column(modifier = modifier) {
+        Spacer(modifier = Modifier.height(40.dp))
+        Divider(
+            modifier = Modifier.fillMaxWidth(),
+            color = dividerColor,
+            thickness = 3.dp
+        )
+    }
+}
+
+@Composable
+private fun PlayerStatsColumn(
+    viewModel: TeamViewModel,
+    lazyListState: LazyListState,
+    players: List<PlayerStats>,
+) {
+    val horizontalScrollState = rememberScrollState()
+    PlayerStatsTable(
+        modifier = Modifier
+            .testTag("PlayerStatistics_LC_PlayerStats")
+            .horizontalScroll(horizontalScrollState)
+            .heightIn(max = (LocalConfiguration.current.screenHeightDp * 0.7f).dp)
+            .fillMaxWidth(),
+        viewModel = viewModel,
+        statsState = lazyListState,
+        players = players,
+    )
+}
+
 @Composable
 private fun PlayerStatistics(
     modifier: Modifier = Modifier,
@@ -455,63 +484,28 @@ private fun PlayerStatistics(
 ) {
     val playerState = rememberLazyListState()
     val statsState = rememberLazyListState()
-    val horizontalScrollState = rememberScrollState()
-    var dividerWidth by remember { mutableStateOf(0) }
     val statePlayerOffset by remember { derivedStateOf { playerState.firstVisibleItemScrollOffset } }
     val statePlayerIndex by remember { derivedStateOf { playerState.firstVisibleItemIndex } }
     val stateStatsOffset by remember { derivedStateOf { statsState.firstVisibleItemScrollOffset } }
     val stateStatsIndex by remember { derivedStateOf { statsState.firstVisibleItemIndex } }
-    val sort by viewModel.playerSort.collectAsState()
-
     Row(modifier = modifier) {
-        Column(modifier = Modifier.width(124.dp)) {
-            Spacer(modifier = Modifier.height(40.dp))
-            Divider(
-                modifier = Modifier.fillMaxWidth(),
-                color = viewModel.colors.secondary.copy(0.25f),
-                thickness = 3.dp
-            )
-            PlayerNameColumn(
-                modifier = Modifier
-                    .testTag("PlayerStatistics_LC_Players")
-                    .heightIn(max = (LocalConfiguration.current.screenHeightDp * 0.7f).dp),
-                playerState = playerState,
-                players = players,
-                textColor = viewModel.colors.secondary,
-                onClickPlayer = { viewModel.openPlayerInfo(it) }
-            )
-        }
-        Column(modifier = modifier.horizontalScroll(horizontalScrollState)) {
-            PlayerStatsLabelRow(
-                modifier = Modifier
-                    .onSizeChanged {
-                        dividerWidth = max(dividerWidth, it.width)
-                    }
-                    .fillMaxWidth()
-                    .wrapContentHeight(),
-                sort = sort,
-                labelColor = viewModel.colors.secondary,
-                updateSort = { viewModel.updatePlayerSort(it) }
-            )
-            Divider(
-                modifier = Modifier.width(dividerWidth.px2Dp()),
-                color = viewModel.colors.secondary.copy(0.25f),
-                thickness = 3.dp
-            )
-            PlayerStatsTable(
-                modifier = Modifier
-                    .testTag("PlayerStatistics_LC_PlayerStats")
-                    .heightIn(max = (LocalConfiguration.current.screenHeightDp * 0.7f).dp)
-                    .fillMaxWidth(),
-                statsState = statsState,
-                players = players,
-                sort = sort,
-                color = viewModel.colors.secondary,
-                dividerWidth = dividerWidth.px2Dp()
-            )
-        }
+        PlayerNamesColumn(
+            modifier = Modifier
+                .testTag("PlayerStatistics_LC_Players")
+                .width(124.dp)
+                .heightIn(max = (LocalConfiguration.current.screenHeightDp * 0.7f).dp),
+            viewModel = viewModel,
+            playerState = playerState,
+            players = players,
+            textColor = viewModel.colors.secondary,
+            onClickPlayer = { viewModel.openPlayerInfo(it) },
+        )
+        PlayerStatsColumn(
+            viewModel = viewModel,
+            lazyListState = statsState,
+            players = players,
+        )
     }
-
     LaunchedEffect(statePlayerOffset, statePlayerIndex) {
         statsState.scrollToItem(statePlayerIndex, statePlayerOffset)
     }
@@ -522,51 +516,69 @@ private fun PlayerStatistics(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun PlayerNameColumn(
+private fun PlayerNamesColumn(
     modifier: Modifier = Modifier,
+    viewModel: TeamViewModel,
     playerState: LazyListState,
     players: List<PlayerStats>,
     textColor: Color,
     onClickPlayer: (playerId: Int) -> Unit
 ) {
-    CompositionLocalProvider(
-        LocalOverscrollConfiguration provides null
-    ) {
+    DisableOverscroll {
         LazyColumn(
             modifier = modifier,
             state = playerState
         ) {
+            stickyHeader {
+                PlayerNamesHeader(
+                    modifier = Modifier.background(viewModel.colors.primary),
+                    dividerColor = viewModel.colors.secondary.copy(0.25f),
+                )
+            }
             itemsIndexed(players) { index, stat ->
-                Column(
+                PlayerName(
                     modifier = Modifier
                         .testTag("PlayerStatistics_Column_Player")
                         .wrapContentWidth()
                         .rippleClickable {
                             onClickPlayer(stat.playerId)
-                        }
-                ) {
-                    Text(
-                        modifier = Modifier
-                            .testTag("PlayerStatistics_Text_PlayerName")
-                            .padding(top = 8.dp, start = 8.dp)
-                            .height(24.dp),
-                        text = stat.playerName,
-                        textAlign = TextAlign.Start,
-                        fontSize = 16.sp,
-                        color = textColor,
-                        maxLines = 1,
-                        softWrap = false
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    if (index < players.size - 1) {
-                        Divider(
-                            modifier = Modifier.fillMaxWidth(),
-                            color = textColor.copy(0.25f),
-                            thickness = 1.dp
-                        )
-                    }
-                }
+                        },
+                    playerName = stat.playerName,
+                    textColor = textColor,
+                    divider = index < players.size - 1,
+                )
             }
+        }
+    }
+}
+
+@Composable
+private fun PlayerName(
+    modifier: Modifier = Modifier,
+    playerName: String,
+    textColor: Color,
+    divider: Boolean,
+) {
+    Column(modifier = modifier) {
+        Text(
+            modifier = Modifier
+                .testTag("PlayerStatistics_Text_PlayerName")
+                .padding(top = 8.dp, start = 8.dp)
+                .height(24.dp),
+            text = playerName,
+            textAlign = TextAlign.Start,
+            fontSize = 16.sp,
+            color = textColor,
+            maxLines = 1,
+            softWrap = false,
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        if (divider) {
+            Divider(
+                modifier = Modifier.fillMaxWidth(),
+                color = textColor.copy(0.25f),
+                thickness = 1.dp,
+            )
         }
     }
 }
@@ -574,346 +586,68 @@ private fun PlayerNameColumn(
 @Composable
 private fun PlayerStatsLabelRow(
     modifier: Modifier = Modifier,
+    labels: Array<TeamPlayerLabel>,
     sort: PlayerSort,
     labelColor: Color,
     updateSort: (sort: PlayerSort) -> Unit
 ) {
-    val context = LocalContext.current
-    Row(
-        modifier = modifier
-    ) {
-        val gpLabel = remember {
-            PlayerLabel(
-                width = 40.dp,
-                text = context.getString(R.string.player_stats_label_gp),
-                sort = PlayerSort.GP
+    Row(modifier = modifier) {
+        labels.forEach { label ->
+            PlayerStatsLabel(
+                isSelected = sort == label.sort,
+                label = label,
+                color = labelColor,
+                onClick = { updateSort(label.sort) },
             )
         }
-        PlayerStatsLabel(
-            isSelected = sort == PlayerSort.GP,
-            label = gpLabel,
-            color = labelColor,
-            onClick = { updateSort(it.sort) }
-        )
-        val wLabel = remember {
-            PlayerLabel(
-                width = 40.dp,
-                text = context.getString(R.string.player_stats_label_w),
-                sort = PlayerSort.W
-            )
-        }
-        PlayerStatsLabel(
-            isSelected = sort == PlayerSort.W,
-            label = wLabel,
-            color = labelColor,
-            onClick = { updateSort(it.sort) }
-        )
-        val lLabel = remember {
-            PlayerLabel(
-                width = 40.dp,
-                text = context.getString(R.string.player_stats_label_l),
-                sort = PlayerSort.L
-            )
-        }
-        PlayerStatsLabel(
-            isSelected = sort == PlayerSort.L,
-            label = lLabel,
-            color = labelColor,
-            onClick = { updateSort(it.sort) }
-        )
-        val winPercentageLabel = remember {
-            PlayerLabel(
-                width = 64.dp,
-                text = context.getString(R.string.player_stats_label_winPercentage),
-                sort = PlayerSort.WINP
-            )
-        }
-        PlayerStatsLabel(
-            isSelected = sort == PlayerSort.WINP,
-            label = winPercentageLabel,
-            color = labelColor,
-            onClick = { updateSort(it.sort) }
-        )
-        val ptsLabel = remember {
-            PlayerLabel(
-                width = 64.dp,
-                text = context.getString(R.string.player_stats_label_pts),
-                sort = PlayerSort.PTS
-            )
-        }
-        PlayerStatsLabel(
-            isSelected = sort == PlayerSort.PTS,
-            label = ptsLabel,
-            color = labelColor,
-            onClick = { updateSort(it.sort) }
-        )
-        val fgmLabel = remember {
-            PlayerLabel(
-                width = 64.dp,
-                text = context.getString(R.string.player_stats_label_fgm),
-                sort = PlayerSort.FGM
-            )
-        }
-        PlayerStatsLabel(
-            isSelected = sort == PlayerSort.FGM,
-            label = fgmLabel,
-            color = labelColor,
-            onClick = { updateSort(it.sort) }
-        )
-        val fgaLabel = remember {
-            PlayerLabel(
-                width = 64.dp,
-                text = context.getString(R.string.player_stats_label_fga),
-                sort = PlayerSort.FGA
-            )
-        }
-        PlayerStatsLabel(
-            isSelected = sort == PlayerSort.FGA,
-            label = fgaLabel,
-            color = labelColor,
-            onClick = { updateSort(it.sort) }
-        )
-        val fgPercentageLabel = remember {
-            PlayerLabel(
-                width = 64.dp,
-                text = context.getString(R.string.player_stats_label_fgPercentage),
-                sort = PlayerSort.FGP
-            )
-        }
-        PlayerStatsLabel(
-            isSelected = sort == PlayerSort.FGP,
-            label = fgPercentageLabel,
-            color = labelColor,
-            onClick = { updateSort(it.sort) }
-        )
-        val threepmLabel = remember {
-            PlayerLabel(
-                width = 64.dp,
-                text = context.getString(R.string.player_stats_label_3pm),
-                sort = PlayerSort.PM3
-            )
-        }
-        PlayerStatsLabel(
-            isSelected = sort == PlayerSort.PM3,
-            label = threepmLabel,
-            color = labelColor,
-            onClick = { updateSort(it.sort) }
-        )
-        val threepaLabel = remember {
-            PlayerLabel(
-                width = 64.dp,
-                text = context.getString(R.string.player_stats_label_3pa),
-                sort = PlayerSort.PA3
-            )
-        }
-        PlayerStatsLabel(
-            isSelected = sort == PlayerSort.PA3,
-            label = threepaLabel,
-            color = labelColor,
-            onClick = { updateSort(it.sort) }
-        )
-        val threePercentageLabel = remember {
-            PlayerLabel(
-                width = 64.dp,
-                text = context.getString(R.string.player_stats_label_3pPercentage),
-                sort = PlayerSort.PP3
-            )
-        }
-        PlayerStatsLabel(
-            isSelected = sort == PlayerSort.PP3,
-            label = threePercentageLabel,
-            color = labelColor,
-            onClick = { updateSort(it.sort) }
-        )
-        val ftmLabel = remember {
-            PlayerLabel(
-                width = 64.dp,
-                text = context.getString(R.string.player_stats_label_ftm),
-                sort = PlayerSort.FTM
-            )
-        }
-        PlayerStatsLabel(
-            isSelected = sort == PlayerSort.FTM,
-            label = ftmLabel,
-            color = labelColor,
-            onClick = { updateSort(it.sort) }
-        )
-        val ftaLabel = remember {
-            PlayerLabel(
-                width = 64.dp,
-                text = context.getString(R.string.player_stats_label_fta),
-                sort = PlayerSort.FTA
-            )
-        }
-        PlayerStatsLabel(
-            isSelected = sort == PlayerSort.FTA,
-            label = ftaLabel,
-            color = labelColor,
-            onClick = { updateSort(it.sort) }
-        )
-        val ftPercentageLabel = remember {
-            PlayerLabel(
-                width = 64.dp,
-                text = context.getString(R.string.player_stats_label_ftPercentage),
-                sort = PlayerSort.FTP
-            )
-        }
-        PlayerStatsLabel(
-            isSelected = sort == PlayerSort.FTP,
-            label = ftPercentageLabel,
-            color = labelColor,
-            onClick = { updateSort(it.sort) }
-        )
-        val orebLabel = remember {
-            PlayerLabel(
-                width = 48.dp,
-                text = context.getString(R.string.player_stats_label_oreb),
-                sort = PlayerSort.OREB
-            )
-        }
-        PlayerStatsLabel(
-            isSelected = sort == PlayerSort.OREB,
-            label = orebLabel,
-            color = labelColor,
-            onClick = { updateSort(it.sort) }
-        )
-        val drebLabel = remember {
-            PlayerLabel(
-                width = 48.dp,
-                text = context.getString(R.string.player_stats_label_dreb),
-                sort = PlayerSort.DREB
-            )
-        }
-        PlayerStatsLabel(
-            isSelected = sort == PlayerSort.DREB,
-            label = drebLabel,
-            color = labelColor,
-            onClick = { updateSort(it.sort) }
-        )
-        val rebLabel = remember {
-            PlayerLabel(
-                width = 48.dp,
-                text = context.getString(R.string.player_stats_label_reb),
-                sort = PlayerSort.REB
-            )
-        }
-        PlayerStatsLabel(
-            isSelected = sort == PlayerSort.REB,
-            label = rebLabel,
-            color = labelColor,
-            onClick = { updateSort(it.sort) }
-        )
-        val astLabel = remember {
-            PlayerLabel(
-                width = 48.dp,
-                text = context.getString(R.string.player_stats_label_ast),
-                sort = PlayerSort.AST
-            )
-        }
-        PlayerStatsLabel(
-            isSelected = sort == PlayerSort.AST,
-            label = astLabel,
-            color = labelColor,
-            onClick = { updateSort(it.sort) }
-        )
-        val tovLabel = remember {
-            PlayerLabel(
-                width = 48.dp,
-                text = context.getString(R.string.player_stats_label_tov),
-                sort = PlayerSort.TOV
-            )
-        }
-        PlayerStatsLabel(
-            isSelected = sort == PlayerSort.TOV,
-            label = tovLabel,
-            color = labelColor,
-            onClick = { updateSort(it.sort) }
-        )
-        val stlLabel = remember {
-            PlayerLabel(
-                width = 48.dp,
-                text = context.getString(R.string.player_stats_label_stl),
-                sort = PlayerSort.STL
-            )
-        }
-        PlayerStatsLabel(
-            isSelected = sort == PlayerSort.STL,
-            label = stlLabel,
-            color = labelColor,
-            onClick = { updateSort(it.sort) }
-        )
-        val blkLabel = remember {
-            PlayerLabel(
-                width = 48.dp,
-                text = context.getString(R.string.player_stats_label_blk),
-                sort = PlayerSort.BLK
-            )
-        }
-        PlayerStatsLabel(
-            isSelected = sort == PlayerSort.BLK,
-            label = blkLabel,
-            color = labelColor,
-            onClick = { updateSort(it.sort) }
-        )
-        val pfLabel = remember {
-            PlayerLabel(
-                width = 48.dp,
-                text = context.getString(R.string.player_stats_label_pf),
-                sort = PlayerSort.PF
-            )
-        }
-        PlayerStatsLabel(
-            isSelected = sort == PlayerSort.PF,
-            label = pfLabel,
-            color = labelColor,
-            onClick = { updateSort(it.sort) }
-        )
-        val plusMinusLabel = remember {
-            PlayerLabel(
-                width = 48.dp,
-                text = context.getString(R.string.player_stats_label_plusMinus),
-                sort = PlayerSort.PLUSMINUS
-            )
-        }
-        PlayerStatsLabel(
-            isSelected = sort == PlayerSort.PLUSMINUS,
-            label = plusMinusLabel,
-            color = labelColor,
-            onClick = { updateSort(it.sort) }
-        )
     }
 }
 
 @Composable
 private fun PlayerStatsLabel(
     isSelected: Boolean,
-    label: PlayerLabel,
+    label: TeamPlayerLabel,
     color: Color,
-    onClick: (label: PlayerLabel) -> Unit
+    onClick: (label: TeamPlayerLabel) -> Unit
 ) {
+    val context = LocalContext.current
     Box(
         modifier = Modifier
             .width(label.width)
             .height(40.dp)
-            .background(
-                if (isSelected) {
-                    color.copy(0.25f)
-                } else {
-                    Color.Transparent
-                }
-            )
-            .rippleClickable {
-                onClick(label)
-            }
-            .padding(8.dp)
+            .background(if (isSelected) color.copy(0.25f) else Color.Transparent)
+            .rippleClickable { onClick(label) }
+            .padding(8.dp),
     ) {
         Text(
             modifier = Modifier.fillMaxSize(),
-            text = label.text,
+            text = context.getString(label.textRes),
             textAlign = if (isSelected) TextAlign.Center else TextAlign.End,
             fontSize = 16.sp,
             fontWeight = FontWeight.Medium,
-            color = color
+            color = color,
+        )
+    }
+}
+
+@Composable
+private fun PlayerStatsHeader(
+    modifier: Modifier = Modifier,
+    viewModel: TeamViewModel,
+    sort: PlayerSort,
+    dividerWidth: Dp
+) {
+    Column(modifier = modifier) {
+        PlayerStatsLabelRow(
+            labels = viewModel.labels,
+            sort = sort,
+            labelColor = viewModel.colors.secondary,
+            updateSort = { viewModel.updatePlayerSort(it) },
+        )
+        Divider(
+            modifier = Modifier.width(dividerWidth),
+            color = viewModel.colors.secondary.copy(0.25f),
+            thickness = 3.dp,
         )
     }
 }
@@ -922,173 +656,73 @@ private fun PlayerStatsLabel(
 @Composable
 private fun PlayerStatsTable(
     modifier: Modifier = Modifier,
+    viewModel: TeamViewModel,
     statsState: LazyListState,
-    players: List<PlayerStats>,
-    sort: PlayerSort,
-    color: Color,
-    dividerWidth: Dp
+    players: List<PlayerStats>
 ) {
-    CompositionLocalProvider(
-        LocalOverscrollConfiguration provides null
-    ) {
+    val sort by viewModel.playerSort.collectAsState()
+    var dividerWidth by remember { mutableStateOf(0) }
+    DisableOverscroll {
         LazyColumn(
             modifier = modifier,
-            state = statsState
+            state = statsState,
         ) {
-            itemsIndexed(players) { index, stats ->
-                Row(
+            stickyHeader {
+                PlayerStatsHeader(
                     modifier = Modifier
-                        .testTag("PlayerStatistics_Row_PlayerStats")
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    PlayerStatsText(
-                        isSelected = sort == PlayerSort.GP,
-                        width = 40.dp,
-                        color = color,
-                        text = stats.gamePlayed.toString()
-                    )
-                    PlayerStatsText(
-                        isSelected = sort == PlayerSort.W,
-                        width = 40.dp,
-                        color = color,
-                        text = stats.win.toString()
-                    )
-                    PlayerStatsText(
-                        isSelected = sort == PlayerSort.L,
-                        width = 40.dp,
-                        color = color,
-                        text = stats.lose.toString()
-                    )
-                    PlayerStatsText(
-                        isSelected = sort == PlayerSort.WINP,
-                        width = 64.dp,
-                        color = color,
-                        text = stats.winPercentage.decimalFormat().toString()
-                    )
-                    PlayerStatsText(
-                        isSelected = sort == PlayerSort.PTS,
-                        width = 64.dp,
-                        color = color,
-                        text = stats.pointsAverage.decimalFormat().toString()
-                    )
-                    PlayerStatsText(
-                        isSelected = sort == PlayerSort.FGM,
-                        width = 64.dp,
-                        color = color,
-                        text = stats.fieldGoalsMadeAverage.decimalFormat().toString()
-                    )
-                    PlayerStatsText(
-                        isSelected = sort == PlayerSort.FGA,
-                        width = 64.dp,
-                        color = color,
-                        text = stats.fieldGoalsAttemptedAverage.decimalFormat().toString()
-                    )
-                    PlayerStatsText(
-                        isSelected = sort == PlayerSort.FGP,
-                        width = 64.dp,
-                        color = color,
-                        text = stats.fieldGoalsPercentage.decimalFormat().toString()
-                    )
-                    PlayerStatsText(
-                        isSelected = sort == PlayerSort.PM3,
-                        width = 64.dp,
-                        color = color,
-                        text = stats.threePointersMadeAverage.decimalFormat().toString()
-                    )
-                    PlayerStatsText(
-                        isSelected = sort == PlayerSort.PA3,
-                        width = 64.dp,
-                        color = color,
-                        text = stats.threePointersAttemptedAverage.decimalFormat().toString()
-                    )
-                    PlayerStatsText(
-                        isSelected = sort == PlayerSort.PP3,
-                        width = 64.dp,
-                        color = color,
-                        text = stats.threePointersPercentage.decimalFormat().toString()
-                    )
-                    PlayerStatsText(
-                        isSelected = sort == PlayerSort.FTM,
-                        width = 64.dp,
-                        color = color,
-                        text = stats.freeThrowsMadeAverage.decimalFormat().toString()
-                    )
-                    PlayerStatsText(
-                        isSelected = sort == PlayerSort.FTA,
-                        width = 64.dp,
-                        color = color,
-                        text = stats.freeThrowsAttemptedAverage.decimalFormat().toString()
-                    )
-                    PlayerStatsText(
-                        isSelected = sort == PlayerSort.FTP,
-                        width = 64.dp,
-                        color = color,
-                        text = stats.freeThrowsPercentage.decimalFormat().toString()
-                    )
-                    PlayerStatsText(
-                        isSelected = sort == PlayerSort.OREB,
-                        width = 48.dp,
-                        color = color,
-                        text = stats.reboundsOffensiveAverage.decimalFormat().toString()
-                    )
-                    PlayerStatsText(
-                        isSelected = sort == PlayerSort.DREB,
-                        width = 48.dp,
-                        color = color,
-                        text = stats.reboundsDefensiveAverage.decimalFormat().toString()
-                    )
-                    PlayerStatsText(
-                        isSelected = sort == PlayerSort.REB,
-                        width = 48.dp,
-                        color = color,
-                        text = stats.reboundsTotalAverage.decimalFormat().toString()
-                    )
-                    PlayerStatsText(
-                        isSelected = sort == PlayerSort.AST,
-                        width = 48.dp,
-                        color = color,
-                        text = stats.assistsAverage.decimalFormat().toString()
-                    )
-                    PlayerStatsText(
-                        isSelected = sort == PlayerSort.TOV,
-                        width = 48.dp,
-                        color = color,
-                        text = stats.turnoversAverage.decimalFormat().toString()
-                    )
-                    PlayerStatsText(
-                        isSelected = sort == PlayerSort.STL,
-                        width = 48.dp,
-                        color = color,
-                        text = stats.stealsAverage.decimalFormat().toString()
-                    )
-                    PlayerStatsText(
-                        isSelected = sort == PlayerSort.BLK,
-                        width = 48.dp,
-                        color = color,
-                        text = stats.blocksAverage.decimalFormat().toString()
-                    )
-                    PlayerStatsText(
-                        isSelected = sort == PlayerSort.PF,
-                        width = 48.dp,
-                        color = color,
-                        text = stats.foulsPersonalAverage.decimalFormat().toString()
-                    )
-                    PlayerStatsText(
-                        isSelected = sort == PlayerSort.PLUSMINUS,
-                        width = 48.dp,
-                        color = color,
-                        text = stats.plusMinus.toString()
-                    )
-                }
-                if (index < players.size - 1) {
-                    Divider(
-                        modifier = Modifier.width(dividerWidth),
-                        color = color.copy(0.25f),
-                        thickness = 1.dp
-                    )
-                }
+                        .onSizeChanged { dividerWidth = max(dividerWidth, it.width) }
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .background(viewModel.colors.primary),
+                    viewModel = viewModel,
+                    sort = sort,
+                    dividerWidth = dividerWidth.px2Dp(),
+                )
             }
+            itemsIndexed(players) { index, stats ->
+                PlayerStatsRow(
+                    viewModel = viewModel,
+                    stats = stats,
+                    sort = sort,
+                    divider = index < players.size - 1,
+                    dividerWidth = dividerWidth.px2Dp(),
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun PlayerStatsRow(
+    modifier: Modifier = Modifier,
+    viewModel: TeamViewModel,
+    stats: PlayerStats,
+    sort: PlayerSort,
+    divider: Boolean,
+    dividerWidth: Dp,
+) {
+    Column(modifier = modifier) {
+        Row(
+            modifier = Modifier
+                .testTag("PlayerStatistics_Row_PlayerStats")
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            viewModel.labels.forEach { label ->
+                PlayerStatsText(
+                    isSelected = sort == label.sort,
+                    width = label.width,
+                    color = viewModel.colors.secondary,
+                    text = viewModel.getStatsTextByLabel(label, stats),
+                )
+            }
+        }
+        if (divider) {
+            Divider(
+                modifier = Modifier.width(dividerWidth),
+                color = viewModel.colors.secondary.copy(0.25f),
+                thickness = 1.dp,
+            )
         }
     }
 }
@@ -1105,18 +739,12 @@ private fun PlayerStatsText(
             .testTag("PlayerStatistics_Text_PlayerStats")
             .width(width)
             .height(40.dp)
-            .background(
-                if (isSelected) {
-                    color.copy(0.25f)
-                } else {
-                    Color.Transparent
-                }
-            )
+            .background(if (isSelected) color.copy(0.25f) else Color.Transparent)
             .padding(8.dp),
         text = text,
         textAlign = if (isSelected) TextAlign.Center else TextAlign.End,
         fontSize = 16.sp,
-        color = color
+        color = color,
     )
 }
 
@@ -1128,10 +756,9 @@ private fun GamesPage(
 ) {
     val context = LocalContext.current
     val user by viewModel.user.collectAsState()
-
     LazyColumn(
         modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         itemsIndexed(games) { index, game ->
             GameStatusCard(
@@ -1141,7 +768,7 @@ private fun GamesPage(
                         top = 16.dp,
                         bottom = if (index == games.size - 1) 16.dp else 0.dp,
                         start = 16.dp,
-                        end = 16.dp
+                        end = 16.dp,
                     )
                     .clip(RoundedCornerShape(16.dp))
                     .shadow(8.dp)
@@ -1149,13 +776,9 @@ private fun GamesPage(
                     .wrapContentHeight()
                     .background(viewModel.colors.secondary)
                     .rippleClickable {
-                        if (game.game.gameStatus == GameStatusCode.COMING_SOON) {
+                        if (!game.game.isGamePlayed) {
                             Toast
-                                .makeText(
-                                    context,
-                                    context.getString(R.string.game_is_coming_soon),
-                                    Toast.LENGTH_SHORT
-                                )
+                                .makeText(context, context.getString(R.string.game_is_coming_soon), Toast.LENGTH_SHORT)
                                 .show()
                         } else {
                             viewModel.openGameBoxScore(game.game)
@@ -1168,7 +791,7 @@ private fun GamesPage(
                 color = viewModel.colors.primary,
                 onLogin = viewModel::login,
                 onRegister = viewModel::register,
-                onConfirm = viewModel::bet
+                onConfirm = viewModel::bet,
             )
         }
     }
@@ -1185,17 +808,13 @@ private fun RefreshScreen(
             modifier = Modifier
                 .align(Alignment.TopStart)
                 .padding(top = 8.dp, start = 8.dp),
+            drawableRes = R.drawable.ic_black_back,
+            tint = viewModel.colors.extra2,
             onClick = onBack,
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.ic_black_back),
-                contentDescription = null,
-                tint = viewModel.colors.extra2
-            )
-        }
+        )
         CircularProgressIndicator(
             modifier = Modifier.align(Alignment.Center),
-            color = viewModel.colors.secondary
+            color = viewModel.colors.secondary,
         )
     }
 }

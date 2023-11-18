@@ -1,6 +1,7 @@
 package com.jiachian.nbatoday.compose.screen.team
 
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
+import com.jiachian.nbatoday.compose.screen.label.LabelHelper
 import com.jiachian.nbatoday.compose.screen.player.PlayerInfoViewModel
 import com.jiachian.nbatoday.compose.screen.score.BoxScoreViewModel
 import com.jiachian.nbatoday.compose.state.NbaState
@@ -11,6 +12,7 @@ import com.jiachian.nbatoday.data.local.team.NBATeam
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.utils.NbaUtils
+import com.jiachian.nbatoday.utils.decimalFormat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,6 +36,8 @@ class TeamViewModel(
         .stateIn(coroutineScope, SharingStarted.WhileSubscribed(5000L), null)
 
     val colors = team.colors
+
+    val labels = LabelHelper.createTeamPlayerLabel()
 
     private val games = repository.getGamesAndBets()
     val gamesBefore = games.map { games ->
@@ -235,6 +239,7 @@ class TeamViewModel(
                     it.winPercentage
                 }
             )
+
             PlayerSort.PLUSMINUS -> playerStats.sortedWith(
                 compareByDescending<PlayerStats> {
                     it.plusMinus
@@ -244,6 +249,38 @@ class TeamViewModel(
             )
         }
     }.stateIn(coroutineScope, SharingStarted.Lazily, emptyList())
+
+    val isDataLoaded = teamStats.combine(playersStats) { a, b ->
+        a != null && b.isNotEmpty()
+    }.stateIn(coroutineScope, SharingStarted.Lazily, false)
+
+    val getStatsTextByLabel = { label: TeamPlayerLabel, stats: PlayerStats ->
+        when (label) {
+            TeamPlayerLabel.GP -> stats.gamePlayed
+            TeamPlayerLabel.WIN -> stats.win
+            TeamPlayerLabel.LOSE -> stats.lose
+            TeamPlayerLabel.WINP -> stats.winPercentage.decimalFormat()
+            TeamPlayerLabel.PTS -> stats.pointsAverage.decimalFormat()
+            TeamPlayerLabel.FGM -> stats.fieldGoalsMadeAverage.decimalFormat()
+            TeamPlayerLabel.FGA -> stats.fieldGoalsAttemptedAverage.decimalFormat()
+            TeamPlayerLabel.FGP -> stats.fieldGoalsPercentage.decimalFormat()
+            TeamPlayerLabel.PM3 -> stats.threePointersMadeAverage.decimalFormat()
+            TeamPlayerLabel.PA3 -> stats.threePointersAttemptedAverage.decimalFormat()
+            TeamPlayerLabel.PP3 -> stats.threePointersPercentage.decimalFormat()
+            TeamPlayerLabel.FTM -> stats.freeThrowsMadeAverage.decimalFormat()
+            TeamPlayerLabel.FTA -> stats.freeThrowsAttemptedAverage.decimalFormat()
+            TeamPlayerLabel.FTP -> stats.freeThrowsPercentage.decimalFormat()
+            TeamPlayerLabel.OREB -> stats.reboundsOffensiveAverage.decimalFormat()
+            TeamPlayerLabel.DREB -> stats.reboundsDefensiveAverage.decimalFormat()
+            TeamPlayerLabel.REB -> stats.reboundsTotalAverage.decimalFormat()
+            TeamPlayerLabel.AST -> stats.assistsAverage.decimalFormat()
+            TeamPlayerLabel.TOV -> stats.turnoversAverage.decimalFormat()
+            TeamPlayerLabel.STL -> stats.stealsAverage.decimalFormat()
+            TeamPlayerLabel.BLK -> stats.blocksAverage.decimalFormat()
+            TeamPlayerLabel.PF -> stats.foulsPersonalAverage.decimalFormat()
+            TeamPlayerLabel.PLUSMINUS -> stats.plusMinus
+        }.toString()
+    }
 
     init {
         updateStats()
