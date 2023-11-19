@@ -8,6 +8,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -40,8 +41,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension
 import coil.compose.AsyncImage
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.annotation.ExcludeFromJacocoGeneratedReport
@@ -94,6 +93,7 @@ fun CustomOutlinedTextField(
 ) {
     val focusManager = LocalFocusManager.current
     var isFocus by remember { mutableStateOf(false) }
+    val currentColor = if (isError) errorColor else if (isFocus) textColor else borderColor
     BasicTextField(
         value = value,
         onValueChange = onValueChange,
@@ -101,11 +101,7 @@ fun CustomOutlinedTextField(
             Modifier
                 .focusRequester(focusRequester)
                 .onFocusChanged { isFocus = it.isFocused }
-                .border(
-                    borderWidth,
-                    if (isError) errorColor else if (isFocus) textColor else borderColor,
-                    shape
-                )
+                .border(borderWidth, currentColor, shape)
         ),
         enabled = enabled,
         textStyle = textStyle,
@@ -125,55 +121,27 @@ fun CustomOutlinedTextField(
         maxLines = maxLines,
         cursorBrush = SolidColor(if (isError) errorColor else textColor)
     ) {
-        ConstraintLayout(modifier = Modifier.fillMaxSize()) {
-            val (hint, startIcon, endIcon, textField) = createRefs()
-            Box(
-                modifier = Modifier
-                    .constrainAs(startIcon) {
-                        linkTo(top = parent.top, bottom = parent.bottom)
-                        start.linkTo(parent.start)
-                    }
-            ) {
-                if (leadingIcon != null) {
+        Row(modifier = Modifier.fillMaxSize()) {
+            if (leadingIcon != null) {
+                Box(modifier = Modifier.align(Alignment.CenterVertically)) {
                     leadingIcon()
                 }
             }
             Box(
                 modifier = Modifier
-                    .constrainAs(endIcon) {
-                        linkTo(top = parent.top, bottom = parent.bottom)
-                        end.linkTo(parent.end)
-                    }
-            ) {
-                if (trailingIcon != null) {
-                    trailingIcon()
-                }
-            }
-            Box(
-                modifier = Modifier
-                    .constrainAs(hint) {
-                        val startMargin = if (leadingIcon != null) 0.dp else 16.dp
-                        val endMargin = if (trailingIcon != null) 0.dp else 16.dp
-                        linkTo(start = startIcon.end, end = endIcon.start, startMargin, endMargin)
-                        linkTo(top = parent.top, bottom = parent.bottom)
-                        width = Dimension.fillToConstraints
-                    }
+                    .align(Alignment.CenterVertically)
+                    .weight(1f),
+                contentAlignment = Alignment.Center
             ) {
                 if (placeHolder != null && value.isEmpty()) {
                     placeHolder()
                 }
-            }
-            Box(
-                modifier = Modifier
-                    .constrainAs(textField) {
-                        val startMargin = if (leadingIcon != null) 0.dp else 16.dp
-                        val endMargin = if (trailingIcon != null) 0.dp else 16.dp
-                        linkTo(start = startIcon.end, end = endIcon.start, startMargin, endMargin)
-                        linkTo(top = parent.top, bottom = parent.bottom)
-                        width = Dimension.fillToConstraints
-                    }
-            ) {
                 it()
+            }
+            if (trailingIcon != null) {
+                Box(modifier = Modifier.align(Alignment.CenterVertically)) {
+                    trailingIcon()
+                }
             }
         }
     }
@@ -185,9 +153,7 @@ inline fun FocusableColumn(
     modifier: Modifier = Modifier,
     content: @Composable ColumnScope.() -> Unit
 ) {
-    Column(
-        modifier = modifier.noRippleClickable { }
-    ) {
+    Column(modifier = modifier.noRippleClickable { }) {
         content()
     }
 }

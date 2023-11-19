@@ -236,7 +236,6 @@ private fun BetDialogTeamEdit(
         CustomOutlinedTextField(
             modifier = Modifier
                 .testTag("BetDialogTeamEdit_TextField_Bet")
-                .testTag("BetDialog_EditText_HomeBet")
                 .padding(top = 8.dp)
                 .width(100.dp)
                 .height(32.dp),
@@ -248,7 +247,7 @@ private fun BetDialogTeamEdit(
             ),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             singleLine = true,
-            maxLines = 1
+            maxLines = 1,
         )
     }
 }
