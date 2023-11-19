@@ -37,6 +37,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -70,7 +71,7 @@ fun GameCalendarScreen(
     viewModel: GameCalendarViewModel,
     onClose: () -> Unit
 ) {
-    val isRefreshing by viewModel.isRefreshing.collectAsState()
+    val isRefreshing by viewModel.isProgressing.collectAsState()
 
     Column(
         modifier = Modifier
@@ -288,11 +289,13 @@ private fun CalendarGames(
     viewModel: GameCalendarViewModel,
     games: List<NbaGameAndBet>
 ) {
-    val user by viewModel.user.collectAsState()
     LazyColumn(
         modifier = modifier
     ) {
         itemsIndexed(games) { index, game ->
+            val cardViewModel = remember(game) {
+                viewModel.createGameStatusCardViewModel(game)
+            }
             GameStatusCard(
                 modifier = Modifier
                     .padding(
@@ -314,13 +317,9 @@ private fun CalendarGames(
                         }
                     }
                     .padding(bottom = 8.dp),
-                gameAndBet = game,
-                userData = user,
+                viewModel = cardViewModel,
                 expandable = false,
                 color = MaterialTheme.colors.primary,
-                onLogin = viewModel::login,
-                onRegister = viewModel::register,
-                onConfirm = viewModel::bet
             )
         }
     }

@@ -16,16 +16,11 @@ import androidx.compose.material.AlertDialog
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -37,35 +32,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.jiachian.nbatoday.R
-import com.jiachian.nbatoday.compose.screen.account.LoginDialog
 import com.jiachian.nbatoday.compose.widget.CustomOutlinedTextField
 import com.jiachian.nbatoday.compose.widget.TeamLogoImage
-import com.jiachian.nbatoday.data.local.NbaGameAndBet
 import com.jiachian.nbatoday.data.remote.team.GameTeam
-import com.jiachian.nbatoday.data.remote.user.User
 import com.jiachian.nbatoday.utils.getOrZero
 import com.jiachian.nbatoday.utils.rippleClickable
-import com.jiachian.nbatoday.utils.showToast
 
 @Composable
-private fun BetDialog(
-    userPoints: Long,
-    gameAndBet: NbaGameAndBet,
-    onConfirm: (gameId: String, homePoints: Long, awayPoints: Long) -> Unit,
+fun BetDialog(
+    viewModel: BetDialogViewModel,
+    onConfirm: (homePoints: Long, awayPoints: Long) -> Unit,
     onDismiss: () -> Unit
 ) {
-    var showWarning by rememberSaveable { mutableStateOf(false) }
-    var homePoints by rememberSaveable { mutableStateOf(0L) }
-    var awayPoints by rememberSaveable { mutableStateOf(0L) }
-    val remainPoints by remember {
-        derivedStateOf { userPoints - homePoints - awayPoints }
-    }
-    val hasBet by remember(homePoints, awayPoints) {
-        derivedStateOf { homePoints > 0 || awayPoints > 0 }
-    }
-    val isConfirmEnable by remember(remainPoints, hasBet) {
-        derivedStateOf { remainPoints >= 0 && hasBet }
-    }
+    val showWarning by viewModel.showWarning.collectAsState()
+    val homePoints by viewModel.homePoints.collectAsState()
+    val awayPoints by viewModel.awayPoints.collectAsState()
+    val confirmedEnabled by viewModel.confirmEnabled.collectAsState()
     Dialog(onDismissRequest = onDismiss) {
         Column(
             modifier = Modifier
@@ -75,30 +57,25 @@ private fun BetDialog(
             horizontalAlignment = Alignment.End
         ) {
             BetDialogContent(
-                gameAndBet = gameAndBet,
+                viewModel = viewModel,
                 homePoints = homePoints,
                 awayPoints = awayPoints,
-                remainPoints = remainPoints,
-                onPointsChanged = { home, away ->
-                    homePoints = home
-                    awayPoints = away
-                }
             )
             BetDialogBottomButtons(
                 modifier = Modifier
                     .padding(top = 8.dp, end = 8.dp),
-                isConfirmEnable = isConfirmEnable,
-                onClickConfirm = { showWarning = true }
+                isConfirmEnable = confirmedEnabled,
+                onClickConfirm = viewModel::showWarning
             )
         }
     }
     if (showWarning) {
         BetWarningDialog(
             onConfirm = {
-                onConfirm(gameAndBet.game.gameId, homePoints, awayPoints)
+                onConfirm(homePoints, awayPoints)
                 onDismiss()
             },
-            onDismiss = { showWarning = false }
+            onDismiss = viewModel::hideWarning
         )
     }
 }
@@ -129,12 +106,11 @@ private fun BetDialogBottomButtons(
 @Composable
 private fun BetDialogContent(
     modifier: Modifier = Modifier,
-    gameAndBet: NbaGameAndBet,
+    viewModel: BetDialogViewModel,
     homePoints: Long,
-    awayPoints: Long,
-    remainPoints: Long,
-    onPointsChanged: (Long, Long) -> Unit
+    awayPoints: Long
 ) {
+    val remainedPoints by viewModel.remainedPoints.collectAsState()
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -148,9 +124,9 @@ private fun BetDialogContent(
                     .testTag("BetDialogContent_BetDialogTeamEdit_Home")
                     .padding(start = 16.dp)
                     .width(IntrinsicSize.Min),
-                team = gameAndBet.game.homeTeam,
+                team = viewModel.gameAndBet.game.homeTeam,
                 value = homePoints,
-                onValueChanged = { onPointsChanged(it, awayPoints) }
+                onValueChanged = viewModel::updateHomePoints
             )
             OddsText(
                 modifier = Modifier.padding(horizontal = 16.dp),
@@ -162,16 +138,16 @@ private fun BetDialogContent(
                     .testTag("BetDialogContent_BetDialogTeamEdit_Away")
                     .padding(end = 16.dp)
                     .width(IntrinsicSize.Min),
-                team = gameAndBet.game.awayTeam,
+                team = viewModel.gameAndBet.game.awayTeam,
                 value = awayPoints,
-                onValueChanged = { onPointsChanged(homePoints, it) }
+                onValueChanged = viewModel::updateAwayPoints
             )
         }
         Text(
             modifier = Modifier
                 .testTag("BetDialog_Text_Remainder")
                 .padding(top = 8.dp, start = 16.dp, end = 16.dp),
-            text = stringResource(R.string.bet_remain, remainPoints),
+            text = stringResource(R.string.bet_remain, remainedPoints),
             color = MaterialTheme.colors.primary,
             fontSize = 12.sp,
         )
@@ -324,38 +300,6 @@ private fun BetWarningBottomButtons(
             color = MaterialTheme.colors.primary,
             fontSize = 16.sp,
             fontWeight = FontWeight.Medium
-        )
-    }
-}
-
-@Composable
-fun RequestBetScreen(
-    userData: User?,
-    gameAndBet: NbaGameAndBet,
-    onLogin: (account: String, password: String) -> Unit,
-    onRegister: (account: String, password: String) -> Unit,
-    onConfirm: (gameId: String, homePoints: Long, awayPoints: Long) -> Unit,
-    onDismiss: () -> Unit
-) {
-    val context = LocalContext.current
-    val hasBet by remember(userData) {
-        derivedStateOf { gameAndBet.bets.find { it.account == userData?.account } != null }
-    }
-    if (userData == null) {
-        LoginDialog(
-            onLogin = onLogin,
-            onRegister = onRegister,
-            onDismiss = onDismiss
-        )
-    } else if (hasBet) {
-        showToast(context, R.string.bet_toast_already_bet_before)
-        onDismiss()
-    } else {
-        BetDialog(
-            userPoints = userData.points.getOrZero(),
-            gameAndBet = gameAndBet,
-            onConfirm = onConfirm,
-            onDismiss = onDismiss
         )
     }
 }

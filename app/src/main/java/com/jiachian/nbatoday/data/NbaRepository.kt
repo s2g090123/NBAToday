@@ -19,6 +19,8 @@ import com.jiachian.nbatoday.utils.NbaUtils
 import java.util.Calendar
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 
@@ -29,6 +31,9 @@ class NbaRepository(
 ) : BaseRepository {
 
     override val user: Flow<User?> = dataStore.userData
+
+    private val isProgressingImp = MutableStateFlow(false)
+    override val isProgressing: StateFlow<Boolean> = isProgressingImp
 
     override suspend fun refreshSchedule() {
         val schedule = remoteDataSource.getSchedule() ?: return
@@ -211,17 +216,23 @@ class NbaRepository(
     }
 
     override suspend fun login(account: String, password: String) {
+        isProgressingImp.value = true
         val userData = remoteDataSource.login(account, password) ?: return
         dataStore.updateUser(userData)
+        isProgressingImp.value = false
     }
 
     override suspend fun logout() {
+        isProgressingImp.value = true
         dataStore.updateUser(null)
+        isProgressingImp.value = false
     }
 
     override suspend fun register(account: String, password: String) {
+        isProgressingImp.value = true
         val userData = remoteDataSource.register(account, password) ?: return
         dataStore.updateUser(userData)
+        isProgressingImp.value = false
     }
 
     override suspend fun updatePassword(password: String) {
@@ -279,8 +290,10 @@ class NbaRepository(
         val account = user.account ?: return
         val remainPoints = (user.points ?: 0) - homePoints - awayPoints
         if (remainPoints < 0) return
+        isProgressingImp.value = true
         localDataSource.insertBet(account, gameId, homePoints, awayPoints)
         updatePoints(remainPoints)
+        isProgressingImp.value = false
     }
 
     override fun getGamesAndBets(): Flow<List<NbaGameAndBet>> {

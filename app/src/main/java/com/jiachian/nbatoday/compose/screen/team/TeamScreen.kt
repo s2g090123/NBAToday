@@ -84,7 +84,7 @@ fun TeamScreen(
     viewModel: TeamViewModel,
     onBack: () -> Unit
 ) {
-    val isRefreshing by viewModel.isRefreshing.collectAsState()
+    val isRefreshing by viewModel.isProgressing.collectAsState()
     val isTeamRefreshing by viewModel.isTeamRefreshing.collectAsState()
     val isDataLoaded by viewModel.isDataLoaded.collectAsState()
     BackHandle(onBack = onBack) {
@@ -755,12 +755,14 @@ private fun GamesPage(
     games: List<NbaGameAndBet>
 ) {
     val context = LocalContext.current
-    val user by viewModel.user.collectAsState()
     LazyColumn(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         itemsIndexed(games) { index, game ->
+            val cardViewModel = remember(game) {
+                viewModel.createGameStatusCardViewModel(game)
+            }
             GameStatusCard(
                 modifier = Modifier
                     .testTag("GamesPage_GameStatusCard2")
@@ -785,13 +787,9 @@ private fun GamesPage(
                         }
                     }
                     .padding(bottom = 8.dp),
-                gameAndBet = game,
-                userData = user,
+                viewModel = cardViewModel,
                 expandable = false,
                 color = viewModel.colors.primary,
-                onLogin = viewModel::login,
-                onRegister = viewModel::register,
-                onConfirm = viewModel::bet,
             )
         }
     }

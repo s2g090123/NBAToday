@@ -24,6 +24,7 @@ import com.jiachian.nbatoday.data.local.team.TeamStats
 import com.jiachian.nbatoday.data.remote.user.User
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 
@@ -42,6 +43,8 @@ class TestRepository : BaseRepository {
     private val boxScores = MutableStateFlow(emptyList<GameBoxScore>())
 
     override val user = MutableStateFlow<User?>(null)
+
+    override val isProgressing: StateFlow<Boolean> = MutableStateFlow(false)
 
     fun clear() {
         games.value = emptyList()

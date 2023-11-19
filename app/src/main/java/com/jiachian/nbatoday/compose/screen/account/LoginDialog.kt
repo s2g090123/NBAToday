@@ -43,8 +43,8 @@ import com.jiachian.nbatoday.utils.showToast
 
 @Composable
 fun LoginDialog(
-    onLogin: (account: String, password: String) -> Unit,
-    onRegister: (account: String, password: String) -> Unit,
+    onLoginClicked: (account: String, password: String) -> Unit,
+    onRegisterClicked: (account: String, password: String) -> Unit,
     onDismiss: () -> Unit
 ) {
     val context = LocalContext.current
@@ -81,14 +81,14 @@ fun LoginDialog(
             BottomButtons(
                 onClickRegister = {
                     if (isInputValid) {
-                        onRegister(account, password)
+                        onRegisterClicked(account, password)
                     } else {
                         showToast(context, R.string.user_login_warning)
                     }
                 },
                 onClickLogin = {
                     if (isInputValid) {
-                        onLogin(account, password)
+                        onLoginClicked(account, password)
                     } else {
                         showToast(context, R.string.user_login_warning)
                     }

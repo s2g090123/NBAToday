@@ -9,6 +9,7 @@ import com.jiachian.nbatoday.SCHEDULE_DATE_RANGE
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.compose.screen.bet.BetViewModel
 import com.jiachian.nbatoday.compose.screen.calendar.GameCalendarViewModel
+import com.jiachian.nbatoday.compose.screen.card.GameStatusCardViewModel
 import com.jiachian.nbatoday.compose.screen.player.PlayerInfoViewModel
 import com.jiachian.nbatoday.compose.screen.score.BoxScoreViewModel
 import com.jiachian.nbatoday.compose.screen.team.TeamViewModel
@@ -53,8 +54,7 @@ class HomeViewModel(
         addAll(NBATeam.nbaTeams)
     }
 
-    private val isRefreshingImp = MutableStateFlow(false)
-    val isRefreshing = isRefreshingImp.asStateFlow()
+    val isProgressing = repository.isProgressing
 
     private val homePageImp = MutableStateFlow(HomePage.SCHEDULE)
     val homePage = homePageImp.asStateFlow()
@@ -125,6 +125,7 @@ class HomeViewModel(
                     it.winPercentage
                 }
             )
+
             StandingSort.W -> teamStats.sortedWith(
                 compareByDescending<TeamStats> {
                     it.win
@@ -132,6 +133,7 @@ class HomeViewModel(
                     it.winPercentage
                 }
             )
+
             StandingSort.L -> teamStats.sortedWith(
                 compareBy<TeamStats> {
                     it.lose
@@ -139,6 +141,7 @@ class HomeViewModel(
                     it.winPercentage
                 }
             )
+
             StandingSort.WINP -> teamStats.sortedWith(
                 compareByDescending<TeamStats> {
                     it.winPercentage
@@ -146,6 +149,7 @@ class HomeViewModel(
                     it.winPercentage
                 }
             )
+
             StandingSort.PTS -> teamStats.sortedWith(
                 compareByDescending<TeamStats> {
                     it.points.toDouble() / it.gamePlayed
@@ -153,6 +157,7 @@ class HomeViewModel(
                     it.winPercentage
                 }
             )
+
             StandingSort.FGM -> teamStats.sortedWith(
                 compareByDescending<TeamStats> {
                     it.fieldGoalsMade.toDouble() / it.gamePlayed
@@ -160,6 +165,7 @@ class HomeViewModel(
                     it.winPercentage
                 }
             )
+
             StandingSort.FGA -> teamStats.sortedWith(
                 compareByDescending<TeamStats> {
                     it.fieldGoalsAttempted.toDouble() / it.gamePlayed
@@ -167,6 +173,7 @@ class HomeViewModel(
                     it.winPercentage
                 }
             )
+
             StandingSort.FGP -> teamStats.sortedWith(
                 compareByDescending<TeamStats> {
                     it.fieldGoalsPercentage
@@ -174,6 +181,7 @@ class HomeViewModel(
                     it.winPercentage
                 }
             )
+
             StandingSort.PM3 -> teamStats.sortedWith(
                 compareByDescending<TeamStats> {
                     it.threePointersMade.toDouble() / it.gamePlayed
@@ -181,6 +189,7 @@ class HomeViewModel(
                     it.winPercentage
                 }
             )
+
             StandingSort.PA3 -> teamStats.sortedWith(
                 compareByDescending<TeamStats> {
                     it.threePointersAttempted.toDouble() / it.gamePlayed
@@ -188,6 +197,7 @@ class HomeViewModel(
                     it.winPercentage
                 }
             )
+
             StandingSort.PP3 -> teamStats.sortedWith(
                 compareByDescending<TeamStats> {
                     it.threePointersPercentage
@@ -195,6 +205,7 @@ class HomeViewModel(
                     it.winPercentage
                 }
             )
+
             StandingSort.FTM -> teamStats.sortedWith(
                 compareByDescending<TeamStats> {
                     it.freeThrowsMade.toDouble() / it.gamePlayed
@@ -202,6 +213,7 @@ class HomeViewModel(
                     it.winPercentage
                 }
             )
+
             StandingSort.FTA -> teamStats.sortedWith(
                 compareByDescending<TeamStats> {
                     it.freeThrowsAttempted.toDouble() / it.gamePlayed
@@ -209,6 +221,7 @@ class HomeViewModel(
                     it.winPercentage
                 }
             )
+
             StandingSort.FTP -> teamStats.sortedWith(
                 compareByDescending<TeamStats> {
                     it.freeThrowsPercentage
@@ -216,6 +229,7 @@ class HomeViewModel(
                     it.winPercentage
                 }
             )
+
             StandingSort.OREB -> teamStats.sortedWith(
                 compareByDescending<TeamStats> {
                     it.reboundsOffensive.toDouble() / it.gamePlayed
@@ -223,6 +237,7 @@ class HomeViewModel(
                     it.winPercentage
                 }
             )
+
             StandingSort.DREB -> teamStats.sortedWith(
                 compareByDescending<TeamStats> {
                     it.reboundsDefensive.toDouble() / it.gamePlayed
@@ -230,6 +245,7 @@ class HomeViewModel(
                     it.winPercentage
                 }
             )
+
             StandingSort.REB -> teamStats.sortedWith(
                 compareByDescending<TeamStats> {
                     it.reboundsTotal.toDouble() / it.gamePlayed
@@ -237,6 +253,7 @@ class HomeViewModel(
                     it.winPercentage
                 }
             )
+
             StandingSort.AST -> teamStats.sortedWith(
                 compareByDescending<TeamStats> {
                     it.assists.toDouble() / it.gamePlayed
@@ -244,6 +261,7 @@ class HomeViewModel(
                     it.winPercentage
                 }
             )
+
             StandingSort.TOV -> teamStats.sortedWith(
                 compareBy<TeamStats> {
                     it.turnovers.toDouble() / it.gamePlayed
@@ -251,6 +269,7 @@ class HomeViewModel(
                     it.winPercentage
                 }
             )
+
             StandingSort.STL -> teamStats.sortedWith(
                 compareByDescending<TeamStats> {
                     it.steals.toDouble() / it.gamePlayed
@@ -258,6 +277,7 @@ class HomeViewModel(
                     it.winPercentage
                 }
             )
+
             StandingSort.BLK -> teamStats.sortedWith(
                 compareByDescending<TeamStats> {
                     it.blocks.toDouble() / it.gamePlayed
@@ -265,6 +285,7 @@ class HomeViewModel(
                     it.winPercentage
                 }
             )
+
             StandingSort.PF -> teamStats.sortedWith(
                 compareBy<TeamStats> {
                     it.foulsPersonal.toDouble() / it.gamePlayed
@@ -432,42 +453,20 @@ class HomeViewModel(
     }
 
     fun login(account: String, password: String) {
-        coroutineScope.launch {
-            isRefreshingImp.value = true
-            withContext(dispatcherProvider.io) {
-                repository.login(account, password)
-            }
-            isRefreshingImp.value = false
+        coroutineScope.launch(dispatcherProvider.io) {
+            repository.login(account, password)
         }
     }
 
     fun logout() {
-        coroutineScope.launch {
-            isRefreshingImp.value = true
-            withContext(dispatcherProvider.io) {
-                repository.logout()
-            }
-            isRefreshingImp.value = false
+        coroutineScope.launch(dispatcherProvider.io) {
+            repository.logout()
         }
     }
 
     fun register(account: String, password: String) {
-        coroutineScope.launch {
-            isRefreshingImp.value = true
-            withContext(dispatcherProvider.io) {
-                repository.register(account, password)
-            }
-            isRefreshingImp.value = false
-        }
-    }
-
-    fun bet(gameId: String, homePoints: Long, awayPoints: Long) {
-        coroutineScope.launch {
-            isRefreshingImp.value = true
-            withContext(dispatcherProvider.io) {
-                repository.bet(gameId, homePoints, awayPoints)
-            }
-            isRefreshingImp.value = false
+        coroutineScope.launch(dispatcherProvider.io) {
+            repository.register(account, password)
         }
     }
 
@@ -497,5 +496,12 @@ class HomeViewModel(
         } else {
             openGameBoxScore(game.game)
         }
+    }
+
+    fun createGameStatusCardViewModel(gameAndBet: NbaGameAndBet): GameStatusCardViewModel {
+        return GameStatusCardViewModel(
+            gameAndBet = gameAndBet,
+            repository = repository,
+        )
     }
 }

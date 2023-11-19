@@ -41,8 +41,7 @@ import com.jiachian.nbatoday.utils.rippleClickable
 fun HomeScreen(
     viewModel: HomeViewModel
 ) {
-    val isRefreshing by viewModel.isRefreshing.collectAsState()
-
+    val isRefreshing by viewModel.isProgressing.collectAsState()
     FocusableColumn(
         modifier = Modifier
             .fillMaxSize()

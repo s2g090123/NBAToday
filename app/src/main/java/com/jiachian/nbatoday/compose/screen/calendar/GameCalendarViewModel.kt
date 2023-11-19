@@ -1,6 +1,7 @@
 package com.jiachian.nbatoday.compose.screen.calendar
 
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
+import com.jiachian.nbatoday.compose.screen.card.GameStatusCardViewModel
 import com.jiachian.nbatoday.compose.screen.player.PlayerInfoViewModel
 import com.jiachian.nbatoday.compose.screen.score.BoxScoreViewModel
 import com.jiachian.nbatoday.compose.screen.team.TeamViewModel
@@ -21,7 +22,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class GameCalendarViewModel(
@@ -49,8 +49,7 @@ class GameCalendarViewModel(
         }
     }
 
-    private val isRefreshingImp = MutableStateFlow(false)
-    val isRefreshing = isRefreshingImp.asStateFlow()
+    val isProgressing = repository.isProgressing
 
     private val isLoadingGamesImp = MutableStateFlow(false)
     val isLoadingGames = isLoadingGamesImp.asStateFlow()
@@ -97,7 +96,6 @@ class GameCalendarViewModel(
     }.stateIn(coroutineScope, SharingStarted.Lazily, false)
 
     private val calendarMap = mutableMapOf<String, List<CalendarData>>()
-    private val gamesMap = mutableMapOf<String, List<List<NbaGameAndBet>>>()
     val calendarData = combine(
         currentYear, currentMonth
     ) { year, month ->
@@ -190,9 +188,7 @@ class GameCalendarViewModel(
         year: Int,
         month: Int
     ): List<List<NbaGameAndBet>> {
-        return withContext(dispatcherProvider.default) {
-            val key = "$year-$month"
-            if (gamesMap.containsKey(key)) return@withContext gamesMap[key] ?: emptyList()
+        return withContext(dispatcherProvider.io) {
             isLoadingGamesImp.value = true
             val cal = NbaUtils.getCalendar().apply {
                 set(Calendar.YEAR, year)
@@ -211,7 +207,6 @@ class GameCalendarViewModel(
                     cal.add(Calendar.DAY_OF_MONTH, 1)
                 }
             }
-            gamesMap[key] = data
             isLoadingGamesImp.value = false
             data
         }
@@ -275,33 +270,10 @@ class GameCalendarViewModel(
         )
     }
 
-    fun login(account: String, password: String) {
-        coroutineScope.launch {
-            isRefreshingImp.value = true
-            withContext(dispatcherProvider.io) {
-                repository.login(account, password)
-            }
-            isRefreshingImp.value = false
-        }
-    }
-
-    fun register(account: String, password: String) {
-        coroutineScope.launch {
-            isRefreshingImp.value = true
-            withContext(dispatcherProvider.io) {
-                repository.register(account, password)
-            }
-            isRefreshingImp.value = false
-        }
-    }
-
-    fun bet(gameId: String, homePoints: Long, awayPoints: Long) {
-        coroutineScope.launch {
-            isRefreshingImp.value = true
-            withContext(dispatcherProvider.io) {
-                repository.bet(gameId, homePoints, awayPoints)
-            }
-            isRefreshingImp.value = false
-        }
+    fun createGameStatusCardViewModel(gameAndBet: NbaGameAndBet): GameStatusCardViewModel {
+        return GameStatusCardViewModel(
+            gameAndBet = gameAndBet,
+            repository = repository,
+        )
     }
 }

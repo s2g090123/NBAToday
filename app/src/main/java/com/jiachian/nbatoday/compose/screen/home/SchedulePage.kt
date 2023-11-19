@@ -26,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -100,7 +101,6 @@ private fun ScheduleContent(
     onClickGame: (NbaGameAndBet) -> Unit
 ) {
     val isRefreshing by viewModel.isRefreshingSchedule.collectAsState()
-    val user by viewModel.user.collectAsState()
     Box(
         modifier = Modifier
             .testTag("SchedulePage_Box")
@@ -121,6 +121,9 @@ private fun ScheduleContent(
                 )
             }
             itemsIndexed(games) { index, game ->
+                val cardViewModel = remember(game) {
+                    viewModel.createGameStatusCardViewModel(game)
+                }
                 GameStatusCard(
                     modifier = Modifier
                         .testTag("SchedulePage_GameStatusCard2")
@@ -138,13 +141,9 @@ private fun ScheduleContent(
                         .rippleClickable {
                             onClickGame(game)
                         },
-                    userData = user,
-                    gameAndBet = game,
+                    viewModel = cardViewModel,
                     color = MaterialTheme.colors.primary,
                     expandable = true,
-                    onLogin = viewModel::login,
-                    onRegister = viewModel::register,
-                    onConfirm = viewModel::bet
                 )
             }
         }

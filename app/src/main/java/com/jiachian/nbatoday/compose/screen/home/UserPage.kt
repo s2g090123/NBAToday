@@ -190,11 +190,11 @@ private fun RequireLoginScreen(
         }
         if (showLoginDialog) {
             LoginDialog(
-                onLogin = { account, password ->
+                onLoginClicked = { account, password ->
                     login(account, password)
                     showLoginDialog = false
                 },
-                onRegister = { account, password ->
+                onRegisterClicked = { account, password ->
                     register(account, password)
                     showLoginDialog = false
                 },

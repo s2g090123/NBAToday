@@ -1,8 +1,5 @@
 package com.jiachian.nbatoday.compose.screen.card
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandIn
-import androidx.compose.animation.shrinkOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,16 +15,13 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -37,92 +31,66 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.R
-import com.jiachian.nbatoday.compose.screen.bet.RequestBetScreen
+import com.jiachian.nbatoday.compose.screen.account.LoginDialog
+import com.jiachian.nbatoday.compose.screen.bet.BetDialog
+import com.jiachian.nbatoday.compose.widget.AnimatedExpand
 import com.jiachian.nbatoday.compose.widget.IconButton
 import com.jiachian.nbatoday.compose.widget.PlayerImage
 import com.jiachian.nbatoday.compose.widget.TeamLogoImage
 import com.jiachian.nbatoday.data.local.NbaGameAndBet
 import com.jiachian.nbatoday.data.remote.leader.GameLeaders
 import com.jiachian.nbatoday.data.remote.team.GameTeam
-import com.jiachian.nbatoday.data.remote.user.User
 import com.jiachian.nbatoday.utils.dividerPrimaryColor
 import com.jiachian.nbatoday.utils.rippleClickable
+import com.jiachian.nbatoday.utils.showToast
 
 @Composable
 fun GameStatusCard(
     modifier: Modifier = Modifier,
-    gameAndBet: NbaGameAndBet,
-    userData: User?,
+    viewModel: GameStatusCardViewModel,
     color: Color,
     expandable: Boolean,
-    onLogin: (account: String, password: String) -> Unit,
-    onRegister: (account: String, password: String) -> Unit,
-    onConfirm: (gameId: String, homePoints: Long, awayPoints: Long) -> Unit
 ) {
-    var isExpanded by rememberSaveable { mutableStateOf(false) }
-    val isGamePlayed by remember { derivedStateOf { gameAndBet.game.isGamePlayed } }
-    val hasBet by remember(gameAndBet) {
-        derivedStateOf { gameAndBet.bets.find { it.account == userData?.account } != null }
-    }
-    val canBet by remember(hasBet) { derivedStateOf { !isGamePlayed && !hasBet } }
-    var showBetsDialog by rememberSaveable { mutableStateOf(false) }
-    val leaders = if (!gameAndBet.game.isGamePlayed) gameAndBet.game.teamLeaders else gameAndBet.game.gameLeaders
-    val homeLeader = leaders?.homeLeaders
-    val awayLeader = leaders?.awayLeaders
+    val canBet by viewModel.canBet.collectAsState()
+    val betDialogVisible by viewModel.betDialogVisible.collectAsState()
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         ScoreBoard(
             modifier = Modifier.fillMaxWidth(),
-            gameAndBet = gameAndBet,
+            gameAndBet = viewModel.gameAndBet,
             textColor = color,
             betVisible = canBet,
-            onBetClick = { showBetsDialog = true }
+            onBetClick = viewModel::showBetDialog
         )
-        if (expandable && homeLeader != null && awayLeader != null) {
+        if (expandable && viewModel.expandContentVisible) {
             ExpandContent(
-                homeLeader = homeLeader,
-                awayLeader = awayLeader,
-                isGamePlayed = isGamePlayed,
-                isExpanded = isExpanded,
+                viewModel = viewModel,
                 color = color,
-                onExpandClick = { isExpanded = it }
             )
         }
-        if (showBetsDialog) {
-            RequestBetScreen(
-                userData = userData,
-                gameAndBet = gameAndBet,
-                onLogin = onLogin,
-                onRegister = onRegister,
-                onConfirm = onConfirm,
-                onDismiss = { showBetsDialog = false }
-            )
+        if (betDialogVisible) {
+            RequestBetScreen(viewModel = viewModel)
         }
     }
 }
 
 @Composable
 private fun ExpandContent(
-    homeLeader: GameLeaders.GameLeader,
-    awayLeader: GameLeaders.GameLeader,
-    isGamePlayed: Boolean,
-    isExpanded: Boolean,
-    color: Color,
-    onExpandClick: (Boolean) -> Unit
+    viewModel: GameStatusCardViewModel,
+    color: Color
 ) {
+    val isExpanded by viewModel.isCardExpanded.collectAsState()
     Box {
-        AnimatedVisibility(
+        AnimatedExpand(
             modifier = Modifier
                 .testTag("ExpandContent_Btn_Expand")
                 .fillMaxWidth()
                 .height(24.dp)
-                .rippleClickable { onExpandClick(true) }
+                .rippleClickable { viewModel.setCardExpanded(true) }
                 .padding(vertical = 2.dp),
             visible = !isExpanded,
-            enter = expandIn(),
-            exit = shrinkOut()
         ) {
             Image(
                 painter = painterResource(R.drawable.ic_black_expand_more),
@@ -131,14 +99,12 @@ private fun ExpandContent(
                 contentDescription = null
             )
         }
-        AnimatedVisibility(
+        AnimatedExpand(
             modifier = Modifier
                 .testTag("ExpandContent_Btn_Collapse")
                 .padding(horizontal = 24.dp)
                 .fillMaxWidth(),
             visible = isExpanded,
-            enter = expandIn(),
-            exit = shrinkOut()
         ) {
             Column(modifier = Modifier.fillMaxWidth()) {
                 LeaderInfo(
@@ -147,16 +113,14 @@ private fun ExpandContent(
                         .padding(top = 8.dp)
                         .fillMaxWidth()
                         .wrapContentHeight(),
-                    isGamePlayed = isGamePlayed,
-                    homeLeader = homeLeader,
-                    awayLeader = awayLeader,
+                    viewModel = viewModel,
                     color = color
                 )
                 Image(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(24.dp)
-                        .rippleClickable { onExpandClick(false) }
+                        .rippleClickable { viewModel.setCardExpanded(false) }
                         .padding(vertical = 2.dp),
                     painter = painterResource(R.drawable.ic_black_collpase_more),
                     alpha = 0.6f,
@@ -174,7 +138,7 @@ private fun ScoreBoard(
     gameAndBet: NbaGameAndBet,
     textColor: Color,
     betVisible: Boolean,
-    onBetClick: (NbaGameAndBet) -> Unit
+    onBetClick: () -> Unit
 ) {
     Row(
         modifier = modifier,
@@ -247,7 +211,7 @@ private fun GameStatusAndBetButton(
     gameAndBet: NbaGameAndBet,
     textColor: Color,
     betVisible: Boolean,
-    onBetClick: (NbaGameAndBet) -> Unit
+    onBetClick: () -> Unit
 ) {
     Column(
         modifier = modifier,
@@ -268,7 +232,7 @@ private fun GameStatusAndBetButton(
                     .padding(top = 8.dp),
                 drawableRes = R.drawable.ic_black_coin,
                 tint = textColor,
-                onClick = { onBetClick(gameAndBet) }
+                onClick = onBetClick
             )
         }
     }
@@ -277,9 +241,7 @@ private fun GameStatusAndBetButton(
 @Composable
 private fun LeaderInfo(
     modifier: Modifier = Modifier,
-    isGamePlayed: Boolean,
-    homeLeader: GameLeaders.GameLeader,
-    awayLeader: GameLeaders.GameLeader,
+    viewModel: GameStatusCardViewModel,
     color: Color,
 ) {
     Column(modifier = modifier) {
@@ -292,8 +254,8 @@ private fun LeaderInfo(
                 .testTag("LeaderInfo_LeaderRow_Home")
                 .padding(top = 8.dp)
                 .fillMaxWidth(),
-            player = homeLeader,
-            isGamePlayed = isGamePlayed,
+            player = viewModel.homeLeader,
+            isGamePlayed = viewModel.isGamePlayed,
             color = color
         )
         LeaderRow(
@@ -301,8 +263,8 @@ private fun LeaderInfo(
                 .testTag("LeaderInfo_LeaderRow_Away")
                 .padding(top = 8.dp)
                 .fillMaxWidth(),
-            player = awayLeader,
-            isGamePlayed = isGamePlayed,
+            player = viewModel.awayLeader,
+            isGamePlayed = viewModel.isGamePlayed,
             color = color
         )
     }
@@ -431,4 +393,28 @@ private fun LeaderLabelText(
         fontSize = 16.sp,
         fontWeight = FontWeight.Bold
     )
+}
+
+@Composable
+private fun RequestBetScreen(
+    viewModel: GameStatusCardViewModel
+) {
+    val context = LocalContext.current
+    val isLogin by viewModel.isLogin.collectAsState()
+    val hasBet by viewModel.hasBet.collectAsState()
+    if (!isLogin) {
+        LoginDialog(
+            onLoginClicked = viewModel::login,
+            onRegisterClicked = viewModel::register,
+            onDismiss = {}
+        )
+    } else if (hasBet) {
+        showToast(context, R.string.bet_toast_already_bet_before)
+    } else {
+        BetDialog(
+            viewModel = viewModel.createBetDialogViewModel(),
+            onConfirm = viewModel::bet,
+            onDismiss = viewModel::hideBetDialog
+        )
+    }
 }

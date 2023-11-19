@@ -11,10 +11,13 @@ import com.jiachian.nbatoday.data.local.team.NBATeam
 import com.jiachian.nbatoday.data.local.team.TeamStats
 import com.jiachian.nbatoday.data.remote.user.User
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 
 interface BaseRepository {
 
     val user: Flow<User?>
+
+    val isProgressing: StateFlow<Boolean>
 
     suspend fun refreshSchedule()
     suspend fun refreshSchedule(year: Int, month: Int, day: Int)

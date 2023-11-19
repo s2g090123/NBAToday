@@ -2,6 +2,9 @@ package com.jiachian.nbatoday.compose.widget
 
 import androidx.activity.compose.BackHandler
 import androidx.annotation.DrawableRes
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandIn
+import androidx.compose.animation.shrinkOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.border
@@ -261,5 +264,21 @@ fun <T> NullCheckScreen(
         ifNull()
     } else {
         ifNotNull(data)
+    }
+}
+
+@Composable
+fun AnimatedExpand(
+    modifier: Modifier,
+    visible: Boolean,
+    content: @Composable () -> Unit
+) {
+    AnimatedVisibility(
+        modifier = modifier,
+        visible = visible,
+        enter = expandIn(),
+        exit = shrinkOut()
+    ) {
+        content()
     }
 }
