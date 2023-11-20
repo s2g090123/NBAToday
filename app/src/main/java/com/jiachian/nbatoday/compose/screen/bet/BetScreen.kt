@@ -39,6 +39,8 @@ import coil.compose.AsyncImage
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 import com.jiachian.nbatoday.R
+import com.jiachian.nbatoday.compose.screen.bet.turntable.AskTurnTableDialog
+import com.jiachian.nbatoday.compose.screen.bet.turntable.BetTurnTable
 import com.jiachian.nbatoday.compose.widget.BackHandle
 import com.jiachian.nbatoday.data.local.BetAndNbaGame
 import com.jiachian.nbatoday.data.remote.team.GameTeam
