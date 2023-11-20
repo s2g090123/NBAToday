@@ -74,7 +74,6 @@ import com.jiachian.nbatoday.compose.widget.TeamLogoImage
 import com.jiachian.nbatoday.data.local.score.GameBoxScore
 import com.jiachian.nbatoday.data.local.team.NBATeam
 import com.jiachian.nbatoday.utils.dividerSecondaryColor
-import com.jiachian.nbatoday.utils.getOrNA
 import com.jiachian.nbatoday.utils.modifyIf
 import com.jiachian.nbatoday.utils.noRippleClickable
 import com.jiachian.nbatoday.utils.px2Dp
@@ -427,19 +426,14 @@ private fun ScoreDetail(
     score: GameBoxScore
 ) {
     val tabs = remember { BoxScoreTab.values() }
-    val selectPage by viewModel.selectPage.collectAsState()
-    val selectIndex by remember {
-        derivedStateOf { tabs.indexOf(selectPage) }
-    }
-    val pagerState = rememberPagerState(initialPage = selectIndex)
+    val selectedTabIndex by viewModel.selectedTabIndex.collectAsState()
+    val pagerState = rememberPagerState(initialPage = selectedTabIndex)
     Column(modifier = modifier) {
         StatisticsTabRow(
             modifier = Modifier.fillMaxWidth(),
+            viewModel = viewModel,
             pagerState = pagerState,
-            selectIndex = selectIndex,
-            homeTeamName = score.homeTeam.team.teamName.getOrNA(),
-            awayTeamName = score.awayTeam.team.teamName.getOrNA(),
-            onTabClick = { viewModel.updateSelectPage(it) }
+            score = score
         )
         ScoreDetailPager(
             modifier = Modifier
@@ -450,8 +444,8 @@ private fun ScoreDetail(
             count = tabs.size
         )
     }
-    LaunchedEffect(selectIndex) {
-        pagerState.animateScrollToPage(selectIndex)
+    LaunchedEffect(selectedTabIndex) {
+        pagerState.animateScrollToPage(selectedTabIndex)
     }
 }
 
@@ -525,15 +519,15 @@ private fun ScoreDetailPager(
 @Composable
 private fun StatisticsTabRow(
     modifier: Modifier = Modifier,
+    viewModel: BoxScoreViewModel,
     pagerState: PagerState,
-    selectIndex: Int,
-    homeTeamName: String,
-    awayTeamName: String,
-    onTabClick: (BoxScoreTab) -> Unit
+    score: GameBoxScore,
 ) {
+    val selectedTab by viewModel.selectedTab.collectAsState()
+    val selectedTabIndex by viewModel.selectedTabIndex.collectAsState()
     TabRow(
         modifier = modifier,
-        selectedTabIndex = selectIndex,
+        selectedTabIndex = selectedTabIndex,
         backgroundColor = MaterialTheme.colors.secondary,
         contentColor = MaterialTheme.colors.primaryVariant,
         indicator = @Composable { tabPositions ->
@@ -545,27 +539,27 @@ private fun StatisticsTabRow(
     ) {
         StatisticsTab(
             modifier = Modifier.testTag("ScoreDetail_Tab_Home"),
-            text = homeTeamName,
-            isSelected = selectIndex == 0,
-            onClick = { onTabClick(BoxScoreTab.HOME) }
+            text = score.homeTeam.team.teamName,
+            isSelected = selectedTab == BoxScoreTab.HOME,
+            onClick = { viewModel.selectTab(BoxScoreTab.HOME) }
         )
         StatisticsTab(
             modifier = Modifier.testTag("ScoreDetail_Tab_Away"),
-            text = awayTeamName,
-            isSelected = selectIndex == 1,
-            onClick = { onTabClick(BoxScoreTab.AWAY) }
+            text = score.awayTeam.team.teamName,
+            isSelected = selectedTab == BoxScoreTab.AWAY,
+            onClick = { viewModel.selectTab(BoxScoreTab.AWAY) }
         )
         StatisticsTab(
             modifier = Modifier.testTag("ScoreDetail_Tab_TeamStats"),
             text = stringResource(R.string.box_score_tab_statistics),
-            isSelected = selectIndex == 2,
-            onClick = { onTabClick(BoxScoreTab.STATS) }
+            isSelected = selectedTab == BoxScoreTab.STATS,
+            onClick = { viewModel.selectTab(BoxScoreTab.STATS) }
         )
         StatisticsTab(
             modifier = Modifier.testTag("ScoreDetail_Tab_LeaderStats"),
             text = stringResource(R.string.box_score_tab_leaders),
-            isSelected = selectIndex == 3,
-            onClick = { onTabClick(BoxScoreTab.LEADER) }
+            isSelected = selectedTab == BoxScoreTab.LEADER,
+            onClick = { viewModel.selectTab(BoxScoreTab.LEADER) }
         )
     }
 }

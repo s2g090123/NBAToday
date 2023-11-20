@@ -84,8 +84,11 @@ class BoxScoreViewModel(
         } ?: score?.awayTeam?.getMostPointsPlayer()
     }.stateIn(coroutineScope, SharingStarted.Lazily, null)
 
-    private val selectPageImp = MutableStateFlow(BoxScoreTab.HOME)
-    val selectPage = selectPageImp.asStateFlow()
+    private val selectedTabImp = MutableStateFlow(BoxScoreTab.HOME)
+    val selectedTab = selectedTabImp.asStateFlow()
+    val selectedTabIndex = selectedTab.map {
+        BoxScoreTab.indexOf(it)
+    }.stateIn(coroutineScope, SharingStarted.Eagerly, 0)
 
     val homeScoreRowData = boxScore.map { score ->
         score?.homeTeam?.players?.map { player ->
@@ -134,8 +137,8 @@ class BoxScoreViewModel(
         }
     }
 
-    fun updateSelectPage(tab: BoxScoreTab) {
-        selectPageImp.value = tab
+    fun selectTab(tab: BoxScoreTab) {
+        selectedTabImp.value = tab
     }
 
     private fun ScoreLabel.transformRowData(stats: GameBoxScore.BoxScoreTeam.Player.Statistics): ScoreRowData.RowData {

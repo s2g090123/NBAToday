@@ -87,30 +87,30 @@ class BoxScoreViewModelTest {
 
     @Test
     fun boxScore_selectHomeTab_checksSelectPage() {
-        viewModel.selectPage.launchAndCollect(coroutineEnvironment)
-        viewModel.updateSelectPage(BoxScoreTab.HOME)
-        assertThat(viewModel.selectPage.value, `is`(BoxScoreTab.HOME))
+        viewModel.selectedTab.launchAndCollect(coroutineEnvironment)
+        viewModel.selectTab(BoxScoreTab.HOME)
+        assertThat(viewModel.selectedTab.value, `is`(BoxScoreTab.HOME))
     }
 
     @Test
     fun boxScore_selectAwayTab_checksSelectPage() {
-        viewModel.selectPage.launchAndCollect(coroutineEnvironment)
-        viewModel.updateSelectPage(BoxScoreTab.AWAY)
-        assertThat(viewModel.selectPage.value, `is`(BoxScoreTab.AWAY))
+        viewModel.selectedTab.launchAndCollect(coroutineEnvironment)
+        viewModel.selectTab(BoxScoreTab.AWAY)
+        assertThat(viewModel.selectedTab.value, `is`(BoxScoreTab.AWAY))
     }
 
     @Test
     fun boxScore_selectStatsTab_checksSelectPage() {
-        viewModel.selectPage.launchAndCollect(coroutineEnvironment)
-        viewModel.updateSelectPage(BoxScoreTab.STATS)
-        assertThat(viewModel.selectPage.value, `is`(BoxScoreTab.STATS))
+        viewModel.selectedTab.launchAndCollect(coroutineEnvironment)
+        viewModel.selectTab(BoxScoreTab.STATS)
+        assertThat(viewModel.selectedTab.value, `is`(BoxScoreTab.STATS))
     }
 
     @Test
     fun boxScore_selectLeaderTab_checksSelectPage() {
-        viewModel.selectPage.launchAndCollect(coroutineEnvironment)
-        viewModel.updateSelectPage(BoxScoreTab.LEADER)
-        assertThat(viewModel.selectPage.value, `is`(BoxScoreTab.LEADER))
+        viewModel.selectedTab.launchAndCollect(coroutineEnvironment)
+        viewModel.selectTab(BoxScoreTab.LEADER)
+        assertThat(viewModel.selectedTab.value, `is`(BoxScoreTab.LEADER))
     }
 
     @Test

@@ -199,20 +199,20 @@ private fun TeamNameAndStanding(
 @Composable
 private fun TeamStatsDetail(
     modifier: Modifier = Modifier,
+    viewModel: TeamViewModel,
     stats: TeamStats,
-    pointsRank: Int,
-    reboundsRank: Int,
-    assistsRank: Int,
-    plusMinusRank: Int,
-    textColor: Color,
 ) {
+    val pointsRank by viewModel.teamPointsRank.collectAsState()
+    val reboundsRank by viewModel.teamReboundsRank.collectAsState()
+    val assistsRank by viewModel.teamAssistsRank.collectAsState()
+    val plusMinusRank by viewModel.teamPlusMinusRank.collectAsState()
     Row(modifier = modifier) {
         TeamRankBox(
             modifier = Modifier.testTag("TeamInformation_Column_PointsRank"),
             label = stringResource(R.string.team_rank_points_abbr),
             rank = pointsRank,
             average = stats.pointsAverage,
-            textColor = textColor,
+            textColor = viewModel.colors.extra2,
             divider = true,
         )
         TeamRankBox(
@@ -220,7 +220,7 @@ private fun TeamStatsDetail(
             label = stringResource(R.string.team_rank_rebounds_abbr),
             rank = reboundsRank,
             average = stats.reboundsAverage,
-            textColor = textColor,
+            textColor = viewModel.colors.extra2,
             divider = true,
         )
         TeamRankBox(
@@ -228,7 +228,7 @@ private fun TeamStatsDetail(
             label = stringResource(R.string.team_rank_assists_abbr),
             rank = assistsRank,
             average = stats.assistsAverage,
-            textColor = textColor,
+            textColor = viewModel.colors.extra2,
             divider = true
         )
         TeamRankBox(
@@ -236,7 +236,7 @@ private fun TeamStatsDetail(
             label = stringResource(R.string.team_rank_plusMinus_abbr),
             rank = plusMinusRank,
             average = stats.plusMinusAverage,
-            textColor = textColor,
+            textColor = viewModel.colors.extra2,
             divider = false
         )
     }
@@ -249,10 +249,6 @@ private fun TeamInformation(
 ) {
     val stats by viewModel.teamStats.collectAsState()
     val teamRank by viewModel.teamRank.collectAsState()
-    val teamPointsRank by viewModel.teamPointsRank.collectAsState()
-    val teamReboundsRank by viewModel.teamReboundsRank.collectAsState()
-    val teamAssistsRank by viewModel.teamAssistsRank.collectAsState()
-    val teamPlusMinusRank by viewModel.teamPlusMinusRank.collectAsState()
     stats?.let {
         Column(modifier = modifier) {
             TeamNameAndStanding(
@@ -264,12 +260,8 @@ private fun TeamInformation(
                 modifier = Modifier
                     .padding(top = 8.dp, start = 16.dp, end = 16.dp)
                     .height(IntrinsicSize.Min),
+                viewModel = viewModel,
                 stats = it,
-                pointsRank = teamPointsRank,
-                reboundsRank = teamReboundsRank,
-                assistsRank = teamAssistsRank,
-                plusMinusRank = teamPlusMinusRank,
-                textColor = viewModel.colors.extra2,
             )
         }
     }

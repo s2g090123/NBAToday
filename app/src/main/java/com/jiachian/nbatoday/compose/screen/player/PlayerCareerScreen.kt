@@ -23,10 +23,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -51,13 +48,16 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.R
+import com.jiachian.nbatoday.compose.screen.player.models.PlayerInfoRowData
 import com.jiachian.nbatoday.compose.widget.DisableOverscroll
+import com.jiachian.nbatoday.compose.widget.FocusableColumn
+import com.jiachian.nbatoday.compose.widget.IconButton
 import com.jiachian.nbatoday.compose.widget.PlayerImage
+import com.jiachian.nbatoday.compose.widget.RefreshingScreen
 import com.jiachian.nbatoday.compose.widget.TeamLogoImage
 import com.jiachian.nbatoday.data.local.player.PlayerCareer
 import com.jiachian.nbatoday.data.local.team.NBATeam
 import com.jiachian.nbatoday.utils.dividerSecondaryColor
-import com.jiachian.nbatoday.utils.noRippleClickable
 import com.jiachian.nbatoday.utils.px2Dp
 import com.jiachian.nbatoday.utils.rippleClickable
 import kotlin.math.max
@@ -68,50 +68,39 @@ fun PlayerCareerScreen(
     onBack: () -> Unit,
 ) {
     val isRefreshing by viewModel.isRefreshing.collectAsState()
-    val playerCareer by viewModel.playerCareer.collectAsState()
-
-    if (isRefreshing) {
-        RefreshScreen(
+    val notFoundVisible by viewModel.notFoundVisible.collectAsState()
+    FocusableColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colors.primary),
+    ) {
+        IconButton(
             modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colors.primary)
-                .noRippleClickable { },
-            onBack = onBack
+                .testTag("PlayerCareerScreen_Btn_Back")
+                .padding(top = 8.dp, start = 8.dp),
+            drawableRes = R.drawable.ic_black_back,
+            tint = MaterialTheme.colors.secondary,
+            onClick = onBack
         )
-    } else if (playerCareer == null) {
-        PlayerCareerNotFound(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colors.primary)
-                .noRippleClickable { },
-            onBack = onBack
-        )
-    } else {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colors.primary)
-                .noRippleClickable { }
-                .verticalScroll(rememberScrollState())
-        ) {
-            IconButton(
-                modifier = Modifier
-                    .testTag("PlayerCareerScreen_Btn_Back")
-                    .padding(top = 8.dp, start = 8.dp),
-                onClick = onBack
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_black_back),
-                    contentDescription = null,
-                    tint = MaterialTheme.colors.secondary
+        when {
+            isRefreshing -> {
+                RefreshingScreen(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colors.secondary,
+                    interceptBack = false
                 )
             }
-            playerCareer?.let { player ->
-                PlayerCareerInfo(playerCareer = player)
-                PlayerCareerStats(
-                    modifier = Modifier.fillMaxWidth(),
-                    viewModel = viewModel
-                )
+            notFoundVisible -> {
+                PlayerCareerNotFound(modifier = Modifier.fillMaxSize())
+            }
+            else -> {
+                Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                    PlayerCareerInfo(viewModel = viewModel)
+                    PlayerCareerStats(
+                        modifier = Modifier.fillMaxWidth(),
+                        viewModel = viewModel
+                    )
+                }
             }
         }
     }
@@ -120,27 +109,30 @@ fun PlayerCareerScreen(
 @Composable
 private fun PlayerCareerInfo(
     modifier: Modifier = Modifier,
-    playerCareer: PlayerCareer
+    viewModel: PlayerInfoViewModel,
 ) {
-    Column(modifier = modifier) {
-        TeamAndPlayerImage(
-            modifier = Modifier.fillMaxWidth(),
-            team = playerCareer.info.team,
-            playerId = playerCareer.personId
-        )
-        PlayerTitle(
-            modifier = Modifier
-                .padding(top = 8.dp)
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            playerInfo = playerCareer.info
-        )
-        PlayerInfoTable(
-            modifier = Modifier
-                .padding(top = 8.dp)
-                .fillMaxWidth(),
-            info = playerCareer.info
-        )
+    val playerCareer by viewModel.playerCareer.collectAsState()
+    playerCareer?.let {
+        Column(modifier = modifier) {
+            TeamAndPlayerImage(
+                modifier = Modifier.fillMaxWidth(),
+                team = it.info.team,
+                playerId = it.personId
+            )
+            PlayerTitle(
+                modifier = Modifier
+                    .padding(top = 8.dp)
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                playerInfo = it.info
+            )
+            PlayerInfoTable(
+                modifier = Modifier
+                    .padding(top = 8.dp)
+                    .fillMaxWidth(),
+                viewModel = viewModel,
+            )
+        }
     }
 }
 
@@ -214,59 +206,39 @@ private fun PlayerTitle(
 @Composable
 private fun PlayerInfoTable(
     modifier: Modifier = Modifier,
-    info: PlayerCareer.PlayerCareerInfo
+    viewModel: PlayerInfoViewModel,
 ) {
-    Column(modifier = modifier) {
-        PlayerInfoRow(
-            modifier = Modifier
-                .padding(top = 8.dp)
-                .fillMaxWidth(),
-            firstContent = stringResource(R.string.player_career_info_ppg) to info.points.toString(),
-            secondContent = stringResource(R.string.player_career_info_rpg) to info.rebounds.toString(),
-            thirdContent = stringResource(R.string.player_career_info_apg) to info.assists.toString(),
-            forthContent = stringResource(R.string.player_career_info_pie) to info.impact.toString(),
-            topDividerVisible = true,
-            bottomDividerVisible = false
-        )
-        PlayerInfoRow(
-            modifier = Modifier.fillMaxWidth(),
-            firstContent = stringResource(R.string.player_career_info_height) to stringResource(
-                R.string.player_career_info_height_value,
-                info.heightFormat
-            ),
-            secondContent = stringResource(R.string.player_career_info_weight) to stringResource(
-                R.string.player_career_info_weight_value,
-                info.weightFormat
-            ),
-            thirdContent = stringResource(R.string.player_career_info_country) to info.country,
-            forthContent = stringResource(R.string.player_career_info_attended) to info.school,
-            topDividerVisible = true,
-            bottomDividerVisible = true
-        )
-        PlayerInfoRow(
-            modifier = Modifier.fillMaxWidth(),
-            firstContent = stringResource(R.string.player_career_info_age) to info.playerAge.toString(),
-            secondContent = stringResource(R.string.player_career_info_birth) to info.birthDate,
-            thirdContent = stringResource(R.string.player_career_info_draft) to stringResource(
-                R.string.player_career_info_draft_format,
-                info.draftYear,
-                info.draftRound,
-                info.draftNumber
-            ),
-            forthContent = stringResource(R.string.player_career_info_experience) to info.seasonExperience.toString(),
-            topDividerVisible = false,
-            bottomDividerVisible = true
-        )
+    val tableData by viewModel.playerInfoTableData.collectAsState()
+    tableData?.let {
+        Column(modifier = modifier) {
+            PlayerInfoRow(
+                modifier = Modifier
+                    .padding(top = 8.dp)
+                    .fillMaxWidth(),
+                rowData = it.firstRowData,
+                topDividerVisible = true,
+                bottomDividerVisible = false
+            )
+            PlayerInfoRow(
+                modifier = Modifier.fillMaxWidth(),
+                rowData = it.secondRowData,
+                topDividerVisible = true,
+                bottomDividerVisible = true
+            )
+            PlayerInfoRow(
+                modifier = Modifier.fillMaxWidth(),
+                rowData = it.thirdRowData,
+                topDividerVisible = false,
+                bottomDividerVisible = true
+            )
+        }
     }
 }
 
 @Composable
 private fun PlayerInfoRow(
     modifier: Modifier = Modifier,
-    firstContent: Pair<String, String>,
-    secondContent: Pair<String, String>,
-    thirdContent: Pair<String, String>,
-    forthContent: Pair<String, String>,
+    rowData: PlayerInfoRowData,
     topDividerVisible: Boolean,
     bottomDividerVisible: Boolean
 ) {
@@ -281,10 +253,7 @@ private fun PlayerInfoRow(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(IntrinsicSize.Min),
-            firstContent = firstContent,
-            secondContent = secondContent,
-            thirdContent = thirdContent,
-            forthContent = forthContent
+            rowData = rowData,
         )
         if (bottomDividerVisible) {
             Divider(
@@ -298,10 +267,7 @@ private fun PlayerInfoRow(
 @Composable
 private fun PlayerInfoRowContent(
     modifier: Modifier = Modifier,
-    firstContent: Pair<String, String>,
-    secondContent: Pair<String, String>,
-    thirdContent: Pair<String, String>,
-    forthContent: Pair<String, String>,
+    rowData: PlayerInfoRowData,
 ) {
     Row(
         modifier = modifier,
@@ -309,8 +275,8 @@ private fun PlayerInfoRowContent(
     ) {
         PlayerInfoBox(
             modifier = Modifier.weight(1f),
-            title = firstContent.first,
-            value = firstContent.second
+            title = rowData.firstContent.first,
+            value = rowData.firstContent.second
         )
         Divider(
             modifier = Modifier
@@ -320,8 +286,8 @@ private fun PlayerInfoRowContent(
         )
         PlayerInfoBox(
             modifier = Modifier.weight(1f),
-            title = secondContent.first,
-            value = secondContent.second
+            title = rowData.secondContent.first,
+            value = rowData.secondContent.second
         )
         Divider(
             modifier = Modifier
@@ -331,8 +297,8 @@ private fun PlayerInfoRowContent(
         )
         PlayerInfoBox(
             modifier = Modifier.weight(1f),
-            title = thirdContent.first,
-            value = thirdContent.second
+            title = rowData.thirdContent.first,
+            value = rowData.thirdContent.second
         )
         Divider(
             modifier = Modifier
@@ -342,8 +308,8 @@ private fun PlayerInfoRowContent(
         )
         PlayerInfoBox(
             modifier = Modifier.weight(1f),
-            title = forthContent.first,
-            value = forthContent.second
+            title = rowData.forthContent.first,
+            value = rowData.forthContent.second
         )
     }
 }
@@ -395,11 +361,8 @@ private fun PlayerCareerStats(
     val timeFrameIndex by remember { derivedStateOf { timeframeState.firstVisibleItemIndex } }
     val statsOffset by remember { derivedStateOf { statsState.firstVisibleItemScrollOffset } }
     val statsIndex by remember { derivedStateOf { statsState.firstVisibleItemIndex } }
-    val statsRowData by viewModel.statsRowData.collectAsState()
     val timeFrameRowData by viewModel.timeFrameRowData.collectAsState()
-    val labels by viewModel.statsLabels.collectAsState()
     val sort by viewModel.statsSort.collectAsState()
-
     Column(modifier = modifier) {
         PlayerStatsBar(
             modifier = Modifier
@@ -417,11 +380,8 @@ private fun PlayerCareerStats(
             )
             PlayerStatsContent(
                 modifier = Modifier.horizontalScroll(horizontalScrollState),
+                viewModel = viewModel,
                 state = statsState,
-                labels = labels,
-                stats = statsRowData,
-                sorting = sort,
-                onClickLabel = { viewModel.updateStatsSort(it.sort) }
             )
         }
     }
@@ -454,12 +414,11 @@ private fun PlayerStatsBar(
 @Composable
 private fun PlayerStatsContent(
     modifier: Modifier = Modifier,
+    viewModel: PlayerInfoViewModel,
     state: LazyListState,
-    labels: List<CareerStatsLabel>,
-    stats: List<List<CareerStatsRowData>>,
-    sorting: CareerStatsSort,
-    onClickLabel: (CareerStatsLabel) -> Unit
 ) {
+    val stats by viewModel.statsRowData.collectAsState()
+    val sorting by viewModel.statsSort.collectAsState()
     var dividerWidth by remember { mutableStateOf(0) }
     Column(modifier = modifier) {
         PlayerStatsLabelRow(
@@ -469,10 +428,10 @@ private fun PlayerStatsContent(
                 }
                 .fillMaxWidth()
                 .wrapContentHeight(),
-            labels = labels,
+            labels = viewModel.statsLabels,
             dividerWidth = dividerWidth.px2Dp(),
             sorting = sorting,
-            onClickLabel = onClickLabel
+            onClickLabel = { viewModel.updateStatsSort(it.sort) }
         )
         PlayerStatsTable(
             modifier = Modifier
@@ -692,52 +651,14 @@ private fun PlayerStatsYearText(
 
 @Composable
 private fun PlayerCareerNotFound(
-    modifier: Modifier = Modifier,
-    onBack: () -> Unit
+    modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier) {
-        IconButton(
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .padding(top = 8.dp, start = 8.dp),
-            onClick = onBack,
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.ic_black_back),
-                contentDescription = null,
-                tint = MaterialTheme.colors.secondary
-            )
-        }
         Text(
             modifier = Modifier.align(Alignment.Center),
             text = stringResource(R.string.player_career_not_found),
             fontSize = 16.sp,
             fontWeight = FontWeight.Medium,
-            color = MaterialTheme.colors.secondary
-        )
-    }
-}
-
-@Composable
-private fun RefreshScreen(
-    modifier: Modifier = Modifier,
-    onBack: () -> Unit
-) {
-    Box(modifier = modifier) {
-        IconButton(
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .padding(top = 8.dp, start = 8.dp),
-            onClick = onBack,
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.ic_black_back),
-                contentDescription = null,
-                tint = MaterialTheme.colors.secondary
-            )
-        }
-        CircularProgressIndicator(
-            modifier = Modifier.align(Alignment.Center),
             color = MaterialTheme.colors.secondary
         )
     }

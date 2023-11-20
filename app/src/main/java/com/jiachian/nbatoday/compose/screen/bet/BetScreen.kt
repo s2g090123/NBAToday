@@ -53,9 +53,7 @@ fun BetScreen(
     viewModel: BetViewModel,
     onBackClick: () -> Unit
 ) {
-    BackHandle(
-        onBack = onBackClick
-    ) {
+    BackHandle(onBack = onBackClick) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -64,7 +62,9 @@ fun BetScreen(
         ) {
             BetTop(onBackClick = onBackClick)
             BetBody(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .testTag("bet_lc_cards")
+                    .fillMaxSize(),
                 viewModel = viewModel
             )
         }
@@ -146,10 +146,7 @@ private fun BetBody(
     if (betsAndGames.isEmpty()) {
         BetEmptyScreen(modifier = modifier)
     } else {
-        LazyColumn(
-            modifier = modifier
-                .testTag("bet_lc_cards")
-        ) {
+        LazyColumn(modifier = modifier) {
             itemsIndexed(betsAndGames) { index, betAndGame ->
                 BetCard(
                     modifier = Modifier

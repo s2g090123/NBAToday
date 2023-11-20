@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.screen.account.LoginDialog
+import com.jiachian.nbatoday.compose.theme.NBAColors
 import com.jiachian.nbatoday.compose.widget.IconButton
 import com.jiachian.nbatoday.compose.widget.TeamLogoImage
 import com.jiachian.nbatoday.data.local.team.NBATeam
@@ -60,53 +61,41 @@ fun UserPage(
     viewModel: HomeViewModel
 ) {
     val user by viewModel.user.collectAsState()
-    if (user == null) {
-        RequireLoginScreen(
+    user?.let {
+        UserScreen(
             modifier = modifier,
-            login = viewModel::login,
-            register = viewModel::register
+            viewModel = viewModel,
+            user = it,
         )
-    } else {
-        user?.let {
-            UserScreen(
-                modifier = modifier,
-                user = it,
-                teams = viewModel.nbaTeams,
-                openBetScreen = viewModel::openBetScreen,
-                logout = viewModel::logout,
-                updateTheme = viewModel::updateTheme
-            )
-        }
-    }
+    } ?: RequireLoginScreen(
+        modifier = modifier,
+        login = viewModel::login,
+        register = viewModel::register
+    )
 }
 
 @Composable
 private fun UserScreen(
     modifier: Modifier = Modifier,
+    viewModel: HomeViewModel,
     user: User,
-    teams: List<NBATeam>,
-    openBetScreen: () -> Unit,
-    logout: () -> Unit,
-    updateTheme: (NBATeam) -> Unit
 ) {
-    Column(
-        modifier = modifier
-    ) {
+    Column(modifier = modifier) {
         UserTopBar(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(MaterialTheme.colors.secondary),
             name = user.name.getOrNA(),
             points = user.points.getOrZero(),
-            onRewardClick = openBetScreen,
-            onLogoutClick = logout
+            onRewardClick = viewModel::openBetScreen,
+            onLogoutClick = viewModel::logout
         )
         ThemesTable(
             modifier = Modifier
                 .testTag("UserPage_LVG_Palette")
                 .fillMaxSize(),
-            teams = teams,
-            onTeamClick = updateTheme
+            teams = viewModel.nbaTeams,
+            onTeamClick = viewModel::updateTheme
         )
     }
 }
@@ -147,10 +136,7 @@ private fun ThemesTable(
                     }
                     .padding(bottom = 8.dp),
                 team = team,
-                firstColor = team.colors.primary,
-                secondColor = team.colors.secondary,
-                thirdColor = team.colors.extra1,
-                forthColor = team.colors.extra2
+                colors = team.colors,
             )
         }
     }
@@ -208,10 +194,7 @@ private fun RequireLoginScreen(
 private fun ThemeCard(
     modifier: Modifier = Modifier,
     team: NBATeam,
-    firstColor: Color,
-    secondColor: Color,
-    thirdColor: Color,
-    forthColor: Color
+    colors: NBAColors,
 ) {
     Row(modifier = modifier) {
         TeamLogoImage(
@@ -239,10 +222,7 @@ private fun ThemeCard(
                 modifier = Modifier
                     .padding(top = 8.dp)
                     .fillMaxWidth(),
-                firstColor = firstColor,
-                secondColor = secondColor,
-                thirdColor = thirdColor,
-                forthColor = forthColor
+                colors = colors,
             )
         }
     }
@@ -251,10 +231,7 @@ private fun ThemeCard(
 @Composable
 private fun ThemeColorPreviewRow(
     modifier: Modifier = Modifier,
-    firstColor: Color,
-    secondColor: Color,
-    thirdColor: Color,
-    forthColor: Color
+    colors: NBAColors,
 ) {
     Row(
         modifier = modifier,
@@ -264,25 +241,25 @@ private fun ThemeColorPreviewRow(
             modifier = Modifier
                 .weight(1f)
                 .aspectRatio(1f),
-            color = firstColor
+            color = colors.primary
         )
         ThemeColorPreview(
             modifier = Modifier
                 .weight(1f)
                 .aspectRatio(1f),
-            color = secondColor
+            color = colors.secondary
         )
         ThemeColorPreview(
             modifier = Modifier
                 .weight(1f)
                 .aspectRatio(1f),
-            color = thirdColor
+            color = colors.extra1
         )
         ThemeColorPreview(
             modifier = Modifier
                 .weight(1f)
                 .aspectRatio(1f),
-            color = forthColor
+            color = colors.extra2
         )
     }
 }

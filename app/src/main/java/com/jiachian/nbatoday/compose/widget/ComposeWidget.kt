@@ -9,6 +9,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
@@ -56,19 +57,18 @@ import com.jiachian.nbatoday.utils.noRippleClickable
 @Composable
 fun RefreshingScreen(
     modifier: Modifier = Modifier,
-    color: Color
+    color: Color,
+    interceptBack: Boolean = true
 ) {
-    Box(
-        modifier = modifier.then(
-            Modifier.noRippleClickable { }
-        )
-    ) {
+    FocusableBox(modifier = modifier) {
         CircularProgressIndicator(
             modifier = Modifier.align(Alignment.Center),
             color = color
         )
     }
-    BackHandler {
+    if (interceptBack) {
+        BackHandler {
+        }
     }
 }
 
@@ -157,6 +157,17 @@ inline fun FocusableColumn(
     content: @Composable ColumnScope.() -> Unit
 ) {
     Column(modifier = modifier.noRippleClickable { }) {
+        content()
+    }
+}
+
+@ExcludeFromJacocoGeneratedReport
+@Composable
+inline fun FocusableBox(
+    modifier: Modifier = Modifier,
+    content: @Composable BoxScope.() -> Unit
+) {
+    Box(modifier = modifier.noRippleClickable { }) {
         content()
     }
 }

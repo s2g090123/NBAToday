@@ -107,10 +107,6 @@ private fun CalendarTopBar(
     viewModel: GameCalendarViewModel,
     onClose: () -> Unit
 ) {
-    val hasPreviousMonth by viewModel.hasPreviousMonth.collectAsState()
-    val hasNextMonth by viewModel.hasNextMonth.collectAsState()
-    val currentDate by viewModel.currentDateString.collectAsState()
-
     Column(modifier = modifier) {
         IconButton(
             modifier = Modifier
@@ -130,11 +126,7 @@ private fun CalendarTopBar(
                 .wrapContentHeight()
                 .background(MaterialTheme.colors.secondary)
                 .padding(8.dp),
-            currentDate = currentDate,
-            hasPreviousMonth = hasPreviousMonth,
-            hasNextMonth = hasNextMonth,
-            onClickPrevious = viewModel::previousMonth,
-            onClickNext = viewModel::nextMonth
+            viewModel = viewModel
         )
     }
 }
@@ -143,12 +135,11 @@ private fun CalendarTopBar(
 @Composable
 private fun CalendarNavigationBar(
     modifier: Modifier = Modifier,
-    currentDate: Pair<Int, String>,
-    hasPreviousMonth: Boolean,
-    hasNextMonth: Boolean,
-    onClickPrevious: () -> Unit,
-    onClickNext: () -> Unit
+    viewModel: GameCalendarViewModel,
 ) {
+    val currentDate by viewModel.currentDateString.collectAsState()
+    val hasPreviousMonth by viewModel.hasPreviousMonth.collectAsState()
+    val hasNextMonth by viewModel.hasNextMonth.collectAsState()
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
@@ -157,7 +148,7 @@ private fun CalendarNavigationBar(
             modifier = Modifier.testTag("CalendarTopBar_Btn_Prev"),
             enabled = hasPreviousMonth,
             isLeft = true,
-            onClick = onClickPrevious
+            onClick = viewModel::previousMonth
         )
         AnimatedContent(
             modifier = Modifier.weight(1f),
@@ -187,7 +178,7 @@ private fun CalendarNavigationBar(
             modifier = Modifier.testTag("CalendarTopBar_Btn_Next"),
             enabled = hasNextMonth,
             isLeft = false,
-            onClick = onClickNext
+            onClick = viewModel::nextMonth
         )
     }
 }
@@ -218,12 +209,7 @@ private fun CalendarContent(
     modifier: Modifier = Modifier,
     viewModel: GameCalendarViewModel
 ) {
-    val calendarList by viewModel.calendarData.collectAsState()
-    val gameList by viewModel.gamesData.collectAsState()
-    val selectDateData by viewModel.selectDateData.collectAsState()
     val selectGames by viewModel.selectGames.collectAsState()
-    val isLoadingGames by viewModel.isLoadingGames.collectAsState()
-
     Column(modifier = modifier) {
         DayAbbrTextRow(
             modifier = Modifier.fillMaxWidth()
@@ -234,11 +220,7 @@ private fun CalendarContent(
                 .padding(top = 8.dp)
                 .fillMaxWidth()
                 .heightIn(max = LocalConfiguration.current.screenHeightDp.dp),
-            calendarList = calendarList,
-            gameList = gameList,
-            selectDate = selectDateData,
-            isLoading = isLoadingGames,
-            onSelectDate = viewModel::selectDate
+            viewModel = viewModel,
         )
         selectGames?.let { games ->
             CalendarGames(
@@ -256,12 +238,12 @@ private fun CalendarContent(
 @Composable
 private fun CalendarTable(
     modifier: Modifier = Modifier,
-    calendarList: List<CalendarData>,
-    gameList: List<List<NbaGameAndBet>>,
-    selectDate: CalendarData?,
-    isLoading: Boolean,
-    onSelectDate: (Date) -> Unit
+    viewModel: GameCalendarViewModel
 ) {
+    val calendarList by viewModel.calendarData.collectAsState()
+    val gameList by viewModel.gamesData.collectAsState()
+    val selectDate by viewModel.selectDateData.collectAsState()
+    val isLoading by viewModel.isLoadingGames.collectAsState()
     DisableOverscroll {
         LazyVerticalGrid(
             modifier = modifier,
@@ -275,7 +257,7 @@ private fun CalendarTable(
                         games = games,
                         isSelected = dateData == selectDate,
                         isLoadingGames = isLoading,
-                        onClick = onSelectDate
+                        onClick = viewModel::selectDate
                     )
                 }
             }

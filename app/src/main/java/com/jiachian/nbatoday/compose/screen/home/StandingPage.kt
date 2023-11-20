@@ -181,9 +181,6 @@ private fun TeamStanding(
     val stateTeamIndex by remember { derivedStateOf { teamState.firstVisibleItemIndex } }
     val stateStatsOffset by remember { derivedStateOf { statsState.firstVisibleItemScrollOffset } }
     val stateStatsIndex by remember { derivedStateOf { statsState.firstVisibleItemIndex } }
-    val labels by viewModel.standingLabel
-    val sort by viewModel.standingSort.collectAsState()
-
     Row(modifier = modifier) {
         TeamStandingNameTable(
             teamState = teamState,
@@ -195,12 +192,9 @@ private fun TeamStanding(
                 .testTag("TeamStanding_Column_StatsRoot")
                 .fillMaxSize()
                 .horizontalScroll(horizontalScrollState),
+            viewModel = viewModel,
             statsState = statsState,
             teamStats = teamStats,
-            labels = labels,
-            sorting = sort,
-            updateSorting = viewModel::updateStandingSort,
-            getTextByLabel = viewModel::getEvaluationTextByLabel
         )
     }
     LaunchedEffect(stateTeamOffset, stateTeamIndex) {
@@ -214,17 +208,12 @@ private fun TeamStanding(
 @Composable
 private fun TeamStandingStatsTable(
     modifier: Modifier = Modifier,
+    viewModel: HomeViewModel,
     statsState: LazyListState,
     teamStats: List<TeamStats>,
-    labels: List<StandingLabel>,
-    sorting: StandingSort,
-    updateSorting: (StandingSort) -> Unit,
-    getTextByLabel: (StandingLabel, TeamStats) -> String
 ) {
     var dividerWidth by remember { mutableStateOf(0) }
-    Column(
-        modifier = modifier
-    ) {
+    Column(modifier = modifier) {
         TeamStatsTabRow(
             modifier = Modifier
                 .testTag("TeamStanding_Root_Label")
@@ -233,9 +222,7 @@ private fun TeamStandingStatsTable(
                 }
                 .fillMaxWidth()
                 .wrapContentHeight(),
-            labels = labels,
-            sorting = sorting,
-            onClickLabel = { updateSorting(it.sort) }
+            viewModel = viewModel,
         )
         Divider(
             modifier = Modifier.width(dividerWidth.px2Dp()),
@@ -253,12 +240,11 @@ private fun TeamStandingStatsTable(
                 itemsIndexed(teamStats) { index, stats ->
                     TeamStatsRow(
                         modifier = Modifier.testTag("TeamStandingStatsTable_TeamStatsRow"),
-                        number = index + 1,
-                        labels = labels,
-                        sorting = sorting,
+                        viewModel = viewModel,
+                        stats = stats,
                         dividerVisible = index < teamStats.size - 1,
                         dividerWidth = dividerWidth.px2Dp(),
-                        getTextByLabel = { getTextByLabel(it, stats) }
+                        dividerThickness = if (index + 1 == 10) 3.dp else 1.dp,
                     )
                 }
             }
@@ -269,13 +255,14 @@ private fun TeamStandingStatsTable(
 @Composable
 private fun TeamStatsRow(
     modifier: Modifier = Modifier,
-    number: Int,
-    labels: List<StandingLabel>,
-    sorting: StandingSort,
+    viewModel: HomeViewModel,
+    stats: TeamStats,
     dividerVisible: Boolean,
     dividerWidth: Dp,
-    getTextByLabel: (StandingLabel) -> String
+    dividerThickness: Dp,
 ) {
+    val labels by viewModel.standingLabel
+    val sorting by viewModel.standingSort.collectAsState()
     Column(modifier = modifier) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             labels.forEach { label ->
@@ -292,7 +279,7 @@ private fun TeamStatsRow(
                             }
                         )
                         .padding(8.dp),
-                    text = getTextByLabel(label),
+                    text = viewModel.getEvaluationTextByLabel(label, stats),
                     textAlign = if (label.sort == sorting) TextAlign.Center else label.textAlign,
                     fontSize = 16.sp,
                     color = MaterialTheme.colors.secondary
@@ -303,7 +290,7 @@ private fun TeamStatsRow(
             Divider(
                 modifier = Modifier.width(dividerWidth),
                 color = dividerSecondaryColor(),
-                thickness = if (number == 10) 3.dp else 1.dp
+                thickness = dividerThickness
             )
         }
     }
@@ -312,16 +299,16 @@ private fun TeamStatsRow(
 @Composable
 private fun TeamStatsTabRow(
     modifier: Modifier = Modifier,
-    labels: List<StandingLabel>,
-    sorting: StandingSort,
-    onClickLabel: (StandingLabel) -> Unit
+    viewModel: HomeViewModel
 ) {
+    val labels by viewModel.standingLabel
+    val sort by viewModel.standingSort.collectAsState()
     Row(modifier = modifier) {
         labels.forEach { label ->
             TeamStatsTab(
                 label = label,
-                isSelected = label.sort == sorting,
-                onClick = onClickLabel
+                isSelected = label.sort == sort,
+                onClick = { viewModel.updateStandingSort(it.sort) }
             )
         }
     }
