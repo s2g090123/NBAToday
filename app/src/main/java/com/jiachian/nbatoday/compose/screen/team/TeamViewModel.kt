@@ -3,9 +3,7 @@ package com.jiachian.nbatoday.compose.screen.team
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.compose.screen.card.GameStatusCardViewModel
 import com.jiachian.nbatoday.compose.screen.label.LabelHelper
-import com.jiachian.nbatoday.compose.screen.player.PlayerInfoViewModel
-import com.jiachian.nbatoday.compose.screen.score.BoxScoreViewModel
-import com.jiachian.nbatoday.compose.state.NbaState
+import com.jiachian.nbatoday.compose.state.NbaScreenState
 import com.jiachian.nbatoday.data.BaseRepository
 import com.jiachian.nbatoday.data.local.NbaGame
 import com.jiachian.nbatoday.data.local.NbaGameAndBet
@@ -14,6 +12,7 @@ import com.jiachian.nbatoday.data.local.team.NBATeam
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.utils.NbaUtils
+import com.jiachian.nbatoday.utils.ScreenStateHelper
 import com.jiachian.nbatoday.utils.decimalFormat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
@@ -29,7 +28,7 @@ import kotlinx.coroutines.withContext
 class TeamViewModel(
     val team: NBATeam,
     private val repository: BaseRepository,
-    private val openScreen: (state: NbaState) -> Unit,
+    private val screenStateHelper: ScreenStateHelper,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
     coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
 ) : ComposeViewModel(coroutineScope) {
@@ -330,29 +329,11 @@ class TeamViewModel(
     }
 
     fun openGameBoxScore(game: NbaGame) {
-        openScreen(
-            NbaState.BoxScore(
-                BoxScoreViewModel(
-                    game = game,
-                    repository = repository,
-                    showPlayerCareer = this::openPlayerInfo,
-                    coroutineScope = coroutineScope
-                )
-            )
-        )
+        screenStateHelper.openScreen(NbaScreenState.BoxScore(game))
     }
 
     fun openPlayerInfo(playerId: Int) {
-        openScreen(
-            NbaState.Player(
-                PlayerInfoViewModel(
-                    playerId,
-                    repository,
-                    dispatcherProvider,
-                    coroutineScope
-                )
-            )
-        )
+        screenStateHelper.openScreen(NbaScreenState.Player(playerId))
     }
 
     fun createGameStatusCardViewModel(gameAndBet: NbaGameAndBet): GameStatusCardViewModel {

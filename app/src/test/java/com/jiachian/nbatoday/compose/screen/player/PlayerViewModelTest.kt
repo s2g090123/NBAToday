@@ -13,16 +13,16 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
-class PlayerInfoViewModelTest {
+class PlayerViewModelTest {
 
-    private lateinit var viewModel: PlayerInfoViewModel
+    private lateinit var viewModel: PlayerViewModel
     private val repository = TestRepository()
     private val coroutineEnvironment = TestCoroutineEnvironment()
     private val homePlayer = PlayerCareerFactory.createHomePlayerCareer()
 
     @Before
     fun setup() {
-        viewModel = PlayerInfoViewModel(
+        viewModel = PlayerViewModel(
             playerId = HOME_PLAYER_ID,
             repository = repository,
             dispatcherProvider = coroutineEnvironment.testDispatcherProvider

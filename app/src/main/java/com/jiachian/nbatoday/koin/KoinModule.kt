@@ -7,6 +7,7 @@ import com.jiachian.nbatoday.data.datastore.NbaDataStore
 import com.jiachian.nbatoday.data.local.NbaDatabase
 import com.jiachian.nbatoday.data.local.NbaLocalDataSource
 import com.jiachian.nbatoday.data.remote.NbaRemoteDataSource
+import com.jiachian.nbatoday.utils.ScreenStateHelper
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -21,6 +22,7 @@ val module = module {
     single { NbaDatabase.getInstance(androidContext()) }
     single { NbaRepository(get<NbaRemoteDataSource>(), get<NbaLocalDataSource>(), get()) }
     single { NbaDataStore(androidApplication()) as BaseDataStore }
+    single { ScreenStateHelper(get<NbaRepository>(), get()) }
 
-    viewModel { MainViewModel(get<NbaRepository>(), get()) }
+    viewModel { MainViewModel(get<NbaRepository>(), get(), get()) }
 }

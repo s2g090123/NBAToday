@@ -68,7 +68,7 @@ import java.util.Date
 
 @Composable
 fun GameCalendarScreen(
-    viewModel: GameCalendarViewModel,
+    viewModel: CalendarViewModel,
     onClose: () -> Unit
 ) {
     val isRefreshing by viewModel.isProgressing.collectAsState()
@@ -104,7 +104,7 @@ fun GameCalendarScreen(
 @Composable
 private fun CalendarTopBar(
     modifier: Modifier = Modifier,
-    viewModel: GameCalendarViewModel,
+    viewModel: CalendarViewModel,
     onClose: () -> Unit
 ) {
     Column(modifier = modifier) {
@@ -135,7 +135,7 @@ private fun CalendarTopBar(
 @Composable
 private fun CalendarNavigationBar(
     modifier: Modifier = Modifier,
-    viewModel: GameCalendarViewModel,
+    viewModel: CalendarViewModel,
 ) {
     val currentDate by viewModel.currentDateString.collectAsState()
     val hasPreviousMonth by viewModel.hasPreviousMonth.collectAsState()
@@ -207,7 +207,7 @@ private fun CalendarArrowButton(
 @Composable
 private fun CalendarContent(
     modifier: Modifier = Modifier,
-    viewModel: GameCalendarViewModel
+    viewModel: CalendarViewModel
 ) {
     val selectGames by viewModel.selectGames.collectAsState()
     Column(modifier = modifier) {
@@ -238,7 +238,7 @@ private fun CalendarContent(
 @Composable
 private fun CalendarTable(
     modifier: Modifier = Modifier,
-    viewModel: GameCalendarViewModel
+    viewModel: CalendarViewModel
 ) {
     val calendarList by viewModel.calendarData.collectAsState()
     val gameList by viewModel.gamesData.collectAsState()
@@ -268,7 +268,7 @@ private fun CalendarTable(
 @Composable
 private fun CalendarGames(
     modifier: Modifier = Modifier,
-    viewModel: GameCalendarViewModel,
+    viewModel: CalendarViewModel,
     games: List<NbaGameAndBet>
 ) {
     LazyColumn(

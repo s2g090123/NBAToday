@@ -1,8 +1,8 @@
 package com.jiachian.nbatoday
 
 import com.jiachian.nbatoday.compose.screen.bet.BetViewModel
-import com.jiachian.nbatoday.compose.screen.calendar.GameCalendarViewModel
-import com.jiachian.nbatoday.compose.screen.player.PlayerInfoViewModel
+import com.jiachian.nbatoday.compose.screen.calendar.CalendarViewModel
+import com.jiachian.nbatoday.compose.screen.player.PlayerViewModel
 import com.jiachian.nbatoday.compose.screen.score.BoxScoreViewModel
 import com.jiachian.nbatoday.compose.screen.team.TeamViewModel
 import com.jiachian.nbatoday.compose.state.NbaState
@@ -20,8 +20,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers
-import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.instanceOf
+import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.nullValue
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
@@ -117,7 +117,7 @@ class MainViewModelTest {
         viewModel.currentState.launchAndCollect(coroutineEnvironment)
         viewModel.updateState(
             NbaState.Player(
-                PlayerInfoViewModel(
+                PlayerViewModel(
                     playerId = PlayerStatsFactory.getHomePlayerStats().playerId,
                     repository = repository
                 )
@@ -135,7 +135,7 @@ class MainViewModelTest {
         viewModel.currentState.launchAndCollect(coroutineEnvironment)
         viewModel.updateState(
             NbaState.Calendar(
-                GameCalendarViewModel(
+                CalendarViewModel(
                     date = Date(BASIC_TIME),
                     repository = repository,
                     openScreen = {}

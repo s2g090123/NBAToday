@@ -41,7 +41,7 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class GameCalendarScreenTest {
-    private lateinit var viewModel: GameCalendarViewModel
+    private lateinit var viewModel: CalendarViewModel
     private lateinit var repository: TestRepository
     private var currentState: NbaState? = null
     private var isBack = false
@@ -54,7 +54,7 @@ class GameCalendarScreenTest {
     @Before
     fun setup() = runTest {
         repository = TestRepository()
-        viewModel = GameCalendarViewModel(
+        viewModel = CalendarViewModel(
             date = Date(BASIC_TIME),
             repository = repository,
             openScreen = {

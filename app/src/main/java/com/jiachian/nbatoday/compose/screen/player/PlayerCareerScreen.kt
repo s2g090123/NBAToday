@@ -64,7 +64,7 @@ import kotlin.math.max
 
 @Composable
 fun PlayerCareerScreen(
-    viewModel: PlayerInfoViewModel,
+    viewModel: PlayerViewModel,
     onBack: () -> Unit,
 ) {
     val isRefreshing by viewModel.isRefreshing.collectAsState()
@@ -109,7 +109,7 @@ fun PlayerCareerScreen(
 @Composable
 private fun PlayerCareerInfo(
     modifier: Modifier = Modifier,
-    viewModel: PlayerInfoViewModel,
+    viewModel: PlayerViewModel,
 ) {
     val playerCareer by viewModel.playerCareer.collectAsState()
     playerCareer?.let {
@@ -206,7 +206,7 @@ private fun PlayerTitle(
 @Composable
 private fun PlayerInfoTable(
     modifier: Modifier = Modifier,
-    viewModel: PlayerInfoViewModel,
+    viewModel: PlayerViewModel,
 ) {
     val tableData by viewModel.playerInfoTableData.collectAsState()
     tableData?.let {
@@ -352,7 +352,7 @@ private fun PlayerInfoBox(
 @Composable
 private fun PlayerCareerStats(
     modifier: Modifier = Modifier,
-    viewModel: PlayerInfoViewModel
+    viewModel: PlayerViewModel
 ) {
     val horizontalScrollState = rememberScrollState()
     val timeframeState = rememberLazyListState()
@@ -414,7 +414,7 @@ private fun PlayerStatsBar(
 @Composable
 private fun PlayerStatsContent(
     modifier: Modifier = Modifier,
-    viewModel: PlayerInfoViewModel,
+    viewModel: PlayerViewModel,
     state: LazyListState,
 ) {
     val stats by viewModel.statsRowData.collectAsState()

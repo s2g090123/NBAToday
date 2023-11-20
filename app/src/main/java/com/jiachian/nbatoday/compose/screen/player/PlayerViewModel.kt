@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class PlayerInfoViewModel(
+class PlayerViewModel(
     private val playerId: Int,
     private val repository: BaseRepository,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,

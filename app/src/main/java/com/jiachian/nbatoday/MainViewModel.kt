@@ -2,7 +2,6 @@ package com.jiachian.nbatoday
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jiachian.nbatoday.compose.screen.home.HomeViewModel
 import com.jiachian.nbatoday.compose.state.NbaState
 import com.jiachian.nbatoday.compose.theme.updateColors
 import com.jiachian.nbatoday.data.BaseRepository
@@ -11,19 +10,20 @@ import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.event.EventBroadcaster
 import com.jiachian.nbatoday.event.EventManager
+import com.jiachian.nbatoday.utils.ScreenStateHelper
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class MainViewModel(
     private val repository: BaseRepository,
     private val dataStore: BaseDataStore,
+    private val screenStateHelper: ScreenStateHelper,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
     private val eventManager: EventManager<Event> = EventManager()
 ) : ViewModel(), EventBroadcaster<MainViewModel.Event> by eventManager {
@@ -36,27 +36,14 @@ class MainViewModel(
         eventManager.send(this)
     }
 
-    private val initState: NbaState by lazy {
-        NbaState.Home(
-            HomeViewModel(
-                repository = repository,
-                dataStore = dataStore,
-                openScreen = this::updateState
-            )
-        )
-    }
-
     private val isLoading = MutableStateFlow(false)
 
     private val isLoadedImp = MutableStateFlow(false)
     val isLoaded = isLoadedImp.asStateFlow()
 
-    private val stateStackImp by lazy { MutableStateFlow(listOf(initState)) }
-    val stateStack by lazy { stateStackImp.asStateFlow() }
-    val currentState by lazy {
-        stateStack.map { it.last() }
-            .stateIn(viewModelScope, SharingStarted.Eagerly, initState)
-    }
+    val stateStack = screenStateHelper.stateStack
+    val currentState = screenStateHelper.currentState
+        .stateIn(viewModelScope, SharingStarted.Eagerly, stateStack.value.first())
 
     fun loadData() {
         if (isLoading.value || isLoaded.value) return
@@ -83,21 +70,11 @@ class MainViewModel(
         }
     }
 
-    fun updateState(state: NbaState) {
-        if (currentState.value == state) return
-        val stack = stateStack.value.toMutableList().apply {
-            add(state)
-        }
-        stateStackImp.value = stack
-    }
-
     fun backState() {
-        if (currentState.value == initState) {
+        if (currentState.value is NbaState.Home) {
             Event.Exit.send()
         } else {
-            val state = stateStack.value.lastOrNull()
-            state?.composeViewModel?.dispose()
-            stateStackImp.value = stateStack.value.dropLast(1)
+            screenStateHelper.exitScreen()
         }
     }
 }

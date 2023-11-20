@@ -7,13 +7,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.jiachian.nbatoday.SCHEDULE_DATE_RANGE
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
-import com.jiachian.nbatoday.compose.screen.bet.BetViewModel
-import com.jiachian.nbatoday.compose.screen.calendar.GameCalendarViewModel
 import com.jiachian.nbatoday.compose.screen.card.GameStatusCardViewModel
-import com.jiachian.nbatoday.compose.screen.player.PlayerInfoViewModel
-import com.jiachian.nbatoday.compose.screen.score.BoxScoreViewModel
-import com.jiachian.nbatoday.compose.screen.team.TeamViewModel
-import com.jiachian.nbatoday.compose.state.NbaState
+import com.jiachian.nbatoday.compose.state.NbaScreenState
 import com.jiachian.nbatoday.compose.theme.updateColors
 import com.jiachian.nbatoday.data.BaseRepository
 import com.jiachian.nbatoday.data.datastore.BaseDataStore
@@ -25,6 +20,7 @@ import com.jiachian.nbatoday.data.local.team.teamOfficial
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.utils.NbaUtils
+import com.jiachian.nbatoday.utils.ScreenStateHelper
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.TimeZone
@@ -41,7 +37,7 @@ import kotlinx.coroutines.withContext
 class HomeViewModel(
     private val repository: BaseRepository,
     private val dataStore: BaseDataStore,
-    private val openScreen: (state: NbaState) -> Unit,
+    private val screenStateHelper: ScreenStateHelper,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
     coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
 ) : ComposeViewModel(coroutineScope) {
@@ -371,27 +367,25 @@ class HomeViewModel(
     }
 
     fun openGameBoxScore(game: NbaGame) {
-        openScreen(
-            NbaState.BoxScore(
-                BoxScoreViewModel(
-                    game = game,
-                    repository = repository,
-                    showPlayerCareer = { playerId ->
-                        openScreen(
-                            NbaState.Player(
-                                PlayerInfoViewModel(
-                                    playerId,
-                                    repository,
-                                    dispatcherProvider,
-                                    coroutineScope
-                                )
-                            )
-                        )
-                    },
-                    coroutineScope = coroutineScope
-                )
-            )
-        )
+        screenStateHelper.openScreen(NbaScreenState.BoxScore(game))
+    }
+
+    fun openTeamStats(team: NBATeam) {
+        screenStateHelper.openScreen(NbaScreenState.Team(team))
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    fun openCalendar(dateData: DateData) {
+        val format = SimpleDateFormat("yyyy/MM/dd").apply {
+            timeZone = TimeZone.getTimeZone("EST")
+        }
+        val date = format.parse(dateData.dateString) ?: return
+        screenStateHelper.openScreen(NbaScreenState.Calendar(date))
+    }
+
+    fun openBetScreen() {
+        val account = user.value?.account ?: return
+        screenStateHelper.openScreen(NbaScreenState.Bet(account))
     }
 
     fun updateTeamStats() {
@@ -413,43 +407,11 @@ class HomeViewModel(
         standingSortImp.value = sorting
     }
 
-    fun openTeamStats(team: NBATeam) {
-        openScreen(
-            NbaState.Team(
-                TeamViewModel(
-                    team,
-                    repository,
-                    openScreen,
-                    dispatcherProvider,
-                    coroutineScope
-                )
-            )
-        )
-    }
-
     fun updateTheme(team: NBATeam) {
         updateColors(team.colors)
         coroutineScope.launch(dispatcherProvider.io) {
             dataStore.updateThemeColor(team.teamId)
         }
-    }
-
-    @SuppressLint("SimpleDateFormat")
-    fun openCalendar(dateData: DateData) {
-        val format = SimpleDateFormat("yyyy/MM/dd").apply {
-            timeZone = TimeZone.getTimeZone("EST")
-        }
-        val date = format.parse(dateData.dateString) ?: return
-        openScreen(
-            NbaState.Calendar(
-                GameCalendarViewModel(
-                    date = date,
-                    repository = repository,
-                    openScreen = openScreen,
-                    coroutineScope = coroutineScope
-                )
-            )
-        )
     }
 
     fun login(account: String, password: String) {
@@ -468,20 +430,6 @@ class HomeViewModel(
         coroutineScope.launch(dispatcherProvider.io) {
             repository.register(account, password)
         }
-    }
-
-    fun openBetScreen() {
-        val account = user.value?.account ?: return
-        openScreen(
-            NbaState.Bet(
-                BetViewModel(
-                    account = account,
-                    repository = repository,
-                    openScreen = openScreen,
-                    coroutineScope = coroutineScope
-                )
-            )
-        )
     }
 
     fun getEvaluationTextByLabel(label: StandingLabel, stats: TeamStats): String {

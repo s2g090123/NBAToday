@@ -474,7 +474,7 @@ private fun ScoreDetailPager(
                         .fillMaxWidth(),
                     scoreRowData = homeScoreRowData,
                     labels = viewModel.statsLabels,
-                    showPlayerCareer = { viewModel.showPlayerCareer(it) }
+                    showPlayerCareer = viewModel::openPlayerCareer
                 )
             }
 
@@ -486,7 +486,7 @@ private fun ScoreDetailPager(
                         .fillMaxWidth(),
                     scoreRowData = awayScoreRowData,
                     labels = viewModel.statsLabels,
-                    showPlayerCareer = { viewModel.showPlayerCareer(it) }
+                    showPlayerCareer = viewModel::openPlayerCareer
                 )
             }
 

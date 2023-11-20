@@ -1,15 +1,13 @@
 package com.jiachian.nbatoday.compose.screen.bet
 
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
-import com.jiachian.nbatoday.compose.screen.player.PlayerInfoViewModel
-import com.jiachian.nbatoday.compose.screen.score.BoxScoreViewModel
-import com.jiachian.nbatoday.compose.screen.team.TeamViewModel
-import com.jiachian.nbatoday.compose.state.NbaState
+import com.jiachian.nbatoday.compose.state.NbaScreenState
 import com.jiachian.nbatoday.data.BaseRepository
 import com.jiachian.nbatoday.data.local.BetAndNbaGame
 import com.jiachian.nbatoday.data.remote.game.GameStatusCode
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
+import com.jiachian.nbatoday.utils.ScreenStateHelper
 import java.util.Random
 import kotlin.math.abs
 import kotlinx.coroutines.CoroutineScope
@@ -24,7 +22,7 @@ import kotlinx.coroutines.withContext
 class BetViewModel(
     account: String,
     private val repository: BaseRepository,
-    private val openScreen: (state: NbaState) -> Unit,
+    private val screenStateHelper: ScreenStateHelper,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
     coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
 ) : ComposeViewModel(coroutineScope) {
@@ -54,30 +52,10 @@ class BetViewModel(
     val showRewardPoints = showRewardPointsImp.asStateFlow()
 
     fun clickBetAndGame(betAndGame: BetAndNbaGame) {
-        if (betAndGame.game.gameStatus == GameStatusCode.COMING_SOON) {
-            openScreen(
-                NbaState.Team(
-                    TeamViewModel(betAndGame.game.homeTeam.team, repository, openScreen)
-                )
-            )
-        } else if (betAndGame.game.gameStatus != GameStatusCode.FINAL) {
-            openScreen(
-                NbaState.BoxScore(
-                    BoxScoreViewModel(
-                        betAndGame.game,
-                        repository,
-                        showPlayerCareer = {
-                            openScreen(
-                                NbaState.Player(
-                                    PlayerInfoViewModel(it, repository)
-                                )
-                            )
-                        }
-                    )
-                )
-            )
-        } else {
-            settleBets(betAndGame)
+        when (betAndGame.game.gameStatus) {
+            GameStatusCode.COMING_SOON -> screenStateHelper.openScreen(NbaScreenState.Team(betAndGame.game.homeTeam.team))
+            GameStatusCode.PLAYING -> screenStateHelper.openScreen(NbaScreenState.BoxScore(betAndGame.game))
+            GameStatusCode.FINAL -> settleBets(betAndGame)
         }
     }
 

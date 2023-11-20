@@ -23,7 +23,7 @@ import org.junit.Test
 @OptIn(ExperimentalCoroutinesApi::class)
 class PlayerCareerScreenTest : BaseAndroidTest() {
 
-    private lateinit var viewModel: PlayerInfoViewModel
+    private lateinit var viewModel: PlayerViewModel
     private lateinit var repository: TestRepository
     private var isBack = false
     private var currentState: NbaState? = null
@@ -33,7 +33,7 @@ class PlayerCareerScreenTest : BaseAndroidTest() {
     @Before
     fun setup() = runTest {
         repository = TestRepository()
-        viewModel = PlayerInfoViewModel(
+        viewModel = PlayerViewModel(
             playerId = playerCareer.personId,
             repository = repository,
             dispatcherProvider = coroutineEnvironment.testDispatcherProvider

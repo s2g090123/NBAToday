@@ -20,8 +20,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.instanceOf
+import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
 import org.junit.Before
@@ -29,9 +29,9 @@ import org.junit.Rule
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class GameCalendarViewModelTest {
+class CalendarViewModelTest {
 
-    private lateinit var viewModel: GameCalendarViewModel
+    private lateinit var viewModel: CalendarViewModel
     private val repository = TestRepository()
     private var currentState: NbaState? = null
     private val coroutineEnvironment = TestCoroutineEnvironment()
@@ -184,8 +184,8 @@ class GameCalendarViewModelTest {
         assertThat(viewModel.date, `is`(Date(BASIC_TIME)))
     }
 
-    private fun createViewModel(dispatcherProvider: DispatcherProvider): GameCalendarViewModel {
-        return GameCalendarViewModel(
+    private fun createViewModel(dispatcherProvider: DispatcherProvider): CalendarViewModel {
+        return CalendarViewModel(
             date = Date(BASIC_TIME),
             repository = repository,
             openScreen = {
