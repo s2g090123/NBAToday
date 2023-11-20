@@ -4,7 +4,7 @@ detekt {
     buildUponDefaultConfig = true
     parallel = true
     ignoreFailures = true
-    config.setFrom("${rootProject.projectDir}/config/detekt/config.yml")
+    config.setFrom("${rootProject.projectDir}/config/detekt/detekt_config.yml")
 }
 
 tasks.named("detekt").configure {
