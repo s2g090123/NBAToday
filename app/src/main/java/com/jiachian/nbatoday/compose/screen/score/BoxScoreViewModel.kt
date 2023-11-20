@@ -32,8 +32,8 @@ class BoxScoreViewModel(
     private val repository: BaseRepository,
     val showPlayerCareer: (playerId: Int) -> Unit,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
-    private val coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
-) : ComposeViewModel() {
+    coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
+) : ComposeViewModel(coroutineScope) {
 
     private val gameId = game.gameId
 

@@ -31,8 +31,8 @@ class TeamViewModel(
     private val repository: BaseRepository,
     private val openScreen: (state: NbaState) -> Unit,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
-    private val coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
-) : ComposeViewModel() {
+    coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
+) : ComposeViewModel(coroutineScope) {
 
     val user = repository.user
         .stateIn(coroutineScope, SharingStarted.WhileSubscribed(5000L), null)

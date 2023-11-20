@@ -43,8 +43,8 @@ class HomeViewModel(
     private val dataStore: BaseDataStore,
     private val openScreen: (state: NbaState) -> Unit,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
-    private val coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
-) : ComposeViewModel() {
+    coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
+) : ComposeViewModel(coroutineScope) {
 
     val user = repository.user
         .stateIn(coroutineScope, SharingStarted.WhileSubscribed(5000), null)

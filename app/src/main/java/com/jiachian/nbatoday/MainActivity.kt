@@ -195,48 +195,44 @@ private fun SplashScreen(
 private fun MainScreen(
     viewModel: MainViewModel
 ) {
-    val currentState by viewModel.currentState.collectAsState()
     val stateStack by viewModel.stateStack.collectAsState()
     Scaffold {
         stateStack.forEach { state ->
             when (state) {
-                is NbaState.Home -> {
-                    HomeScreen(state.viewModel)
-                }
+                is NbaState.Home -> HomeScreen(state.viewModel)
                 is NbaState.BoxScore -> {
                     BoxScoreScreen(
                         viewModel = state.viewModel,
-                        onBack = { viewModel.backState() }
+                        onBack = viewModel::backState,
                     )
                 }
                 is NbaState.Team -> {
                     TeamScreen(
                         viewModel = state.viewModel,
-                        onBack = { viewModel.backState() }
+                        onBack = viewModel::backState,
                     )
                 }
                 is NbaState.Player -> {
                     PlayerCareerScreen(
                         viewModel = state.viewModel,
-                        onBack = { viewModel.backState() }
+                        onBack = viewModel::backState,
                     )
                 }
                 is NbaState.Calendar -> {
                     GameCalendarScreen(
                         viewModel = state.viewModel,
-                        onClose = { viewModel.backState() }
+                        onClose = viewModel::backState,
                     )
                 }
                 is NbaState.Bet -> {
                     BetScreen(
                         viewModel = state.viewModel,
-                        onBackClick = { viewModel.backState() }
+                        onBackClick = viewModel::backState,
                     )
                 }
             }
         }
     }
-
     BackHandler {
         viewModel.backState()
     }

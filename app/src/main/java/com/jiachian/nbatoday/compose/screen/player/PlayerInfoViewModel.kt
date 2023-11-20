@@ -23,7 +23,7 @@ class PlayerInfoViewModel(
     private val repository: BaseRepository,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
     coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
-) : ComposeViewModel() {
+) : ComposeViewModel(coroutineScope) {
 
     private val isRefreshingImp = MutableStateFlow(false)
     val isRefreshing = isRefreshingImp.asStateFlow()

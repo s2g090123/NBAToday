@@ -95,6 +95,8 @@ class MainViewModel(
         if (currentState.value == initState) {
             Event.Exit.send()
         } else {
+            val state = stateStack.value.lastOrNull()
+            state?.composeViewModel?.dispose()
             stateStackImp.value = stateStack.value.dropLast(1)
         }
     }
