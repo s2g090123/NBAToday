@@ -7,6 +7,7 @@ import com.jiachian.nbatoday.data.datastore.NbaDataStore
 import com.jiachian.nbatoday.data.local.NbaDatabase
 import com.jiachian.nbatoday.data.local.NbaLocalDataSource
 import com.jiachian.nbatoday.data.remote.NbaRemoteDataSource
+import com.jiachian.nbatoday.utils.ComposeViewModelProvider
 import com.jiachian.nbatoday.utils.ScreenStateHelper
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
@@ -18,6 +19,7 @@ val module = module {
     factory { (get() as NbaDatabase).getNbaDao() }
     factory { NbaRemoteDataSource(get()) }
     factory { NbaLocalDataSource(get()) }
+    factory { ComposeViewModelProvider(get<NbaRepository>(), get(), get()) }
 
     single { NbaDatabase.getInstance(androidContext()) }
     single { NbaRepository(get<NbaRemoteDataSource>(), get<NbaLocalDataSource>(), get()) }

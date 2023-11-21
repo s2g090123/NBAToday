@@ -1,4 +1,4 @@
-package com.jiachian.nbatoday.compose.screen.home
+package com.jiachian.nbatoday.compose.screen.home.schedule
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -47,7 +47,7 @@ import com.jiachian.nbatoday.utils.rippleClickable
 @Composable
 fun SchedulePage(
     modifier: Modifier = Modifier,
-    viewModel: HomeViewModel
+    viewModel: SchedulePageViewModel
 ) {
     val pagerState = rememberPagerState()
     val dateData = viewModel.scheduleDates
@@ -94,7 +94,7 @@ fun SchedulePage(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun ScheduleContent(
-    viewModel: HomeViewModel,
+    viewModel: SchedulePageViewModel,
     refreshState: PullRefreshState,
     games: List<NbaGameAndBet>,
     onClickCalendar: () -> Unit,

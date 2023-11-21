@@ -1,4 +1,4 @@
-package com.jiachian.nbatoday.compose.screen.home
+package com.jiachian.nbatoday.compose.screen.home.standing
 
 enum class StandingSort {
     GP, W, L, WINP, PTS, FGM, FGA, FGP, PM3, PA3, PP3,

@@ -32,6 +32,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.R
+import com.jiachian.nbatoday.compose.screen.home.schedule.SchedulePage
+import com.jiachian.nbatoday.compose.screen.home.standing.StandingPage
+import com.jiachian.nbatoday.compose.screen.home.user.UserPage
 import com.jiachian.nbatoday.compose.widget.FocusableColumn
 import com.jiachian.nbatoday.compose.widget.RefreshingScreen
 import com.jiachian.nbatoday.utils.noRippleClickable
@@ -48,7 +51,9 @@ fun HomeScreen(
             .background(MaterialTheme.colors.primary)
     ) {
         HomeBody(
-            modifier = Modifier.weight(1f),
+            modifier = Modifier
+                .fillMaxSize()
+                .weight(1f),
             viewModel = viewModel
         )
         HomeBottom(
@@ -76,9 +81,8 @@ private fun HomeBody(
     val homePage by viewModel.homePage.collectAsState()
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     val lazyState = rememberLazyListState()
-
     LazyRow(
-        modifier = modifier.width(screenWidth),
+        modifier = modifier,
         state = lazyState,
         userScrollEnabled = false
     ) {
@@ -87,7 +91,7 @@ private fun HomeBody(
                 modifier = Modifier
                     .width(screenWidth)
                     .fillMaxHeight(),
-                viewModel = viewModel
+                viewModel = viewModel.schedulePageViewModel
             )
         }
         item {
@@ -95,7 +99,7 @@ private fun HomeBody(
                 modifier = Modifier
                     .width(screenWidth)
                     .fillMaxHeight(),
-                viewModel = viewModel
+                viewModel = viewModel.standingPageViewModel
             )
         }
         item {
@@ -103,7 +107,7 @@ private fun HomeBody(
                 modifier = Modifier
                     .width(screenWidth)
                     .fillMaxHeight(),
-                viewModel = viewModel
+                viewModel = viewModel.userPageViewModel
             )
         }
     }

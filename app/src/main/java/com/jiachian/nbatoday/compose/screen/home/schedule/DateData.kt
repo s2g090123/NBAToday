@@ -1,4 +1,4 @@
-package com.jiachian.nbatoday.compose.screen.home
+package com.jiachian.nbatoday.compose.screen.home.schedule
 
 data class DateData(
     val year: Int,

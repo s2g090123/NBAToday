@@ -11,6 +11,7 @@ import com.jiachian.nbatoday.data.local.player.PlayerStats
 import com.jiachian.nbatoday.data.local.team.NBATeam
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
+import com.jiachian.nbatoday.utils.ComposeViewModelProvider
 import com.jiachian.nbatoday.utils.NbaUtils
 import com.jiachian.nbatoday.utils.ScreenStateHelper
 import com.jiachian.nbatoday.utils.decimalFormat
@@ -29,6 +30,7 @@ class TeamViewModel(
     val team: NBATeam,
     private val repository: BaseRepository,
     private val screenStateHelper: ScreenStateHelper,
+    private val composeViewModelProvider: ComposeViewModelProvider,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
     coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
 ) : ComposeViewModel(coroutineScope) {
@@ -337,9 +339,10 @@ class TeamViewModel(
     }
 
     fun createGameStatusCardViewModel(gameAndBet: NbaGameAndBet): GameStatusCardViewModel {
-        return GameStatusCardViewModel(
+        return composeViewModelProvider.getGameStatusCardViewModel(
             gameAndBet = gameAndBet,
-            repository = repository,
+            dispatcherProvider = dispatcherProvider,
+            coroutineScope = coroutineScope
         )
     }
 }

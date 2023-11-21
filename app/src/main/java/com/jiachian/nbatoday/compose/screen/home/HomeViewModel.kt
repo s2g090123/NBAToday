@@ -1,455 +1,48 @@
 package com.jiachian.nbatoday.compose.screen.home
 
-import android.annotation.SuppressLint
-import android.text.format.DateUtils
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import com.jiachian.nbatoday.SCHEDULE_DATE_RANGE
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
-import com.jiachian.nbatoday.compose.screen.card.GameStatusCardViewModel
-import com.jiachian.nbatoday.compose.state.NbaScreenState
-import com.jiachian.nbatoday.compose.theme.updateColors
 import com.jiachian.nbatoday.data.BaseRepository
-import com.jiachian.nbatoday.data.datastore.BaseDataStore
-import com.jiachian.nbatoday.data.local.NbaGame
-import com.jiachian.nbatoday.data.local.NbaGameAndBet
-import com.jiachian.nbatoday.data.local.team.NBATeam
-import com.jiachian.nbatoday.data.local.team.TeamStats
-import com.jiachian.nbatoday.data.local.team.teamOfficial
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
-import com.jiachian.nbatoday.utils.NbaUtils
-import com.jiachian.nbatoday.utils.ScreenStateHelper
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.TimeZone
+import com.jiachian.nbatoday.utils.ComposeViewModelProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class HomeViewModel(
-    private val repository: BaseRepository,
-    private val dataStore: BaseDataStore,
-    private val screenStateHelper: ScreenStateHelper,
+    repository: BaseRepository,
+    private val composeViewModelProvider: ComposeViewModelProvider,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
     coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
 ) : ComposeViewModel(coroutineScope) {
-
-    val user = repository.user
-        .stateIn(coroutineScope, SharingStarted.WhileSubscribed(5000), null)
-
-    val nbaTeams: List<NBATeam> = mutableListOf<NBATeam>().apply {
-        add(teamOfficial)
-        addAll(NBATeam.nbaTeams)
-    }
 
     val isProgressing = repository.isProgressing
 
     private val homePageImp = MutableStateFlow(HomePage.SCHEDULE)
     val homePage = homePageImp.asStateFlow()
 
-    // Schedule
-    val scheduleDates: List<DateData> = getDateData()
-    private val scheduleIndexImp = MutableStateFlow(scheduleDates.size / 2)
-    val scheduleIndex = scheduleIndexImp.asStateFlow()
-    private val scheduleGamesImp = NbaUtils.getCalendar().let {
-        it.set(Calendar.HOUR, 0)
-        it.set(Calendar.MINUTE, 0)
-        it.set(Calendar.SECOND, 0)
-        repository.getGamesAndBetsDuring(
-            it.timeInMillis - DateUtils.DAY_IN_MILLIS * (SCHEDULE_DATE_RANGE + 1),
-            it.timeInMillis + DateUtils.DAY_IN_MILLIS * (SCHEDULE_DATE_RANGE)
-        )
-    }
-    val scheduleGames = scheduleGamesImp.map {
-        val calendar = NbaUtils.getCalendar()
-        it.groupBy { game ->
-            calendar.time = game.game.gameDateTime
-            DateData(
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH) + 1,
-                calendar.get(Calendar.DAY_OF_MONTH)
-            )
-        }
-    }.stateIn(coroutineScope, SharingStarted.Lazily, mapOf())
-    private val isRefreshingScheduleImp = MutableStateFlow(false)
-    val isRefreshingSchedule = isRefreshingScheduleImp.asStateFlow()
-
-    // Standing
-    private val labelToEvaluationAccessor = mapOf(
-        "GP" to { stats: TeamStats -> stats.gamePlayed.toString() },
-        "W" to { stats: TeamStats -> stats.win.toString() },
-        "L" to { stats: TeamStats -> stats.lose.toString() },
-        "WIN%" to { stats: TeamStats -> stats.winPercentage.toString() },
-        "PTS" to { stats: TeamStats -> (stats.points.toDouble() / stats.gamePlayed).toString() },
-        "FGM" to { stats: TeamStats -> (stats.fieldGoalsMade.toDouble() / stats.gamePlayed).toString() },
-        "FGA" to { stats: TeamStats -> (stats.fieldGoalsAttempted.toDouble() / stats.gamePlayed).toString() },
-        "FG%" to { stats: TeamStats -> stats.fieldGoalsPercentage.toString() },
-        "3PM" to { stats: TeamStats -> (stats.threePointersMade.toDouble() / stats.gamePlayed).toString() },
-        "3PA" to { stats: TeamStats -> (stats.threePointersAttempted.toDouble() / stats.gamePlayed).toString() },
-        "3P%" to { stats: TeamStats -> stats.threePointersPercentage.toString() },
-        "FTM" to { stats: TeamStats -> (stats.freeThrowsMade.toDouble() / stats.gamePlayed).toString() },
-        "FTA" to { stats: TeamStats -> (stats.freeThrowsAttempted.toDouble() / stats.gamePlayed).toString() },
-        "FT%" to { stats: TeamStats -> stats.freeThrowsPercentage.toString() },
-        "OREB" to { stats: TeamStats -> (stats.reboundsOffensive.toDouble() / stats.gamePlayed).toString() },
-        "DREB" to { stats: TeamStats -> (stats.reboundsDefensive.toDouble() / stats.gamePlayed).toString() },
-        "REB" to { stats: TeamStats -> (stats.reboundsTotal.toDouble() / stats.gamePlayed).toString() },
-        "AST" to { stats: TeamStats -> (stats.assists.toDouble() / stats.gamePlayed).toString() },
-        "TOV" to { stats: TeamStats -> (stats.turnovers.toDouble() / stats.gamePlayed).toString() },
-        "STL" to { stats: TeamStats -> (stats.steals.toDouble() / stats.gamePlayed).toString() },
-        "BLK" to { stats: TeamStats -> (stats.blocks.toDouble() / stats.gamePlayed).toString() },
-        "PF" to { stats: TeamStats -> (stats.foulsPersonal.toDouble() / stats.gamePlayed).toString() }
-    )
-    private val standingSortImp = MutableStateFlow(StandingSort.WINP)
-    val standingSort = standingSortImp.asStateFlow()
-    val teamStats = combine(
-        repository.getTeamStats(),
-        standingSort
-    ) { teamStats, sort ->
-        when (sort) {
-            StandingSort.GP -> teamStats.sortedWith(
-                compareByDescending<TeamStats> {
-                    it.gamePlayed
-                }.thenByDescending {
-                    it.winPercentage
-                }
-            )
-
-            StandingSort.W -> teamStats.sortedWith(
-                compareByDescending<TeamStats> {
-                    it.win
-                }.thenByDescending {
-                    it.winPercentage
-                }
-            )
-
-            StandingSort.L -> teamStats.sortedWith(
-                compareBy<TeamStats> {
-                    it.lose
-                }.thenByDescending {
-                    it.winPercentage
-                }
-            )
-
-            StandingSort.WINP -> teamStats.sortedWith(
-                compareByDescending<TeamStats> {
-                    it.winPercentage
-                }.thenByDescending {
-                    it.winPercentage
-                }
-            )
-
-            StandingSort.PTS -> teamStats.sortedWith(
-                compareByDescending<TeamStats> {
-                    it.points.toDouble() / it.gamePlayed
-                }.thenByDescending {
-                    it.winPercentage
-                }
-            )
-
-            StandingSort.FGM -> teamStats.sortedWith(
-                compareByDescending<TeamStats> {
-                    it.fieldGoalsMade.toDouble() / it.gamePlayed
-                }.thenByDescending {
-                    it.winPercentage
-                }
-            )
-
-            StandingSort.FGA -> teamStats.sortedWith(
-                compareByDescending<TeamStats> {
-                    it.fieldGoalsAttempted.toDouble() / it.gamePlayed
-                }.thenByDescending {
-                    it.winPercentage
-                }
-            )
-
-            StandingSort.FGP -> teamStats.sortedWith(
-                compareByDescending<TeamStats> {
-                    it.fieldGoalsPercentage
-                }.thenByDescending {
-                    it.winPercentage
-                }
-            )
-
-            StandingSort.PM3 -> teamStats.sortedWith(
-                compareByDescending<TeamStats> {
-                    it.threePointersMade.toDouble() / it.gamePlayed
-                }.thenByDescending {
-                    it.winPercentage
-                }
-            )
-
-            StandingSort.PA3 -> teamStats.sortedWith(
-                compareByDescending<TeamStats> {
-                    it.threePointersAttempted.toDouble() / it.gamePlayed
-                }.thenByDescending {
-                    it.winPercentage
-                }
-            )
-
-            StandingSort.PP3 -> teamStats.sortedWith(
-                compareByDescending<TeamStats> {
-                    it.threePointersPercentage
-                }.thenByDescending {
-                    it.winPercentage
-                }
-            )
-
-            StandingSort.FTM -> teamStats.sortedWith(
-                compareByDescending<TeamStats> {
-                    it.freeThrowsMade.toDouble() / it.gamePlayed
-                }.thenByDescending {
-                    it.winPercentage
-                }
-            )
-
-            StandingSort.FTA -> teamStats.sortedWith(
-                compareByDescending<TeamStats> {
-                    it.freeThrowsAttempted.toDouble() / it.gamePlayed
-                }.thenByDescending {
-                    it.winPercentage
-                }
-            )
-
-            StandingSort.FTP -> teamStats.sortedWith(
-                compareByDescending<TeamStats> {
-                    it.freeThrowsPercentage
-                }.thenByDescending {
-                    it.winPercentage
-                }
-            )
-
-            StandingSort.OREB -> teamStats.sortedWith(
-                compareByDescending<TeamStats> {
-                    it.reboundsOffensive.toDouble() / it.gamePlayed
-                }.thenByDescending {
-                    it.winPercentage
-                }
-            )
-
-            StandingSort.DREB -> teamStats.sortedWith(
-                compareByDescending<TeamStats> {
-                    it.reboundsDefensive.toDouble() / it.gamePlayed
-                }.thenByDescending {
-                    it.winPercentage
-                }
-            )
-
-            StandingSort.REB -> teamStats.sortedWith(
-                compareByDescending<TeamStats> {
-                    it.reboundsTotal.toDouble() / it.gamePlayed
-                }.thenByDescending {
-                    it.winPercentage
-                }
-            )
-
-            StandingSort.AST -> teamStats.sortedWith(
-                compareByDescending<TeamStats> {
-                    it.assists.toDouble() / it.gamePlayed
-                }.thenByDescending {
-                    it.winPercentage
-                }
-            )
-
-            StandingSort.TOV -> teamStats.sortedWith(
-                compareBy<TeamStats> {
-                    it.turnovers.toDouble() / it.gamePlayed
-                }.thenByDescending {
-                    it.winPercentage
-                }
-            )
-
-            StandingSort.STL -> teamStats.sortedWith(
-                compareByDescending<TeamStats> {
-                    it.steals.toDouble() / it.gamePlayed
-                }.thenByDescending {
-                    it.winPercentage
-                }
-            )
-
-            StandingSort.BLK -> teamStats.sortedWith(
-                compareByDescending<TeamStats> {
-                    it.blocks.toDouble() / it.gamePlayed
-                }.thenByDescending {
-                    it.winPercentage
-                }
-            )
-
-            StandingSort.PF -> teamStats.sortedWith(
-                compareBy<TeamStats> {
-                    it.foulsPersonal.toDouble() / it.gamePlayed
-                }.thenByDescending {
-                    it.winPercentage
-                }
-            )
-        }.groupBy {
-            it.teamConference
-        }
-    }.stateIn(coroutineScope, SharingStarted.Lazily, mapOf())
-    private val isRefreshingTeamStatsImp = MutableStateFlow(false)
-    val isRefreshingTeamStats = isRefreshingTeamStatsImp.asStateFlow()
-    private val selectConferenceImp = MutableStateFlow(NBATeam.Conference.EAST)
-    val selectedConference = selectConferenceImp.asStateFlow()
-    val standingLabel = derivedStateOf {
-        listOf(
-            StandingLabel(40.dp, "GP", TextAlign.End, StandingSort.GP),
-            StandingLabel(40.dp, "W", TextAlign.End, StandingSort.W),
-            StandingLabel(40.dp, "L", TextAlign.End, StandingSort.L),
-            StandingLabel(64.dp, "WIN%", TextAlign.End, StandingSort.WINP),
-            StandingLabel(64.dp, "PTS", TextAlign.End, StandingSort.PTS),
-            StandingLabel(64.dp, "FGM", TextAlign.End, StandingSort.FGM),
-            StandingLabel(64.dp, "FGA", TextAlign.End, StandingSort.FGA),
-            StandingLabel(64.dp, "FG%", TextAlign.End, StandingSort.FGP),
-            StandingLabel(64.dp, "3PM", TextAlign.End, StandingSort.PM3),
-            StandingLabel(64.dp, "3PA", TextAlign.End, StandingSort.PA3),
-            StandingLabel(64.dp, "3P%", TextAlign.End, StandingSort.PP3),
-            StandingLabel(64.dp, "FTM", TextAlign.End, StandingSort.FTM),
-            StandingLabel(64.dp, "FTA", TextAlign.End, StandingSort.FTA),
-            StandingLabel(64.dp, "FT%", TextAlign.End, StandingSort.FTP),
-            StandingLabel(48.dp, "OREB", TextAlign.End, StandingSort.OREB),
-            StandingLabel(48.dp, "DREB", TextAlign.End, StandingSort.DREB),
-            StandingLabel(48.dp, "REB", TextAlign.End, StandingSort.REB),
-            StandingLabel(48.dp, "AST", TextAlign.End, StandingSort.AST),
-            StandingLabel(48.dp, "TOV", TextAlign.End, StandingSort.TOV),
-            StandingLabel(48.dp, "STL", TextAlign.End, StandingSort.STL),
-            StandingLabel(48.dp, "BLK", TextAlign.End, StandingSort.BLK),
-            StandingLabel(48.dp, "PF", TextAlign.End, StandingSort.PF)
+    val schedulePageViewModel by lazy {
+        composeViewModelProvider.getSchedulePageViewModel(
+            dispatcherProvider = dispatcherProvider,
+            coroutineScope = coroutineScope,
         )
     }
 
-    init {
-        updateTeamStats()
+    val standingPageViewModel by lazy {
+        composeViewModelProvider.getStandingPageViewModel(
+            dispatcherProvider = dispatcherProvider,
+            coroutineScope = coroutineScope,
+        )
+    }
+
+    val userPageViewModel by lazy {
+        composeViewModelProvider.getUserPageViewModel(
+            dispatcherProvider = dispatcherProvider,
+            coroutineScope = coroutineScope
+        )
     }
 
     fun updateHomePage(page: HomePage) {
         homePageImp.value = page
-    }
-
-    fun updateScheduleIndex(index: Int) {
-        if (index !in scheduleDates.indices) return
-        scheduleIndexImp.value = index
-    }
-
-    private fun getDateData(): List<DateData> {
-        val output = mutableListOf<DateData>()
-        val calendar = NbaUtils.getCalendar()
-        calendar.add(Calendar.DAY_OF_MONTH, -SCHEDULE_DATE_RANGE)
-        repeat(SCHEDULE_DATE_RANGE * 2 + 1) {
-            output.add(
-                DateData(
-                    calendar.get(Calendar.YEAR),
-                    calendar.get(Calendar.MONTH) + 1,
-                    calendar.get(Calendar.DAY_OF_MONTH)
-                )
-            )
-            calendar.add(Calendar.DAY_OF_MONTH, 1)
-        }
-        return output
-    }
-
-    fun updateTodaySchedule() {
-        if (isRefreshingSchedule.value) return
-        val dateData = scheduleDates.getOrNull(scheduleIndex.value) ?: return
-        coroutineScope.launch {
-            isRefreshingScheduleImp.value = true
-            withContext(dispatcherProvider.io) {
-                repository.refreshSchedule(dateData.year, dateData.month, dateData.day)
-            }
-            isRefreshingScheduleImp.value = false
-        }
-    }
-
-    fun openGameBoxScore(game: NbaGame) {
-        screenStateHelper.openScreen(NbaScreenState.BoxScore(game))
-    }
-
-    fun openTeamStats(team: NBATeam) {
-        screenStateHelper.openScreen(NbaScreenState.Team(team))
-    }
-
-    @SuppressLint("SimpleDateFormat")
-    fun openCalendar(dateData: DateData) {
-        val format = SimpleDateFormat("yyyy/MM/dd").apply {
-            timeZone = TimeZone.getTimeZone("EST")
-        }
-        val date = format.parse(dateData.dateString) ?: return
-        screenStateHelper.openScreen(NbaScreenState.Calendar(date))
-    }
-
-    fun openBetScreen() {
-        val account = user.value?.account ?: return
-        screenStateHelper.openScreen(NbaScreenState.Bet(account))
-    }
-
-    fun updateTeamStats() {
-        if (isRefreshingTeamStats.value) return
-        coroutineScope.launch {
-            isRefreshingTeamStatsImp.value = true
-            withContext(dispatcherProvider.io) {
-                repository.refreshTeamStats()
-            }
-            isRefreshingTeamStatsImp.value = false
-        }
-    }
-
-    fun selectConference(conference: NBATeam.Conference) {
-        selectConferenceImp.value = conference
-    }
-
-    fun updateStandingSort(sorting: StandingSort) {
-        standingSortImp.value = sorting
-    }
-
-    fun updateTheme(team: NBATeam) {
-        updateColors(team.colors)
-        coroutineScope.launch(dispatcherProvider.io) {
-            dataStore.updateThemeColor(team.teamId)
-        }
-    }
-
-    fun login(account: String, password: String) {
-        coroutineScope.launch(dispatcherProvider.io) {
-            repository.login(account, password)
-        }
-    }
-
-    fun logout() {
-        coroutineScope.launch(dispatcherProvider.io) {
-            repository.logout()
-        }
-    }
-
-    fun register(account: String, password: String) {
-        coroutineScope.launch(dispatcherProvider.io) {
-            repository.register(account, password)
-        }
-    }
-
-    fun getEvaluationTextByLabel(label: StandingLabel, stats: TeamStats): String {
-        val labelText = label.text
-        val accessor = labelToEvaluationAccessor[labelText] ?: return ""
-        return accessor(stats)
-    }
-
-    fun clickScheduleGame(game: NbaGameAndBet) {
-        if (!game.game.isGamePlayed) {
-            openTeamStats(game.game.homeTeam.team)
-        } else {
-            openGameBoxScore(game.game)
-        }
-    }
-
-    fun createGameStatusCardViewModel(gameAndBet: NbaGameAndBet): GameStatusCardViewModel {
-        return GameStatusCardViewModel(
-            gameAndBet = gameAndBet,
-            repository = repository,
-        )
     }
 }

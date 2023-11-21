@@ -1,4 +1,4 @@
-package com.jiachian.nbatoday.compose.screen.home
+package com.jiachian.nbatoday.compose.screen.home.user
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -58,7 +58,7 @@ import com.jiachian.nbatoday.utils.rippleClickable
 @Composable
 fun UserPage(
     modifier: Modifier,
-    viewModel: HomeViewModel
+    viewModel: UserPageViewModel
 ) {
     val user by viewModel.user.collectAsState()
     user?.let {
@@ -77,7 +77,7 @@ fun UserPage(
 @Composable
 private fun UserScreen(
     modifier: Modifier = Modifier,
-    viewModel: HomeViewModel,
+    viewModel: UserPageViewModel,
     user: User,
 ) {
     Column(modifier = modifier) {

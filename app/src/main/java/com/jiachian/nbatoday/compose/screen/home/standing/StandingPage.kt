@@ -1,4 +1,4 @@
-package com.jiachian.nbatoday.compose.screen.home
+package com.jiachian.nbatoday.compose.screen.home.standing
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
@@ -72,7 +72,7 @@ import kotlin.math.max
 @Composable
 fun StandingPage(
     modifier: Modifier = Modifier,
-    viewModel: HomeViewModel
+    viewModel: StandingPageViewModel,
 ) {
     val teamStats by viewModel.teamStats.collectAsState()
     val selectedConference by viewModel.selectedConference.collectAsState()
@@ -171,7 +171,7 @@ private fun StandingTabRow(
 @Composable
 private fun TeamStanding(
     modifier: Modifier = Modifier,
-    viewModel: HomeViewModel,
+    viewModel: StandingPageViewModel,
     teamStats: List<TeamStats>
 ) {
     val teamState = rememberLazyListState()
@@ -208,7 +208,7 @@ private fun TeamStanding(
 @Composable
 private fun TeamStandingStatsTable(
     modifier: Modifier = Modifier,
-    viewModel: HomeViewModel,
+    viewModel: StandingPageViewModel,
     statsState: LazyListState,
     teamStats: List<TeamStats>,
 ) {
@@ -255,7 +255,7 @@ private fun TeamStandingStatsTable(
 @Composable
 private fun TeamStatsRow(
     modifier: Modifier = Modifier,
-    viewModel: HomeViewModel,
+    viewModel: StandingPageViewModel,
     stats: TeamStats,
     dividerVisible: Boolean,
     dividerWidth: Dp,
@@ -299,7 +299,7 @@ private fun TeamStatsRow(
 @Composable
 private fun TeamStatsTabRow(
     modifier: Modifier = Modifier,
-    viewModel: HomeViewModel
+    viewModel: StandingPageViewModel,
 ) {
     val labels by viewModel.standingLabel
     val sort by viewModel.standingSort.collectAsState()

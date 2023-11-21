@@ -86,6 +86,7 @@ class NbaRepository(
             }
         }
         dataStore.updateRecordScheduleToday(todayYear, todayMonth, todayDay)
+        refreshTeamStats()
     }
 
     override suspend fun refreshSchedule(year: Int, month: Int, day: Int) {

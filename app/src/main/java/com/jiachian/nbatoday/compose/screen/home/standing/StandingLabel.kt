@@ -1,4 +1,4 @@
-package com.jiachian.nbatoday.compose.screen.home
+package com.jiachian.nbatoday.compose.screen.home.standing
 
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
