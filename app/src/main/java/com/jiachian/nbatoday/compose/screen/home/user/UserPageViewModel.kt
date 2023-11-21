@@ -3,10 +3,10 @@ package com.jiachian.nbatoday.compose.screen.home.user
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.compose.state.NbaScreenState
 import com.jiachian.nbatoday.compose.theme.updateColors
-import com.jiachian.nbatoday.data.BaseRepository
 import com.jiachian.nbatoday.data.datastore.BaseDataStore
 import com.jiachian.nbatoday.data.local.team.NBATeam
 import com.jiachian.nbatoday.data.local.team.teamOfficial
+import com.jiachian.nbatoday.data.repository.user.UserRepository
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.utils.ScreenStateHelper
@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class UserPageViewModel(
-    private val repository: BaseRepository,
+    private val repository: UserRepository,
     private val dataStore: BaseDataStore,
     private val screenStateHelper: ScreenStateHelper,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,

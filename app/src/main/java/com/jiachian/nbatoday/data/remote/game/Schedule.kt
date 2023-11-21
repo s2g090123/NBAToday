@@ -203,6 +203,8 @@ data class Schedule(
 
             return NbaGame(
                 leagueId = leagueId,
+                homeTeamId = homeTeam.team.teamId,
+                awayTeamId = awayTeam.team.teamId,
                 awayTeam = awayTeam,
                 day = day,
                 gameCode = gameCode,

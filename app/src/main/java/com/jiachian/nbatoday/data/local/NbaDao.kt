@@ -29,6 +29,12 @@ interface NbaDao {
     @Query("SELECT * FROM nba_game")
     fun getGamesAndBets(): Flow<List<NbaGameAndBet>>
 
+    @Query("SELECT * FROM nba_game WHERE game_date <= :from AND (home_team_id == :teamId OR away_team_id == :teamId)")
+    fun getGamesAndBetsBeforeByTeam(teamId: Int, from: Long): Flow<List<NbaGameAndBet>>
+
+    @Query("SELECT * FROM nba_game WHERE game_date > :from AND (home_team_id == :teamId OR away_team_id == :teamId)")
+    fun getGamesAndBetsAfterByTeam(teamId: Int, from: Long): Flow<List<NbaGameAndBet>>
+
     @Query("SELECT * FROM nba_game_bets")
     fun getBetsAndGames(): Flow<List<BetAndNbaGame>>
 

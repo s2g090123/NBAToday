@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jiachian.nbatoday.compose.state.NbaState
 import com.jiachian.nbatoday.compose.theme.updateColors
-import com.jiachian.nbatoday.data.BaseRepository
 import com.jiachian.nbatoday.data.datastore.BaseDataStore
+import com.jiachian.nbatoday.data.repository.RepositoryProvider
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.event.EventBroadcaster
@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class MainViewModel(
-    private val repository: BaseRepository,
+    private val repositoryProvider: RepositoryProvider,
     private val dataStore: BaseDataStore,
     private val screenStateHelper: ScreenStateHelper,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
@@ -50,7 +50,7 @@ class MainViewModel(
         viewModelScope.launch(dispatcherProvider.io) {
             isLoading.value = true
             val refreshScheduleDeferred = async {
-                repository.refreshSchedule()
+                repositoryProvider.scheduleRepository.refreshSchedule()
             }
             val updateColorsDeferred = async {
                 val colors = dataStore.themeColors.first()
@@ -60,7 +60,7 @@ class MainViewModel(
                 val user = dataStore.userData.firstOrNull() ?: return@async
                 val account = user.account ?: return@async
                 val password = user.password ?: return@async
-                repository.login(account, password)
+                repositoryProvider.userRepository.login(account, password)
             }
             refreshScheduleDeferred.await()
             updateColorsDeferred.await()

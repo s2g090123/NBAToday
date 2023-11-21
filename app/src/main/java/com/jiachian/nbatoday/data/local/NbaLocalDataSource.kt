@@ -34,6 +34,14 @@ class NbaLocalDataSource(
         return dao.getGamesAndBetsDuring(from, to)
     }
 
+    override fun getGamesAndBetsBeforeByTeam(teamId: Int, from: Long): Flow<List<NbaGameAndBet>> {
+        return dao.getGamesAndBetsBeforeByTeam(teamId, from)
+    }
+
+    override fun getGamesAndBetsAfterByTeam(teamId: Int, from: Long): Flow<List<NbaGameAndBet>> {
+        return dao.getGamesAndBetsAfterByTeam(teamId, from)
+    }
+
     override fun getGamesBefore(from: Long): Flow<List<NbaGame>> {
         return dao.getGamesBefore(from)
     }

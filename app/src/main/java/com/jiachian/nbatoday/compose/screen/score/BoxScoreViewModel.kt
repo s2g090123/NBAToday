@@ -11,10 +11,10 @@ import com.jiachian.nbatoday.compose.screen.score.label.ScoreLeaderLabel
 import com.jiachian.nbatoday.compose.screen.score.label.ScoreTeamLabel
 import com.jiachian.nbatoday.compose.screen.score.tab.BoxScoreTab
 import com.jiachian.nbatoday.compose.state.NbaScreenState
-import com.jiachian.nbatoday.data.BaseRepository
 import com.jiachian.nbatoday.data.local.NbaGame
 import com.jiachian.nbatoday.data.local.score.GameBoxScore
 import com.jiachian.nbatoday.data.local.team.teamOfficial
+import com.jiachian.nbatoday.data.repository.game.GameRepository
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.utils.ScreenStateHelper
@@ -31,7 +31,7 @@ import kotlinx.coroutines.withContext
 
 class BoxScoreViewModel(
     game: NbaGame,
-    private val repository: BaseRepository,
+    private val repository: GameRepository,
     private val screenStateHelper: ScreenStateHelper,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
     coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)

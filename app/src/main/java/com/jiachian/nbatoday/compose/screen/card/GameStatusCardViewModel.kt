@@ -1,9 +1,10 @@
 package com.jiachian.nbatoday.compose.screen.card
 
 import com.jiachian.nbatoday.compose.screen.bet.BetDialogViewModel
-import com.jiachian.nbatoday.data.BaseRepository
 import com.jiachian.nbatoday.data.local.NbaGameAndBet
 import com.jiachian.nbatoday.data.remote.leader.GameLeaders
+import com.jiachian.nbatoday.data.repository.bet.BetRepository
+import com.jiachian.nbatoday.data.repository.user.UserRepository
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.utils.getOrZero
@@ -17,11 +18,12 @@ import kotlinx.coroutines.launch
 
 class GameStatusCardViewModel(
     val gameAndBet: NbaGameAndBet,
-    private val repository: BaseRepository,
+    private val betRepository: BetRepository,
+    private val userRepository: UserRepository,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
     private val coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined),
 ) {
-    val user = repository.user
+    val user = userRepository.user
         .stateIn(coroutineScope, SharingStarted.Eagerly, null)
 
     val isLogin = user.map { it != null }
@@ -51,19 +53,19 @@ class GameStatusCardViewModel(
 
     fun login(account: String, password: String) {
         coroutineScope.launch(dispatcherProvider.io) {
-            repository.login(account, password)
+            userRepository.login(account, password)
         }
     }
 
     fun register(account: String, password: String) {
         coroutineScope.launch(dispatcherProvider.io) {
-            repository.register(account, password)
+            userRepository.register(account, password)
         }
     }
 
     fun bet(homePoints: Long, awayPoints: Long) {
         coroutineScope.launch(dispatcherProvider.io) {
-            repository.bet(gameAndBet.game.gameId, homePoints, awayPoints)
+            betRepository.bet(gameAndBet.game.gameId, homePoints, awayPoints)
         }
     }
 

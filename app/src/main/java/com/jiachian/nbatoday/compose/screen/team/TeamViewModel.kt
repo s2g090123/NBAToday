@@ -4,11 +4,11 @@ import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.compose.screen.card.GameStatusCardViewModel
 import com.jiachian.nbatoday.compose.screen.label.LabelHelper
 import com.jiachian.nbatoday.compose.state.NbaScreenState
-import com.jiachian.nbatoday.data.BaseRepository
 import com.jiachian.nbatoday.data.local.NbaGame
 import com.jiachian.nbatoday.data.local.NbaGameAndBet
 import com.jiachian.nbatoday.data.local.player.PlayerStats
 import com.jiachian.nbatoday.data.local.team.NBATeam
+import com.jiachian.nbatoday.data.repository.team.TeamRepository
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.utils.ComposeViewModelProvider
@@ -28,33 +28,20 @@ import kotlinx.coroutines.withContext
 
 class TeamViewModel(
     val team: NBATeam,
-    private val repository: BaseRepository,
+    private val repository: TeamRepository,
     private val screenStateHelper: ScreenStateHelper,
     private val composeViewModelProvider: ComposeViewModelProvider,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
     coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
 ) : ComposeViewModel(coroutineScope) {
-
-    val user = repository.user
-        .stateIn(coroutineScope, SharingStarted.WhileSubscribed(5000L), null)
-
     val colors = team.colors
 
     val labels = LabelHelper.createTeamPlayerLabel()
 
-    private val games = repository.getGamesAndBets()
-    val gamesBefore = games.map { games ->
-        games.filter {
-            (it.game.homeTeam.team.teamId == team.teamId || it.game.awayTeam.team.teamId == team.teamId) &&
-                it.game.gameDateTime.time <= NbaUtils.getCalendar().timeInMillis
-        }
-    }.stateIn(coroutineScope, SharingStarted.Lazily, emptyList())
-    val gamesAfter = games.map { games ->
-        games.filter {
-            (it.game.homeTeam.team.teamId == team.teamId || it.game.awayTeam.team.teamId == team.teamId) &&
-                it.game.gameDateTime.time > NbaUtils.getCalendar().timeInMillis
-        }
-    }.stateIn(coroutineScope, SharingStarted.Lazily, emptyList())
+    val gamesBefore = repository.getGamesBefore(team.teamId, NbaUtils.getCalendar().timeInMillis)
+        .stateIn(coroutineScope, SharingStarted.Lazily, emptyList())
+    val gamesAfter = repository.getGamesAfter(team.teamId, NbaUtils.getCalendar().timeInMillis)
+        .stateIn(coroutineScope, SharingStarted.Lazily, emptyList())
     private val teamAndPlayersStats = repository.getTeamAndPlayersStats(team.teamId)
 
     val teamStats = teamAndPlayersStats.map {
@@ -313,7 +300,7 @@ class TeamViewModel(
         coroutineScope.launch {
             isTeamRefreshingImp.value = true
             withContext(dispatcherProvider.io) {
-                val deferred1 = async { repository.refreshTeamStats() }
+                val deferred1 = async { repository.refreshTeamStats(null) }
                 val deferred2 = async { repository.refreshTeamPlayersStats(team.teamId) }
                 deferred1.await()
                 deferred2.await()

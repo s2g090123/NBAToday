@@ -3,12 +3,13 @@ package com.jiachian.nbatoday.compose.screen.calendar
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.compose.screen.card.GameStatusCardViewModel
 import com.jiachian.nbatoday.compose.state.NbaScreenState
-import com.jiachian.nbatoday.data.BaseRepository
 import com.jiachian.nbatoday.data.local.NbaGame
 import com.jiachian.nbatoday.data.local.NbaGameAndBet
 import com.jiachian.nbatoday.data.local.team.NBATeam
+import com.jiachian.nbatoday.data.repository.game.GameRepository
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
+import com.jiachian.nbatoday.utils.ComposeViewModelProvider
 import com.jiachian.nbatoday.utils.NbaUtils
 import com.jiachian.nbatoday.utils.ScreenStateHelper
 import java.util.Calendar
@@ -24,15 +25,14 @@ import kotlinx.coroutines.withContext
 
 class CalendarViewModel(
     val date: Date,
-    private val repository: BaseRepository,
+    repository: GameRepository,
     private val screenStateHelper: ScreenStateHelper,
+    private val composeViewModelProvider: ComposeViewModelProvider,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
     coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
 ) : ComposeViewModel(coroutineScope) {
 
     private val games = repository.getGamesAndBets()
-    val user = repository.user
-        .stateIn(coroutineScope, SharingStarted.WhileSubscribed(5000), null)
 
     private val currentYear: MutableStateFlow<Int>
     private val currentMonth: MutableStateFlow<Int>
@@ -239,9 +239,10 @@ class CalendarViewModel(
     }
 
     fun createGameStatusCardViewModel(gameAndBet: NbaGameAndBet): GameStatusCardViewModel {
-        return GameStatusCardViewModel(
+        return composeViewModelProvider.getGameStatusCardViewModel(
             gameAndBet = gameAndBet,
-            repository = repository,
+            dispatcherProvider = dispatcherProvider,
+            coroutineScope = coroutineScope,
         )
     }
 }

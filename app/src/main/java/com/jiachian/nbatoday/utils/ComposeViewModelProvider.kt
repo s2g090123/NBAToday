@@ -10,18 +10,18 @@ import com.jiachian.nbatoday.compose.screen.home.user.UserPageViewModel
 import com.jiachian.nbatoday.compose.screen.player.PlayerViewModel
 import com.jiachian.nbatoday.compose.screen.score.BoxScoreViewModel
 import com.jiachian.nbatoday.compose.screen.team.TeamViewModel
-import com.jiachian.nbatoday.data.BaseRepository
 import com.jiachian.nbatoday.data.datastore.BaseDataStore
 import com.jiachian.nbatoday.data.local.NbaGame
 import com.jiachian.nbatoday.data.local.NbaGameAndBet
 import com.jiachian.nbatoday.data.local.team.NBATeam
+import com.jiachian.nbatoday.data.repository.RepositoryProvider
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import java.util.Date
 import kotlinx.coroutines.CoroutineScope
 
 class ComposeViewModelProvider(
-    private val repository: BaseRepository,
+    private val repositoryProvider: RepositoryProvider,
     private val dataStore: BaseDataStore,
     private val screenStateHelper: ScreenStateHelper,
 ) {
@@ -30,7 +30,6 @@ class ComposeViewModelProvider(
         coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined),
     ): HomeViewModel {
         return HomeViewModel(
-            repository = repository,
             composeViewModelProvider = this,
             dispatcherProvider = dispatcherProvider,
             coroutineScope = coroutineScope
@@ -44,7 +43,7 @@ class ComposeViewModelProvider(
     ): BoxScoreViewModel {
         return BoxScoreViewModel(
             game = game,
-            repository = repository,
+            repository = repositoryProvider.gameRepository,
             screenStateHelper = screenStateHelper,
             dispatcherProvider = dispatcherProvider,
             coroutineScope = coroutineScope,
@@ -58,7 +57,7 @@ class ComposeViewModelProvider(
     ): TeamViewModel {
         return TeamViewModel(
             team = team,
-            repository = repository,
+            repository = repositoryProvider.teamRepository,
             screenStateHelper = screenStateHelper,
             composeViewModelProvider = this,
             dispatcherProvider = dispatcherProvider,
@@ -73,7 +72,7 @@ class ComposeViewModelProvider(
     ): PlayerViewModel {
         return PlayerViewModel(
             playerId = playerId,
-            repository = repository,
+            repository = repositoryProvider.playerRepository,
             dispatcherProvider = dispatcherProvider,
             coroutineScope = coroutineScope,
         )
@@ -86,8 +85,9 @@ class ComposeViewModelProvider(
     ): CalendarViewModel {
         return CalendarViewModel(
             date = date,
-            repository = repository,
+            repository = repositoryProvider.gameRepository,
             screenStateHelper = screenStateHelper,
+            composeViewModelProvider = this,
             dispatcherProvider = dispatcherProvider,
             coroutineScope = coroutineScope,
         )
@@ -100,7 +100,7 @@ class ComposeViewModelProvider(
     ): BetViewModel {
         return BetViewModel(
             account = account,
-            repository = repository,
+            repository = repositoryProvider.betRepository,
             screenStateHelper = screenStateHelper,
             dispatcherProvider = dispatcherProvider,
             coroutineScope = coroutineScope,
@@ -112,7 +112,8 @@ class ComposeViewModelProvider(
         coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined),
     ): SchedulePageViewModel {
         return SchedulePageViewModel(
-            repository = repository,
+            scheduleRepository = repositoryProvider.scheduleRepository,
+            gameRepository = repositoryProvider.gameRepository,
             screenStateHelper = screenStateHelper,
             composeViewModelProvider = this,
             dispatcherProvider = dispatcherProvider,
@@ -125,7 +126,7 @@ class ComposeViewModelProvider(
         coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined),
     ): StandingPageViewModel {
         return StandingPageViewModel(
-            repository = repository,
+            repository = repositoryProvider.teamRepository,
             screenStateHelper = screenStateHelper,
             dispatcherProvider = dispatcherProvider,
             coroutineScope = coroutineScope,
@@ -137,7 +138,7 @@ class ComposeViewModelProvider(
         coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined),
     ): UserPageViewModel {
         return UserPageViewModel(
-            repository = repository,
+            repository = repositoryProvider.userRepository,
             dataStore = dataStore,
             screenStateHelper = screenStateHelper,
             dispatcherProvider = dispatcherProvider,
@@ -152,7 +153,8 @@ class ComposeViewModelProvider(
     ): GameStatusCardViewModel {
         return GameStatusCardViewModel(
             gameAndBet = gameAndBet,
-            repository = repository,
+            betRepository = repositoryProvider.betRepository,
+            userRepository = repositoryProvider.userRepository,
             dispatcherProvider = dispatcherProvider,
             coroutineScope = coroutineScope,
         )

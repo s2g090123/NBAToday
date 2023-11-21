@@ -13,6 +13,10 @@ import java.util.Date
 data class NbaGame(
     @ColumnInfo(name = "league_id")
     val leagueId: String, // 聯盟id, e.g. 00
+    @ColumnInfo(name = "home_team_id")
+    val homeTeamId: Int,
+    @ColumnInfo(name = "away_team_id")
+    val awayTeamId: Int,
     @ColumnInfo(name = "away_team")
     val awayTeam: GameTeam,
     @ColumnInfo(name = "day")

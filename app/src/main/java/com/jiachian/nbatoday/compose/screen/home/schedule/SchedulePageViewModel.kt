@@ -6,10 +6,11 @@ import com.jiachian.nbatoday.SCHEDULE_DATE_RANGE
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.compose.screen.card.GameStatusCardViewModel
 import com.jiachian.nbatoday.compose.state.NbaScreenState
-import com.jiachian.nbatoday.data.BaseRepository
 import com.jiachian.nbatoday.data.local.NbaGame
 import com.jiachian.nbatoday.data.local.NbaGameAndBet
 import com.jiachian.nbatoday.data.local.team.NBATeam
+import com.jiachian.nbatoday.data.repository.game.GameRepository
+import com.jiachian.nbatoday.data.repository.schedule.ScheduleRepository
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.utils.ComposeViewModelProvider
@@ -28,7 +29,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class SchedulePageViewModel(
-    private val repository: BaseRepository,
+    private val scheduleRepository: ScheduleRepository,
+    private val gameRepository: GameRepository,
     private val screenStateHelper: ScreenStateHelper,
     private val composeViewModelProvider: ComposeViewModelProvider,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
@@ -42,7 +44,7 @@ class SchedulePageViewModel(
         it.set(Calendar.HOUR, 0)
         it.set(Calendar.MINUTE, 0)
         it.set(Calendar.SECOND, 0)
-        repository.getGamesAndBetsDuring(
+        gameRepository.getGamesAndBetsDuring(
             it.timeInMillis - DateUtils.DAY_IN_MILLIS * (SCHEDULE_DATE_RANGE + 1),
             it.timeInMillis + DateUtils.DAY_IN_MILLIS * (SCHEDULE_DATE_RANGE)
         )
@@ -89,7 +91,7 @@ class SchedulePageViewModel(
         coroutineScope.launch {
             isRefreshingScheduleImp.value = true
             withContext(dispatcherProvider.io) {
-                repository.refreshSchedule(dateData.year, dateData.month, dateData.day)
+                scheduleRepository.refreshSchedule(dateData.year, dateData.month, dateData.day)
             }
             isRefreshingScheduleImp.value = false
         }

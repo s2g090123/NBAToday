@@ -5,9 +5,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.compose.state.NbaScreenState
-import com.jiachian.nbatoday.data.BaseRepository
 import com.jiachian.nbatoday.data.local.team.NBATeam
 import com.jiachian.nbatoday.data.local.team.TeamStats
+import com.jiachian.nbatoday.data.repository.team.TeamRepository
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.utils.ScreenStateHelper
@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class StandingPageViewModel(
-    private val repository: BaseRepository,
+    private val repository: TeamRepository,
     private val screenStateHelper: ScreenStateHelper,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
     coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
@@ -252,7 +252,7 @@ class StandingPageViewModel(
         coroutineScope.launch {
             isRefreshingTeamStatsImp.value = true
             withContext(dispatcherProvider.io) {
-                repository.refreshTeamStats()
+                repository.refreshTeamStats(null)
             }
             isRefreshingTeamStatsImp.value = false
         }

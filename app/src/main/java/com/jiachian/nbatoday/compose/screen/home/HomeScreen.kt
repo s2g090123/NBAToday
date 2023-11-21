@@ -36,7 +36,6 @@ import com.jiachian.nbatoday.compose.screen.home.schedule.SchedulePage
 import com.jiachian.nbatoday.compose.screen.home.standing.StandingPage
 import com.jiachian.nbatoday.compose.screen.home.user.UserPage
 import com.jiachian.nbatoday.compose.widget.FocusableColumn
-import com.jiachian.nbatoday.compose.widget.RefreshingScreen
 import com.jiachian.nbatoday.utils.noRippleClickable
 import com.jiachian.nbatoday.utils.rippleClickable
 
@@ -44,7 +43,6 @@ import com.jiachian.nbatoday.utils.rippleClickable
 fun HomeScreen(
     viewModel: HomeViewModel
 ) {
-    val isRefreshing by viewModel.isProgressing.collectAsState()
     FocusableColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -63,12 +61,6 @@ fun HomeScreen(
                 .noRippleClickable { }
                 .background(MaterialTheme.colors.secondary),
             viewModel = viewModel
-        )
-    }
-    if (isRefreshing) {
-        RefreshingScreen(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colors.secondary
         )
     }
 }

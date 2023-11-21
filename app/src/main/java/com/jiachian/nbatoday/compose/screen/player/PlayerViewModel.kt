@@ -4,8 +4,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.compose.screen.player.utils.PlayerInfoHelper
-import com.jiachian.nbatoday.data.BaseRepository
 import com.jiachian.nbatoday.data.local.player.PlayerCareer.PlayerCareerStats.Stats
+import com.jiachian.nbatoday.data.repository.player.PlayerRepository
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import kotlinx.coroutines.CoroutineScope
@@ -20,7 +20,7 @@ import kotlinx.coroutines.withContext
 
 class PlayerViewModel(
     private val playerId: Int,
-    private val repository: BaseRepository,
+    private val repository: PlayerRepository,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
     coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
 ) : ComposeViewModel(coroutineScope) {

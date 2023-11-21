@@ -80,11 +80,7 @@ class NbaRemoteDataSource(private val dataStore: BaseDataStore) : RemoteDataSour
         return nbaService.getGameBoxScore(gameId).body()
     }
 
-    override suspend fun getTeamStats(): RemoteTeamStats? {
-        return nbaService.getTeamStats(season = CURRENT_SEASON).body()
-    }
-
-    override suspend fun getTeamStats(teamId: Int): RemoteTeamStats? {
+    override suspend fun getTeamStats(teamId: Int?): RemoteTeamStats? {
         return nbaService.getTeamStats(season = CURRENT_SEASON, teamId = teamId).body()
     }
 

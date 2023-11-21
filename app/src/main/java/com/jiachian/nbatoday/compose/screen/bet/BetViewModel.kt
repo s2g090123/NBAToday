@@ -2,9 +2,9 @@ package com.jiachian.nbatoday.compose.screen.bet
 
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.compose.state.NbaScreenState
-import com.jiachian.nbatoday.data.BaseRepository
 import com.jiachian.nbatoday.data.local.BetAndNbaGame
 import com.jiachian.nbatoday.data.remote.game.GameStatusCode
+import com.jiachian.nbatoday.data.repository.bet.BetRepository
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.utils.ScreenStateHelper
@@ -21,7 +21,7 @@ import kotlinx.coroutines.withContext
 
 class BetViewModel(
     account: String,
-    private val repository: BaseRepository,
+    private val repository: BetRepository,
     private val screenStateHelper: ScreenStateHelper,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
     coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
@@ -64,26 +64,13 @@ class BetViewModel(
     }
 
     private fun settleBets(betAndGame: BetAndNbaGame) {
-        val winPoint = (
-            if (betAndGame.game.homeTeam.score > betAndGame.game.awayTeam.score) {
-                betAndGame.bets.homePoints
-            } else {
-                betAndGame.bets.awayPoints
-            }
-            ) * 2
-        val losePoint = if (betAndGame.game.homeTeam.score > betAndGame.game.awayTeam.score) {
-            betAndGame.bets.awayPoints
-        } else {
-            betAndGame.bets.homePoints
-        }
         coroutineScope.launch(dispatcherProvider.io) {
-            repository.addPoints(winPoint)
-            repository.deleteBets(betAndGame.bets)
+            val (winPoint, losePoint) = repository.settleBet(betAndGame)
+            askTurnTableImp.value = BetsTurnTableData(
+                winPoints = winPoint,
+                losePoints = losePoint
+            )
         }
-        askTurnTableImp.value = BetsTurnTableData(
-            winPoints = winPoint,
-            losePoints = losePoint
-        )
     }
 
     fun showTurnTable(turnTableData: BetsTurnTableData) {

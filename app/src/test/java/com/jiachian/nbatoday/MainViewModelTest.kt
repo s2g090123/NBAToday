@@ -43,7 +43,7 @@ class MainViewModelTest {
     @Before
     fun setup() {
         viewModel = MainViewModel(
-            repository = repository,
+            repositoryProvider = repository,
             dataStore = dataStore,
             dispatcherProvider = coroutineEnvironment.testDispatcherProvider
         )

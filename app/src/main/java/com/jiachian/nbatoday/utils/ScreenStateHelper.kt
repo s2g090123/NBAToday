@@ -2,23 +2,22 @@ package com.jiachian.nbatoday.utils
 
 import com.jiachian.nbatoday.compose.state.NbaScreenState
 import com.jiachian.nbatoday.compose.state.NbaState
-import com.jiachian.nbatoday.data.BaseRepository
 import com.jiachian.nbatoday.data.datastore.BaseDataStore
+import com.jiachian.nbatoday.data.repository.RepositoryProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 
 class ScreenStateHelper(
-    repository: BaseRepository,
+    repositoryProvider: RepositoryProvider,
     dataStore: BaseDataStore,
-    state: NbaState? = null
 ) {
     private val viewModelProvider = ComposeViewModelProvider(
-        repository = repository,
+        repositoryProvider = repositoryProvider,
         dataStore = dataStore,
         screenStateHelper = this
     )
-    private val initState = state ?: NbaState.Home(viewModelProvider.getHomeViewModel())
+    private val initState: NbaState = NbaState.Home(viewModelProvider.getHomeViewModel())
     private val stateStackImp = MutableStateFlow(listOf(initState))
     val stateStack = stateStackImp.asStateFlow()
     val currentState = stateStack.map { it.lastOrNull() ?: initState }
