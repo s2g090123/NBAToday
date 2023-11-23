@@ -43,7 +43,7 @@ class GameStatusCardViewModel(
         !isGamePlayed && !it
     }.stateIn(coroutineScope, SharingStarted.Eagerly, false)
 
-    private val leaders = if (isGamePlayed) gameAndBet.game.teamLeaders else gameAndBet.game.gameLeaders
+    private val leaders = if (isGamePlayed) gameAndBet.game.gameLeaders else gameAndBet.game.teamLeaders
     val expandContentVisible = leaders != null
     val homeLeader = leaders?.homeLeaders ?: GameLeaders.GameLeader.default()
     val awayLeader = leaders?.awayLeaders ?: GameLeaders.GameLeader.default()
