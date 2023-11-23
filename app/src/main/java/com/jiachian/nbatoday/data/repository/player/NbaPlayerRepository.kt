@@ -1,30 +1,30 @@
 package com.jiachian.nbatoday.data.repository.player
 
-import com.jiachian.nbatoday.data.local.LocalDataSource
+import com.jiachian.nbatoday.data.local.datasource.player.PlayerLocalSource
 import com.jiachian.nbatoday.data.local.player.PlayerCareer
 import com.jiachian.nbatoday.data.remote.RemoteDataSource
 import kotlinx.coroutines.flow.Flow
 
 class NbaPlayerRepository(
-    private val localDataSource: LocalDataSource,
+    private val playerLocalSource: PlayerLocalSource,
     private val remoteDataSource: RemoteDataSource,
 ) : PlayerRepository() {
     override suspend fun refreshPlayerStats(playerId: Int) {
         val detail = remoteDataSource.getPlayerDetail(playerId)
         val info = detail?.info
         val stats = detail?.stats
-        if (localDataSource.existPlayer(playerId)) {
+        if (playerLocalSource.existPlayer(playerId)) {
             info?.toUpdateData()?.also {
-                localDataSource.updatePlayerCareerInfo(it)
+                playerLocalSource.updatePlayerCareerInfo(it)
             }
             stats?.toLocal()?.also {
-                localDataSource.updatePlayerCareerStats(it)
+                playerLocalSource.updatePlayerCareerStats(it)
             }
         } else if (info != null && stats != null) {
             val infoData = info.toUpdateData()?.info
             val statsData = stats.toLocal()?.stats
             if (infoData != null && statsData != null) {
-                localDataSource.insertPlayerCareer(
+                playerLocalSource.insertPlayerCareer(
                     PlayerCareer(playerId, infoData, statsData)
                 )
             }
@@ -32,6 +32,6 @@ class NbaPlayerRepository(
     }
 
     override fun getPlayerCareer(playerId: Int): Flow<PlayerCareer?> {
-        return localDataSource.getPlayerCareer(playerId)
+        return playerLocalSource.getPlayerCareer(playerId)
     }
 }

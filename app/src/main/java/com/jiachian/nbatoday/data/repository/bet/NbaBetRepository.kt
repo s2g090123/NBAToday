@@ -1,14 +1,14 @@
 package com.jiachian.nbatoday.data.repository.bet
 
 import com.jiachian.nbatoday.data.local.BetAndNbaGame
-import com.jiachian.nbatoday.data.local.LocalDataSource
 import com.jiachian.nbatoday.data.local.bet.Bets
+import com.jiachian.nbatoday.data.local.datasource.bet.BetLocalSource
 import com.jiachian.nbatoday.data.repository.user.UserRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 
 class NbaBetRepository(
-    private val localDataSource: LocalDataSource,
+    private val betLocalSource: BetLocalSource,
     private val userRepository: UserRepository,
 ) : BetRepository() {
     private val user = userRepository.user
@@ -19,13 +19,13 @@ class NbaBetRepository(
         val remainPoints = (user.points ?: 0) - homePoints - awayPoints
         if (remainPoints < 0) return
         isProgressingImp.value = true
-        localDataSource.insertBet(account, gameId, homePoints, awayPoints)
+        betLocalSource.insertBet(account, gameId, homePoints, awayPoints)
         userRepository.updatePoints(remainPoints)
         isProgressingImp.value = false
     }
 
     override suspend fun deleteBets(bets: Bets) {
-        localDataSource.deleteBets(bets)
+        betLocalSource.deleteBets(bets)
     }
 
     override suspend fun settleBet(betAndGame: BetAndNbaGame): Pair<Long, Long> {
@@ -50,11 +50,7 @@ class NbaBetRepository(
         userRepository.addPoints(points)
     }
 
-    override fun getBetsAndGames(): Flow<List<BetAndNbaGame>> {
-        return localDataSource.getBetsAndGames()
-    }
-
     override fun getBetsAndGames(account: String): Flow<List<BetAndNbaGame>> {
-        return localDataSource.getBetsAndGamesByUser(account)
+        return betLocalSource.getBetsAndGamesByUser(account)
     }
 }

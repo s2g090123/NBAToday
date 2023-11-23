@@ -3,7 +3,8 @@ package com.jiachian.nbatoday.data.repository.schedule
 import com.jiachian.nbatoday.NBA_LEAGUE_ID
 import com.jiachian.nbatoday.SCHEDULE_DATE_RANGE
 import com.jiachian.nbatoday.data.datastore.BaseDataStore
-import com.jiachian.nbatoday.data.local.LocalDataSource
+import com.jiachian.nbatoday.data.local.datasource.boxscore.BoxScoreLocalSource
+import com.jiachian.nbatoday.data.local.datasource.game.GameLocalSource
 import com.jiachian.nbatoday.data.remote.RemoteDataSource
 import com.jiachian.nbatoday.data.repository.team.TeamRepository
 import com.jiachian.nbatoday.utils.NbaUtils
@@ -12,7 +13,8 @@ import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.flow.first
 
 class NbaScheduleRepository(
-    private val localDataSource: LocalDataSource,
+    private val gameLocalSource: GameLocalSource,
+    private val boxScoreLocalSource: BoxScoreLocalSource,
     private val remoteDataSource: RemoteDataSource,
     private val dataStore: BaseDataStore,
     private val teamRepository: TeamRepository,
@@ -35,8 +37,8 @@ class NbaScheduleRepository(
             val offset = betweenDays.toInt().coerceAtMost(SCHEDULE_DATE_RANGE)
             cal.add(Calendar.DAY_OF_MONTH, -offset)
 
-            if (!localDataSource.existsGame()) {
-                localDataSource.insertGames(nbaGames)
+            if (!gameLocalSource.existsGame()) {
+                gameLocalSource.insertGames(nbaGames)
             } else {
                 val filterGames = if (recordDay == null) {
                     nbaGames
@@ -50,7 +52,7 @@ class NbaScheduleRepository(
                     }
                 }
                 val updateGames = filterGames.map { it.toGameScoreUpdateData() }
-                localDataSource.updateGamesScore(updateGames)
+                boxScoreLocalSource.updateGamesScore(updateGames)
             }
 
             val year = cal.get(Calendar.YEAR)
@@ -66,7 +68,7 @@ class NbaScheduleRepository(
             scoreboards?.also {
                 val update = scoreboards.map { it.toGameUpdateData() }
                 update.forEach {
-                    localDataSource.updateGames(it)
+                    gameLocalSource.updateGames(it)
                 }
             }
             dataStore.updateRecordScheduleToday(todayYear, todayMonth, todayDay)
@@ -83,7 +85,7 @@ class NbaScheduleRepository(
             val scoreboard = remoteDataSource.getScoreboard(NBA_LEAGUE_ID, gameDate)
             val updateData = scoreboard?.toGameUpdateData()
             updateData?.also {
-                localDataSource.updateGames(updateData)
+                gameLocalSource.updateGames(updateData)
             }
         } finally {
             isProgressingImp.value = false

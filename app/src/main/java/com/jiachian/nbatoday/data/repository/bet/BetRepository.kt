@@ -11,6 +11,5 @@ abstract class BetRepository : BaseRepository() {
     abstract suspend fun settleBet(betAndGame: BetAndNbaGame): Pair<Long, Long>
     abstract suspend fun addPoints(points: Long)
 
-    abstract fun getBetsAndGames(): Flow<List<BetAndNbaGame>>
     abstract fun getBetsAndGames(account: String): Flow<List<BetAndNbaGame>>
 }

@@ -1,8 +1,8 @@
 package com.jiachian.nbatoday.data.repository.team
 
-import com.jiachian.nbatoday.data.local.LocalDataSource
 import com.jiachian.nbatoday.data.local.NbaGameAndBet
 import com.jiachian.nbatoday.data.local.TeamAndPlayers
+import com.jiachian.nbatoday.data.local.datasource.team.TeamLocalSource
 import com.jiachian.nbatoday.data.local.team.NBATeam
 import com.jiachian.nbatoday.data.local.team.TeamStats
 import com.jiachian.nbatoday.data.remote.RemoteDataSource
@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 
 class NbaTeamRepository(
-    private val localDataSource: LocalDataSource,
+    private val teamLocalSource: TeamLocalSource,
     private val remoteDataSource: RemoteDataSource,
     private val gameRepository: GameRepository,
 ) : TeamRepository() {
@@ -19,50 +19,50 @@ class NbaTeamRepository(
         val stats = remoteDataSource.getTeamStats(teamId = teamId)
         stats?.also {
             val teamStats = stats.toLocal()
-            localDataSource.updateTeamStats(teamStats)
+            teamLocalSource.updateTeamStats(teamStats)
         }
     }
 
     override suspend fun refreshTeamPlayersStats(teamId: Int) {
         val stats = remoteDataSource.getTeamPlayersStats(teamId = teamId)
         stats?.also {
-            val localStats = localDataSource.getTeamAndPlayersStats(teamId).firstOrNull()
+            val localStats = teamLocalSource.getTeamAndPlayersStats(teamId).firstOrNull()
             val playersStats = stats.toLocal()
             val oldPlayerIds = localStats?.playersStats?.map { it.playerId }
             val newPlayerIds = playersStats.map { it.playerId }
             oldPlayerIds?.filterNot { it in newPlayerIds }?.also {
-                localDataSource.deletePlayerStats(teamId, it)
+                teamLocalSource.deletePlayerStats(teamId, it)
             }
-            localDataSource.updatePlayerStats(playersStats)
+            teamLocalSource.updatePlayerStats(playersStats)
         }
     }
 
     override fun getTeamStats(): Flow<List<TeamStats>> {
-        return localDataSource.getTeamStats()
+        return teamLocalSource.getTeamStats()
     }
 
     override fun getTeamAndPlayersStats(teamId: Int): Flow<TeamAndPlayers?> {
-        return localDataSource.getTeamAndPlayersStats(teamId)
+        return teamLocalSource.getTeamAndPlayersStats(teamId)
     }
 
     override fun getTeamRank(teamId: Int, conference: NBATeam.Conference): Flow<Int> {
-        return localDataSource.getTeamRank(teamId, conference)
+        return teamLocalSource.getTeamRank(teamId, conference)
     }
 
     override fun getTeamPointsRank(teamId: Int): Flow<Int> {
-        return localDataSource.getTeamPointsRank(teamId)
+        return teamLocalSource.getTeamPointsRank(teamId)
     }
 
     override fun getTeamReboundsRank(teamId: Int): Flow<Int> {
-        return localDataSource.getTeamReboundsRank(teamId)
+        return teamLocalSource.getTeamReboundsRank(teamId)
     }
 
     override fun getTeamAssistsRank(teamId: Int): Flow<Int> {
-        return localDataSource.getTeamAssistsRank(teamId)
+        return teamLocalSource.getTeamAssistsRank(teamId)
     }
 
     override fun getTeamPlusMinusRank(teamId: Int): Flow<Int> {
-        return localDataSource.getTeamPlusMinusRank(teamId)
+        return teamLocalSource.getTeamPlusMinusRank(teamId)
     }
 
     override fun getGamesBefore(teamId: Int, from: Long): Flow<List<NbaGameAndBet>> {

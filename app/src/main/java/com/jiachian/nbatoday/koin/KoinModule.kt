@@ -3,9 +3,17 @@ package com.jiachian.nbatoday.koin
 import com.jiachian.nbatoday.MainViewModel
 import com.jiachian.nbatoday.data.datastore.BaseDataStore
 import com.jiachian.nbatoday.data.datastore.NbaDataStore
-import com.jiachian.nbatoday.data.local.LocalDataSource
 import com.jiachian.nbatoday.data.local.NbaDatabase
-import com.jiachian.nbatoday.data.local.NbaLocalDataSource
+import com.jiachian.nbatoday.data.local.datasource.bet.BetLocalSource
+import com.jiachian.nbatoday.data.local.datasource.bet.NbaBetLocalSource
+import com.jiachian.nbatoday.data.local.datasource.boxscore.BoxScoreLocalSource
+import com.jiachian.nbatoday.data.local.datasource.boxscore.NbaBoxScoreLocalSource
+import com.jiachian.nbatoday.data.local.datasource.game.GameLocalSource
+import com.jiachian.nbatoday.data.local.datasource.game.NbaGameLocalSource
+import com.jiachian.nbatoday.data.local.datasource.player.NbaPlayerLocalSource
+import com.jiachian.nbatoday.data.local.datasource.player.PlayerLocalSource
+import com.jiachian.nbatoday.data.local.datasource.team.NbaTeamLocalSource
+import com.jiachian.nbatoday.data.local.datasource.team.TeamLocalSource
 import com.jiachian.nbatoday.data.remote.NbaRemoteDataSource
 import com.jiachian.nbatoday.data.remote.RemoteDataSource
 import com.jiachian.nbatoday.data.repository.RepositoryProvider
@@ -32,15 +40,19 @@ val module = module {
 
     factory { (get() as NbaDatabase).getNbaDao() }
     factory { NbaRemoteDataSource(get()) as RemoteDataSource }
-    factory { NbaLocalDataSource(get()) as LocalDataSource }
+    factory { NbaGameLocalSource(get()) as GameLocalSource }
+    factory { NbaBoxScoreLocalSource(get()) as BoxScoreLocalSource }
+    factory { NbaTeamLocalSource(get()) as TeamLocalSource }
+    factory { NbaPlayerLocalSource(get()) as PlayerLocalSource }
+    factory { NbaBetLocalSource(get()) as BetLocalSource }
     factory { ComposeViewModelProvider(get(), get(), get()) }
     factory { RepositoryProvider(get(), get(), get(), get(), get(), get()) }
 
     single { NbaDatabase.getInstance(androidContext()) }
     single { NbaDataStore(androidApplication()) as BaseDataStore }
     single { ScreenStateHelper(get(), get()) }
-    single { NbaScheduleRepository(get(), get(), get(), get()) as ScheduleRepository }
-    single { NbaGameRepository(get(), get()) as GameRepository }
+    single { NbaScheduleRepository(get(), get(), get(), get(), get()) as ScheduleRepository }
+    single { NbaGameRepository(get(), get(), get()) as GameRepository }
     single { NbaTeamRepository(get(), get(), get()) as TeamRepository }
     single { NbaPlayerRepository(get(), get()) as PlayerRepository }
     single { NbaBetRepository(get(), get()) as BetRepository }
