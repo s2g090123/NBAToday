@@ -38,10 +38,6 @@ class NbaTeamLocalSource(
         return teamDao.getPlusMinusRank(teamId)
     }
 
-    override suspend fun updateTeamStats(stats: TeamStats) {
-        teamDao.insertTeamStats(stats)
-    }
-
     override suspend fun updateTeamStats(stats: List<TeamStats>) {
         teamDao.insertTeamStats(stats)
     }

@@ -1,6 +1,5 @@
 package com.jiachian.nbatoday.data.repository.game
 
-import com.jiachian.nbatoday.data.local.NbaGame
 import com.jiachian.nbatoday.data.local.NbaGameAndBet
 import com.jiachian.nbatoday.data.local.datasource.boxscore.BoxScoreLocalSource
 import com.jiachian.nbatoday.data.local.datasource.game.GameLocalSource
@@ -23,24 +22,8 @@ class NbaGameRepository(
         }
     }
 
-    override suspend fun getGamesAt(date: Long): List<NbaGame> {
-        return gameLocalSource.getGamesAt(date)
-    }
-
-    override fun getGamesDuring(from: Long, to: Long): Flow<List<NbaGame>> {
-        return gameLocalSource.getGamesDuring(from, to)
-    }
-
     override fun getGamesAndBetsDuring(from: Long, to: Long): Flow<List<NbaGameAndBet>> {
         return gameLocalSource.getGamesAndBetsDuring(from, to)
-    }
-
-    override fun getGamesBefore(from: Long): Flow<List<NbaGame>> {
-        return gameLocalSource.getGamesBefore(from)
-    }
-
-    override fun getGamesAfter(from: Long): Flow<List<NbaGame>> {
-        return gameLocalSource.getGamesAfter(from)
     }
 
     override fun getGameBoxScore(gameId: String): Flow<GameBoxScore?> {

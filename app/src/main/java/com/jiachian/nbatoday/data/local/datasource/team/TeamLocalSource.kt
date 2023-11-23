@@ -15,7 +15,6 @@ abstract class TeamLocalSource {
     abstract fun getTeamAssistsRank(teamId: Int): Flow<Int>
     abstract fun getTeamPlusMinusRank(teamId: Int): Flow<Int>
 
-    abstract suspend fun updateTeamStats(stats: TeamStats)
     abstract suspend fun updateTeamStats(stats: List<TeamStats>)
     abstract suspend fun updatePlayerStats(stats: List<PlayerStats>)
     abstract suspend fun deletePlayerStats(teamId: Int, playerIds: List<Int>)

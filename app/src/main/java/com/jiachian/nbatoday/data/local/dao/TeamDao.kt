@@ -96,7 +96,6 @@ interface TeamDao {
                         WHEN b.plus_minus == a.plus_minus THEN b.win_percentage > a.win_percentage
                         ELSE b.plus_minus > a.plus_minus
                     END
-
             )
             FROM nba_team_stats a
             WHERE team_id == :teamId
@@ -107,9 +106,6 @@ interface TeamDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTeamStats(stats: List<TeamStats>)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertTeamStats(stats: TeamStats)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPlayerStats(stats: List<PlayerStats>)

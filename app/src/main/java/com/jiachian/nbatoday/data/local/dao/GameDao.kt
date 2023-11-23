@@ -21,20 +21,8 @@ interface GameDao {
     @Query("SELECT * FROM nba_game WHERE game_date > :from AND (home_team_id == :teamId OR away_team_id == :teamId)")
     fun getGamesAndBetsAfterByTeam(teamId: Int, from: Long): Flow<List<NbaGameAndBet>>
 
-    @Query("SELECT * FROM nba_game WHERE game_date == :date")
-    suspend fun getGamesAt(date: Long): List<NbaGame>
-
-    @Query("SELECT * FROM nba_game WHERE game_date >= :from AND game_date <= :to")
-    fun getGamesDuring(from: Long, to: Long): Flow<List<NbaGame>>
-
     @Query("SELECT * FROM nba_game WHERE game_date >= :from AND game_date <= :to")
     fun getGamesAndBetsDuring(from: Long, to: Long): Flow<List<NbaGameAndBet>>
-
-    @Query("SELECT * FROM nba_game WHERE game_date <= :from")
-    fun getGamesBefore(from: Long): Flow<List<NbaGame>>
-
-    @Query("SELECT * FROM nba_game WHERE game_date > :from")
-    fun getGamesAfter(from: Long): Flow<List<NbaGame>>
 
     @Query("SELECT EXISTS (SELECT 1 FROM nba_game)")
     fun exitsGames(): Boolean
