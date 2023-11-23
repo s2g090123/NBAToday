@@ -1,6 +1,6 @@
 package com.jiachian.nbatoday.data.local.team
 
-import com.jiachian.nbatoday.compose.theme.NBAColors
+import com.jiachian.nbatoday.compose.theme.NbaColors
 
 interface NBATeam {
 
@@ -43,7 +43,7 @@ interface NBATeam {
     val logoRes: Int // Team logo drawable resource
     val conference: Conference
     val division: Division
-    val colors: NBAColors
+    val colors: NbaColors
     val teamFullName: String // e.g. Los Angeles Lakers
         get() = "$location $teamName"
 }

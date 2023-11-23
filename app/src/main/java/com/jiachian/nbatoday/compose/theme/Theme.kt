@@ -13,18 +13,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 
-class NBAColors(
-    primary: Color,
-    secondary: Color,
-    extra1: Color,
-    extra2: Color
-) {
-    var primary by mutableStateOf(primary)
-    var secondary by mutableStateOf(secondary)
-    var extra1 by mutableStateOf(extra1)
-    var extra2 by mutableStateOf(extra2)
-}
-
 private var ColorPalette by mutableStateOf(LakersColors)
 
 @Composable
@@ -65,9 +53,9 @@ fun NBATodayTheme(content: @Composable () -> Unit) {
 }
 
 fun updateColors(primary: Color, secondary: Color, extra1: Color, extra2: Color) {
-    ColorPalette = NBAColors(primary, secondary, extra1, extra2)
+    ColorPalette = NbaColors(primary, secondary, extra1, extra2)
 }
 
-fun updateColors(color: NBAColors) {
+fun updateColors(color: NbaColors) {
     ColorPalette = color
 }

@@ -2,7 +2,7 @@ package com.jiachian.nbatoday.data.local.team
 
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.theme.BullsColors
-import com.jiachian.nbatoday.compose.theme.NBAColors
+import com.jiachian.nbatoday.compose.theme.NbaColors
 
 val teamBulls = object : NBATeam {
     override val teamId: Int = 1610612741
@@ -12,5 +12,5 @@ val teamBulls = object : NBATeam {
     override val logoRes: Int = R.drawable.ic_team_logo_bulls
     override val conference: NBATeam.Conference = NBATeam.Conference.EAST
     override val division: NBATeam.Division = NBATeam.Division.CENTRAL
-    override val colors: NBAColors = BullsColors
+    override val colors: NbaColors = BullsColors
 }
