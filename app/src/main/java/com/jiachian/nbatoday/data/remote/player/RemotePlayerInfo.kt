@@ -32,7 +32,7 @@ data class RemotePlayerInfo(
     private val infoResult: Result?
         @Synchronized
         get() {
-            return infoResultImp ?: findResult(resultSets, "CommonPlayerInfo")?.also {
+            return infoResultImp ?: resultSets?.find { it.name == "CommonPlayerInfo" }?.also {
                 infoResultImp = it
             }
         }
@@ -40,7 +40,7 @@ data class RemotePlayerInfo(
     private val statsResult: Result?
         @Synchronized
         get() {
-            return statsResultImp ?: findResult(resultSets, "PlayerHeadlineStats")?.also {
+            return statsResultImp ?: resultSets?.find { it.name == "PlayerHeadlineStats" }?.also {
                 statsResultImp = it
             }
         }
@@ -50,10 +50,6 @@ data class RemotePlayerInfo(
             getPlayerInfo("PERSON_ID")?.toIntOrNull() ?: return null,
             createPlayerCareerInfo() ?: return null
         )
-    }
-
-    private fun findResult(results: List<Result>?, name: String): Result? {
-        return results?.find { it.name == name }
     }
 
     private fun getPlayerInfo(name: String): String? {
@@ -93,7 +89,7 @@ data class RemotePlayerInfo(
             draftYear = getPlayerInfo("DRAFT_YEAR")?.toIntOrNull().getOrZero(),
             draftRound = getPlayerInfo("DRAFT_ROUND")?.toIntOrNull().getOrZero(),
             draftNumber = getPlayerInfo("DRAFT_NUMBER")?.toIntOrNull().getOrZero(),
-            isGreatest75 = isGreatest75(),
+            isGreatest75 = getPlayerInfo("GREATEST_75_FLAG") == "Y",
             headlineStats = createPlayerCareerStats() ?: return null
         )
     }
@@ -156,11 +152,5 @@ data class RemotePlayerInfo(
         return getPlayerInfo("WEIGHT")?.let { lb ->
             (lb.toIntOrNull() ?: 0) * 0.45
         } ?: return 0.0
-    }
-
-    private fun isGreatest75(): Boolean {
-        return getPlayerInfo("GREATEST_75_FLAG")?.let {
-            it == "Y"
-        } ?: return false
     }
 }
