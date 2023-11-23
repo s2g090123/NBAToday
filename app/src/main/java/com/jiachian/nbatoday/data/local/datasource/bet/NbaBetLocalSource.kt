@@ -1,15 +1,15 @@
 package com.jiachian.nbatoday.data.local.datasource.bet
 
 import com.jiachian.nbatoday.data.local.BetAndNbaGame
-import com.jiachian.nbatoday.data.local.NbaDao
 import com.jiachian.nbatoday.data.local.bet.Bets
+import com.jiachian.nbatoday.data.local.dao.BetDao
 import kotlinx.coroutines.flow.Flow
 
 class NbaBetLocalSource(
-    private val dao: NbaDao,
+    private val betDao: BetDao,
 ) : BetLocalSource() {
     override fun getBetsAndGamesByUser(account: String): Flow<List<BetAndNbaGame>> {
-        return dao.getBetsAndGamesByUser(account)
+        return betDao.getBetsAndGamesByUser(account)
     }
 
     override suspend fun insertBet(account: String, gameId: String, homePoints: Long, awayPoints: Long) {
@@ -19,10 +19,10 @@ class NbaBetLocalSource(
             homePoints = homePoints,
             awayPoints = awayPoints
         )
-        dao.insertBet(bets)
+        betDao.insertBet(bets)
     }
 
     override suspend fun deleteBets(bets: Bets) {
-        dao.deleteBet(bets)
+        betDao.deleteBet(bets)
     }
 }

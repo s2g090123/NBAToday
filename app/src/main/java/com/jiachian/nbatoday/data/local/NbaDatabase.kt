@@ -17,6 +17,11 @@ import com.jiachian.nbatoday.data.local.converter.PlayerCareerStatsConverter
 import com.jiachian.nbatoday.data.local.converter.PointsLeaderConverter
 import com.jiachian.nbatoday.data.local.converter.TeamConferenceConverter
 import com.jiachian.nbatoday.data.local.converter.TeamDivisionConverter
+import com.jiachian.nbatoday.data.local.dao.BetDao
+import com.jiachian.nbatoday.data.local.dao.BoxScoreDao
+import com.jiachian.nbatoday.data.local.dao.GameDao
+import com.jiachian.nbatoday.data.local.dao.PlayerDao
+import com.jiachian.nbatoday.data.local.dao.TeamDao
 import com.jiachian.nbatoday.data.local.player.PlayerCareer
 import com.jiachian.nbatoday.data.local.player.PlayerStats
 import com.jiachian.nbatoday.data.local.score.GameBoxScore
@@ -63,5 +68,9 @@ abstract class NbaDatabase : RoomDatabase() {
         }
     }
 
-    abstract fun getNbaDao(): NbaDao
+    abstract fun getGameDao(): GameDao
+    abstract fun getBoxScoreDao(): BoxScoreDao
+    abstract fun getTeamDao(): TeamDao
+    abstract fun getPlayerDao(): PlayerDao
+    abstract fun getBetDao(): BetDao
 }

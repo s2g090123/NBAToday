@@ -201,7 +201,7 @@ class TestDao : NbaDao {
         }
     }
 
-    override fun getRank(teamId: Int, conference: NBATeam.Conference): Flow<Int> {
+    override fun getTeamRank(teamId: Int, conference: NBATeam.Conference): Flow<Int> {
         return teamStats.map {
             it.filter { team ->
                 team.teamConference == conference

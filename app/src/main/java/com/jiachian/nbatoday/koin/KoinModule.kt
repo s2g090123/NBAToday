@@ -38,7 +38,11 @@ import org.koin.dsl.module
 
 val module = module {
 
-    factory { (get() as NbaDatabase).getNbaDao() }
+    factory { (get() as NbaDatabase).getGameDao() }
+    factory { (get() as NbaDatabase).getBoxScoreDao() }
+    factory { (get() as NbaDatabase).getTeamDao() }
+    factory { (get() as NbaDatabase).getPlayerDao() }
+    factory { (get() as NbaDatabase).getBetDao() }
     factory { NbaRemoteDataSource(get()) as RemoteDataSource }
     factory { NbaGameLocalSource(get()) as GameLocalSource }
     factory { NbaBoxScoreLocalSource(get()) as BoxScoreLocalSource }

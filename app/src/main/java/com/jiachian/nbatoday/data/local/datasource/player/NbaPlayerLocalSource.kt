@@ -1,31 +1,31 @@
 package com.jiachian.nbatoday.data.local.datasource.player
 
-import com.jiachian.nbatoday.data.local.NbaDao
+import com.jiachian.nbatoday.data.local.dao.PlayerDao
 import com.jiachian.nbatoday.data.local.player.PlayerCareer
 import com.jiachian.nbatoday.data.local.player.PlayerCareerInfoUpdate
 import com.jiachian.nbatoday.data.local.player.PlayerCareerStatsUpdate
 import kotlinx.coroutines.flow.Flow
 
 class NbaPlayerLocalSource(
-    private val dao: NbaDao,
+    private val playerDao: PlayerDao,
 ) : PlayerLocalSource() {
     override fun getPlayerCareer(playerId: Int): Flow<PlayerCareer?> {
-        return dao.getPlayerCareer(playerId)
+        return playerDao.getPlayerCareer(playerId)
     }
 
     override suspend fun insertPlayerCareer(stats: PlayerCareer) {
-        dao.insertPlayerCareer(stats)
+        playerDao.insertPlayerCareer(stats)
     }
 
     override suspend fun updatePlayerCareerInfo(info: PlayerCareerInfoUpdate) {
-        dao.updatePlayerCareerInfo(info)
+        playerDao.updatePlayerCareerInfo(info)
     }
 
     override suspend fun updatePlayerCareerStats(stats: PlayerCareerStatsUpdate) {
-        dao.updatePlayerCareerStats(stats)
+        playerDao.updatePlayerCareerStats(stats)
     }
 
     override suspend fun existPlayer(playerId: Int): Boolean {
-        return dao.exitsPlayer(playerId)
+        return playerDao.exitsPlayer(playerId)
     }
 }

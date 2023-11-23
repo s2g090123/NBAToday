@@ -1,55 +1,55 @@
 package com.jiachian.nbatoday.data.local.datasource.game
 
-import com.jiachian.nbatoday.data.local.NbaDao
 import com.jiachian.nbatoday.data.local.NbaGame
 import com.jiachian.nbatoday.data.local.NbaGameAndBet
+import com.jiachian.nbatoday.data.local.dao.GameDao
 import com.jiachian.nbatoday.data.remote.game.GameUpdateData
 import kotlinx.coroutines.flow.Flow
 
 class NbaGameLocalSource(
-    private val dao: NbaDao
+    private val gameDao: GameDao
 ) : GameLocalSource() {
     override suspend fun getGamesAt(date: Long): List<NbaGame> {
-        return dao.getGamesAt(date)
+        return gameDao.getGamesAt(date)
     }
 
     override fun getGamesDuring(from: Long, to: Long): Flow<List<NbaGame>> {
-        return dao.getGamesDuring(from, to)
+        return gameDao.getGamesDuring(from, to)
     }
 
     override fun getGamesAndBets(): Flow<List<NbaGameAndBet>> {
-        return dao.getGamesAndBets()
+        return gameDao.getGamesAndBets()
     }
 
     override fun getGamesAndBetsDuring(from: Long, to: Long): Flow<List<NbaGameAndBet>> {
-        return dao.getGamesAndBetsDuring(from, to)
+        return gameDao.getGamesAndBetsDuring(from, to)
     }
 
     override fun getGamesAndBetsBeforeByTeam(teamId: Int, from: Long): Flow<List<NbaGameAndBet>> {
-        return dao.getGamesAndBetsBeforeByTeam(teamId, from)
+        return gameDao.getGamesAndBetsBeforeByTeam(teamId, from)
     }
 
     override fun getGamesAndBetsAfterByTeam(teamId: Int, from: Long): Flow<List<NbaGameAndBet>> {
-        return dao.getGamesAndBetsAfterByTeam(teamId, from)
+        return gameDao.getGamesAndBetsAfterByTeam(teamId, from)
     }
 
     override fun getGamesBefore(from: Long): Flow<List<NbaGame>> {
-        return dao.getGamesBefore(from)
+        return gameDao.getGamesBefore(from)
     }
 
     override fun getGamesAfter(from: Long): Flow<List<NbaGame>> {
-        return dao.getGamesAfter(from)
+        return gameDao.getGamesAfter(from)
     }
 
     override suspend fun insertGames(games: List<NbaGame>) {
-        dao.insertGames(games)
+        gameDao.insertGames(games)
     }
 
     override suspend fun updateGames(games: List<GameUpdateData>) {
-        dao.updateGames(games)
+        gameDao.updateGames(games)
     }
 
     override suspend fun existsGame(): Boolean {
-        return dao.exitsGames()
+        return gameDao.exitsGames()
     }
 }
