@@ -5,7 +5,7 @@ import com.jiachian.nbatoday.SCHEDULE_DATE_RANGE
 import com.jiachian.nbatoday.data.datastore.BaseDataStore
 import com.jiachian.nbatoday.data.local.datasource.boxscore.BoxScoreLocalSource
 import com.jiachian.nbatoday.data.local.datasource.game.GameLocalSource
-import com.jiachian.nbatoday.data.remote.RemoteDataSource
+import com.jiachian.nbatoday.data.remote.datasource.game.GameRemoteSource
 import com.jiachian.nbatoday.data.repository.team.TeamRepository
 import com.jiachian.nbatoday.utils.NbaUtils
 import java.util.Calendar
@@ -15,14 +15,14 @@ import kotlinx.coroutines.flow.first
 class NbaScheduleRepository(
     private val gameLocalSource: GameLocalSource,
     private val boxScoreLocalSource: BoxScoreLocalSource,
-    private val remoteDataSource: RemoteDataSource,
+    private val gameRemoteSource: GameRemoteSource,
     private val dataStore: BaseDataStore,
     private val teamRepository: TeamRepository,
 ) : ScheduleRepository() {
     override suspend fun refreshSchedule() {
         try {
             isProgressingImp.value = true
-            val schedule = remoteDataSource.getSchedule() ?: return
+            val schedule = gameRemoteSource.getSchedule() ?: return
             val leagueSchedule = schedule.leagueSchedule ?: return
             val nbaGames = leagueSchedule.toNbaGames()
 
@@ -58,7 +58,7 @@ class NbaScheduleRepository(
             val year = cal.get(Calendar.YEAR)
             val month = cal.get(Calendar.MONTH) + 1
             val day = cal.get(Calendar.DAY_OF_MONTH)
-            val scoreboards = remoteDataSource.getScoreboard(
+            val scoreboards = gameRemoteSource.getScoreboard(
                 NBA_LEAGUE_ID,
                 year,
                 month,
@@ -82,7 +82,7 @@ class NbaScheduleRepository(
         try {
             isProgressingImp.value = true
             val gameDate = NbaUtils.formatScoreboardGameDate(year, month, day)
-            val scoreboard = remoteDataSource.getScoreboard(NBA_LEAGUE_ID, gameDate)
+            val scoreboard = gameRemoteSource.getScoreboard(NBA_LEAGUE_ID, gameDate)
             val updateData = scoreboard?.toGameUpdateData()
             updateData?.also {
                 gameLocalSource.updateGames(updateData)

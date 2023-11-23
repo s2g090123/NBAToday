@@ -14,8 +14,14 @@ import com.jiachian.nbatoday.data.local.datasource.player.NbaPlayerLocalSource
 import com.jiachian.nbatoday.data.local.datasource.player.PlayerLocalSource
 import com.jiachian.nbatoday.data.local.datasource.team.NbaTeamLocalSource
 import com.jiachian.nbatoday.data.local.datasource.team.TeamLocalSource
-import com.jiachian.nbatoday.data.remote.NbaRemoteDataSource
-import com.jiachian.nbatoday.data.remote.RemoteDataSource
+import com.jiachian.nbatoday.data.remote.datasource.game.GameRemoteSource
+import com.jiachian.nbatoday.data.remote.datasource.game.NbaGameRemoteSource
+import com.jiachian.nbatoday.data.remote.datasource.player.NbaPlayerRemoteSource
+import com.jiachian.nbatoday.data.remote.datasource.player.PlayerRemoteSource
+import com.jiachian.nbatoday.data.remote.datasource.team.NbaTeamRemoteSource
+import com.jiachian.nbatoday.data.remote.datasource.team.TeamRemoteSource
+import com.jiachian.nbatoday.data.remote.datasource.user.NbaUserRemoteSource
+import com.jiachian.nbatoday.data.remote.datasource.user.UserRemoteSource
 import com.jiachian.nbatoday.data.repository.RepositoryProvider
 import com.jiachian.nbatoday.data.repository.bet.BetRepository
 import com.jiachian.nbatoday.data.repository.bet.NbaBetRepository
@@ -43,7 +49,10 @@ val module = module {
     factory { (get() as NbaDatabase).getTeamDao() }
     factory { (get() as NbaDatabase).getPlayerDao() }
     factory { (get() as NbaDatabase).getBetDao() }
-    factory { NbaRemoteDataSource(get()) as RemoteDataSource }
+    factory { NbaGameRemoteSource() as GameRemoteSource }
+    factory { NbaTeamRemoteSource() as TeamRemoteSource }
+    factory { NbaPlayerRemoteSource() as PlayerRemoteSource }
+    factory { NbaUserRemoteSource() as UserRemoteSource }
     factory { NbaGameLocalSource(get()) as GameLocalSource }
     factory { NbaBoxScoreLocalSource(get()) as BoxScoreLocalSource }
     factory { NbaTeamLocalSource(get()) as TeamLocalSource }

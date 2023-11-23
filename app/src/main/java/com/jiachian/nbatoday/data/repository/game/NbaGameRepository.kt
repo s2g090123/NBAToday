@@ -4,16 +4,16 @@ import com.jiachian.nbatoday.data.local.NbaGameAndBet
 import com.jiachian.nbatoday.data.local.datasource.boxscore.BoxScoreLocalSource
 import com.jiachian.nbatoday.data.local.datasource.game.GameLocalSource
 import com.jiachian.nbatoday.data.local.score.GameBoxScore
-import com.jiachian.nbatoday.data.remote.RemoteDataSource
+import com.jiachian.nbatoday.data.remote.datasource.game.GameRemoteSource
 import kotlinx.coroutines.flow.Flow
 
 class NbaGameRepository(
     private val gameLocalSource: GameLocalSource,
     private val boxScoreLocalSource: BoxScoreLocalSource,
-    private val remoteDataSource: RemoteDataSource,
+    private val gameRemoteSource: GameRemoteSource,
 ) : GameRepository() {
     override suspend fun refreshGameBoxScore(gameId: String) {
-        val boxScore = remoteDataSource.getGameBoxScore(gameId)
+        val boxScore = gameRemoteSource.getGameBoxScore(gameId)
         boxScore?.also {
             val game = boxScore.game?.toLocal()
             game?.also {

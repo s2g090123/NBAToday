@@ -1,20 +1,20 @@
 package com.jiachian.nbatoday.data.repository.user
 
 import com.jiachian.nbatoday.data.datastore.BaseDataStore
-import com.jiachian.nbatoday.data.remote.RemoteDataSource
+import com.jiachian.nbatoday.data.remote.datasource.user.UserRemoteSource
 import com.jiachian.nbatoday.data.remote.user.User
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 
 class NbaUserRepository(
-    private val remoteDataSource: RemoteDataSource,
+    private val userRemoteSource: UserRemoteSource,
     private val dataStore: BaseDataStore,
 ) : UserRepository() {
     override val user: Flow<User?> = dataStore.userData
 
     override suspend fun login(account: String, password: String) {
         isProgressingImp.value = true
-        val userData = remoteDataSource.login(account, password) ?: return
+        val userData = userRemoteSource.login(account, password) ?: return
         dataStore.updateUser(userData)
         isProgressingImp.value = false
     }
@@ -27,7 +27,7 @@ class NbaUserRepository(
 
     override suspend fun register(account: String, password: String) {
         isProgressingImp.value = true
-        val userData = remoteDataSource.register(account, password) ?: return
+        val userData = userRemoteSource.register(account, password) ?: return
         dataStore.updateUser(userData)
         isProgressingImp.value = false
     }
@@ -36,7 +36,7 @@ class NbaUserRepository(
         val user = user.firstOrNull() ?: return
         val account = user.account ?: return
         val token = user.token ?: return
-        remoteDataSource.updatePassword(account, password, token)
+        userRemoteSource.updatePassword(account, password, token)
         dataStore.updateUser(
             User(
                 account = account,
@@ -52,7 +52,7 @@ class NbaUserRepository(
         val user = user.firstOrNull() ?: return
         val account = user.account ?: return
         val token = user.token ?: return
-        remoteDataSource.updatePoints(account, points, token)
+        userRemoteSource.updatePoints(account, points, token)
         dataStore.updateUser(
             User(
                 account = account,
@@ -70,7 +70,7 @@ class NbaUserRepository(
         val token = user.token ?: return
         val currentPoint = user.points ?: return
         val updatePoints = currentPoint + points
-        remoteDataSource.updatePoints(account, updatePoints, token)
+        userRemoteSource.updatePoints(account, updatePoints, token)
         dataStore.updateUser(
             User(
                 account = account,

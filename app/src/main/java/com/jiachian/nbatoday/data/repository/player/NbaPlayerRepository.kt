@@ -2,15 +2,15 @@ package com.jiachian.nbatoday.data.repository.player
 
 import com.jiachian.nbatoday.data.local.datasource.player.PlayerLocalSource
 import com.jiachian.nbatoday.data.local.player.PlayerCareer
-import com.jiachian.nbatoday.data.remote.RemoteDataSource
+import com.jiachian.nbatoday.data.remote.datasource.player.PlayerRemoteSource
 import kotlinx.coroutines.flow.Flow
 
 class NbaPlayerRepository(
     private val playerLocalSource: PlayerLocalSource,
-    private val remoteDataSource: RemoteDataSource,
+    private val playerRemoteSource: PlayerRemoteSource,
 ) : PlayerRepository() {
     override suspend fun refreshPlayerStats(playerId: Int) {
-        val detail = remoteDataSource.getPlayerDetail(playerId)
+        val detail = playerRemoteSource.getPlayerDetail(playerId)
         val info = detail?.info
         val stats = detail?.stats
         if (playerLocalSource.existPlayer(playerId)) {
