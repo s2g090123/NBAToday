@@ -23,7 +23,6 @@ import com.jiachian.nbatoday.data.remote.user.UpdatePasswordBody
 import com.jiachian.nbatoday.data.remote.user.UpdatePointBody
 import com.jiachian.nbatoday.data.remote.user.User
 import com.jiachian.nbatoday.service.CdnNbaService
-import com.jiachian.nbatoday.service.NbaService
 import com.jiachian.nbatoday.service.StatsNbaService
 import io.mockk.every
 import io.mockk.mockkConstructor
