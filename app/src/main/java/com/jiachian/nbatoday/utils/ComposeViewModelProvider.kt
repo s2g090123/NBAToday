@@ -57,7 +57,8 @@ class ComposeViewModelProvider(
     ): TeamViewModel {
         return TeamViewModel(
             team = team,
-            repository = repositoryProvider.teamRepository,
+            teamRepository = repositoryProvider.teamRepository,
+            gameRepository = repositoryProvider.gameRepository,
             screenStateHelper = screenStateHelper,
             composeViewModelProvider = this,
             dispatcherProvider = dispatcherProvider,

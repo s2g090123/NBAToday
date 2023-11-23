@@ -1,19 +1,16 @@
 package com.jiachian.nbatoday.data.repository.team
 
-import com.jiachian.nbatoday.data.local.NbaGameAndBet
 import com.jiachian.nbatoday.data.local.TeamAndPlayers
 import com.jiachian.nbatoday.data.local.datasource.team.TeamLocalSource
 import com.jiachian.nbatoday.data.local.team.NBATeam
 import com.jiachian.nbatoday.data.local.team.TeamStats
 import com.jiachian.nbatoday.data.remote.datasource.team.TeamRemoteSource
-import com.jiachian.nbatoday.data.repository.game.GameRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 
 class NbaTeamRepository(
     private val teamLocalSource: TeamLocalSource,
     private val teamRemoteSource: TeamRemoteSource,
-    private val gameRepository: GameRepository,
 ) : TeamRepository() {
     override suspend fun refreshTeamStats(teamId: Int?) {
         val stats = teamRemoteSource.getTeamStats(teamId = teamId)
@@ -63,13 +60,5 @@ class NbaTeamRepository(
 
     override fun getTeamPlusMinusRank(teamId: Int): Flow<Int> {
         return teamLocalSource.getTeamPlusMinusRank(teamId)
-    }
-
-    override fun getGamesBefore(teamId: Int, from: Long): Flow<List<NbaGameAndBet>> {
-        return gameRepository.getGamesAndBetsBeforeByTeam(teamId, from)
-    }
-
-    override fun getGamesAfter(teamId: Int, from: Long): Flow<List<NbaGameAndBet>> {
-        return gameRepository.getGamesAndBetsAfterByTeam(teamId, from)
     }
 }

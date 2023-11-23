@@ -13,8 +13,8 @@ import com.jiachian.nbatoday.rule.TestCoroutineEnvironment
 import com.jiachian.nbatoday.utils.launchAndCollect
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
-import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.instanceOf
+import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.nullValue
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
@@ -39,7 +39,7 @@ class TeamViewModelTest {
         repository.refreshSchedule()
         viewModel = TeamViewModel(
             team = homeTeamStats.team,
-            repository = repository,
+            teamRepository = repository,
             openScreen = {
                 currentState = it
             },

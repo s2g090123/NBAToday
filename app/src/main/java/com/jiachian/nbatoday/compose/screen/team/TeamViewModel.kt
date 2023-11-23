@@ -8,6 +8,7 @@ import com.jiachian.nbatoday.data.local.NbaGame
 import com.jiachian.nbatoday.data.local.NbaGameAndBet
 import com.jiachian.nbatoday.data.local.player.PlayerStats
 import com.jiachian.nbatoday.data.local.team.NBATeam
+import com.jiachian.nbatoday.data.repository.game.GameRepository
 import com.jiachian.nbatoday.data.repository.team.TeamRepository
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
@@ -28,7 +29,8 @@ import kotlinx.coroutines.withContext
 
 class TeamViewModel(
     val team: NBATeam,
-    private val repository: TeamRepository,
+    private val teamRepository: TeamRepository,
+    gameRepository: GameRepository,
     private val screenStateHelper: ScreenStateHelper,
     private val composeViewModelProvider: ComposeViewModelProvider,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
@@ -38,28 +40,28 @@ class TeamViewModel(
 
     val labels = LabelHelper.createTeamPlayerLabel()
 
-    val gamesBefore = repository.getGamesBefore(team.teamId, NbaUtils.getCalendar().timeInMillis)
+    val gamesBefore = gameRepository.getGamesAndBetsBeforeByTeam(team.teamId, NbaUtils.getCalendar().timeInMillis)
         .stateIn(coroutineScope, SharingStarted.Lazily, emptyList())
-    val gamesAfter = repository.getGamesAfter(team.teamId, NbaUtils.getCalendar().timeInMillis)
+    val gamesAfter = gameRepository.getGamesAndBetsAfterByTeam(team.teamId, NbaUtils.getCalendar().timeInMillis)
         .stateIn(coroutineScope, SharingStarted.Lazily, emptyList())
-    private val teamAndPlayersStats = repository.getTeamAndPlayersStats(team.teamId)
+    private val teamAndPlayersStats = teamRepository.getTeamAndPlayersStats(team.teamId)
 
     val teamStats = teamAndPlayersStats.map {
         it?.teamStats
     }.stateIn(coroutineScope, SharingStarted.Lazily, null)
 
-    val teamRank = repository.getTeamRank(team.teamId, team.conference)
+    val teamRank = teamRepository.getTeamRank(team.teamId, team.conference)
         .stateIn(coroutineScope, SharingStarted.Eagerly, 0)
-    val teamPointsRank = repository.getTeamPointsRank(team.teamId)
+    val teamPointsRank = teamRepository.getTeamPointsRank(team.teamId)
         .stateIn(coroutineScope, SharingStarted.Eagerly, 0)
-    val teamReboundsRank = repository.getTeamReboundsRank(team.teamId)
+    val teamReboundsRank = teamRepository.getTeamReboundsRank(team.teamId)
         .stateIn(coroutineScope, SharingStarted.Eagerly, 0)
-    val teamAssistsRank = repository.getTeamAssistsRank(team.teamId)
+    val teamAssistsRank = teamRepository.getTeamAssistsRank(team.teamId)
         .stateIn(coroutineScope, SharingStarted.Eagerly, 0)
-    val teamPlusMinusRank = repository.getTeamPlusMinusRank(team.teamId)
+    val teamPlusMinusRank = teamRepository.getTeamPlusMinusRank(team.teamId)
         .stateIn(coroutineScope, SharingStarted.Eagerly, 0)
 
-    val isProgressing = repository.isProgressing
+    val isProgressing = teamRepository.isProgressing
     private val isTeamRefreshingImp = MutableStateFlow(false)
     val isTeamRefreshing = isTeamRefreshingImp.asStateFlow()
     private val selectPageImp = MutableStateFlow(TeamPageTab.PLAYERS)
@@ -300,8 +302,8 @@ class TeamViewModel(
         coroutineScope.launch {
             isTeamRefreshingImp.value = true
             withContext(dispatcherProvider.io) {
-                val deferred1 = async { repository.refreshTeamStats(null) }
-                val deferred2 = async { repository.refreshTeamPlayersStats(team.teamId) }
+                val deferred1 = async { teamRepository.refreshTeamStats(null) }
+                val deferred2 = async { teamRepository.refreshTeamPlayersStats(team.teamId) }
                 deferred1.await()
                 deferred2.await()
             }

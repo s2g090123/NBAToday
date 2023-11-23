@@ -66,7 +66,7 @@ val module = module {
     single { ScreenStateHelper(get(), get()) }
     single { NbaScheduleRepository(get(), get(), get(), get(), get()) as ScheduleRepository }
     single { NbaGameRepository(get(), get(), get()) as GameRepository }
-    single { NbaTeamRepository(get(), get(), get()) as TeamRepository }
+    single { NbaTeamRepository(get(), get()) as TeamRepository }
     single { NbaPlayerRepository(get(), get()) as PlayerRepository }
     single { NbaBetRepository(get(), get()) as BetRepository }
     single { NbaUserRepository(get(), get()) as UserRepository }

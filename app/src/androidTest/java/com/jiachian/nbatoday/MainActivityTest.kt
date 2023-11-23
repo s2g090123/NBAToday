@@ -76,7 +76,7 @@ class MainActivityTest {
             NbaState.Team(
                 TeamViewModel(
                     team = TeamStatsFactory.getHomeTeamStats().team,
-                    repository = repository,
+                    teamRepository = repository,
                     openScreen = {}
                 )
             )

@@ -1,6 +1,5 @@
 package com.jiachian.nbatoday.data.repository.team
 
-import com.jiachian.nbatoday.data.local.NbaGameAndBet
 import com.jiachian.nbatoday.data.local.TeamAndPlayers
 import com.jiachian.nbatoday.data.local.team.NBATeam
 import com.jiachian.nbatoday.data.local.team.TeamStats
@@ -18,6 +17,4 @@ abstract class TeamRepository : BaseRepository() {
     abstract fun getTeamReboundsRank(teamId: Int): Flow<Int>
     abstract fun getTeamAssistsRank(teamId: Int): Flow<Int>
     abstract fun getTeamPlusMinusRank(teamId: Int): Flow<Int>
-    abstract fun getGamesBefore(teamId: Int, from: Long): Flow<List<NbaGameAndBet>>
-    abstract fun getGamesAfter(teamId: Int, from: Long): Flow<List<NbaGameAndBet>>
 }

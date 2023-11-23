@@ -70,7 +70,7 @@ class TeamScreenTest : BaseAndroidTest() {
         repository = TestRepository()
         viewModel = TeamViewModel(
             team = team.team,
-            repository = repository,
+            teamRepository = repository,
             openScreen = { currentState = it },
             dispatcherProvider = coroutineEnvironment.testDispatcherProvider
         )
