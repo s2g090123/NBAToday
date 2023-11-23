@@ -9,6 +9,7 @@ import com.jiachian.nbatoday.data.local.team.teamOfficial
 import com.jiachian.nbatoday.data.remote.team.GameTeam
 import com.jiachian.nbatoday.utils.getOrNA
 import com.jiachian.nbatoday.utils.getOrZero
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.TimeZone
@@ -227,7 +228,7 @@ data class Schedule(
             return dateString?.let { time ->
                 try {
                     dateFormat.parse(time)
-                } catch (e: Exception) {
+                } catch (e: ParseException) {
                     null
                 }
             }

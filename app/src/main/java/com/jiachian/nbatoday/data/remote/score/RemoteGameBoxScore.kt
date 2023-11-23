@@ -9,6 +9,7 @@ import com.jiachian.nbatoday.data.remote.game.PeriodType
 import com.jiachian.nbatoday.utils.NbaUtils
 import com.jiachian.nbatoday.utils.getOrNA
 import com.jiachian.nbatoday.utils.getOrZero
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Calendar
 
@@ -316,7 +317,7 @@ data class RemoteGameBoxScore(
                             cal.get(Calendar.DAY_OF_MONTH)
                         )
                     }
-                } catch (e: Exception) {
+                } catch (e: ParseException) {
                     null
                 }
             }.getOrNA()
