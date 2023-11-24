@@ -3,7 +3,6 @@ package com.jiachian.nbatoday.compose.screen.player
 import com.jiachian.nbatoday.HomePlayerId
 import com.jiachian.nbatoday.data.PlayerCareerFactory
 import com.jiachian.nbatoday.data.TestRepository
-import com.jiachian.nbatoday.data.local.player.PlayerCareer
 import com.jiachian.nbatoday.rule.TestCoroutineEnvironment
 import com.jiachian.nbatoday.utils.launchAndCollect
 import org.hamcrest.CoreMatchers.`is`
@@ -344,34 +343,5 @@ class PlayerViewModelTest {
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
-    }
-
-    private fun assertCareerStats(
-        result: PlayerCareer.PlayerCareerStats.Stats,
-        expected: PlayerCareer.PlayerCareerStats.Stats
-    ) {
-        assertThat(result.gamePlayed, `is`(expected.gamePlayed))
-        assertThat(result.win, `is`(expected.win))
-        assertThat(result.lose, `is`(expected.lose))
-        assertThat(result.winPercentage, `is`(expected.winPercentage))
-        assertThat(result.fieldGoalsMade, `is`(expected.fieldGoalsMade))
-        assertThat(result.fieldGoalsAttempted, `is`(expected.fieldGoalsAttempted))
-        assertThat(result.fieldGoalsPercentage, `is`(expected.fieldGoalsPercentage))
-        assertThat(result.threePointersMade, `is`(expected.threePointersMade))
-        assertThat(result.threePointersAttempted, `is`(expected.threePointersAttempted))
-        assertThat(result.threePointersPercentage, `is`(expected.threePointersPercentage))
-        assertThat(result.freeThrowsMade, `is`(expected.freeThrowsMade))
-        assertThat(result.freeThrowsAttempted, `is`(expected.freeThrowsAttempted))
-        assertThat(result.freeThrowsPercentage, `is`(expected.freeThrowsPercentage))
-        assertThat(result.reboundsOffensive, `is`(expected.reboundsOffensive))
-        assertThat(result.reboundsDefensive, `is`(expected.reboundsDefensive))
-        assertThat(result.reboundsTotal, `is`(expected.reboundsTotal))
-        assertThat(result.assists, `is`(expected.assists))
-        assertThat(result.turnovers, `is`(expected.turnovers))
-        assertThat(result.steals, `is`(expected.steals))
-        assertThat(result.blocks, `is`(expected.blocks))
-        assertThat(result.foulsPersonal, `is`(expected.foulsPersonal))
-        assertThat(result.points, `is`(expected.points))
-        assertThat(result.plusMinus, `is`(expected.plusMinus))
     }
 }
