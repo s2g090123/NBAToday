@@ -74,7 +74,7 @@ private fun TeamStatsRow(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = if (label.topMargin) 8.dp else 0.dp, start = 4.dp, end = 4.dp),
-            ) {
+        ) {
             Text(
                 modifier = Modifier
                     .testTag("TeamStatsRow_Text_Home")

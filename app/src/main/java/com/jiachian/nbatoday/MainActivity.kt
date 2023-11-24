@@ -67,7 +67,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 private const val SplashOffsetAnimationDurationMs = 2000
 
-
 class MainActivity : ComponentActivity() {
 
     private val viewModel by viewModel<MainViewModel>()
