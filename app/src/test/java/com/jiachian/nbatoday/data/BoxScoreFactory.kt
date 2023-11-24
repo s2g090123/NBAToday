@@ -1,25 +1,25 @@
 package com.jiachian.nbatoday.data
 
-import com.jiachian.nbatoday.AWAY_PLAYER_FIRST_NAME
-import com.jiachian.nbatoday.AWAY_PLAYER_FULL_NAME
-import com.jiachian.nbatoday.AWAY_PLAYER_ID
-import com.jiachian.nbatoday.AWAY_PLAYER_LAST_NAME
-import com.jiachian.nbatoday.AWAY_TEAM
-import com.jiachian.nbatoday.BASIC_MINUTES
-import com.jiachian.nbatoday.BASIC_NUMBER
-import com.jiachian.nbatoday.BASIC_PERCENTAGE
-import com.jiachian.nbatoday.BASIC_POSITION
-import com.jiachian.nbatoday.FINAL_GAME_ID
-import com.jiachian.nbatoday.GAME_CODE
-import com.jiachian.nbatoday.GAME_DATE
-import com.jiachian.nbatoday.GAME_STATUS_FINAL
-import com.jiachian.nbatoday.GAME_STATUS_PREPARE
-import com.jiachian.nbatoday.HOME_PLAYER_FIRST_NAME
-import com.jiachian.nbatoday.HOME_PLAYER_FULL_NAME
-import com.jiachian.nbatoday.HOME_PLAYER_ID
-import com.jiachian.nbatoday.HOME_PLAYER_LAST_NAME
-import com.jiachian.nbatoday.HOME_TEAM
-import com.jiachian.nbatoday.PLAYING_GAME_ID
+import com.jiachian.nbatoday.AwayPlayerFirstName
+import com.jiachian.nbatoday.AwayPlayerFullName
+import com.jiachian.nbatoday.AwayPlayerId
+import com.jiachian.nbatoday.AwayPlayerLastName
+import com.jiachian.nbatoday.AwayTeam
+import com.jiachian.nbatoday.BasicMinutes
+import com.jiachian.nbatoday.BasicNumber
+import com.jiachian.nbatoday.BasicPercentage
+import com.jiachian.nbatoday.BasicPosition
+import com.jiachian.nbatoday.FinalGameId
+import com.jiachian.nbatoday.GameCode
+import com.jiachian.nbatoday.GameDate
+import com.jiachian.nbatoday.GameStatusFinal
+import com.jiachian.nbatoday.GameStatusPrepare
+import com.jiachian.nbatoday.HomePlayerFirstName
+import com.jiachian.nbatoday.HomePlayerFullName
+import com.jiachian.nbatoday.HomePlayerId
+import com.jiachian.nbatoday.HomePlayerLastName
+import com.jiachian.nbatoday.HomeTeam
+import com.jiachian.nbatoday.PlayingGameId
 import com.jiachian.nbatoday.data.local.score.GameBoxScore
 import com.jiachian.nbatoday.data.remote.game.GameStatusCode
 import com.jiachian.nbatoday.data.remote.score.PlayerActiveStatus
@@ -28,10 +28,10 @@ object BoxScoreFactory {
 
     fun getFinalGameBoxScore(): GameBoxScore {
         return GameBoxScore(
-            gameId = FINAL_GAME_ID,
-            gameDate = GAME_DATE,
-            gameCode = GAME_CODE,
-            gameStatusText = GAME_STATUS_FINAL,
+            gameId = FinalGameId,
+            gameDate = GameDate,
+            gameCode = GameCode,
+            gameStatusText = GameStatusFinal,
             gameStatus = GameStatusCode.FINAL,
             homeTeam = getHomeTeamScore(),
             awayTeam = getAwayTeamScore()
@@ -40,10 +40,10 @@ object BoxScoreFactory {
 
     fun getPlayingGameBoxScore(): GameBoxScore {
         return GameBoxScore(
-            gameId = PLAYING_GAME_ID,
-            gameDate = GAME_DATE,
-            gameCode = GAME_CODE,
-            gameStatusText = GAME_STATUS_PREPARE,
+            gameId = PlayingGameId,
+            gameDate = GameDate,
+            gameCode = GameCode,
+            gameStatusText = GameStatusPrepare,
             gameStatus = GameStatusCode.PLAYING,
             homeTeam = getHomeTeamScore(),
             awayTeam = getAwayTeamScore()
@@ -52,10 +52,10 @@ object BoxScoreFactory {
 
     private fun getHomeTeamScore(): GameBoxScore.BoxScoreTeam {
         return GameBoxScore.BoxScoreTeam(
-            team = HOME_TEAM,
-            score = BASIC_NUMBER,
+            team = HomeTeam,
+            score = BasicNumber,
             inBonus = true,
-            timeoutsRemaining = BASIC_NUMBER,
+            timeoutsRemaining = BasicNumber,
             periods = createPeriods(),
             players = createHomePlayers(),
             statistics = createTeamStatics()
@@ -64,10 +64,10 @@ object BoxScoreFactory {
 
     private fun getAwayTeamScore(): GameBoxScore.BoxScoreTeam {
         return GameBoxScore.BoxScoreTeam(
-            team = AWAY_TEAM,
-            score = BASIC_NUMBER,
+            team = AwayTeam,
+            score = BasicNumber,
             inBonus = true,
-            timeoutsRemaining = BASIC_NUMBER,
+            timeoutsRemaining = BasicNumber,
             periods = createPeriods(),
             players = createAwayPlayers(),
             statistics = createTeamStatics()
@@ -79,7 +79,7 @@ object BoxScoreFactory {
             GameBoxScore.BoxScoreTeam.Period(
                 period = it,
                 periodLabel = "1st",
-                score = BASIC_NUMBER
+                score = BasicNumber
             )
         }
     }
@@ -90,17 +90,17 @@ object BoxScoreFactory {
                 status = PlayerActiveStatus.ACTIVE,
                 notPlayingReason = "",
                 order = 1,
-                personId = HOME_PLAYER_ID,
-                jerseyNum = BASIC_NUMBER.toString(),
-                position = BASIC_POSITION,
+                personId = HomePlayerId,
+                jerseyNum = BasicNumber.toString(),
+                position = BasicPosition,
                 starter = true,
                 onCourt = true,
                 played = true,
                 statistics = createPlayerStatics(),
-                name = HOME_PLAYER_FULL_NAME,
-                nameAbbr = HOME_PLAYER_LAST_NAME,
-                firstName = HOME_PLAYER_FIRST_NAME,
-                familyName = HOME_PLAYER_LAST_NAME
+                name = HomePlayerFullName,
+                nameAbbr = HomePlayerLastName,
+                firstName = HomePlayerFirstName,
+                familyName = HomePlayerLastName
             )
         )
     }
@@ -111,91 +111,91 @@ object BoxScoreFactory {
                 status = PlayerActiveStatus.ACTIVE,
                 notPlayingReason = "",
                 order = 1,
-                personId = AWAY_PLAYER_ID,
-                jerseyNum = BASIC_NUMBER.toString(),
-                position = BASIC_POSITION,
+                personId = AwayPlayerId,
+                jerseyNum = BasicNumber.toString(),
+                position = BasicPosition,
                 starter = true,
                 onCourt = true,
                 played = true,
                 statistics = createPlayerStatics(),
-                name = AWAY_PLAYER_FULL_NAME,
-                nameAbbr = AWAY_PLAYER_LAST_NAME,
-                firstName = AWAY_PLAYER_FIRST_NAME,
-                familyName = AWAY_PLAYER_LAST_NAME
+                name = AwayPlayerFullName,
+                nameAbbr = AwayPlayerLastName,
+                firstName = AwayPlayerFirstName,
+                familyName = AwayPlayerLastName
             )
         )
     }
 
     private fun createTeamStatics(): GameBoxScore.BoxScoreTeam.Statistics {
         return GameBoxScore.BoxScoreTeam.Statistics(
-            assists = BASIC_NUMBER,
-            blocks = BASIC_NUMBER,
-            blocksReceived = BASIC_NUMBER,
-            fieldGoalsAttempted = BASIC_NUMBER,
-            fieldGoalsMade = BASIC_NUMBER,
-            fieldGoalsPercentage = BASIC_PERCENTAGE,
-            foulsOffensive = BASIC_NUMBER,
-            foulsDrawn = BASIC_NUMBER,
-            foulsPersonal = BASIC_NUMBER,
-            foulsTeam = BASIC_NUMBER,
-            foulsTechnical = BASIC_NUMBER,
-            freeThrowsAttempted = BASIC_NUMBER,
-            freeThrowsMade = BASIC_NUMBER,
-            freeThrowsPercentage = BASIC_PERCENTAGE,
-            points = BASIC_NUMBER,
-            reboundsOffensive = BASIC_NUMBER,
-            reboundsDefensive = BASIC_NUMBER,
-            reboundsPersonal = BASIC_NUMBER,
-            reboundsTotal = BASIC_NUMBER,
-            steals = BASIC_NUMBER,
-            threePointersAttempted = BASIC_NUMBER,
-            threePointersMade = BASIC_NUMBER,
-            threePointersPercentage = BASIC_PERCENTAGE,
-            turnovers = BASIC_NUMBER,
-            turnoversTeam = BASIC_NUMBER,
-            turnoversTotal = BASIC_NUMBER,
-            twoPointersAttempted = BASIC_NUMBER,
-            twoPointersMade = BASIC_NUMBER,
-            twoPointersPercentage = BASIC_PERCENTAGE,
-            pointsFastBreak = BASIC_NUMBER,
-            pointsFromTurnovers = BASIC_NUMBER,
-            pointsInThePaint = BASIC_NUMBER,
-            pointsSecondChance = BASIC_NUMBER,
-            benchPoints = BASIC_NUMBER
+            assists = BasicNumber,
+            blocks = BasicNumber,
+            blocksReceived = BasicNumber,
+            fieldGoalsAttempted = BasicNumber,
+            fieldGoalsMade = BasicNumber,
+            fieldGoalsPercentage = BasicPercentage,
+            foulsOffensive = BasicNumber,
+            foulsDrawn = BasicNumber,
+            foulsPersonal = BasicNumber,
+            foulsTeam = BasicNumber,
+            foulsTechnical = BasicNumber,
+            freeThrowsAttempted = BasicNumber,
+            freeThrowsMade = BasicNumber,
+            freeThrowsPercentage = BasicPercentage,
+            points = BasicNumber,
+            reboundsOffensive = BasicNumber,
+            reboundsDefensive = BasicNumber,
+            reboundsPersonal = BasicNumber,
+            reboundsTotal = BasicNumber,
+            steals = BasicNumber,
+            threePointersAttempted = BasicNumber,
+            threePointersMade = BasicNumber,
+            threePointersPercentage = BasicPercentage,
+            turnovers = BasicNumber,
+            turnoversTeam = BasicNumber,
+            turnoversTotal = BasicNumber,
+            twoPointersAttempted = BasicNumber,
+            twoPointersMade = BasicNumber,
+            twoPointersPercentage = BasicPercentage,
+            pointsFastBreak = BasicNumber,
+            pointsFromTurnovers = BasicNumber,
+            pointsInThePaint = BasicNumber,
+            pointsSecondChance = BasicNumber,
+            benchPoints = BasicNumber
         )
     }
 
     private fun createPlayerStatics(): GameBoxScore.BoxScoreTeam.Player.Statistics {
         return GameBoxScore.BoxScoreTeam.Player.Statistics(
-            assists = BASIC_NUMBER,
-            blocks = BASIC_NUMBER,
-            blocksReceived = BASIC_NUMBER,
-            fieldGoalsAttempted = BASIC_NUMBER,
-            fieldGoalsMade = BASIC_NUMBER,
-            fieldGoalsPercentage = BASIC_PERCENTAGE,
-            foulsOffensive = BASIC_NUMBER,
-            foulsDrawn = BASIC_NUMBER,
-            foulsPersonal = BASIC_NUMBER,
-            foulsTechnical = BASIC_NUMBER,
-            freeThrowsAttempted = BASIC_NUMBER,
-            freeThrowsMade = BASIC_NUMBER,
-            freeThrowsPercentage = BASIC_PERCENTAGE,
-            minus = BASIC_NUMBER,
-            minutes = BASIC_MINUTES,
-            plus = BASIC_NUMBER,
-            plusMinusPoints = BASIC_NUMBER,
-            points = BASIC_NUMBER,
-            reboundsOffensive = BASIC_NUMBER,
-            reboundsDefensive = BASIC_NUMBER,
-            reboundsTotal = BASIC_NUMBER,
-            steals = BASIC_NUMBER,
-            threePointersAttempted = BASIC_NUMBER,
-            threePointersMade = BASIC_NUMBER,
-            threePointersPercentage = BASIC_PERCENTAGE,
-            turnovers = BASIC_NUMBER,
-            twoPointersAttempted = BASIC_NUMBER,
-            twoPointersMade = BASIC_NUMBER,
-            twoPointersPercentage = BASIC_PERCENTAGE,
+            assists = BasicNumber,
+            blocks = BasicNumber,
+            blocksReceived = BasicNumber,
+            fieldGoalsAttempted = BasicNumber,
+            fieldGoalsMade = BasicNumber,
+            fieldGoalsPercentage = BasicPercentage,
+            foulsOffensive = BasicNumber,
+            foulsDrawn = BasicNumber,
+            foulsPersonal = BasicNumber,
+            foulsTechnical = BasicNumber,
+            freeThrowsAttempted = BasicNumber,
+            freeThrowsMade = BasicNumber,
+            freeThrowsPercentage = BasicPercentage,
+            minus = BasicNumber,
+            minutes = BasicMinutes,
+            plus = BasicNumber,
+            plusMinusPoints = BasicNumber,
+            points = BasicNumber,
+            reboundsOffensive = BasicNumber,
+            reboundsDefensive = BasicNumber,
+            reboundsTotal = BasicNumber,
+            steals = BasicNumber,
+            threePointersAttempted = BasicNumber,
+            threePointersMade = BasicNumber,
+            threePointersPercentage = BasicPercentage,
+            turnovers = BasicNumber,
+            twoPointersAttempted = BasicNumber,
+            twoPointersMade = BasicNumber,
+            twoPointersPercentage = BasicPercentage,
         )
     }
 }

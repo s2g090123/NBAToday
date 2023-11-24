@@ -12,7 +12,7 @@ import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.jiachian.nbatoday.DATA_STORE_NAME
+import com.jiachian.nbatoday.DataStoreName
 import com.jiachian.nbatoday.annotation.ExcludeFromJacocoGeneratedReport
 import com.jiachian.nbatoday.compose.theme.LakersColors
 import com.jiachian.nbatoday.data.datastore.NbaDataStore.PreferencesKeys.RECORD_SCHEDULE_TODAY
@@ -24,7 +24,7 @@ import com.jiachian.nbatoday.data.remote.user.User
 import com.jiachian.nbatoday.utils.NbaUtils
 import kotlinx.coroutines.flow.map
 
-val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = DATA_STORE_NAME)
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = DataStoreName)
 
 class NbaDataStore(
     private val application: Application

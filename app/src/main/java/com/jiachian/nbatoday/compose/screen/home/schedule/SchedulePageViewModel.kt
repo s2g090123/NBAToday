@@ -2,7 +2,7 @@ package com.jiachian.nbatoday.compose.screen.home.schedule
 
 import android.annotation.SuppressLint
 import android.text.format.DateUtils
-import com.jiachian.nbatoday.SCHEDULE_DATE_RANGE
+import com.jiachian.nbatoday.ScheduleDateRange
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.compose.screen.card.GameStatusCardViewModel
 import com.jiachian.nbatoday.compose.state.NbaScreenState
@@ -45,8 +45,8 @@ class SchedulePageViewModel(
         it.set(Calendar.MINUTE, 0)
         it.set(Calendar.SECOND, 0)
         gameRepository.getGamesAndBetsDuring(
-            it.timeInMillis - DateUtils.DAY_IN_MILLIS * (SCHEDULE_DATE_RANGE + 1),
-            it.timeInMillis + DateUtils.DAY_IN_MILLIS * (SCHEDULE_DATE_RANGE)
+            it.timeInMillis - DateUtils.DAY_IN_MILLIS * (ScheduleDateRange + 1),
+            it.timeInMillis + DateUtils.DAY_IN_MILLIS * (ScheduleDateRange)
         )
     }
     val scheduleGames = scheduleGamesImp.map {
@@ -71,8 +71,8 @@ class SchedulePageViewModel(
     private fun getDateData(): List<DateData> {
         val output = mutableListOf<DateData>()
         val calendar = NbaUtils.getCalendar()
-        calendar.add(Calendar.DAY_OF_MONTH, -SCHEDULE_DATE_RANGE)
-        repeat(SCHEDULE_DATE_RANGE * 2 + 1) {
+        calendar.add(Calendar.DAY_OF_MONTH, -ScheduleDateRange)
+        repeat(ScheduleDateRange * 2 + 1) {
             output.add(
                 DateData(
                     calendar.get(Calendar.YEAR),

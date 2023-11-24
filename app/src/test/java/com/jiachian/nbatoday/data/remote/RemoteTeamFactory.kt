@@ -1,9 +1,9 @@
 package com.jiachian.nbatoday.data.remote
 
-import com.jiachian.nbatoday.BASIC_NUMBER
-import com.jiachian.nbatoday.HOME_PLAYER_FULL_NAME
-import com.jiachian.nbatoday.HOME_PLAYER_ID
-import com.jiachian.nbatoday.HOME_TEAM_ID
+import com.jiachian.nbatoday.BasicNumber
+import com.jiachian.nbatoday.HomePlayerFullName
+import com.jiachian.nbatoday.HomePlayerId
+import com.jiachian.nbatoday.HomeTeamId
 import com.jiachian.nbatoday.data.remote.player.RemoteTeamPlayerStats
 import com.jiachian.nbatoday.data.remote.team.RemoteTeamStats
 
@@ -11,7 +11,7 @@ object RemoteTeamFactory {
     fun getRemoteTeamPlayerStats(): RemoteTeamPlayerStats {
         return RemoteTeamPlayerStats(
             parameters = RemoteTeamPlayerStats.Parameters(
-                teamId = HOME_TEAM_ID
+                teamId = HomeTeamId
             ),
             data = listOf(
                 RemoteTeamPlayerStats.Result(
@@ -46,32 +46,32 @@ object RemoteTeamFactory {
                     ),
                     rowData = listOf(
                         listOf(
-                            HOME_PLAYER_ID.toString(),
-                            HOME_PLAYER_FULL_NAME,
-                            HOME_PLAYER_FULL_NAME,
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString()
+                            HomePlayerId.toString(),
+                            HomePlayerFullName,
+                            HomePlayerFullName,
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString()
                         )
                     )
                 )
@@ -112,30 +112,30 @@ object RemoteTeamFactory {
                     ),
                     rowData = listOf(
                         listOf(
-                            HOME_TEAM_ID.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString()
+                            HomeTeamId.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString()
                         )
                     )
                 )

@@ -1,13 +1,13 @@
 package com.jiachian.nbatoday.data
 
-import com.jiachian.nbatoday.BASIC_TIME
-import com.jiachian.nbatoday.COMING_SOON_GAME_ID
-import com.jiachian.nbatoday.FINAL_GAME_ID
-import com.jiachian.nbatoday.GAME_CODE
-import com.jiachian.nbatoday.GAME_STATUS_FINAL
-import com.jiachian.nbatoday.GAME_STATUS_PREPARE
-import com.jiachian.nbatoday.NEXT_TIME
-import com.jiachian.nbatoday.PLAYING_GAME_ID
+import com.jiachian.nbatoday.BasicTime
+import com.jiachian.nbatoday.ComingSoonGameId
+import com.jiachian.nbatoday.FinalGameId
+import com.jiachian.nbatoday.GameCode
+import com.jiachian.nbatoday.GameStatusFinal
+import com.jiachian.nbatoday.GameStatusPrepare
+import com.jiachian.nbatoday.NextTime
+import com.jiachian.nbatoday.PlayingGameId
 import com.jiachian.nbatoday.data.local.NbaGame
 import com.jiachian.nbatoday.data.remote.game.GameStatusCode
 import java.util.Date
@@ -19,14 +19,14 @@ object NbaGameFactory {
             leagueId = "00",
             awayTeam = GameTeamFactory.getDefaultAwayTeam(),
             day = "SUN",
-            gameCode = GAME_CODE,
-            gameId = FINAL_GAME_ID,
+            gameCode = GameCode,
+            gameId = FinalGameId,
             gameStatus = GameStatusCode.FINAL,
-            gameStatusText = GAME_STATUS_FINAL,
+            gameStatusText = GameStatusFinal,
             gameSequence = 1,
             homeTeam = GameTeamFactory.getDefaultHomeTeam(),
-            gameDate = Date(BASIC_TIME),
-            gameDateTime = Date(BASIC_TIME),
+            gameDate = Date(BasicTime),
+            gameDateTime = Date(BasicTime),
             monthNum = 1,
             pointsLeaders = listOf(
                 GameLeaderFactory.getHomePointsLeader(),
@@ -43,14 +43,14 @@ object NbaGameFactory {
             leagueId = "00",
             awayTeam = GameTeamFactory.getDefaultAwayTeam(),
             day = "SUN",
-            gameCode = GAME_CODE,
-            gameId = PLAYING_GAME_ID,
+            gameCode = GameCode,
+            gameId = PlayingGameId,
             gameStatus = GameStatusCode.PLAYING,
-            gameStatusText = GAME_STATUS_PREPARE,
+            gameStatusText = GameStatusPrepare,
             gameSequence = 2,
             homeTeam = GameTeamFactory.getDefaultHomeTeam(),
-            gameDate = Date(BASIC_TIME),
-            gameDateTime = Date(BASIC_TIME),
+            gameDate = Date(BasicTime),
+            gameDateTime = Date(BasicTime),
             monthNum = 1,
             pointsLeaders = listOf(
                 GameLeaderFactory.getHomePointsLeader(),
@@ -67,14 +67,14 @@ object NbaGameFactory {
             leagueId = "00",
             awayTeam = GameTeamFactory.getDefaultAwayTeam(),
             day = "SUN",
-            gameCode = GAME_CODE,
-            gameId = COMING_SOON_GAME_ID,
+            gameCode = GameCode,
+            gameId = ComingSoonGameId,
             gameStatus = GameStatusCode.COMING_SOON,
-            gameStatusText = GAME_STATUS_PREPARE,
+            gameStatusText = GameStatusPrepare,
             gameSequence = 3,
             homeTeam = GameTeamFactory.getDefaultHomeTeam(),
-            gameDate = Date(NEXT_TIME),
-            gameDateTime = Date(NEXT_TIME),
+            gameDate = Date(NextTime),
+            gameDateTime = Date(NextTime),
             monthNum = 1,
             pointsLeaders = listOf(
                 GameLeaderFactory.getHomePointsLeader(),

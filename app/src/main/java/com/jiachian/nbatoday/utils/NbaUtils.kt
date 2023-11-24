@@ -1,7 +1,7 @@
 package com.jiachian.nbatoday.utils
 
 import android.annotation.SuppressLint
-import com.jiachian.nbatoday.CDN_BASE_URL
+import com.jiachian.nbatoday.CdnBaseUrl
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -17,16 +17,16 @@ object NbaUtils {
 
     // returns svg
     fun getTeamLogoUrlById(teamId: Int): String {
-        return "${CDN_BASE_URL}logos/nba/$teamId/global/L/logo.svg"
+        return "${CdnBaseUrl}logos/nba/$teamId/global/L/logo.svg"
     }
 
     fun getTeamSmallLogoUrlById(teamId: Int): String {
-        return "${CDN_BASE_URL}logos/nba/$teamId/primary/L/logo.svg"
+        return "${CdnBaseUrl}logos/nba/$teamId/primary/L/logo.svg"
     }
 
     // returns svg
     fun getPlayerImageUrlById(playerId: Int): String {
-        return "${CDN_BASE_URL}headshots/nba/latest/260x190/$playerId.png"
+        return "${CdnBaseUrl}headshots/nba/latest/260x190/$playerId.png"
     }
 
     fun formatScoreboardGameDate(year: Int, month: Int, day: Int): String {

@@ -1,14 +1,14 @@
 package com.jiachian.nbatoday.data.remote
 
-import com.jiachian.nbatoday.BASIC_NUMBER
-import com.jiachian.nbatoday.BASIC_POSITION
-import com.jiachian.nbatoday.HOME_PLAYER_FIRST_NAME
-import com.jiachian.nbatoday.HOME_PLAYER_ID
-import com.jiachian.nbatoday.HOME_PLAYER_LAST_NAME
-import com.jiachian.nbatoday.HOME_TEAM_ABBR
-import com.jiachian.nbatoday.HOME_TEAM_ID
-import com.jiachian.nbatoday.HOME_TEAM_NAME
-import com.jiachian.nbatoday.TEAM_CITY
+import com.jiachian.nbatoday.BasicNumber
+import com.jiachian.nbatoday.BasicPosition
+import com.jiachian.nbatoday.HomePlayerFirstName
+import com.jiachian.nbatoday.HomePlayerId
+import com.jiachian.nbatoday.HomePlayerLastName
+import com.jiachian.nbatoday.HomeTeamAbbr
+import com.jiachian.nbatoday.HomeTeamId
+import com.jiachian.nbatoday.HomeTeamName
+import com.jiachian.nbatoday.TeamCity
 import com.jiachian.nbatoday.data.remote.player.RemotePlayerDetail
 import com.jiachian.nbatoday.data.remote.player.RemotePlayerInfo
 import com.jiachian.nbatoday.data.remote.player.RemotePlayerStats
@@ -23,7 +23,7 @@ object RemotePlayerFactory {
 
     fun getRemotePlayerStats(): RemotePlayerStats {
         return RemotePlayerStats(
-            parameters = RemotePlayerStats.Parameter(HOME_PLAYER_ID),
+            parameters = RemotePlayerStats.Parameter(HomePlayerId),
             resultSets = listOf(
                 RemotePlayerStats.Result(
                     name = "ByYearPlayerDashboard",
@@ -80,55 +80,55 @@ object RemotePlayerFactory {
                     ),
                     rowData = listOf(
                         listOf(
-                            BASIC_NUMBER.toString(),
-                            HOME_TEAM_ID.toString(),
-                            HOME_TEAM_ABBR,
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
+                            BasicNumber.toString(),
+                            HomeTeamId.toString(),
+                            HomeTeamAbbr,
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
                         )
                     )
                 )
@@ -165,25 +165,25 @@ object RemotePlayerFactory {
                     ),
                     rowData = listOf(
                         listOf(
-                            HOME_PLAYER_ID.toString(),
-                            HOME_PLAYER_FIRST_NAME,
-                            HOME_PLAYER_LAST_NAME,
-                            TEAM_CITY,
-                            TEAM_CITY,
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_POSITION,
-                            HOME_TEAM_ID.toString(),
-                            HOME_TEAM_NAME,
-                            HOME_TEAM_ABBR,
-                            TEAM_CITY,
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
+                            HomePlayerId.toString(),
+                            HomePlayerFirstName,
+                            HomePlayerLastName,
+                            TeamCity,
+                            TeamCity,
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicPosition,
+                            HomeTeamId.toString(),
+                            HomeTeamName,
+                            HomeTeamAbbr,
+                            TeamCity,
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
                             "Y"
                         )
                     )
@@ -199,11 +199,11 @@ object RemotePlayerFactory {
                     ),
                     rowData = listOf(
                         listOf(
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString(),
-                            BASIC_NUMBER.toString()
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString(),
+                            BasicNumber.toString()
                         )
                     )
                 )

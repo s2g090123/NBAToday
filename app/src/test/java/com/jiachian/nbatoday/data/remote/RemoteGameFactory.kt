@@ -1,32 +1,32 @@
 package com.jiachian.nbatoday.data.remote
 
-import com.jiachian.nbatoday.AWAY_PLAYER_FIRST_NAME
-import com.jiachian.nbatoday.AWAY_PLAYER_FULL_NAME
-import com.jiachian.nbatoday.AWAY_PLAYER_ID
-import com.jiachian.nbatoday.AWAY_PLAYER_LAST_NAME
-import com.jiachian.nbatoday.AWAY_TEAM_ABBR
-import com.jiachian.nbatoday.AWAY_TEAM_ID
-import com.jiachian.nbatoday.AWAY_TEAM_NAME
-import com.jiachian.nbatoday.BASIC_MINUTES
-import com.jiachian.nbatoday.BASIC_NUMBER
-import com.jiachian.nbatoday.BASIC_PERCENTAGE
-import com.jiachian.nbatoday.BASIC_POSITION
-import com.jiachian.nbatoday.FINAL_GAME_ID
-import com.jiachian.nbatoday.GAME_CODE
-import com.jiachian.nbatoday.GAME_DATE
-import com.jiachian.nbatoday.GAME_DATE_TIME
-import com.jiachian.nbatoday.GAME_DAY
-import com.jiachian.nbatoday.GAME_SEASON
-import com.jiachian.nbatoday.GAME_STATUS_FINAL
-import com.jiachian.nbatoday.HOME_PLAYER_FIRST_NAME
-import com.jiachian.nbatoday.HOME_PLAYER_FULL_NAME
-import com.jiachian.nbatoday.HOME_PLAYER_ID
-import com.jiachian.nbatoday.HOME_PLAYER_LAST_NAME
-import com.jiachian.nbatoday.HOME_TEAM_ABBR
-import com.jiachian.nbatoday.HOME_TEAM_ID
-import com.jiachian.nbatoday.HOME_TEAM_NAME
-import com.jiachian.nbatoday.NBA_LEAGUE_ID
-import com.jiachian.nbatoday.TEAM_CITY
+import com.jiachian.nbatoday.AwayPlayerFirstName
+import com.jiachian.nbatoday.AwayPlayerFullName
+import com.jiachian.nbatoday.AwayPlayerId
+import com.jiachian.nbatoday.AwayPlayerLastName
+import com.jiachian.nbatoday.AwayTeamAbbr
+import com.jiachian.nbatoday.AwayTeamId
+import com.jiachian.nbatoday.AwayTeamName
+import com.jiachian.nbatoday.BasicMinutes
+import com.jiachian.nbatoday.BasicNumber
+import com.jiachian.nbatoday.BasicPercentage
+import com.jiachian.nbatoday.BasicPosition
+import com.jiachian.nbatoday.FinalGameId
+import com.jiachian.nbatoday.GameCode
+import com.jiachian.nbatoday.GameDate
+import com.jiachian.nbatoday.GameDateTime
+import com.jiachian.nbatoday.GameDay
+import com.jiachian.nbatoday.GameSeason
+import com.jiachian.nbatoday.GameStatusFinal
+import com.jiachian.nbatoday.HomePlayerFirstName
+import com.jiachian.nbatoday.HomePlayerFullName
+import com.jiachian.nbatoday.HomePlayerId
+import com.jiachian.nbatoday.HomePlayerLastName
+import com.jiachian.nbatoday.HomeTeamAbbr
+import com.jiachian.nbatoday.HomeTeamId
+import com.jiachian.nbatoday.HomeTeamName
+import com.jiachian.nbatoday.NbaLeagueId
+import com.jiachian.nbatoday.TeamCity
 import com.jiachian.nbatoday.data.GameLeaderFactory
 import com.jiachian.nbatoday.data.GameTeamFactory
 import com.jiachian.nbatoday.data.remote.game.GameScoreboard
@@ -40,14 +40,14 @@ object RemoteGameFactory {
     fun getRemoteGameScoreboard(): GameScoreboard {
         return GameScoreboard(
             scoreboard = GameScoreboard.Scoreboard(
-                gameDate = GAME_DATE,
+                gameDate = GameDate,
                 games = listOf(
                     GameScoreboard.Scoreboard.Game(
-                        gameId = FINAL_GAME_ID,
-                        gameCode = GAME_CODE,
+                        gameId = FinalGameId,
+                        gameCode = GameCode,
                         gameStatus = GameStatusCode.FINAL.status,
-                        gameStatusText = GAME_STATUS_FINAL,
-                        gameTime = GAME_DATE,
+                        gameStatusText = GameStatusFinal,
+                        gameTime = GameDate,
                         gameLeaders = GameLeaderFactory.getGameLeaders(),
                         teamLeaders = GameLeaderFactory.getGameLeaders(),
                         homeTeam = GameTeamFactory.getDefaultRemoteHomeTeam(),
@@ -63,54 +63,54 @@ object RemoteGameFactory {
             Schedule.LeagueSchedule(
                 gameDates = listOf(
                     Schedule.LeagueSchedule.GameDate(
-                        gameDate = GAME_DATE,
+                        gameDate = GameDate,
                         games = listOf(
                             Schedule.LeagueSchedule.GameDate.Game(
                                 awayTeam = Schedule.LeagueSchedule.GameDate.Game.AwayTeam(
-                                    losses = BASIC_NUMBER,
-                                    score = BASIC_NUMBER,
-                                    teamCity = TEAM_CITY,
-                                    teamId = AWAY_TEAM_ID,
-                                    teamName = AWAY_TEAM_NAME,
-                                    teamTricode = AWAY_TEAM_ABBR,
-                                    wins = BASIC_NUMBER
+                                    losses = BasicNumber,
+                                    score = BasicNumber,
+                                    teamCity = TeamCity,
+                                    teamId = AwayTeamId,
+                                    teamName = AwayTeamName,
+                                    teamTricode = AwayTeamAbbr,
+                                    wins = BasicNumber
                                 ),
-                                day = GAME_DAY,
-                                gameCode = GAME_CODE,
-                                gameId = FINAL_GAME_ID,
+                                day = GameDay,
+                                gameCode = GameCode,
+                                gameId = FinalGameId,
                                 gameStatus = GameStatusCode.FINAL,
-                                gameStatusText = GAME_STATUS_FINAL,
-                                gameSequence = BASIC_NUMBER,
+                                gameStatusText = GameStatusFinal,
+                                gameSequence = BasicNumber,
                                 homeTeam = Schedule.LeagueSchedule.GameDate.Game.HomeTeam(
-                                    losses = BASIC_NUMBER,
-                                    score = BASIC_NUMBER,
-                                    teamCity = TEAM_CITY,
-                                    teamId = HOME_TEAM_ID,
-                                    teamName = HOME_TEAM_NAME,
-                                    teamTricode = HOME_TEAM_ABBR,
-                                    wins = BASIC_NUMBER
+                                    losses = BasicNumber,
+                                    score = BasicNumber,
+                                    teamCity = TeamCity,
+                                    teamId = HomeTeamId,
+                                    teamName = HomeTeamName,
+                                    teamTricode = HomeTeamAbbr,
+                                    wins = BasicNumber
                                 ),
-                                gameDateEst = GAME_DATE_TIME,
-                                gameDateTimeEst = GAME_DATE_TIME,
-                                monthNum = BASIC_NUMBER,
+                                gameDateEst = GameDateTime,
+                                gameDateTimeEst = GameDateTime,
+                                monthNum = BasicNumber,
                                 pointsLeaders = listOf(
                                     Schedule.LeagueSchedule.GameDate.Game.PointsLeader(
-                                        firstName = HOME_PLAYER_FIRST_NAME,
-                                        lastName = HOME_PLAYER_LAST_NAME,
-                                        personId = HOME_PLAYER_ID,
-                                        points = BASIC_NUMBER.toDouble(),
-                                        teamId = HOME_TEAM_ID,
-                                        teamName = HOME_TEAM_NAME,
-                                        teamTricode = HOME_TEAM_ABBR
+                                        firstName = HomePlayerFirstName,
+                                        lastName = HomePlayerLastName,
+                                        personId = HomePlayerId,
+                                        points = BasicNumber.toDouble(),
+                                        teamId = HomeTeamId,
+                                        teamName = HomeTeamName,
+                                        teamTricode = HomeTeamAbbr
                                     )
                                 ),
-                                weekNumber = BASIC_NUMBER
+                                weekNumber = BasicNumber
                             )
                         )
                     )
                 ),
-                leagueId = NBA_LEAGUE_ID,
-                seasonYear = GAME_SEASON
+                leagueId = NbaLeagueId,
+                seasonYear = GameSeason
             )
         )
     }
@@ -118,209 +118,209 @@ object RemoteGameFactory {
     fun getRemoteGameBoxScore(): RemoteGameBoxScore {
         return RemoteGameBoxScore(
             game = RemoteGameBoxScore.Game(
-                gameId = FINAL_GAME_ID,
-                gameEt = GAME_DATE,
-                gameCode = GAME_CODE,
-                gameStatusText = GAME_STATUS_FINAL,
+                gameId = FinalGameId,
+                gameEt = GameDate,
+                gameCode = GameCode,
+                gameStatusText = GameStatusFinal,
                 gameStatus = GameStatusCode.FINAL,
                 homeTeam = RemoteGameBoxScore.Game.Team(
-                    teamId = HOME_TEAM_ID,
-                    teamName = HOME_TEAM_NAME,
-                    teamCity = TEAM_CITY,
-                    teamTricode = HOME_TEAM_ABBR,
-                    score = BASIC_NUMBER,
+                    teamId = HomeTeamId,
+                    teamName = HomeTeamName,
+                    teamCity = TeamCity,
+                    teamTricode = HomeTeamAbbr,
+                    score = BasicNumber,
                     inBonus = "1",
-                    timeoutsRemaining = BASIC_NUMBER,
+                    timeoutsRemaining = BasicNumber,
                     periods = listOf(
                         RemoteGameBoxScore.Game.Team.Period(
                             period = 1,
                             periodType = PeriodType.REGULAR,
-                            score = BASIC_NUMBER
+                            score = BasicNumber
                         )
                     ),
                     players = listOf(
                         RemoteGameBoxScore.Game.Team.Player(
                             status = PlayerActiveStatus.ACTIVE,
                             notPlayingReason = "",
-                            order = BASIC_NUMBER,
-                            personId = HOME_PLAYER_ID,
-                            jerseyNum = BASIC_NUMBER.toString(),
-                            position = BASIC_POSITION,
+                            order = BasicNumber,
+                            personId = HomePlayerId,
+                            jerseyNum = BasicNumber.toString(),
+                            position = BasicPosition,
                             starter = "1",
                             oncourt = "1",
                             played = "1",
                             statistics = RemoteGameBoxScore.Game.Team.Player.Statistics(
-                                assists = BASIC_NUMBER,
-                                blocks = BASIC_NUMBER,
-                                blocksReceived = BASIC_NUMBER,
-                                fieldGoalsAttempted = BASIC_NUMBER,
-                                fieldGoalsMade = BASIC_NUMBER,
-                                fieldGoalsPercentage = BASIC_PERCENTAGE,
-                                foulsOffensive = BASIC_NUMBER,
-                                foulsDrawn = BASIC_NUMBER,
-                                foulsPersonal = BASIC_NUMBER,
-                                foulsTechnical = BASIC_NUMBER,
-                                freeThrowsAttempted = BASIC_NUMBER,
-                                freeThrowsMade = BASIC_NUMBER,
-                                freeThrowsPercentage = BASIC_PERCENTAGE,
-                                minus = BASIC_NUMBER.toDouble(),
-                                minutes = BASIC_MINUTES,
-                                plus = BASIC_NUMBER.toDouble(),
-                                plusMinusPoints = BASIC_NUMBER.toDouble(),
-                                points = BASIC_NUMBER,
-                                reboundsOffensive = BASIC_NUMBER,
-                                reboundsDefensive = BASIC_NUMBER,
-                                reboundsTotal = BASIC_NUMBER,
-                                steals = BASIC_NUMBER,
-                                threePointersAttempted = BASIC_NUMBER,
-                                threePointersMade = BASIC_NUMBER,
-                                threePointersPercentage = BASIC_PERCENTAGE,
-                                turnovers = BASIC_NUMBER,
-                                twoPointersAttempted = BASIC_NUMBER,
-                                twoPointersMade = BASIC_NUMBER,
-                                twoPointersPercentage = BASIC_PERCENTAGE
+                                assists = BasicNumber,
+                                blocks = BasicNumber,
+                                blocksReceived = BasicNumber,
+                                fieldGoalsAttempted = BasicNumber,
+                                fieldGoalsMade = BasicNumber,
+                                fieldGoalsPercentage = BasicPercentage,
+                                foulsOffensive = BasicNumber,
+                                foulsDrawn = BasicNumber,
+                                foulsPersonal = BasicNumber,
+                                foulsTechnical = BasicNumber,
+                                freeThrowsAttempted = BasicNumber,
+                                freeThrowsMade = BasicNumber,
+                                freeThrowsPercentage = BasicPercentage,
+                                minus = BasicNumber.toDouble(),
+                                minutes = BasicMinutes,
+                                plus = BasicNumber.toDouble(),
+                                plusMinusPoints = BasicNumber.toDouble(),
+                                points = BasicNumber,
+                                reboundsOffensive = BasicNumber,
+                                reboundsDefensive = BasicNumber,
+                                reboundsTotal = BasicNumber,
+                                steals = BasicNumber,
+                                threePointersAttempted = BasicNumber,
+                                threePointersMade = BasicNumber,
+                                threePointersPercentage = BasicPercentage,
+                                turnovers = BasicNumber,
+                                twoPointersAttempted = BasicNumber,
+                                twoPointersMade = BasicNumber,
+                                twoPointersPercentage = BasicPercentage
                             ),
-                            name = HOME_PLAYER_FULL_NAME,
-                            nameI = HOME_PLAYER_FULL_NAME,
-                            firstName = HOME_PLAYER_FIRST_NAME,
-                            familyName = HOME_PLAYER_LAST_NAME
+                            name = HomePlayerFullName,
+                            nameI = HomePlayerFullName,
+                            firstName = HomePlayerFirstName,
+                            familyName = HomePlayerLastName
                         )
                     ),
                     statistics = RemoteGameBoxScore.Game.Team.Statistics(
-                        assists = BASIC_NUMBER,
-                        blocks = BASIC_NUMBER,
-                        blocksReceived = BASIC_NUMBER,
-                        fieldGoalsAttempted = BASIC_NUMBER,
-                        fieldGoalsMade = BASIC_NUMBER,
-                        fieldGoalsPercentage = BASIC_PERCENTAGE,
-                        foulsOffensive = BASIC_NUMBER,
-                        foulsDrawn = BASIC_NUMBER,
-                        foulsPersonal = BASIC_NUMBER,
-                        foulsTeam = BASIC_NUMBER,
-                        foulsTechnical = BASIC_NUMBER,
-                        freeThrowsAttempted = BASIC_NUMBER,
-                        freeThrowsMade = BASIC_NUMBER,
-                        freeThrowsPercentage = BASIC_PERCENTAGE,
-                        points = BASIC_NUMBER,
-                        reboundsDefensive = BASIC_NUMBER,
-                        reboundsOffensive = BASIC_NUMBER,
-                        reboundsPersonal = BASIC_NUMBER,
-                        reboundsTotal = BASIC_NUMBER,
-                        steals = BASIC_NUMBER,
-                        threePointersAttempted = BASIC_NUMBER,
-                        threePointersMade = BASIC_NUMBER,
-                        threePointersPercentage = BASIC_PERCENTAGE,
-                        turnovers = BASIC_NUMBER,
-                        turnoversTeam = BASIC_NUMBER,
-                        turnoversTotal = BASIC_NUMBER,
-                        twoPointersAttempted = BASIC_NUMBER,
-                        twoPointersMade = BASIC_NUMBER,
-                        twoPointersPercentage = BASIC_PERCENTAGE,
-                        pointsFastBreak = BASIC_NUMBER,
-                        pointsFromTurnovers = BASIC_NUMBER,
-                        pointsInThePaint = BASIC_NUMBER,
-                        pointsSecondChance = BASIC_NUMBER,
-                        benchPoints = BASIC_NUMBER
+                        assists = BasicNumber,
+                        blocks = BasicNumber,
+                        blocksReceived = BasicNumber,
+                        fieldGoalsAttempted = BasicNumber,
+                        fieldGoalsMade = BasicNumber,
+                        fieldGoalsPercentage = BasicPercentage,
+                        foulsOffensive = BasicNumber,
+                        foulsDrawn = BasicNumber,
+                        foulsPersonal = BasicNumber,
+                        foulsTeam = BasicNumber,
+                        foulsTechnical = BasicNumber,
+                        freeThrowsAttempted = BasicNumber,
+                        freeThrowsMade = BasicNumber,
+                        freeThrowsPercentage = BasicPercentage,
+                        points = BasicNumber,
+                        reboundsDefensive = BasicNumber,
+                        reboundsOffensive = BasicNumber,
+                        reboundsPersonal = BasicNumber,
+                        reboundsTotal = BasicNumber,
+                        steals = BasicNumber,
+                        threePointersAttempted = BasicNumber,
+                        threePointersMade = BasicNumber,
+                        threePointersPercentage = BasicPercentage,
+                        turnovers = BasicNumber,
+                        turnoversTeam = BasicNumber,
+                        turnoversTotal = BasicNumber,
+                        twoPointersAttempted = BasicNumber,
+                        twoPointersMade = BasicNumber,
+                        twoPointersPercentage = BasicPercentage,
+                        pointsFastBreak = BasicNumber,
+                        pointsFromTurnovers = BasicNumber,
+                        pointsInThePaint = BasicNumber,
+                        pointsSecondChance = BasicNumber,
+                        benchPoints = BasicNumber
                     )
                 ),
                 awayTeam = RemoteGameBoxScore.Game.Team(
-                    teamId = AWAY_TEAM_ID,
-                    teamName = AWAY_TEAM_NAME,
-                    teamCity = TEAM_CITY,
-                    teamTricode = AWAY_TEAM_ABBR,
-                    score = BASIC_NUMBER,
+                    teamId = AwayTeamId,
+                    teamName = AwayTeamName,
+                    teamCity = TeamCity,
+                    teamTricode = AwayTeamAbbr,
+                    score = BasicNumber,
                     inBonus = "1",
-                    timeoutsRemaining = BASIC_NUMBER,
+                    timeoutsRemaining = BasicNumber,
                     periods = listOf(
                         RemoteGameBoxScore.Game.Team.Period(
                             period = 1,
                             periodType = PeriodType.REGULAR,
-                            score = BASIC_NUMBER
+                            score = BasicNumber
                         )
                     ),
                     players = listOf(
                         RemoteGameBoxScore.Game.Team.Player(
                             status = PlayerActiveStatus.ACTIVE,
                             notPlayingReason = "",
-                            order = BASIC_NUMBER,
-                            personId = AWAY_PLAYER_ID,
-                            jerseyNum = BASIC_NUMBER.toString(),
-                            position = BASIC_POSITION,
+                            order = BasicNumber,
+                            personId = AwayPlayerId,
+                            jerseyNum = BasicNumber.toString(),
+                            position = BasicPosition,
                             starter = "1",
                             oncourt = "1",
                             played = "1",
                             statistics = RemoteGameBoxScore.Game.Team.Player.Statistics(
-                                assists = BASIC_NUMBER,
-                                blocks = BASIC_NUMBER,
-                                blocksReceived = BASIC_NUMBER,
-                                fieldGoalsAttempted = BASIC_NUMBER,
-                                fieldGoalsMade = BASIC_NUMBER,
-                                fieldGoalsPercentage = BASIC_PERCENTAGE,
-                                foulsOffensive = BASIC_NUMBER,
-                                foulsDrawn = BASIC_NUMBER,
-                                foulsPersonal = BASIC_NUMBER,
-                                foulsTechnical = BASIC_NUMBER,
-                                freeThrowsAttempted = BASIC_NUMBER,
-                                freeThrowsMade = BASIC_NUMBER,
-                                freeThrowsPercentage = BASIC_PERCENTAGE,
-                                minus = BASIC_NUMBER.toDouble(),
-                                minutes = BASIC_MINUTES,
-                                plus = BASIC_NUMBER.toDouble(),
-                                plusMinusPoints = BASIC_NUMBER.toDouble(),
-                                points = BASIC_NUMBER,
-                                reboundsOffensive = BASIC_NUMBER,
-                                reboundsDefensive = BASIC_NUMBER,
-                                reboundsTotal = BASIC_NUMBER,
-                                steals = BASIC_NUMBER,
-                                threePointersAttempted = BASIC_NUMBER,
-                                threePointersMade = BASIC_NUMBER,
-                                threePointersPercentage = BASIC_PERCENTAGE,
-                                turnovers = BASIC_NUMBER,
-                                twoPointersAttempted = BASIC_NUMBER,
-                                twoPointersMade = BASIC_NUMBER,
-                                twoPointersPercentage = BASIC_PERCENTAGE
+                                assists = BasicNumber,
+                                blocks = BasicNumber,
+                                blocksReceived = BasicNumber,
+                                fieldGoalsAttempted = BasicNumber,
+                                fieldGoalsMade = BasicNumber,
+                                fieldGoalsPercentage = BasicPercentage,
+                                foulsOffensive = BasicNumber,
+                                foulsDrawn = BasicNumber,
+                                foulsPersonal = BasicNumber,
+                                foulsTechnical = BasicNumber,
+                                freeThrowsAttempted = BasicNumber,
+                                freeThrowsMade = BasicNumber,
+                                freeThrowsPercentage = BasicPercentage,
+                                minus = BasicNumber.toDouble(),
+                                minutes = BasicMinutes,
+                                plus = BasicNumber.toDouble(),
+                                plusMinusPoints = BasicNumber.toDouble(),
+                                points = BasicNumber,
+                                reboundsOffensive = BasicNumber,
+                                reboundsDefensive = BasicNumber,
+                                reboundsTotal = BasicNumber,
+                                steals = BasicNumber,
+                                threePointersAttempted = BasicNumber,
+                                threePointersMade = BasicNumber,
+                                threePointersPercentage = BasicPercentage,
+                                turnovers = BasicNumber,
+                                twoPointersAttempted = BasicNumber,
+                                twoPointersMade = BasicNumber,
+                                twoPointersPercentage = BasicPercentage
                             ),
-                            name = AWAY_PLAYER_FULL_NAME,
-                            nameI = AWAY_PLAYER_FULL_NAME,
-                            firstName = AWAY_PLAYER_FIRST_NAME,
-                            familyName = AWAY_PLAYER_LAST_NAME
+                            name = AwayPlayerFullName,
+                            nameI = AwayPlayerFullName,
+                            firstName = AwayPlayerFirstName,
+                            familyName = AwayPlayerLastName
                         )
                     ),
                     statistics = RemoteGameBoxScore.Game.Team.Statistics(
-                        assists = BASIC_NUMBER,
-                        blocks = BASIC_NUMBER,
-                        blocksReceived = BASIC_NUMBER,
-                        fieldGoalsAttempted = BASIC_NUMBER,
-                        fieldGoalsMade = BASIC_NUMBER,
-                        fieldGoalsPercentage = BASIC_PERCENTAGE,
-                        foulsOffensive = BASIC_NUMBER,
-                        foulsDrawn = BASIC_NUMBER,
-                        foulsPersonal = BASIC_NUMBER,
-                        foulsTeam = BASIC_NUMBER,
-                        foulsTechnical = BASIC_NUMBER,
-                        freeThrowsAttempted = BASIC_NUMBER,
-                        freeThrowsMade = BASIC_NUMBER,
-                        freeThrowsPercentage = BASIC_PERCENTAGE,
-                        points = BASIC_NUMBER,
-                        reboundsDefensive = BASIC_NUMBER,
-                        reboundsOffensive = BASIC_NUMBER,
-                        reboundsPersonal = BASIC_NUMBER,
-                        reboundsTotal = BASIC_NUMBER,
-                        steals = BASIC_NUMBER,
-                        threePointersAttempted = BASIC_NUMBER,
-                        threePointersMade = BASIC_NUMBER,
-                        threePointersPercentage = BASIC_PERCENTAGE,
-                        turnovers = BASIC_NUMBER,
-                        turnoversTeam = BASIC_NUMBER,
-                        turnoversTotal = BASIC_NUMBER,
-                        twoPointersAttempted = BASIC_NUMBER,
-                        twoPointersMade = BASIC_NUMBER,
-                        twoPointersPercentage = BASIC_PERCENTAGE,
-                        pointsFastBreak = BASIC_NUMBER,
-                        pointsFromTurnovers = BASIC_NUMBER,
-                        pointsInThePaint = BASIC_NUMBER,
-                        pointsSecondChance = BASIC_NUMBER,
-                        benchPoints = BASIC_NUMBER
+                        assists = BasicNumber,
+                        blocks = BasicNumber,
+                        blocksReceived = BasicNumber,
+                        fieldGoalsAttempted = BasicNumber,
+                        fieldGoalsMade = BasicNumber,
+                        fieldGoalsPercentage = BasicPercentage,
+                        foulsOffensive = BasicNumber,
+                        foulsDrawn = BasicNumber,
+                        foulsPersonal = BasicNumber,
+                        foulsTeam = BasicNumber,
+                        foulsTechnical = BasicNumber,
+                        freeThrowsAttempted = BasicNumber,
+                        freeThrowsMade = BasicNumber,
+                        freeThrowsPercentage = BasicPercentage,
+                        points = BasicNumber,
+                        reboundsDefensive = BasicNumber,
+                        reboundsOffensive = BasicNumber,
+                        reboundsPersonal = BasicNumber,
+                        reboundsTotal = BasicNumber,
+                        steals = BasicNumber,
+                        threePointersAttempted = BasicNumber,
+                        threePointersMade = BasicNumber,
+                        threePointersPercentage = BasicPercentage,
+                        turnovers = BasicNumber,
+                        turnoversTeam = BasicNumber,
+                        turnoversTotal = BasicNumber,
+                        twoPointersAttempted = BasicNumber,
+                        twoPointersMade = BasicNumber,
+                        twoPointersPercentage = BasicPercentage,
+                        pointsFastBreak = BasicNumber,
+                        pointsFromTurnovers = BasicNumber,
+                        pointsInThePaint = BasicNumber,
+                        pointsSecondChance = BasicNumber,
+                        benchPoints = BasicNumber
                     )
                 )
             )

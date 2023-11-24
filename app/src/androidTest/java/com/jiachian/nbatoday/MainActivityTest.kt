@@ -104,7 +104,7 @@ class MainActivityTest {
         viewModel.updateState(
             NbaState.Calendar(
                 CalendarViewModel(
-                    date = Date(BASIC_TIME),
+                    date = Date(BasicTime),
                     repository = repository,
                     openScreen = {}
                 )
@@ -119,7 +119,7 @@ class MainActivityTest {
         viewModel.updateState(
             NbaState.Bet(
                 BetViewModel(
-                    account = USER_ACCOUNT,
+                    account = UserAccount,
                     repository = repository,
                     openScreen = {}
                 )

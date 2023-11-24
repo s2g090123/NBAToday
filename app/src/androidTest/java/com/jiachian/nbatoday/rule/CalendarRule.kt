@@ -1,6 +1,6 @@
 package com.jiachian.nbatoday.rule
 
-import com.jiachian.nbatoday.BASIC_TIME
+import com.jiachian.nbatoday.BasicTime
 import com.jiachian.nbatoday.utils.NbaUtils
 import io.mockk.every
 import io.mockk.mockkObject
@@ -21,7 +21,7 @@ class CalendarRule : TestWatcher() {
         } answers {
             Calendar.getInstance().apply {
                 timeZone = TimeZone.getTimeZone("EST")
-                time = Date(BASIC_TIME)
+                time = Date(BasicTime)
             }
         }
     }

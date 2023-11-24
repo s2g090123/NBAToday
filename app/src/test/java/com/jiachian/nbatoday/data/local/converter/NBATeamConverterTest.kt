@@ -1,6 +1,6 @@
 package com.jiachian.nbatoday.data.local.converter
 
-import com.jiachian.nbatoday.HOME_TEAM
+import com.jiachian.nbatoday.HomeTeam
 import com.jiachian.nbatoday.data.local.team.NBATeam
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
@@ -11,7 +11,7 @@ class NBATeamConverterTest {
 
     @Test
     fun from_NBATeamToString_isCorrect() {
-        val team = HOME_TEAM
+        val team = HomeTeam
         val expected = testNBATeamGson.toJson(team, NBATeam::class.java)
         val actual = converter.from(team)
         assertThat(actual, `is`(expected))
@@ -19,7 +19,7 @@ class NBATeamConverterTest {
 
     @Test
     fun to_StringToNBATeam_isCorrect() {
-        val team = HOME_TEAM
+        val team = HomeTeam
         val actual = converter.to(testNBATeamGson.toJson(team, NBATeam::class.java))
         assertThat(actual, `is`(team))
     }

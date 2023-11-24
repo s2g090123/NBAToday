@@ -1,6 +1,6 @@
 package com.jiachian.nbatoday.data.remote.datasource.player
 
-import com.jiachian.nbatoday.CURRENT_SEASON
+import com.jiachian.nbatoday.CurrentSeason
 import com.jiachian.nbatoday.data.remote.player.RemotePlayerDetail
 import com.jiachian.nbatoday.data.remote.player.RemotePlayerInfo
 import com.jiachian.nbatoday.data.remote.player.RemotePlayerStats
@@ -17,10 +17,10 @@ class NbaPlayerRemoteSource : PlayerRemoteSource() {
     }
 
     override suspend fun getPlayerCareerStats(playerId: Int): RemotePlayerStats? {
-        return playerService.getPlayerStats(season = CURRENT_SEASON, playerId = playerId).body()
+        return playerService.getPlayerStats(season = CurrentSeason, playerId = playerId).body()
     }
 
     override suspend fun getPlayerDetail(playerId: Int): RemotePlayerDetail? {
-        return playerService.getPlayerDetail(season = CURRENT_SEASON, playerId = playerId).body()
+        return playerService.getPlayerDetail(season = CurrentSeason, playerId = playerId).body()
     }
 }

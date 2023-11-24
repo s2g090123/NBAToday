@@ -1,10 +1,10 @@
 package com.jiachian.nbatoday.data.datastore
 
 import androidx.test.core.app.ApplicationProvider
-import com.jiachian.nbatoday.USER_ACCOUNT
-import com.jiachian.nbatoday.USER_NAME
-import com.jiachian.nbatoday.USER_PASSWORD
-import com.jiachian.nbatoday.USER_POINTS
+import com.jiachian.nbatoday.UserAccount
+import com.jiachian.nbatoday.UserName
+import com.jiachian.nbatoday.UserPassword
+import com.jiachian.nbatoday.UserPoints
 import com.jiachian.nbatoday.compose.theme.LakersColors
 import com.jiachian.nbatoday.data.local.team.NBATeam
 import com.jiachian.nbatoday.data.local.team.teamOfficial
@@ -80,7 +80,7 @@ class NbaDataStoreTest {
     fun userData_setValue_valueIsCorrect() = runTest {
         val emptyData = dataStore.userData.first()
         assertThat(emptyData, `is`(nullValue()))
-        val user = User(USER_ACCOUNT, USER_NAME, USER_POINTS, USER_PASSWORD, "")
+        val user = User(UserAccount, UserName, UserPoints, UserPassword, "")
         dataStore.updateUser(user)
         val actualData = dataStore.userData.first()
         assertThat(actualData.account, `is`(user.account))

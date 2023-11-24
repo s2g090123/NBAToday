@@ -1,12 +1,12 @@
 package com.jiachian.nbatoday.compose.screen.bet
 
-import com.jiachian.nbatoday.BASIC_NUMBER
-import com.jiachian.nbatoday.COMING_SOON_GAME_ID
-import com.jiachian.nbatoday.FINAL_GAME_ID
-import com.jiachian.nbatoday.PLAYING_GAME_ID
-import com.jiachian.nbatoday.USER_ACCOUNT
-import com.jiachian.nbatoday.USER_PASSWORD
-import com.jiachian.nbatoday.USER_POINTS
+import com.jiachian.nbatoday.BasicNumber
+import com.jiachian.nbatoday.ComingSoonGameId
+import com.jiachian.nbatoday.FinalGameId
+import com.jiachian.nbatoday.PlayingGameId
+import com.jiachian.nbatoday.UserAccount
+import com.jiachian.nbatoday.UserPassword
+import com.jiachian.nbatoday.UserPoints
 import com.jiachian.nbatoday.compose.state.NbaState
 import com.jiachian.nbatoday.data.TestRepository
 import com.jiachian.nbatoday.data.remote.game.GameStatusCode
@@ -37,11 +37,11 @@ class BetViewModelTest {
     @Before
     fun setup() = runTest {
         viewModel = createViewModel(coroutineEnvironment.testDispatcherProvider)
-        repository.login(USER_ACCOUNT, USER_PASSWORD)
+        repository.login(UserAccount, UserPassword)
         repository.refreshSchedule()
-        repository.bet(FINAL_GAME_ID, 0, BASIC_NUMBER.toLong())
-        repository.bet(PLAYING_GAME_ID, 0, BASIC_NUMBER.toLong())
-        repository.bet(COMING_SOON_GAME_ID, 0, BASIC_NUMBER.toLong())
+        repository.bet(FinalGameId, 0, BasicNumber.toLong())
+        repository.bet(PlayingGameId, 0, BasicNumber.toLong())
+        repository.bet(ComingSoonGameId, 0, BasicNumber.toLong())
     }
 
     @After
@@ -59,7 +59,7 @@ class BetViewModelTest {
         viewModel.clickBetAndGame(finalGame!!)
         assertThat(viewModel.askTurnTable, notNullValue())
         val points = repository.user.value?.points
-        assertThat(points, `is`(USER_POINTS + BASIC_NUMBER * 2))
+        assertThat(points, `is`(UserPoints + BasicNumber * 2))
         assertThat(viewModel.betAndGame.value.contains(finalGame), `is`(false))
     }
 
@@ -100,19 +100,19 @@ class BetViewModelTest {
 
     @Test
     fun bet_showTurnTable_valueCorrect() {
-        val data = BetsTurnTableData(BASIC_NUMBER.toLong(), BASIC_NUMBER.toLong())
+        val data = BetsTurnTableData(BasicNumber.toLong(), BasicNumber.toLong())
         viewModel.showTurnTable(data)
         assertThat(viewModel.showTryTurnTable.value, `is`(data))
     }
 
     @Test
     fun bet_startTurnTable_rewardPointsCorrect() = coroutineEnvironment.testScope.runTest {
-        val data = BetsTurnTableData(BASIC_NUMBER.toLong(), BASIC_NUMBER.toLong())
+        val data = BetsTurnTableData(BasicNumber.toLong(), BasicNumber.toLong())
         viewModel.startTurnTable(data)
         advanceUntilIdle()
         val expected = getRewardPoints(
-            BASIC_NUMBER,
-            BASIC_NUMBER,
+            BasicNumber,
+            BasicNumber,
             viewModel.rewardAngle.value
         )
         assertThat(viewModel.showRewardPoints.value, `is`(expected))
@@ -120,7 +120,7 @@ class BetViewModelTest {
 
     @Test
     fun bet_closeRewardPointsDialog_valueNull() = coroutineEnvironment.testScope.runTest {
-        val data = BetsTurnTableData(BASIC_NUMBER.toLong(), BASIC_NUMBER.toLong())
+        val data = BetsTurnTableData(BasicNumber.toLong(), BasicNumber.toLong())
         viewModel.startTurnTable(data)
         advanceUntilIdle()
         assertThat(viewModel.showRewardPoints.value, notNullValue())
@@ -132,7 +132,7 @@ class BetViewModelTest {
         dispatcherProvider: DispatcherProvider
     ): BetViewModel {
         return BetViewModel(
-            account = USER_ACCOUNT,
+            account = UserAccount,
             repository = repository,
             openScreen = {
                 currentState = it

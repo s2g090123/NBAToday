@@ -7,9 +7,9 @@ import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.unit.dp
 import com.jiachian.nbatoday.BaseAndroidTest
 import com.jiachian.nbatoday.R
-import com.jiachian.nbatoday.USER_ACCOUNT
-import com.jiachian.nbatoday.USER_PASSWORD
-import com.jiachian.nbatoday.USER_POINTS
+import com.jiachian.nbatoday.UserAccount
+import com.jiachian.nbatoday.UserPassword
+import com.jiachian.nbatoday.UserPoints
 import com.jiachian.nbatoday.compose.state.NbaState
 import com.jiachian.nbatoday.data.TeamStatsFactory
 import com.jiachian.nbatoday.data.TestRepository
@@ -295,11 +295,11 @@ class TeamScreenTest : BaseAndroidTest() {
         loginDialog
             .onNodeWithTag("LoginDialog_AccountTextField")
             .onNodeWithTag("AccountTextField_TextField_Account")
-            .performTextInput(USER_ACCOUNT)
+            .performTextInput(UserAccount)
         loginDialog
             .onNodeWithTag("LoginDialog_PasswordTextField")
             .onNodeWithTag("PasswordTextField_TextFiled_Password")
-            .performTextInput(USER_PASSWORD)
+            .performTextInput(UserPassword)
         loginDialog
             .onNodeWithTag("LoginDialog_Btn_Login")
             .performClick()
@@ -310,7 +310,7 @@ class TeamScreenTest : BaseAndroidTest() {
         betDialog
             .onNodeWithTag("BetDialogContent_BetDialogTeamEdit_Home")
             .onNodeWithTag("BetDialogTeamEdit_TextField_Bet")
-            .performTextInput(USER_POINTS.toString())
+            .performTextInput(UserPoints.toString())
         betDialog
             .onNodeWithTag("BetDialog_Btn_Confirm")
             .performClick()

@@ -1,16 +1,16 @@
 package com.jiachian.nbatoday.data
 
-import com.jiachian.nbatoday.AWAY_PLAYER_ID
-import com.jiachian.nbatoday.AWAY_TEAM_ID
-import com.jiachian.nbatoday.FINAL_GAME_ID
-import com.jiachian.nbatoday.HOME_PLAYER_ID
-import com.jiachian.nbatoday.HOME_TEAM_ID
-import com.jiachian.nbatoday.PLAYING_GAME_ID
-import com.jiachian.nbatoday.USER_ACCOUNT
-import com.jiachian.nbatoday.USER_NAME
-import com.jiachian.nbatoday.USER_PASSWORD
-import com.jiachian.nbatoday.USER_POINTS
-import com.jiachian.nbatoday.USER_TOKEN
+import com.jiachian.nbatoday.AwayPlayerId
+import com.jiachian.nbatoday.AwayTeamId
+import com.jiachian.nbatoday.FinalGameId
+import com.jiachian.nbatoday.HomePlayerId
+import com.jiachian.nbatoday.HomeTeamId
+import com.jiachian.nbatoday.PlayingGameId
+import com.jiachian.nbatoday.UserAccount
+import com.jiachian.nbatoday.UserName
+import com.jiachian.nbatoday.UserPassword
+import com.jiachian.nbatoday.UserPoints
+import com.jiachian.nbatoday.UserToken
 import com.jiachian.nbatoday.data.local.BetAndNbaGame
 import com.jiachian.nbatoday.data.local.NbaGame
 import com.jiachian.nbatoday.data.local.NbaGameAndBet
@@ -78,8 +78,8 @@ class TestRepository : BaseRepository {
             .toMutableList()
             .apply {
                 when (gameId) {
-                    FINAL_GAME_ID -> BoxScoreFactory.getFinalGameBoxScore()
-                    PLAYING_GAME_ID -> BoxScoreFactory.getPlayingGameBoxScore()
+                    FinalGameId -> BoxScoreFactory.getFinalGameBoxScore()
+                    PlayingGameId -> BoxScoreFactory.getPlayingGameBoxScore()
                     else -> null
                 }?.let {
                     add(it)
@@ -100,8 +100,8 @@ class TestRepository : BaseRepository {
             .toMutableList()
             .apply {
                 when (teamId) {
-                    HOME_TEAM_ID -> TeamStatsFactory.getHomeTeamStats()
-                    AWAY_TEAM_ID -> TeamStatsFactory.getAwayTeamStats()
+                    HomeTeamId -> TeamStatsFactory.getHomeTeamStats()
+                    AwayTeamId -> TeamStatsFactory.getAwayTeamStats()
                     else -> null
                 }?.let {
                     add(it)
@@ -116,8 +116,8 @@ class TestRepository : BaseRepository {
             .toMutableList()
             .apply {
                 when (teamId) {
-                    HOME_TEAM_ID -> TeamStatsFactory.getHomeTeamStats()
-                    AWAY_TEAM_ID -> TeamStatsFactory.getAwayTeamStats()
+                    HomeTeamId -> TeamStatsFactory.getHomeTeamStats()
+                    AwayTeamId -> TeamStatsFactory.getAwayTeamStats()
                     else -> null
                 }?.let {
                     add(it)
@@ -128,8 +128,8 @@ class TestRepository : BaseRepository {
             .toMutableList()
             .apply {
                 when (teamId) {
-                    HOME_TEAM_ID -> PlayerStatsFactory.getHomePlayerStats()
-                    AWAY_TEAM_ID -> PlayerStatsFactory.getAwayPlayerStats()
+                    HomeTeamId -> PlayerStatsFactory.getHomePlayerStats()
+                    AwayTeamId -> PlayerStatsFactory.getAwayPlayerStats()
                     else -> null
                 }?.let {
                     add(it)
@@ -145,8 +145,8 @@ class TestRepository : BaseRepository {
             .toMutableList()
             .apply {
                 when (playerId) {
-                    HOME_PLAYER_ID -> PlayerStatsFactory.getHomePlayerStats()
-                    AWAY_PLAYER_ID -> PlayerStatsFactory.getAwayPlayerStats()
+                    HomePlayerId -> PlayerStatsFactory.getHomePlayerStats()
+                    AwayPlayerId -> PlayerStatsFactory.getAwayPlayerStats()
                     else -> null
                 }?.let {
                     add(it)
@@ -157,8 +157,8 @@ class TestRepository : BaseRepository {
             .toMutableList()
             .apply {
                 when (playerId) {
-                    HOME_PLAYER_ID -> PlayerCareerFactory.createHomePlayerCareer()
-                    AWAY_PLAYER_ID -> PlayerCareerFactory.createAwayPlayerCareer()
+                    HomePlayerId -> PlayerCareerFactory.createHomePlayerCareer()
+                    AwayPlayerId -> PlayerCareerFactory.createAwayPlayerCareer()
                     else -> null
                 }?.let {
                     add(it)
@@ -293,11 +293,11 @@ class TestRepository : BaseRepository {
 
     override suspend fun login(account: String, password: String) {
         user.value = User(
-            account = USER_ACCOUNT,
-            name = USER_NAME,
-            points = USER_POINTS,
-            password = USER_PASSWORD,
-            token = USER_TOKEN
+            account = UserAccount,
+            name = UserName,
+            points = UserPoints,
+            password = UserPassword,
+            token = UserToken
         )
     }
 
@@ -307,44 +307,44 @@ class TestRepository : BaseRepository {
 
     override suspend fun register(account: String, password: String) {
         user.value = User(
-            account = USER_ACCOUNT,
-            name = USER_NAME,
-            points = USER_POINTS,
-            password = USER_PASSWORD,
-            token = USER_TOKEN
+            account = UserAccount,
+            name = UserName,
+            points = UserPoints,
+            password = UserPassword,
+            token = UserToken
         )
     }
 
     override suspend fun updatePassword(password: String) {
         user.value ?: return
         user.value = User(
-            account = USER_ACCOUNT,
-            name = USER_NAME,
-            points = USER_POINTS,
+            account = UserAccount,
+            name = UserName,
+            points = UserPoints,
             password = password,
-            token = USER_TOKEN
+            token = UserToken
         )
     }
 
     override suspend fun updatePoints(points: Long) {
         user.value ?: return
         user.value = User(
-            account = USER_ACCOUNT,
-            name = USER_NAME,
+            account = UserAccount,
+            name = UserName,
             points = points,
-            password = USER_PASSWORD,
-            token = USER_TOKEN
+            password = UserPassword,
+            token = UserToken
         )
     }
 
     override suspend fun addPoints(points: Long) {
         val currentPoints = user.value?.points ?: return
         user.value = User(
-            account = USER_ACCOUNT,
-            name = USER_NAME,
+            account = UserAccount,
+            name = UserName,
             points = currentPoints + points,
-            password = USER_PASSWORD,
-            token = USER_TOKEN
+            password = UserPassword,
+            token = UserToken
         )
     }
 

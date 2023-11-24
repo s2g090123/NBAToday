@@ -1,80 +1,80 @@
 package com.jiachian.nbatoday.data
 
-import com.jiachian.nbatoday.AWAY_PLAYER_FULL_NAME
-import com.jiachian.nbatoday.AWAY_PLAYER_ID
-import com.jiachian.nbatoday.AWAY_PLAYER_LAST_NAME
-import com.jiachian.nbatoday.AWAY_TEAM_ID
-import com.jiachian.nbatoday.BASIC_NUMBER
-import com.jiachian.nbatoday.BASIC_PERCENTAGE
-import com.jiachian.nbatoday.HOME_PLAYER_FULL_NAME
-import com.jiachian.nbatoday.HOME_PLAYER_ID
-import com.jiachian.nbatoday.HOME_PLAYER_LAST_NAME
-import com.jiachian.nbatoday.HOME_TEAM_ID
+import com.jiachian.nbatoday.AwayPlayerFullName
+import com.jiachian.nbatoday.AwayPlayerId
+import com.jiachian.nbatoday.AwayPlayerLastName
+import com.jiachian.nbatoday.AwayTeamId
+import com.jiachian.nbatoday.BasicNumber
+import com.jiachian.nbatoday.BasicPercentage
+import com.jiachian.nbatoday.HomePlayerFullName
+import com.jiachian.nbatoday.HomePlayerId
+import com.jiachian.nbatoday.HomePlayerLastName
+import com.jiachian.nbatoday.HomeTeamId
 import com.jiachian.nbatoday.data.local.player.PlayerStats
 
 object PlayerStatsFactory {
 
     fun getHomePlayerStats(): PlayerStats {
         return PlayerStats(
-            playerId = HOME_PLAYER_ID,
-            teamId = HOME_TEAM_ID,
-            playerName = HOME_PLAYER_FULL_NAME,
-            playerNickName = HOME_PLAYER_LAST_NAME,
-            gamePlayed = BASIC_NUMBER,
-            win = BASIC_NUMBER,
-            lose = BASIC_NUMBER,
-            winPercentage = BASIC_PERCENTAGE,
-            fieldGoalsMade = BASIC_NUMBER,
-            fieldGoalsAttempted = BASIC_NUMBER,
-            fieldGoalsPercentage = BASIC_PERCENTAGE,
-            threePointersMade = BASIC_NUMBER,
-            threePointersAttempted = BASIC_NUMBER,
-            threePointersPercentage = BASIC_PERCENTAGE,
-            freeThrowsMade = BASIC_NUMBER,
-            freeThrowsAttempted = BASIC_NUMBER,
-            freeThrowsPercentage = BASIC_PERCENTAGE,
-            reboundsOffensive = BASIC_NUMBER,
-            reboundsDefensive = BASIC_NUMBER,
-            reboundsTotal = BASIC_NUMBER,
-            assists = BASIC_NUMBER,
-            turnovers = BASIC_NUMBER,
-            steals = BASIC_NUMBER,
-            blocks = BASIC_NUMBER,
-            foulsPersonal = BASIC_NUMBER,
-            points = BASIC_NUMBER,
-            plusMinus = BASIC_NUMBER
+            playerId = HomePlayerId,
+            teamId = HomeTeamId,
+            playerName = HomePlayerFullName,
+            playerNickName = HomePlayerLastName,
+            gamePlayed = BasicNumber,
+            win = BasicNumber,
+            lose = BasicNumber,
+            winPercentage = BasicPercentage,
+            fieldGoalsMade = BasicNumber,
+            fieldGoalsAttempted = BasicNumber,
+            fieldGoalsPercentage = BasicPercentage,
+            threePointersMade = BasicNumber,
+            threePointersAttempted = BasicNumber,
+            threePointersPercentage = BasicPercentage,
+            freeThrowsMade = BasicNumber,
+            freeThrowsAttempted = BasicNumber,
+            freeThrowsPercentage = BasicPercentage,
+            reboundsOffensive = BasicNumber,
+            reboundsDefensive = BasicNumber,
+            reboundsTotal = BasicNumber,
+            assists = BasicNumber,
+            turnovers = BasicNumber,
+            steals = BasicNumber,
+            blocks = BasicNumber,
+            foulsPersonal = BasicNumber,
+            points = BasicNumber,
+            plusMinus = BasicNumber
         )
     }
 
     fun getAwayPlayerStats(): PlayerStats {
         return PlayerStats(
-            playerId = AWAY_PLAYER_ID,
-            teamId = AWAY_TEAM_ID,
-            playerName = AWAY_PLAYER_FULL_NAME,
-            playerNickName = AWAY_PLAYER_LAST_NAME,
-            gamePlayed = BASIC_NUMBER,
-            win = BASIC_NUMBER,
-            lose = BASIC_NUMBER,
-            winPercentage = BASIC_PERCENTAGE,
-            fieldGoalsMade = BASIC_NUMBER,
-            fieldGoalsAttempted = BASIC_NUMBER,
-            fieldGoalsPercentage = BASIC_PERCENTAGE,
-            threePointersMade = BASIC_NUMBER,
-            threePointersAttempted = BASIC_NUMBER,
-            threePointersPercentage = BASIC_PERCENTAGE,
-            freeThrowsMade = BASIC_NUMBER,
-            freeThrowsAttempted = BASIC_NUMBER,
-            freeThrowsPercentage = BASIC_PERCENTAGE,
-            reboundsOffensive = BASIC_NUMBER,
-            reboundsDefensive = BASIC_NUMBER,
-            reboundsTotal = BASIC_NUMBER,
-            assists = BASIC_NUMBER,
-            turnovers = BASIC_NUMBER,
-            steals = BASIC_NUMBER,
-            blocks = BASIC_NUMBER,
-            foulsPersonal = BASIC_NUMBER,
-            points = BASIC_NUMBER,
-            plusMinus = BASIC_NUMBER
+            playerId = AwayPlayerId,
+            teamId = AwayTeamId,
+            playerName = AwayPlayerFullName,
+            playerNickName = AwayPlayerLastName,
+            gamePlayed = BasicNumber,
+            win = BasicNumber,
+            lose = BasicNumber,
+            winPercentage = BasicPercentage,
+            fieldGoalsMade = BasicNumber,
+            fieldGoalsAttempted = BasicNumber,
+            fieldGoalsPercentage = BasicPercentage,
+            threePointersMade = BasicNumber,
+            threePointersAttempted = BasicNumber,
+            threePointersPercentage = BasicPercentage,
+            freeThrowsMade = BasicNumber,
+            freeThrowsAttempted = BasicNumber,
+            freeThrowsPercentage = BasicPercentage,
+            reboundsOffensive = BasicNumber,
+            reboundsDefensive = BasicNumber,
+            reboundsTotal = BasicNumber,
+            assists = BasicNumber,
+            turnovers = BasicNumber,
+            steals = BasicNumber,
+            blocks = BasicNumber,
+            foulsPersonal = BasicNumber,
+            points = BasicNumber,
+            plusMinus = BasicNumber
         )
     }
 }

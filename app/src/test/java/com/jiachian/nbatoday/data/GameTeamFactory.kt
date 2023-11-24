@@ -1,10 +1,10 @@
 package com.jiachian.nbatoday.data
 
-import com.jiachian.nbatoday.AWAY_TEAM
-import com.jiachian.nbatoday.AWAY_TEAM_ID
-import com.jiachian.nbatoday.BASIC_NUMBER
-import com.jiachian.nbatoday.HOME_TEAM
-import com.jiachian.nbatoday.HOME_TEAM_ID
+import com.jiachian.nbatoday.AwayTeam
+import com.jiachian.nbatoday.AwayTeamId
+import com.jiachian.nbatoday.BasicNumber
+import com.jiachian.nbatoday.HomeTeam
+import com.jiachian.nbatoday.HomeTeamId
 import com.jiachian.nbatoday.data.remote.game.GameScoreboard
 import com.jiachian.nbatoday.data.remote.team.GameTeam
 
@@ -12,40 +12,40 @@ object GameTeamFactory {
 
     fun getDefaultHomeTeam(): GameTeam {
         return GameTeam(
-            team = HOME_TEAM,
-            losses = BASIC_NUMBER,
-            score = BASIC_NUMBER,
-            wins = BASIC_NUMBER,
+            team = HomeTeam,
+            losses = BasicNumber,
+            score = BasicNumber,
+            wins = BasicNumber,
             periods = getWinPeriod()
         )
     }
 
     fun getDefaultAwayTeam(): GameTeam {
         return GameTeam(
-            team = AWAY_TEAM,
-            losses = BASIC_NUMBER,
-            score = BASIC_NUMBER,
-            wins = BASIC_NUMBER,
+            team = AwayTeam,
+            losses = BasicNumber,
+            score = BasicNumber,
+            wins = BasicNumber,
             periods = getLosePeriod()
         )
     }
 
     fun getDefaultRemoteHomeTeam(): GameScoreboard.Scoreboard.Game.RemoteGameTeam {
         return GameScoreboard.Scoreboard.Game.RemoteGameTeam(
-            teamId = HOME_TEAM_ID,
-            losses = BASIC_NUMBER,
-            score = BASIC_NUMBER,
-            wins = BASIC_NUMBER,
+            teamId = HomeTeamId,
+            losses = BasicNumber,
+            score = BasicNumber,
+            wins = BasicNumber,
             periods = getRemoteWinPeriod()
         )
     }
 
     fun getDefaultRemoteAwayTeam(): GameScoreboard.Scoreboard.Game.RemoteGameTeam {
         return GameScoreboard.Scoreboard.Game.RemoteGameTeam(
-            teamId = AWAY_TEAM_ID,
-            losses = BASIC_NUMBER,
-            score = BASIC_NUMBER,
-            wins = BASIC_NUMBER,
+            teamId = AwayTeamId,
+            losses = BasicNumber,
+            score = BasicNumber,
+            wins = BasicNumber,
             periods = getRemoteLosePeriod()
         )
     }
@@ -55,7 +55,7 @@ object GameTeamFactory {
             GameTeam.Period(
                 period = it,
                 periodType = "REGULAR",
-                score = BASIC_NUMBER
+                score = BasicNumber
             )
         }
     }
@@ -65,7 +65,7 @@ object GameTeamFactory {
             GameTeam.Period(
                 period = it,
                 periodType = "REGULAR",
-                score = BASIC_NUMBER
+                score = BasicNumber
             )
         }
     }
@@ -75,7 +75,7 @@ object GameTeamFactory {
             GameScoreboard.Scoreboard.Game.RemoteGameTeam.RemotePeriod(
                 period = it,
                 periodType = "REGULAR",
-                score = BASIC_NUMBER
+                score = BasicNumber
             )
         }
     }
@@ -85,7 +85,7 @@ object GameTeamFactory {
             GameScoreboard.Scoreboard.Game.RemoteGameTeam.RemotePeriod(
                 period = it,
                 periodType = "REGULAR",
-                score = BASIC_NUMBER
+                score = BasicNumber
             )
         }
     }

@@ -136,7 +136,7 @@ class MainViewModelTest {
         viewModel.updateState(
             NbaState.Calendar(
                 CalendarViewModel(
-                    date = Date(BASIC_TIME),
+                    date = Date(BasicTime),
                     repository = repository,
                     openScreen = {}
                 )
@@ -155,7 +155,7 @@ class MainViewModelTest {
         viewModel.updateState(
             NbaState.Bet(
                 BetViewModel(
-                    account = USER_ACCOUNT,
+                    account = UserAccount,
                     repository = repository,
                     openScreen = {}
                 )
@@ -206,25 +206,25 @@ class MainViewModelTest {
         assertThat(viewModel.isLoaded.value, `is`(false))
         dataStore.updateUser(
             User(
-                account = USER_ACCOUNT,
-                name = USER_NAME,
-                points = USER_POINTS,
-                password = USER_PASSWORD,
+                account = UserAccount,
+                name = UserName,
+                points = UserPoints,
+                password = UserPassword,
                 token = ""
             )
         )
         viewModel.loadData()
         assertThat(viewModel.isLoaded.value, `is`(true))
         assertThat(repository.getGamesAndBets().first().isNotEmpty(), `is`(true))
-        assertThat(repository.user.value?.account, `is`(USER_ACCOUNT))
-        assertThat(repository.user.value?.password, `is`(USER_PASSWORD))
+        assertThat(repository.user.value?.account, `is`(UserAccount))
+        assertThat(repository.user.value?.password, `is`(UserPassword))
     }
 
     @Test
     fun updateState_sameWithCurrentState_checksDataCorrect() {
         val state = NbaState.Bet(
             BetViewModel(
-                account = USER_ACCOUNT,
+                account = UserAccount,
                 repository = repository,
                 openScreen = {}
             )

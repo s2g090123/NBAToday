@@ -1,6 +1,6 @@
 package com.jiachian.nbatoday.compose.screen.player
 
-import com.jiachian.nbatoday.HOME_PLAYER_ID
+import com.jiachian.nbatoday.HomePlayerId
 import com.jiachian.nbatoday.data.PlayerCareerFactory
 import com.jiachian.nbatoday.data.TestRepository
 import com.jiachian.nbatoday.data.local.player.PlayerCareer
@@ -23,7 +23,7 @@ class PlayerViewModelTest {
     @Before
     fun setup() {
         viewModel = PlayerViewModel(
-            playerId = HOME_PLAYER_ID,
+            playerId = HomePlayerId,
             repository = repository,
             dispatcherProvider = coroutineEnvironment.testDispatcherProvider
         )

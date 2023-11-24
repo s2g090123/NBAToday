@@ -5,16 +5,16 @@ import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
-import com.jiachian.nbatoday.BASIC_TIME
 import com.jiachian.nbatoday.BaseAndroidTest
-import com.jiachian.nbatoday.FINAL_GAME_ID
-import com.jiachian.nbatoday.GAME_CODE
-import com.jiachian.nbatoday.GAME_STATUS_FINAL
+import com.jiachian.nbatoday.BasicTime
+import com.jiachian.nbatoday.FinalGameId
+import com.jiachian.nbatoday.GameCode
+import com.jiachian.nbatoday.GameStatusFinal
 import com.jiachian.nbatoday.R
-import com.jiachian.nbatoday.USER_ACCOUNT
-import com.jiachian.nbatoday.USER_NAME
-import com.jiachian.nbatoday.USER_PASSWORD
-import com.jiachian.nbatoday.USER_POINTS
+import com.jiachian.nbatoday.UserAccount
+import com.jiachian.nbatoday.UserName
+import com.jiachian.nbatoday.UserPassword
+import com.jiachian.nbatoday.UserPoints
 import com.jiachian.nbatoday.compose.screen.home.schedule.DateData
 import com.jiachian.nbatoday.compose.state.NbaState
 import com.jiachian.nbatoday.data.GameLeaderFactory
@@ -464,10 +464,10 @@ class HomeScreenTest : BaseAndroidTest() {
         loginDialog.apply {
             onNodeWithTag("LoginDialog_AccountTextField")
                 .onNodeWithTag("AccountTextField_TextField_Account")
-                .performTextInput(USER_ACCOUNT)
+                .performTextInput(UserAccount)
             onNodeWithTag("LoginDialog_PasswordTextField")
                 .onNodeWithTag("PasswordTextField_TextFiled_Password")
-                .performTextInput(USER_PASSWORD)
+                .performTextInput(UserPassword)
             onNodeWithTag("LoginDialog_Btn_Login")
                 .performClick()
         }
@@ -502,12 +502,12 @@ class HomeScreenTest : BaseAndroidTest() {
                 .onNodeWithTag("BetDialogTeamEdit_TextField_Bet")
                 .performTextInput("500")
             onNodeWithTag("BetDialog_Text_Remainder")
-                .assertTextEquals(context.getString(R.string.bet_remain, USER_POINTS - 500))
+                .assertTextEquals(context.getString(R.string.bet_remain, UserPoints - 500))
             onNodeWithTag("BetDialogContent_BetDialogTeamEdit_Away")
                 .onNodeWithTag("BetDialogTeamEdit_TextField_Bet")
                 .performTextInput("500")
             onNodeWithTag("BetDialog_Text_Remainder")
-                .assertTextEquals(context.getString(R.string.bet_remain, USER_POINTS - 1000))
+                .assertTextEquals(context.getString(R.string.bet_remain, UserPoints - 1000))
             onNodeWithTag("BetDialog_Btn_Confirm")
                 .performClick()
         }
@@ -600,10 +600,10 @@ class HomeScreenTest : BaseAndroidTest() {
         loginDialog.apply {
             onNodeWithTag("LoginDialog_AccountTextField")
                 .onNodeWithTag("AccountTextField_TextField_Account")
-                .performTextInput(USER_ACCOUNT)
+                .performTextInput(UserAccount)
             onNodeWithTag("LoginDialog_PasswordTextField")
                 .onNodeWithTag("PasswordTextField_TextFiled_Password")
-                .performTextInput(USER_PASSWORD)
+                .performTextInput(UserPassword)
             onNodeWithTag("LoginDialog_Btn_Login")
                 .performClick()
         }
@@ -627,10 +627,10 @@ class HomeScreenTest : BaseAndroidTest() {
         loginDialog.apply {
             onNodeWithTag("LoginDialog_AccountTextField")
                 .onNodeWithTag("AccountTextField_TextField_Account")
-                .performTextInput(USER_ACCOUNT)
+                .performTextInput(UserAccount)
             onNodeWithTag("LoginDialog_PasswordTextField")
                 .onNodeWithTag("PasswordTextField_TextFiled_Password")
-                .performTextInput(USER_PASSWORD)
+                .performTextInput(UserPassword)
             onNodeWithTag("LoginDialog_Btn_Register")
                 .performClick()
         }
@@ -654,10 +654,10 @@ class HomeScreenTest : BaseAndroidTest() {
         loginDialog.apply {
             onNodeWithTag("LoginDialog_AccountTextField")
                 .onNodeWithTag("AccountTextField_TextField_Account")
-                .performTextInput(USER_ACCOUNT)
+                .performTextInput(UserAccount)
             onNodeWithTag("LoginDialog_PasswordTextField")
                 .onNodeWithTag("PasswordTextField_TextFiled_Password")
-                .performTextInput(USER_PASSWORD)
+                .performTextInput(UserPassword)
             onNodeWithTag("LoginDialog_Btn_Login")
                 .performClick()
         }
@@ -684,10 +684,10 @@ class HomeScreenTest : BaseAndroidTest() {
         loginDialog.apply {
             onNodeWithTag("LoginDialog_AccountTextField")
                 .onNodeWithTag("AccountTextField_TextField_Account")
-                .performTextInput(USER_ACCOUNT)
+                .performTextInput(UserAccount)
             onNodeWithTag("LoginDialog_PasswordTextField")
                 .onNodeWithTag("PasswordTextField_TextFiled_Password")
-                .performTextInput(USER_PASSWORD)
+                .performTextInput(UserPassword)
             onNodeWithTag("LoginDialog_Btn_Login")
                 .performClick()
         }
@@ -712,19 +712,19 @@ class HomeScreenTest : BaseAndroidTest() {
         loginDialog.apply {
             onNodeWithTag("LoginDialog_AccountTextField")
                 .onNodeWithTag("AccountTextField_TextField_Account")
-                .performTextInput(USER_ACCOUNT)
+                .performTextInput(UserAccount)
             onNodeWithTag("LoginDialog_PasswordTextField")
                 .onNodeWithTag("PasswordTextField_TextFiled_Password")
-                .performTextInput(USER_PASSWORD)
+                .performTextInput(UserPassword)
             onNodeWithTag("LoginDialog_Btn_Login")
                 .performClick()
         }
         composeTestRule
             .onNodeWithMergedTag("AccountInfo_Text_AccountName")
-            .assertTextEquals(USER_NAME)
+            .assertTextEquals(UserName)
         composeTestRule
             .onNodeWithMergedTag("AccountInfo_Text_Credit")
-            .assertTextEquals(context.getString(R.string.user_points, USER_POINTS))
+            .assertTextEquals(context.getString(R.string.user_points, UserPoints))
         composeTestRule
             .onNodeWithMergedTag("UserPage_LVG_Palette")
             .onNodeWithTag("UserPage_ThemeCard", 1)
@@ -737,14 +737,14 @@ class HomeScreenTest : BaseAndroidTest() {
             leagueId = "00",
             awayTeam = GameTeamFactory.getDefaultAwayTeam(),
             day = "SUN",
-            gameCode = GAME_CODE,
-            gameId = FINAL_GAME_ID,
+            gameCode = GameCode,
+            gameId = FinalGameId,
             gameStatus = GameStatusCode.FINAL,
-            gameStatusText = GAME_STATUS_FINAL,
+            gameStatusText = GameStatusFinal,
             gameSequence = 1,
             homeTeam = GameTeamFactory.getDefaultHomeTeam(),
-            gameDate = Date(BASIC_TIME - 60 * 60 * 24 * 1000L),
-            gameDateTime = Date(BASIC_TIME - 60 * 60 * 24 * 1000L),
+            gameDate = Date(BasicTime - 60 * 60 * 24 * 1000L),
+            gameDateTime = Date(BasicTime - 60 * 60 * 24 * 1000L),
             monthNum = 1,
             pointsLeaders = listOf(
                 GameLeaderFactory.getHomePointsLeader(),

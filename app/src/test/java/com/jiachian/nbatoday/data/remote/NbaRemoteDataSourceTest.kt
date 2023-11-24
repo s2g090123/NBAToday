@@ -1,14 +1,14 @@
 package com.jiachian.nbatoday.data.remote
 
-import com.jiachian.nbatoday.FINAL_GAME_ID
-import com.jiachian.nbatoday.GAME_DATE
-import com.jiachian.nbatoday.HOME_PLAYER_ID
-import com.jiachian.nbatoday.HOME_TEAM_ID
-import com.jiachian.nbatoday.NBA_LEAGUE_ID
-import com.jiachian.nbatoday.USER_ACCOUNT
-import com.jiachian.nbatoday.USER_NAME
-import com.jiachian.nbatoday.USER_PASSWORD
-import com.jiachian.nbatoday.USER_POINTS
+import com.jiachian.nbatoday.FinalGameId
+import com.jiachian.nbatoday.GameDate
+import com.jiachian.nbatoday.HomePlayerId
+import com.jiachian.nbatoday.HomeTeamId
+import com.jiachian.nbatoday.NbaLeagueId
+import com.jiachian.nbatoday.UserAccount
+import com.jiachian.nbatoday.UserName
+import com.jiachian.nbatoday.UserPassword
+import com.jiachian.nbatoday.UserPoints
 import com.jiachian.nbatoday.data.TestDataStore
 import com.jiachian.nbatoday.data.remote.game.GameScoreboard
 import com.jiachian.nbatoday.data.remote.game.Schedule
@@ -103,9 +103,9 @@ class NbaRemoteDataSourceTest {
             return Response.success(
                 User(
                     account = loginBody.account,
-                    name = USER_NAME,
-                    points = USER_POINTS,
-                    password = USER_PASSWORD,
+                    name = UserName,
+                    points = UserPoints,
+                    password = UserPassword,
                     token = null
                 )
             )
@@ -115,9 +115,9 @@ class NbaRemoteDataSourceTest {
             return Response.success(
                 User(
                     account = loginBody.account,
-                    name = USER_NAME,
-                    points = USER_POINTS,
-                    password = USER_PASSWORD,
+                    name = UserName,
+                    points = UserPoints,
+                    password = UserPassword,
                     token = null
                 )
             )
@@ -158,21 +158,21 @@ class NbaRemoteDataSourceTest {
 
     @Test
     fun getScoreboard_fullGameDate_checksResponseBody() = runTest {
-        val actual = remoteDataSource.getScoreboard(NBA_LEAGUE_ID, GAME_DATE)
+        val actual = remoteDataSource.getScoreboard(NbaLeagueId, GameDate)
         val expected = RemoteGameFactory.getRemoteGameScoreboard()
         assertThat(actual, `is`(expected))
     }
 
     @Test
     fun getScoreboard_separateGameDate_checksResponseBody() = runTest {
-        val actual = remoteDataSource.getScoreboard(NBA_LEAGUE_ID, 2023, 1, 1, 0)
+        val actual = remoteDataSource.getScoreboard(NbaLeagueId, 2023, 1, 1, 0)
         val expected = listOf(RemoteGameFactory.getRemoteGameScoreboard())
         assertThat(actual, `is`(expected))
     }
 
     @Test
     fun getGameBoxScore_checksResponseBody() = runTest {
-        val actual = remoteDataSource.getGameBoxScore(FINAL_GAME_ID)
+        val actual = remoteDataSource.getGameBoxScore(FinalGameId)
         val expected = RemoteGameFactory.getRemoteGameBoxScore()
         assertThat(actual, `is`(expected))
     }
@@ -186,67 +186,67 @@ class NbaRemoteDataSourceTest {
 
     @Test
     fun getTeamStats_teamId_checksResponseBody() = runTest {
-        val actual = remoteDataSource.getTeamStats(HOME_TEAM_ID)
+        val actual = remoteDataSource.getTeamStats(HomeTeamId)
         val expected = RemoteTeamFactory.getRemoteTeamStats()
         assertThat(actual, `is`(expected))
     }
 
     @Test
     fun getTeamPlayersStats_checksResponseBody() = runTest {
-        val actual = remoteDataSource.getTeamPlayersStats(HOME_TEAM_ID)
+        val actual = remoteDataSource.getTeamPlayersStats(HomeTeamId)
         val expected = RemoteTeamFactory.getRemoteTeamPlayerStats()
         assertThat(actual, `is`(expected))
     }
 
     @Test
     fun getPlayerInfo_checksResponseBody() = runTest {
-        val actual = remoteDataSource.getPlayerInfo(HOME_PLAYER_ID)
+        val actual = remoteDataSource.getPlayerInfo(HomePlayerId)
         val expected = RemotePlayerFactory.getRemotePlayerInfo()
         assertThat(actual, `is`(expected))
     }
 
     @Test
     fun getPlayerCareerStats_checksResponseBody() = runTest {
-        val actual = remoteDataSource.getPlayerCareerStats(HOME_PLAYER_ID)
+        val actual = remoteDataSource.getPlayerCareerStats(HomePlayerId)
         val expected = RemotePlayerFactory.getRemotePlayerStats()
         assertThat(actual, `is`(expected))
     }
 
     @Test
     fun getPlayerDetail_checksResponseBody() = runTest {
-        val actual = remoteDataSource.getPlayerDetail(HOME_PLAYER_ID)
+        val actual = remoteDataSource.getPlayerDetail(HomePlayerId)
         val expected = RemotePlayerFactory.getRemotePlayerDetail()
         assertThat(actual, `is`(expected))
     }
 
     @Test
     fun login_checksResponseBody() = runTest {
-        val actual = remoteDataSource.login(USER_ACCOUNT, USER_PASSWORD)
-        val expected = testNbaService.login(LoginBody(USER_ACCOUNT, USER_PASSWORD)).body()
+        val actual = remoteDataSource.login(UserAccount, UserPassword)
+        val expected = testNbaService.login(LoginBody(UserAccount, UserPassword)).body()
         assertThat(actual, `is`(expected))
     }
 
     @Test
     fun register_checksResponseBody() = runTest {
-        val actual = remoteDataSource.register(USER_ACCOUNT, USER_PASSWORD)
-        val expected = testNbaService.register(LoginBody(USER_ACCOUNT, USER_PASSWORD)).body()
+        val actual = remoteDataSource.register(UserAccount, UserPassword)
+        val expected = testNbaService.register(LoginBody(UserAccount, UserPassword)).body()
         assertThat(actual, `is`(expected))
     }
 
     @Test
     fun updatePassword_checksResponseBody() = runTest {
-        val actual = remoteDataSource.updatePassword(USER_ACCOUNT, USER_PASSWORD, "")
+        val actual = remoteDataSource.updatePassword(UserAccount, UserPassword, "")
         val expected =
-            testNbaService.updatePassword(UpdatePasswordBody(USER_ACCOUNT, USER_PASSWORD, ""))
+            testNbaService.updatePassword(UpdatePasswordBody(UserAccount, UserPassword, ""))
                 .body()
         assertThat(actual, `is`(expected))
     }
 
     @Test
     fun updatePoints_checksResponseBody() = runTest {
-        val actual = remoteDataSource.updatePoints(USER_ACCOUNT, USER_POINTS, "")
+        val actual = remoteDataSource.updatePoints(UserAccount, UserPoints, "")
         val expected =
-            testNbaService.updatePoints(UpdatePointBody(USER_ACCOUNT, "", USER_POINTS)).body()
+            testNbaService.updatePoints(UpdatePointBody(UserAccount, "", UserPoints)).body()
         assertThat(actual, `is`(expected))
     }
 }

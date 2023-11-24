@@ -1,12 +1,12 @@
 package com.jiachian.nbatoday.data.local
 
-import com.jiachian.nbatoday.BASIC_NUMBER
-import com.jiachian.nbatoday.BASIC_TIME
-import com.jiachian.nbatoday.FINAL_GAME_ID
-import com.jiachian.nbatoday.HOME_PLAYER_ID
-import com.jiachian.nbatoday.HOME_TEAM_ID
-import com.jiachian.nbatoday.NEXT_TIME
-import com.jiachian.nbatoday.USER_ACCOUNT
+import com.jiachian.nbatoday.BasicNumber
+import com.jiachian.nbatoday.BasicTime
+import com.jiachian.nbatoday.FinalGameId
+import com.jiachian.nbatoday.HomePlayerId
+import com.jiachian.nbatoday.HomeTeamId
+import com.jiachian.nbatoday.NextTime
+import com.jiachian.nbatoday.UserAccount
 import com.jiachian.nbatoday.data.BoxScoreFactory
 import com.jiachian.nbatoday.data.GameLeaderFactory
 import com.jiachian.nbatoday.data.NbaGameFactory
@@ -52,14 +52,14 @@ class NbaLocalDataSourceTest {
     @Test
     fun getGamesAt_checksDataCorrect() = runTest {
         dataSource.insertGames(listOf(NbaGameFactory.getFinalGame()))
-        assertThat(dataSource.getGamesAt(BASIC_TIME), hasItem(NbaGameFactory.getFinalGame()))
+        assertThat(dataSource.getGamesAt(BasicTime), hasItem(NbaGameFactory.getFinalGame()))
     }
 
     @Test
     fun getGamesDuring_checksDataCorrect() = runTest {
         dataSource.insertGames(listOf(NbaGameFactory.getFinalGame()))
         assertThat(
-            dataSource.getGamesDuring(BASIC_TIME, NEXT_TIME).first(),
+            dataSource.getGamesDuring(BasicTime, NextTime).first(),
             hasItem(NbaGameFactory.getFinalGame())
         )
     }
@@ -67,7 +67,7 @@ class NbaLocalDataSourceTest {
     @Test
     fun getGamesAndBetsDuring_checksDataCorrect() = runTest {
         dataSource.insertGames(listOf(NbaGameFactory.getFinalGame()))
-        val actual = dataSource.getGamesAndBetsDuring(BASIC_TIME - 1, BASIC_TIME + 1).first().map {
+        val actual = dataSource.getGamesAndBetsDuring(BasicTime - 1, BasicTime + 1).first().map {
             it.game
         }
         assertThat(actual, hasItem(NbaGameFactory.getFinalGame()))
@@ -77,7 +77,7 @@ class NbaLocalDataSourceTest {
     fun getGamesBefore_checksDataCorrect() = runTest {
         dataSource.insertGames(listOf(NbaGameFactory.getFinalGame()))
         assertThat(
-            dataSource.getGamesBefore(NEXT_TIME).first(),
+            dataSource.getGamesBefore(NextTime).first(),
             hasItem(NbaGameFactory.getFinalGame())
         )
     }
@@ -86,7 +86,7 @@ class NbaLocalDataSourceTest {
     fun getGamesAfter_checksDataCorrect() = runTest {
         dataSource.insertGames(listOf(NbaGameFactory.getFinalGame()))
         assertThat(
-            dataSource.getGamesAfter(BASIC_TIME - 1).first(),
+            dataSource.getGamesAfter(BasicTime - 1).first(),
             hasItem(NbaGameFactory.getFinalGame())
         )
     }
@@ -147,10 +147,10 @@ class NbaLocalDataSourceTest {
 
     @Test
     fun getGameBoxScore_checksDataCorrect() = runTest {
-        assertThat(dataSource.getGameBoxScore(FINAL_GAME_ID).first(), nullValue())
+        assertThat(dataSource.getGameBoxScore(FinalGameId).first(), nullValue())
         val finalBoxScore = BoxScoreFactory.getFinalGameBoxScore()
         dataSource.insertGameBoxScore(finalBoxScore)
-        val actual = dataSource.getGameBoxScore(FINAL_GAME_ID).first()
+        val actual = dataSource.getGameBoxScore(FinalGameId).first()
         assertThat(actual, `is`(finalBoxScore))
     }
 
@@ -158,7 +158,7 @@ class NbaLocalDataSourceTest {
     fun insertGameBoxScore_checksDataCorrect() = runTest {
         val finalBoxScore = BoxScoreFactory.getFinalGameBoxScore()
         dataSource.insertGameBoxScore(finalBoxScore)
-        val actual = dataSource.getGameBoxScore(FINAL_GAME_ID).first()
+        val actual = dataSource.getGameBoxScore(FinalGameId).first()
         assertThat(actual, `is`(finalBoxScore))
     }
 
@@ -173,10 +173,10 @@ class NbaLocalDataSourceTest {
 
     @Test
     fun getTeamAndPlayerStats_checksDataCorrect() = runTest {
-        assertThat(dataSource.getTeamAndPlayersStats(HOME_TEAM_ID).first(), nullValue())
+        assertThat(dataSource.getTeamAndPlayersStats(HomeTeamId).first(), nullValue())
         val homeTeam = TeamStatsFactory.getHomeTeamStats()
         dataSource.updateTeamStats(homeTeam)
-        val actual = dataSource.getTeamAndPlayersStats(HOME_TEAM_ID).first()
+        val actual = dataSource.getTeamAndPlayersStats(HomeTeamId).first()
         assertThat(actual?.teamStats, `is`(homeTeam))
     }
 
@@ -184,7 +184,7 @@ class NbaLocalDataSourceTest {
     fun getTeamRank_checksDataCorrect() = runTest {
         val homeTeam = TeamStatsFactory.getHomeTeamStats()
         dataSource.updateTeamStats(homeTeam)
-        val actual = dataSource.getTeamRank(HOME_TEAM_ID, NBATeam.Conference.EAST).first()
+        val actual = dataSource.getTeamRank(HomeTeamId, NBATeam.Conference.EAST).first()
         assertThat(actual, `is`(1))
     }
 
@@ -192,7 +192,7 @@ class NbaLocalDataSourceTest {
     fun getTeamPointsRank_checksDataCorrect() = runTest {
         val homeTeam = TeamStatsFactory.getHomeTeamStats()
         dataSource.updateTeamStats(homeTeam)
-        val actual = dataSource.getTeamPointsRank(HOME_TEAM_ID).first()
+        val actual = dataSource.getTeamPointsRank(HomeTeamId).first()
         assertThat(actual, `is`(1))
     }
 
@@ -200,7 +200,7 @@ class NbaLocalDataSourceTest {
     fun getTeamReboundsRank_checksDataCorrect() = runTest {
         val homeTeam = TeamStatsFactory.getHomeTeamStats()
         dataSource.updateTeamStats(homeTeam)
-        val actual = dataSource.getTeamReboundsRank(HOME_TEAM_ID).first()
+        val actual = dataSource.getTeamReboundsRank(HomeTeamId).first()
         assertThat(actual, `is`(1))
     }
 
@@ -208,7 +208,7 @@ class NbaLocalDataSourceTest {
     fun getTeamAssistsRank_checksDataCorrect() = runTest {
         val homeTeam = TeamStatsFactory.getHomeTeamStats()
         dataSource.updateTeamStats(homeTeam)
-        val actual = dataSource.getTeamAssistsRank(HOME_TEAM_ID).first()
+        val actual = dataSource.getTeamAssistsRank(HomeTeamId).first()
         assertThat(actual, `is`(1))
     }
 
@@ -216,7 +216,7 @@ class NbaLocalDataSourceTest {
     fun getTeamPlusMinusRank_checksDataCorrect() = runTest {
         val homeTeam = TeamStatsFactory.getHomeTeamStats()
         dataSource.updateTeamStats(homeTeam)
-        val actual = dataSource.getTeamPlusMinusRank(HOME_TEAM_ID).first()
+        val actual = dataSource.getTeamPlusMinusRank(HomeTeamId).first()
         assertThat(actual, `is`(1))
     }
 
@@ -252,7 +252,7 @@ class NbaLocalDataSourceTest {
     fun insertPlayerCareer_checksDataCorrect() = runTest {
         val playerCareer = PlayerCareerFactory.createHomePlayerCareer()
         dataSource.insertPlayerCareer(playerCareer)
-        val actual = dataSource.getPlayerCareer(HOME_PLAYER_ID).first()
+        val actual = dataSource.getPlayerCareer(HomePlayerId).first()
         assertThat(actual, `is`(playerCareer))
     }
 
@@ -274,7 +274,7 @@ class NbaLocalDataSourceTest {
                 )
             )
         )
-        val actual = dataSource.getPlayerCareer(HOME_PLAYER_ID).first()
+        val actual = dataSource.getPlayerCareer(HomePlayerId).first()
         assertThat(actual?.personId, `is`(playerCareer.personId))
         assertThat(actual?.stats?.careerStats?.first()?.win, `is`(0))
     }
@@ -285,10 +285,10 @@ class NbaLocalDataSourceTest {
         val playerStats = PlayerStatsFactory.getHomePlayerStats()
         dataSource.updateTeamStats(team)
         dataSource.updatePlayerStats(listOf(playerStats))
-        val stats = dataSource.getTeamAndPlayersStats(HOME_TEAM_ID).first()
+        val stats = dataSource.getTeamAndPlayersStats(HomeTeamId).first()
         assertThat(stats?.playersStats, hasItem(playerStats))
         dataSource.deletePlayerStats(team.teamId, listOf(playerStats.playerId))
-        val actual = dataSource.getTeamAndPlayersStats(HOME_TEAM_ID).first()
+        val actual = dataSource.getTeamAndPlayersStats(HomeTeamId).first()
         assertThat(actual?.playersStats, `is`(emptyList()))
     }
 
@@ -304,7 +304,7 @@ class NbaLocalDataSourceTest {
                 )
             )
         )
-        val actual = dataSource.getPlayerCareer(HOME_PLAYER_ID).first()
+        val actual = dataSource.getPlayerCareer(HomePlayerId).first()
         assertThat(actual?.info?.playerAge, `is`(0))
     }
 
@@ -312,21 +312,21 @@ class NbaLocalDataSourceTest {
     fun getPlayerCareer_checksDataCorrect() = runTest {
         val info = PlayerCareerFactory.createHomePlayerCareer()
         dataSource.insertPlayerCareer(info)
-        val actual = dataSource.getPlayerCareer(HOME_PLAYER_ID).first()
+        val actual = dataSource.getPlayerCareer(HomePlayerId).first()
         assertThat(actual, `is`(info))
     }
 
     @Test
     fun insertBet_checksDataCorrect() = runTest {
         val bet = Bets(
-            account = USER_ACCOUNT,
-            gameId = FINAL_GAME_ID,
-            homePoints = BASIC_NUMBER.toLong(),
+            account = UserAccount,
+            gameId = FinalGameId,
+            homePoints = BasicNumber.toLong(),
             awayPoints = 0
         )
         val game = NbaGameFactory.getFinalGame()
         dataSource.insertGames(listOf(game))
-        dataSource.insertBet(USER_ACCOUNT, FINAL_GAME_ID, BASIC_NUMBER.toLong(), 0L)
+        dataSource.insertBet(UserAccount, FinalGameId, BasicNumber.toLong(), 0L)
         val actual = dataSource.getBetsAndGames().first()
         assertThat(actual.map { it.bets }, hasItem(bet))
     }
@@ -334,14 +334,14 @@ class NbaLocalDataSourceTest {
     @Test
     fun getBetsAndGames_checksDataCorrect() = runTest {
         val bet = Bets(
-            account = USER_ACCOUNT,
-            gameId = FINAL_GAME_ID,
-            homePoints = BASIC_NUMBER.toLong(),
+            account = UserAccount,
+            gameId = FinalGameId,
+            homePoints = BasicNumber.toLong(),
             awayPoints = 0
         )
         val game = NbaGameFactory.getFinalGame()
         dataSource.insertGames(listOf(game))
-        dataSource.insertBet(USER_ACCOUNT, FINAL_GAME_ID, BASIC_NUMBER.toLong(), 0L)
+        dataSource.insertBet(UserAccount, FinalGameId, BasicNumber.toLong(), 0L)
         val actual = dataSource.getBetsAndGames().first()
         assertThat(actual.map { it.game }, hasItem(game))
         assertThat(actual.map { it.bets }, hasItem(bet))
@@ -350,15 +350,15 @@ class NbaLocalDataSourceTest {
     @Test
     fun getBetsAndGamesByUser_checksDataCorrect() = runTest {
         val bet = Bets(
-            account = USER_ACCOUNT,
-            gameId = FINAL_GAME_ID,
-            homePoints = BASIC_NUMBER.toLong(),
+            account = UserAccount,
+            gameId = FinalGameId,
+            homePoints = BasicNumber.toLong(),
             awayPoints = 0
         )
         val game = NbaGameFactory.getFinalGame()
         dataSource.insertGames(listOf(game))
-        dataSource.insertBet(USER_ACCOUNT, FINAL_GAME_ID, BASIC_NUMBER.toLong(), 0L)
-        val actual = dataSource.getBetsAndGamesByUser(USER_ACCOUNT).first()
+        dataSource.insertBet(UserAccount, FinalGameId, BasicNumber.toLong(), 0L)
+        val actual = dataSource.getBetsAndGamesByUser(UserAccount).first()
         assertThat(actual.map { it.game }, hasItem(game))
         assertThat(actual.map { it.bets }, hasItem(bet))
     }
@@ -366,14 +366,14 @@ class NbaLocalDataSourceTest {
     @Test
     fun deleteBets_checksDataCorrect() = runTest {
         val bet = Bets(
-            account = USER_ACCOUNT,
-            gameId = FINAL_GAME_ID,
-            homePoints = BASIC_NUMBER.toLong(),
+            account = UserAccount,
+            gameId = FinalGameId,
+            homePoints = BasicNumber.toLong(),
             awayPoints = 0
         )
         val game = NbaGameFactory.getFinalGame()
         dataSource.insertGames(listOf(game))
-        dataSource.insertBet(USER_ACCOUNT, FINAL_GAME_ID, BASIC_NUMBER.toLong(), 0L)
+        dataSource.insertBet(UserAccount, FinalGameId, BasicNumber.toLong(), 0L)
         dataSource.deleteBets(bet)
         val actual = dataSource.getBetsAndGames().first()
         assertThat(actual.map { it.bets }, `is`(emptyList()))
@@ -383,7 +383,7 @@ class NbaLocalDataSourceTest {
     fun existPlayer_checksDataCorrect() = runTest {
         val stats = PlayerStatsFactory.getHomePlayerStats()
         dataSource.updatePlayerStats(listOf(stats))
-        val actual = dataSource.existPlayer(HOME_PLAYER_ID)
+        val actual = dataSource.existPlayer(HomePlayerId)
         assertThat(actual, `is`(true))
     }
 }

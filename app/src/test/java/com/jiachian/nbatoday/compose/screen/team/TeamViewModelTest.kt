@@ -1,8 +1,8 @@
 package com.jiachian.nbatoday.compose.screen.team
 
-import com.jiachian.nbatoday.USER_ACCOUNT
-import com.jiachian.nbatoday.USER_PASSWORD
-import com.jiachian.nbatoday.USER_POINTS
+import com.jiachian.nbatoday.UserAccount
+import com.jiachian.nbatoday.UserPassword
+import com.jiachian.nbatoday.UserPoints
 import com.jiachian.nbatoday.compose.state.NbaState
 import com.jiachian.nbatoday.data.NbaGameFactory
 import com.jiachian.nbatoday.data.PlayerStatsFactory
@@ -62,9 +62,9 @@ class TeamViewModelTest {
     @Test
     fun team_onLogin_checksUsersData() = coroutineEnvironment.testScope.runTest {
         viewModel.user.launchAndCollect(coroutineEnvironment)
-        repository.login(USER_ACCOUNT, USER_PASSWORD)
-        assertThat(viewModel.user.value?.account, `is`(USER_ACCOUNT))
-        assertThat(viewModel.user.value?.password, `is`(USER_PASSWORD))
+        repository.login(UserAccount, UserPassword)
+        assertThat(viewModel.user.value?.account, `is`(UserAccount))
+        assertThat(viewModel.user.value?.password, `is`(UserPassword))
     }
 
     @Test
@@ -210,30 +210,30 @@ class TeamViewModelTest {
     @Test
     fun team_login_checksUserInfo() {
         viewModel.user.launchAndCollect(coroutineEnvironment)
-        viewModel.login(USER_ACCOUNT, USER_PASSWORD)
-        assertThat(viewModel.user.value?.account, `is`(USER_ACCOUNT))
-        assertThat(viewModel.user.value?.password, `is`(USER_PASSWORD))
+        viewModel.login(UserAccount, UserPassword)
+        assertThat(viewModel.user.value?.account, `is`(UserAccount))
+        assertThat(viewModel.user.value?.password, `is`(UserPassword))
     }
 
     @Test
     fun team_register_checksUserInfo() {
         viewModel.user.launchAndCollect(coroutineEnvironment)
-        viewModel.register(USER_ACCOUNT, USER_PASSWORD)
-        assertThat(viewModel.user.value?.account, `is`(USER_ACCOUNT))
-        assertThat(viewModel.user.value?.password, `is`(USER_PASSWORD))
+        viewModel.register(UserAccount, UserPassword)
+        assertThat(viewModel.user.value?.account, `is`(UserAccount))
+        assertThat(viewModel.user.value?.password, `is`(UserPassword))
     }
 
     @Test
     fun team_betComingSoonGame_checkGamesAfter() {
         viewModel.gamesAfter.launchAndCollect(coroutineEnvironment)
         val gameId = NbaGameFactory.getComingSoonGame().gameId
-        viewModel.login(USER_ACCOUNT, USER_PASSWORD)
-        viewModel.bet(gameId, USER_POINTS, 0)
+        viewModel.login(UserAccount, UserPassword)
+        viewModel.bet(gameId, UserPoints, 0)
         val game = viewModel.gamesAfter.value.first()
         val bet = game.bets.first()
         assertThat(bet.gameId, `is`(gameId))
-        assertThat(bet.account, `is`(USER_ACCOUNT))
-        assertThat(bet.homePoints, `is`(USER_POINTS))
+        assertThat(bet.account, `is`(UserAccount))
+        assertThat(bet.homePoints, `is`(UserPoints))
         assertThat(bet.awayPoints, `is`(0))
     }
 }

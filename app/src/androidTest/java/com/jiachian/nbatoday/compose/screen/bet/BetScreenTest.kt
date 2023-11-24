@@ -12,13 +12,13 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.core.app.ApplicationProvider
-import com.jiachian.nbatoday.BASIC_NUMBER
-import com.jiachian.nbatoday.COMING_SOON_GAME_ID
-import com.jiachian.nbatoday.FINAL_GAME_ID
-import com.jiachian.nbatoday.PLAYING_GAME_ID
+import com.jiachian.nbatoday.BasicNumber
+import com.jiachian.nbatoday.ComingSoonGameId
+import com.jiachian.nbatoday.FinalGameId
+import com.jiachian.nbatoday.PlayingGameId
 import com.jiachian.nbatoday.R
-import com.jiachian.nbatoday.USER_ACCOUNT
-import com.jiachian.nbatoday.USER_PASSWORD
+import com.jiachian.nbatoday.UserAccount
+import com.jiachian.nbatoday.UserPassword
 import com.jiachian.nbatoday.compose.state.NbaState
 import com.jiachian.nbatoday.data.TestRepository
 import com.jiachian.nbatoday.rule.TestCoroutineEnvironment
@@ -54,16 +54,16 @@ class BetScreenTest {
     fun setup() = runTest {
         repository = TestRepository()
         viewModel = BetViewModel(
-            account = USER_ACCOUNT,
+            account = UserAccount,
             repository = repository,
             openScreen = { currentState = it },
             dispatcherProvider = coroutineEnvironment.testDispatcherProvider
         )
-        repository.login(USER_ACCOUNT, USER_PASSWORD)
+        repository.login(UserAccount, UserPassword)
         repository.refreshSchedule()
-        repository.bet(FINAL_GAME_ID, 0, BASIC_NUMBER.toLong())
-        repository.bet(PLAYING_GAME_ID, 0, BASIC_NUMBER.toLong())
-        repository.bet(COMING_SOON_GAME_ID, 0, BASIC_NUMBER.toLong())
+        repository.bet(FinalGameId, 0, BasicNumber.toLong())
+        repository.bet(PlayingGameId, 0, BasicNumber.toLong())
+        repository.bet(ComingSoonGameId, 0, BasicNumber.toLong())
         composeTestRule.setContent {
             BetScreen(
                 viewModel = viewModel,
@@ -117,17 +117,17 @@ class BetScreenTest {
             .filterToOne(hasTestTag("BetCard_BetCardTeamInfo_Away"))
             .onChildren()
             .filterToOne(hasTestTag("BetCardTeamInfo_Text_Points"))
-            .assertTextEquals("+${BASIC_NUMBER * 2}")
+            .assertTextEquals("+${BasicNumber * 2}")
         root
             .filterToOne(hasTestTag("BetCard_BetCardTeamInfo_Home"))
             .onChildren()
             .filterToOne(hasTestTag("BetCardTeamInfo_Text_Scores"))
-            .assertTextEquals("$BASIC_NUMBER")
+            .assertTextEquals("$BasicNumber")
         root
             .filterToOne(hasTestTag("BetCard_BetCardTeamInfo_Away"))
             .onChildren()
             .filterToOne(hasTestTag("BetCardTeamInfo_Text_Scores"))
-            .assertTextEquals("$BASIC_NUMBER")
+            .assertTextEquals("$BasicNumber")
         root
             .filterToOne(hasTestTag("betCard_text_gameStatus"))
             .assertTextEquals("Final\n1:1")
@@ -158,17 +158,17 @@ class BetScreenTest {
             .filterToOne(hasTestTag("BetCard_BetCardTeamInfo_Away"))
             .onChildren()
             .filterToOne(hasTestTag("BetCardTeamInfo_Text_Points"))
-            .assertTextEquals("$BASIC_NUMBER")
+            .assertTextEquals("$BasicNumber")
         root
             .filterToOne(hasTestTag("BetCard_BetCardTeamInfo_Home"))
             .onChildren()
             .filterToOne(hasTestTag("BetCardTeamInfo_Text_Scores"))
-            .assertTextEquals("$BASIC_NUMBER")
+            .assertTextEquals("$BasicNumber")
         root
             .filterToOne(hasTestTag("BetCard_BetCardTeamInfo_Away"))
             .onChildren()
             .filterToOne(hasTestTag("BetCardTeamInfo_Text_Scores"))
-            .assertTextEquals("$BASIC_NUMBER")
+            .assertTextEquals("$BasicNumber")
         root
             .filterToOne(hasTestTag("betCard_text_gameStatus"))
             .assertTextEquals("1:1")
@@ -199,7 +199,7 @@ class BetScreenTest {
             .filterToOne(hasTestTag("BetCard_BetCardTeamInfo_Away"))
             .onChildren()
             .filterToOne(hasTestTag("BetCardTeamInfo_Text_Points"))
-            .assertTextEquals("$BASIC_NUMBER")
+            .assertTextEquals("$BasicNumber")
         root
             .filterToOne(hasTestTag("BetCard_BetCardTeamInfo_Home"))
             .onChildren()
@@ -250,7 +250,7 @@ class BetScreenTest {
             .assertTextEquals(
                 context.getString(
                     R.string.bet_ask_turn_table_text,
-                    BASIC_NUMBER * 2,
+                    BasicNumber * 2,
                     0
                 )
             )
@@ -300,7 +300,7 @@ class BetScreenTest {
             .performClick()
             .assertDoesNotExist()
         val rewardPoints = getRewardPoints(
-            BASIC_NUMBER * 2,
+            BasicNumber * 2,
             0,
             viewModel.rewardAngle.value
         )

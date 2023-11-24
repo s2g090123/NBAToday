@@ -1,7 +1,7 @@
 package com.jiachian.nbatoday.data.remote.datasource
 
 import com.google.gson.GsonBuilder
-import com.jiachian.nbatoday.NBA_SERVER_URL
+import com.jiachian.nbatoday.NbaServerUrl
 import java.util.concurrent.TimeUnit
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -11,7 +11,7 @@ abstract class RemoteSource {
     private val gson = GsonBuilder().setLenient().create()
 
     protected val retrofit: Retrofit = Retrofit.Builder()
-        .baseUrl(NBA_SERVER_URL)
+        .baseUrl(NbaServerUrl)
         .addConverterFactory(GsonConverterFactory.create(gson))
         .client(buildHttpClient())
         .build()

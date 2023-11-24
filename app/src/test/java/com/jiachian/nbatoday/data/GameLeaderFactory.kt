@@ -1,21 +1,21 @@
 package com.jiachian.nbatoday.data
 
-import com.jiachian.nbatoday.AWAY_PLAYER_FIRST_NAME
-import com.jiachian.nbatoday.AWAY_PLAYER_FULL_NAME
-import com.jiachian.nbatoday.AWAY_PLAYER_ID
-import com.jiachian.nbatoday.AWAY_PLAYER_LAST_NAME
-import com.jiachian.nbatoday.AWAY_TEAM_ABBR
-import com.jiachian.nbatoday.AWAY_TEAM_ID
-import com.jiachian.nbatoday.AWAY_TEAM_NAME
-import com.jiachian.nbatoday.BASIC_NUMBER
-import com.jiachian.nbatoday.BASIC_POSITION
-import com.jiachian.nbatoday.HOME_PLAYER_FIRST_NAME
-import com.jiachian.nbatoday.HOME_PLAYER_FULL_NAME
-import com.jiachian.nbatoday.HOME_PLAYER_ID
-import com.jiachian.nbatoday.HOME_PLAYER_LAST_NAME
-import com.jiachian.nbatoday.HOME_TEAM_ABBR
-import com.jiachian.nbatoday.HOME_TEAM_ID
-import com.jiachian.nbatoday.HOME_TEAM_NAME
+import com.jiachian.nbatoday.AwayPlayerFirstName
+import com.jiachian.nbatoday.AwayPlayerFullName
+import com.jiachian.nbatoday.AwayPlayerId
+import com.jiachian.nbatoday.AwayPlayerLastName
+import com.jiachian.nbatoday.AwayTeamAbbr
+import com.jiachian.nbatoday.AwayTeamId
+import com.jiachian.nbatoday.AwayTeamName
+import com.jiachian.nbatoday.BasicNumber
+import com.jiachian.nbatoday.BasicPosition
+import com.jiachian.nbatoday.HomePlayerFirstName
+import com.jiachian.nbatoday.HomePlayerFullName
+import com.jiachian.nbatoday.HomePlayerId
+import com.jiachian.nbatoday.HomePlayerLastName
+import com.jiachian.nbatoday.HomeTeamAbbr
+import com.jiachian.nbatoday.HomeTeamId
+import com.jiachian.nbatoday.HomeTeamName
 import com.jiachian.nbatoday.data.local.NbaGame
 import com.jiachian.nbatoday.data.remote.leader.GameLeaders
 
@@ -23,25 +23,25 @@ object GameLeaderFactory {
 
     fun getHomePointsLeader(): NbaGame.NbaPointsLeader {
         return NbaGame.NbaPointsLeader(
-            firstName = HOME_PLAYER_FIRST_NAME,
-            lastName = HOME_PLAYER_LAST_NAME,
-            personId = HOME_PLAYER_ID,
-            points = BASIC_NUMBER.toDouble(),
-            teamId = HOME_TEAM_ID,
-            teamName = HOME_TEAM_NAME,
-            teamTricode = HOME_TEAM_ABBR
+            firstName = HomePlayerFirstName,
+            lastName = HomePlayerLastName,
+            personId = HomePlayerId,
+            points = BasicNumber.toDouble(),
+            teamId = HomeTeamId,
+            teamName = HomeTeamName,
+            teamTricode = HomeTeamAbbr
         )
     }
 
     fun getAwayPointsLeader(): NbaGame.NbaPointsLeader {
         return NbaGame.NbaPointsLeader(
-            firstName = AWAY_PLAYER_FIRST_NAME,
-            lastName = AWAY_PLAYER_LAST_NAME,
-            personId = AWAY_PLAYER_ID,
-            points = BASIC_NUMBER.toDouble(),
-            teamId = AWAY_TEAM_ID,
-            teamName = AWAY_TEAM_NAME,
-            teamTricode = AWAY_TEAM_ABBR
+            firstName = AwayPlayerFirstName,
+            lastName = AwayPlayerLastName,
+            personId = AwayPlayerId,
+            points = BasicNumber.toDouble(),
+            teamId = AwayTeamId,
+            teamName = AwayTeamName,
+            teamTricode = AwayTeamAbbr
         )
     }
 
@@ -54,27 +54,27 @@ object GameLeaderFactory {
 
     private fun getHomeLeader(): GameLeaders.GameLeader {
         return GameLeaders.GameLeader(
-            personId = HOME_PLAYER_ID,
-            name = HOME_PLAYER_FULL_NAME,
-            jerseyNum = BASIC_NUMBER.toString(),
-            position = BASIC_POSITION,
-            teamTricode = HOME_TEAM_ABBR,
-            points = BASIC_NUMBER.toDouble(),
-            rebounds = BASIC_NUMBER.toDouble(),
-            assists = BASIC_NUMBER.toDouble()
+            personId = HomePlayerId,
+            name = HomePlayerFullName,
+            jerseyNum = BasicNumber.toString(),
+            position = BasicPosition,
+            teamTricode = HomeTeamAbbr,
+            points = BasicNumber.toDouble(),
+            rebounds = BasicNumber.toDouble(),
+            assists = BasicNumber.toDouble()
         )
     }
 
     private fun getAwayLeader(): GameLeaders.GameLeader {
         return GameLeaders.GameLeader(
-            personId = AWAY_PLAYER_ID,
-            name = AWAY_PLAYER_FULL_NAME,
-            jerseyNum = BASIC_NUMBER.toString(),
-            position = BASIC_POSITION,
-            teamTricode = AWAY_TEAM_ABBR,
-            points = BASIC_NUMBER.toDouble(),
-            rebounds = BASIC_NUMBER.toDouble(),
-            assists = BASIC_NUMBER.toDouble()
+            personId = AwayPlayerId,
+            name = AwayPlayerFullName,
+            jerseyNum = BasicNumber.toString(),
+            position = BasicPosition,
+            teamTricode = AwayTeamAbbr,
+            points = BasicNumber.toDouble(),
+            rebounds = BasicNumber.toDouble(),
+            assists = BasicNumber.toDouble()
         )
     }
 }

@@ -1,7 +1,7 @@
 package com.jiachian.nbatoday.data.repository.schedule
 
-import com.jiachian.nbatoday.NBA_LEAGUE_ID
-import com.jiachian.nbatoday.SCHEDULE_DATE_RANGE
+import com.jiachian.nbatoday.NbaLeagueId
+import com.jiachian.nbatoday.ScheduleDateRange
 import com.jiachian.nbatoday.data.datastore.BaseDataStore
 import com.jiachian.nbatoday.data.local.datasource.boxscore.BoxScoreLocalSource
 import com.jiachian.nbatoday.data.local.datasource.game.GameLocalSource
@@ -34,7 +34,7 @@ class NbaScheduleRepository(
             val recordDay = NbaUtils.parseDate(dataStore.recordScheduleToday.first())
             val record = recordDay?.time ?: 0L
             val betweenDays = TimeUnit.DAYS.convert(today - record, TimeUnit.MILLISECONDS) + 1
-            val offset = betweenDays.toInt().coerceAtMost(SCHEDULE_DATE_RANGE)
+            val offset = betweenDays.toInt().coerceAtMost(ScheduleDateRange)
             cal.add(Calendar.DAY_OF_MONTH, -offset)
 
             if (!gameLocalSource.existsGame()) {
@@ -59,11 +59,11 @@ class NbaScheduleRepository(
             val month = cal.get(Calendar.MONTH) + 1
             val day = cal.get(Calendar.DAY_OF_MONTH)
             val scoreboards = gameRemoteSource.getScoreboard(
-                NBA_LEAGUE_ID,
+                NbaLeagueId,
                 year,
                 month,
                 day,
-                offset + SCHEDULE_DATE_RANGE + 1
+                offset + ScheduleDateRange + 1
             )
             scoreboards?.also {
                 val update = scoreboards.map { it.toGameUpdateData() }
@@ -82,7 +82,7 @@ class NbaScheduleRepository(
         try {
             isProgressingImp.value = true
             val gameDate = NbaUtils.formatScoreboardGameDate(year, month, day)
-            val scoreboard = gameRemoteSource.getScoreboard(NBA_LEAGUE_ID, gameDate)
+            val scoreboard = gameRemoteSource.getScoreboard(NbaLeagueId, gameDate)
             val updateData = scoreboard?.toGameUpdateData()
             updateData?.also {
                 gameLocalSource.updateGames(updateData)

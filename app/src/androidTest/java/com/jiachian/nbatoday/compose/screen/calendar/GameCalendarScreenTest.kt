@@ -12,12 +12,12 @@ import androidx.compose.ui.test.onChildren
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
-import com.jiachian.nbatoday.BASIC_TIME
-import com.jiachian.nbatoday.COMING_SOON_GAME_ID
-import com.jiachian.nbatoday.FINAL_GAME_ID
-import com.jiachian.nbatoday.GAME_CODE
-import com.jiachian.nbatoday.GAME_STATUS_FINAL
-import com.jiachian.nbatoday.GAME_STATUS_PREPARE
+import com.jiachian.nbatoday.BasicTime
+import com.jiachian.nbatoday.ComingSoonGameId
+import com.jiachian.nbatoday.FinalGameId
+import com.jiachian.nbatoday.GameCode
+import com.jiachian.nbatoday.GameStatusFinal
+import com.jiachian.nbatoday.GameStatusPrepare
 import com.jiachian.nbatoday.compose.state.NbaState
 import com.jiachian.nbatoday.data.GameLeaderFactory
 import com.jiachian.nbatoday.data.GameTeamFactory
@@ -55,7 +55,7 @@ class GameCalendarScreenTest {
     fun setup() = runTest {
         repository = TestRepository()
         viewModel = CalendarViewModel(
-            date = Date(BASIC_TIME),
+            date = Date(BasicTime),
             repository = repository,
             openScreen = {
                 currentState = it
@@ -374,14 +374,14 @@ class GameCalendarScreenTest {
             leagueId = "00",
             awayTeam = GameTeamFactory.getDefaultAwayTeam(),
             day = "SUN",
-            gameCode = GAME_CODE,
-            gameId = FINAL_GAME_ID,
+            gameCode = GameCode,
+            gameId = FinalGameId,
             gameStatus = GameStatusCode.FINAL,
-            gameStatusText = GAME_STATUS_FINAL,
+            gameStatusText = GameStatusFinal,
             gameSequence = 1,
             homeTeam = GameTeamFactory.getDefaultHomeTeam(),
-            gameDate = Date(BASIC_TIME - 60 * 60 * 24 * 30 * 1000L),
-            gameDateTime = Date(BASIC_TIME - 60 * 60 * 24 * 30 * 1000L),
+            gameDate = Date(BasicTime - 60 * 60 * 24 * 30 * 1000L),
+            gameDateTime = Date(BasicTime - 60 * 60 * 24 * 30 * 1000L),
             monthNum = 1,
             pointsLeaders = listOf(
                 GameLeaderFactory.getHomePointsLeader(),
@@ -398,14 +398,14 @@ class GameCalendarScreenTest {
             leagueId = "00",
             awayTeam = GameTeamFactory.getDefaultAwayTeam(),
             day = "SUN",
-            gameCode = GAME_CODE,
-            gameId = COMING_SOON_GAME_ID,
+            gameCode = GameCode,
+            gameId = ComingSoonGameId,
             gameStatus = GameStatusCode.COMING_SOON,
-            gameStatusText = GAME_STATUS_PREPARE,
+            gameStatusText = GameStatusPrepare,
             gameSequence = 1,
             homeTeam = GameTeamFactory.getDefaultHomeTeam(),
-            gameDate = Date(BASIC_TIME + 60 * 60 * 24 * 40 * 1000L),
-            gameDateTime = Date(BASIC_TIME + 60 * 60 * 24 * 40 * 1000L),
+            gameDate = Date(BasicTime + 60 * 60 * 24 * 40 * 1000L),
+            gameDateTime = Date(BasicTime + 60 * 60 * 24 * 40 * 1000L),
             monthNum = 1,
             pointsLeaders = listOf(
                 GameLeaderFactory.getHomePointsLeader(),

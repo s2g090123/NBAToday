@@ -3,13 +3,13 @@ package com.jiachian.nbatoday.compose.screen.home
 import android.text.format.DateUtils
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.jiachian.nbatoday.BASIC_MINUTES
-import com.jiachian.nbatoday.BASIC_NUMBER
-import com.jiachian.nbatoday.BASIC_TIME
-import com.jiachian.nbatoday.HOME_TEAM
-import com.jiachian.nbatoday.SCHEDULE_DATE_RANGE
-import com.jiachian.nbatoday.USER_ACCOUNT
-import com.jiachian.nbatoday.USER_PASSWORD
+import com.jiachian.nbatoday.BasicMinutes
+import com.jiachian.nbatoday.BasicNumber
+import com.jiachian.nbatoday.BasicTime
+import com.jiachian.nbatoday.HomeTeam
+import com.jiachian.nbatoday.ScheduleDateRange
+import com.jiachian.nbatoday.UserAccount
+import com.jiachian.nbatoday.UserPassword
 import com.jiachian.nbatoday.compose.screen.home.schedule.DateData
 import com.jiachian.nbatoday.compose.screen.home.standing.StandingLabel
 import com.jiachian.nbatoday.compose.screen.home.standing.StandingSort
@@ -68,9 +68,9 @@ class HomeViewModelTest {
     fun home_getUser_afterLogin() {
         viewModel.user.launchAndCollect(coroutineEnvironment)
         assertThat(viewModel.user.value, nullValue())
-        viewModel.login(USER_ACCOUNT, USER_PASSWORD)
-        assertThat(viewModel.user.value?.account, `is`(USER_ACCOUNT))
-        assertThat(viewModel.user.value?.password, `is`(USER_PASSWORD))
+        viewModel.login(UserAccount, UserPassword)
+        assertThat(viewModel.user.value?.account, `is`(UserAccount))
+        assertThat(viewModel.user.value?.password, `is`(UserPassword))
     }
 
     @Test
@@ -159,14 +159,14 @@ class HomeViewModelTest {
         viewModel.scheduleGames.launchAndCollect(coroutineEnvironment)
         viewModel.updateTodaySchedule()
         val expected = repository.getGamesAndBets().first()
-            .filter { it.game.gameDate == Date(BASIC_TIME) }
+            .filter { it.game.gameDate == Date(BasicTime) }
         val dateData = viewModel.scheduleDates[viewModel.scheduleIndex.value]
         assertThat(viewModel.scheduleGames.value[dateData], `is`(expected))
     }
 
     @Test
     fun home_openGameBoxScore_currentStateBoxScore() = coroutineEnvironment.testScope.runTest {
-        val game = repository.getGamesAt(BASIC_TIME).first()
+        val game = repository.getGamesAt(BasicTime).first()
         viewModel.openGameBoxScore(game)
         assertThat(currentState, instanceOf(NbaState.BoxScore::class.java))
     }
@@ -195,8 +195,8 @@ class HomeViewModelTest {
     @Test
     fun home_updateStandingSort_selectsGP() {
         val label = StandingLabel(
-            BASIC_NUMBER.dp,
-            BASIC_MINUTES,
+            BasicNumber.dp,
+            BasicMinutes,
             TextAlign.Center,
             StandingSort.GP
         )
@@ -206,7 +206,7 @@ class HomeViewModelTest {
 
     @Test
     fun home_openTeamStats_currentStateTeam() {
-        viewModel.openTeamStats(HOME_TEAM)
+        viewModel.openTeamStats(HomeTeam)
         assertThat(currentState, instanceOf(NbaState.Team::class.java))
     }
 
@@ -226,21 +226,21 @@ class HomeViewModelTest {
     @Test
     fun home_login_expectsUserLogin() {
         viewModel.user.launchAndCollect(coroutineEnvironment)
-        viewModel.login(USER_ACCOUNT, USER_PASSWORD)
-        assertThat(repository.user.value?.account, `is`(USER_ACCOUNT))
-        assertThat(repository.user.value?.password, `is`(USER_PASSWORD))
-        assertThat(viewModel.user.value?.account, `is`(USER_ACCOUNT))
-        assertThat(viewModel.user.value?.password, `is`(USER_PASSWORD))
+        viewModel.login(UserAccount, UserPassword)
+        assertThat(repository.user.value?.account, `is`(UserAccount))
+        assertThat(repository.user.value?.password, `is`(UserPassword))
+        assertThat(viewModel.user.value?.account, `is`(UserAccount))
+        assertThat(viewModel.user.value?.password, `is`(UserPassword))
     }
 
     @Test
     fun home_logout_expectsUserLogout() {
         viewModel.user.launchAndCollect(coroutineEnvironment)
-        viewModel.login(USER_ACCOUNT, USER_PASSWORD)
-        assertThat(repository.user.value?.account, `is`(USER_ACCOUNT))
-        assertThat(repository.user.value?.password, `is`(USER_PASSWORD))
-        assertThat(viewModel.user.value?.account, `is`(USER_ACCOUNT))
-        assertThat(viewModel.user.value?.password, `is`(USER_PASSWORD))
+        viewModel.login(UserAccount, UserPassword)
+        assertThat(repository.user.value?.account, `is`(UserAccount))
+        assertThat(repository.user.value?.password, `is`(UserPassword))
+        assertThat(viewModel.user.value?.account, `is`(UserAccount))
+        assertThat(viewModel.user.value?.password, `is`(UserPassword))
         viewModel.logout()
         assertThat(repository.user.value?.account, nullValue())
         assertThat(repository.user.value?.password, nullValue())
@@ -251,18 +251,18 @@ class HomeViewModelTest {
     @Test
     fun home_register_expectsUserRegister() {
         viewModel.user.launchAndCollect(coroutineEnvironment)
-        viewModel.register(USER_ACCOUNT, USER_PASSWORD)
-        assertThat(repository.user.value?.account, `is`(USER_ACCOUNT))
-        assertThat(repository.user.value?.password, `is`(USER_PASSWORD))
-        assertThat(viewModel.user.value?.account, `is`(USER_ACCOUNT))
-        assertThat(viewModel.user.value?.password, `is`(USER_PASSWORD))
+        viewModel.register(UserAccount, UserPassword)
+        assertThat(repository.user.value?.account, `is`(UserAccount))
+        assertThat(repository.user.value?.password, `is`(UserPassword))
+        assertThat(viewModel.user.value?.account, `is`(UserAccount))
+        assertThat(viewModel.user.value?.password, `is`(UserPassword))
     }
 
     @Test
     fun home_bet_containsTargetGame() = coroutineEnvironment.testScope.runTest {
-        val game = repository.getGamesAt(BASIC_TIME).first()
-        viewModel.login(USER_ACCOUNT, USER_PASSWORD)
-        viewModel.bet(game.gameId, BASIC_NUMBER.toLong(), BASIC_NUMBER.toLong())
+        val game = repository.getGamesAt(BasicTime).first()
+        viewModel.login(UserAccount, UserPassword)
+        viewModel.bet(game.gameId, BasicNumber.toLong(), BasicNumber.toLong())
         val betsAndGames = repository.getBetsAndGames().first()
         assertThat(betsAndGames.find { it.game.gameId == game.gameId }, notNullValue())
     }
@@ -270,7 +270,7 @@ class HomeViewModelTest {
     @Test
     fun home_openBetScreen_currentStateBet() {
         viewModel.user.launchAndCollect(coroutineEnvironment)
-        viewModel.login(USER_ACCOUNT, USER_PASSWORD)
+        viewModel.login(UserAccount, UserPassword)
         viewModel.openBetScreen()
         assertThat(currentState, instanceOf(NbaState.Bet::class.java))
     }
@@ -288,9 +288,9 @@ class HomeViewModelTest {
 
     private fun generateDateData(): List<DateData> {
         val cal = NbaUtils.getCalendar()
-        cal.add(Calendar.DAY_OF_MONTH, -SCHEDULE_DATE_RANGE)
+        cal.add(Calendar.DAY_OF_MONTH, -ScheduleDateRange)
         val data = mutableListOf<DateData>()
-        repeat(SCHEDULE_DATE_RANGE * 2 + 1) {
+        repeat(ScheduleDateRange * 2 + 1) {
             data.add(
                 DateData(
                     cal.get(Calendar.YEAR),
@@ -306,8 +306,8 @@ class HomeViewModelTest {
     private suspend fun generateScheduleGames(): Map<DateData, List<NbaGameAndBet>> {
         val cal = NbaUtils.getCalendar()
         val games = repository.getGamesAndBetsDuring(
-            cal.timeInMillis - DateUtils.DAY_IN_MILLIS * (SCHEDULE_DATE_RANGE + 1),
-            cal.timeInMillis + DateUtils.DAY_IN_MILLIS * (SCHEDULE_DATE_RANGE)
+            cal.timeInMillis - DateUtils.DAY_IN_MILLIS * (ScheduleDateRange + 1),
+            cal.timeInMillis + DateUtils.DAY_IN_MILLIS * (ScheduleDateRange)
         ).first()
         return games.groupBy { game ->
             cal.time = game.game.gameDateTime

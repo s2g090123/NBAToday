@@ -1,12 +1,12 @@
 package com.jiachian.nbatoday.data
 
-import com.jiachian.nbatoday.FINAL_GAME_ID
-import com.jiachian.nbatoday.GAME_TIME_MS
-import com.jiachian.nbatoday.HOME_PLAYER_ID
-import com.jiachian.nbatoday.HOME_TEAM_ID
-import com.jiachian.nbatoday.USER_ACCOUNT
-import com.jiachian.nbatoday.USER_PASSWORD
-import com.jiachian.nbatoday.USER_POINTS
+import com.jiachian.nbatoday.FinalGameId
+import com.jiachian.nbatoday.GameTimeMs
+import com.jiachian.nbatoday.HomePlayerId
+import com.jiachian.nbatoday.HomeTeamId
+import com.jiachian.nbatoday.UserAccount
+import com.jiachian.nbatoday.UserPassword
+import com.jiachian.nbatoday.UserPoints
 import com.jiachian.nbatoday.data.local.NbaGameAndBet
 import com.jiachian.nbatoday.data.local.TestLocalDataSource
 import com.jiachian.nbatoday.data.local.bet.Bets
@@ -141,9 +141,9 @@ class NbaRepositoryTest {
 
     @Test
     fun refreshGameBoxScore_checksDataStoreCorrect() = runTest {
-        repository.refreshGameBoxScore(FINAL_GAME_ID)
+        repository.refreshGameBoxScore(FinalGameId)
         val expected = RemoteGameFactory.getRemoteGameBoxScore().game?.toLocal()
-        val actual = localDataSource.getGameBoxScore(FINAL_GAME_ID).first()
+        val actual = localDataSource.getGameBoxScore(FinalGameId).first()
         assertThat(actual, `is`(expected))
     }
 
@@ -157,7 +157,7 @@ class NbaRepositoryTest {
 
     @Test
     fun refreshTeamStats_specificTeam_checksDataStoreCorrect() = runTest {
-        repository.refreshTeamStats(HOME_TEAM_ID)
+        repository.refreshTeamStats(HomeTeamId)
         val expected = RemoteTeamFactory.getRemoteTeamStats().toLocal()
         val actual = localDataSource.getTeamStats().first()
         assertThat(actual, `is`(expected))
@@ -165,19 +165,19 @@ class NbaRepositoryTest {
 
     @Test
     fun refreshTeamPlayersStats_checksDataStoreCorrect() = runTest {
-        repository.refreshTeamPlayersStats(HOME_TEAM_ID)
+        repository.refreshTeamPlayersStats(HomeTeamId)
         val expected = RemoteTeamFactory.getRemoteTeamPlayerStats().toLocal()
-        val actual = localDataSource.getTeamAndPlayersStats(HOME_TEAM_ID).first()?.playersStats
+        val actual = localDataSource.getTeamAndPlayersStats(HomeTeamId).first()?.playersStats
         assertThat(actual, `is`(expected))
     }
 
     @Test
     fun refreshPlayerStats_checksDataStoreCorrect() = runTest {
-        repository.refreshPlayerStats(HOME_PLAYER_ID)
+        repository.refreshPlayerStats(HomePlayerId)
         val expectedStats = RemotePlayerFactory.getRemotePlayerDetail().stats?.toLocal()?.stats
         val expectedInfo = RemotePlayerFactory.getRemotePlayerDetail().info?.toUpdateData()?.info
-        val actualStats = localDataSource.getPlayerCareer(HOME_PLAYER_ID).first()?.stats
-        val actualInfo = localDataSource.getPlayerCareer(HOME_PLAYER_ID).first()?.info
+        val actualStats = localDataSource.getPlayerCareer(HomePlayerId).first()?.stats
+        val actualInfo = localDataSource.getPlayerCareer(HomePlayerId).first()?.info
         assertThat(actualStats, `is`(expectedStats))
         assertThat(actualInfo, `is`(expectedInfo))
     }
@@ -185,11 +185,11 @@ class NbaRepositoryTest {
     @Test
     fun refreshPlayerStats_playerExists_checksDataStoreCorrect() = runTest {
         localDataSource.insertPlayerCareer(PlayerCareerFactory.createHomePlayerCareer())
-        repository.refreshPlayerStats(HOME_PLAYER_ID)
+        repository.refreshPlayerStats(HomePlayerId)
         val expectedStats = RemotePlayerFactory.getRemotePlayerDetail().stats?.toLocal()?.stats
         val expectedInfo = RemotePlayerFactory.getRemotePlayerDetail().info?.toUpdateData()?.info
-        val actualStats = localDataSource.getPlayerCareer(HOME_PLAYER_ID).first()?.stats
-        val actualInfo = localDataSource.getPlayerCareer(HOME_PLAYER_ID).first()?.info
+        val actualStats = localDataSource.getPlayerCareer(HomePlayerId).first()?.stats
+        val actualInfo = localDataSource.getPlayerCareer(HomePlayerId).first()?.info
         assertThat(actualStats, `is`(expectedStats))
         assertThat(actualInfo, `is`(expectedInfo))
     }
@@ -197,51 +197,51 @@ class NbaRepositoryTest {
     @Test
     fun getGamesAt_checksDataStoreCorrect() = runTest {
         repository.refreshSchedule()
-        val actual = repository.getGamesAt(GAME_TIME_MS).first()
-        val expected = localDataSource.getGamesAt(GAME_TIME_MS).first()
+        val actual = repository.getGamesAt(GameTimeMs).first()
+        val expected = localDataSource.getGamesAt(GameTimeMs).first()
         assertThat(actual, `is`(expected))
     }
 
     @Test
     fun getGamesDuring_checksDataStoreCorrect() = runTest {
         repository.refreshSchedule()
-        val actual = repository.getGamesDuring(GAME_TIME_MS - 1L, GAME_TIME_MS + 1L).first()
-        val expected = localDataSource.getGamesDuring(GAME_TIME_MS - 1L, GAME_TIME_MS + 1L).first()
+        val actual = repository.getGamesDuring(GameTimeMs - 1L, GameTimeMs + 1L).first()
+        val expected = localDataSource.getGamesDuring(GameTimeMs - 1L, GameTimeMs + 1L).first()
         assertThat(actual, `is`(expected))
     }
 
     @Test
     fun getGamesAndBetsDuring_checksDataStoreCorrect() = runTest {
         repository.refreshSchedule()
-        repository.login(USER_ACCOUNT, USER_PASSWORD)
-        repository.bet(FINAL_GAME_ID, USER_POINTS, 0)
-        val actual = repository.getGamesAndBetsDuring(GAME_TIME_MS - 1L, GAME_TIME_MS + 1L).first()
+        repository.login(UserAccount, UserPassword)
+        repository.bet(FinalGameId, UserPoints, 0)
+        val actual = repository.getGamesAndBetsDuring(GameTimeMs - 1L, GameTimeMs + 1L).first()
         val expected =
-            localDataSource.getGamesAndBetsDuring(GAME_TIME_MS - 1L, GAME_TIME_MS + 1L).first()
+            localDataSource.getGamesAndBetsDuring(GameTimeMs - 1L, GameTimeMs + 1L).first()
         assertThat(actual, `is`(expected))
     }
 
     @Test
     fun getGamesBefore_checksDataStoreCorrect() = runTest {
         repository.refreshSchedule()
-        val actual = repository.getGamesBefore(GAME_TIME_MS + 1L).first()
-        val expected = localDataSource.getGamesBefore(GAME_TIME_MS + 1L).first()
+        val actual = repository.getGamesBefore(GameTimeMs + 1L).first()
+        val expected = localDataSource.getGamesBefore(GameTimeMs + 1L).first()
         assertThat(actual, `is`(expected))
     }
 
     @Test
     fun getGamesAfter_checksDataStoreCorrect() = runTest {
         repository.refreshSchedule()
-        val actual = repository.getGamesAfter(GAME_TIME_MS - 1L).first()
-        val expected = localDataSource.getGamesAfter(GAME_TIME_MS - 1L).first()
+        val actual = repository.getGamesAfter(GameTimeMs - 1L).first()
+        val expected = localDataSource.getGamesAfter(GameTimeMs - 1L).first()
         assertThat(actual, `is`(expected))
     }
 
     @Test
     fun getGameBoxScore_checksDataStoreCorrect() = runTest {
         repository.refreshSchedule()
-        val actual = repository.getGameBoxScore(FINAL_GAME_ID).first()
-        val expected = localDataSource.getGameBoxScore(FINAL_GAME_ID).first()
+        val actual = repository.getGameBoxScore(FinalGameId).first()
+        val expected = localDataSource.getGameBoxScore(FinalGameId).first()
         assertThat(actual, `is`(expected))
     }
 
@@ -256,96 +256,96 @@ class NbaRepositoryTest {
     @Test
     fun getTeamAndPlayersStats_checksDataStoreCorrect() = runTest {
         repository.refreshTeamStats()
-        repository.refreshTeamStats(HOME_TEAM_ID)
-        repository.refreshTeamPlayersStats(HOME_TEAM_ID)
-        val actual = repository.getTeamAndPlayersStats(HOME_TEAM_ID).first()
-        val expected = localDataSource.getTeamAndPlayersStats(HOME_TEAM_ID).first()
+        repository.refreshTeamStats(HomeTeamId)
+        repository.refreshTeamPlayersStats(HomeTeamId)
+        val actual = repository.getTeamAndPlayersStats(HomeTeamId).first()
+        val expected = localDataSource.getTeamAndPlayersStats(HomeTeamId).first()
         assertThat(actual, `is`(expected))
     }
 
     @Test
     fun getTeamRank_checksDataStoreCorrect() = runTest {
         repository.refreshTeamStats()
-        repository.refreshTeamStats(HOME_TEAM_ID)
-        repository.refreshTeamPlayersStats(HOME_TEAM_ID)
-        val actual = repository.getTeamRank(HOME_TEAM_ID, NBATeam.Conference.EAST).first()
+        repository.refreshTeamStats(HomeTeamId)
+        repository.refreshTeamPlayersStats(HomeTeamId)
+        val actual = repository.getTeamRank(HomeTeamId, NBATeam.Conference.EAST).first()
         val expected =
-            localDataSource.getTeamRank(HOME_TEAM_ID, NBATeam.Conference.EAST).first()
+            localDataSource.getTeamRank(HomeTeamId, NBATeam.Conference.EAST).first()
         assertThat(actual, `is`(expected))
     }
 
     @Test
     fun getTeamPointsRank_checksDataStoreCorrect() = runTest {
         repository.refreshTeamStats()
-        repository.refreshTeamStats(HOME_TEAM_ID)
-        repository.refreshTeamPlayersStats(HOME_TEAM_ID)
-        val actual = repository.getTeamPointsRank(HOME_TEAM_ID).first()
-        val expected = localDataSource.getTeamPointsRank(HOME_TEAM_ID).first()
+        repository.refreshTeamStats(HomeTeamId)
+        repository.refreshTeamPlayersStats(HomeTeamId)
+        val actual = repository.getTeamPointsRank(HomeTeamId).first()
+        val expected = localDataSource.getTeamPointsRank(HomeTeamId).first()
         assertThat(actual, `is`(expected))
     }
 
     @Test
     fun getTeamReboundsRank_checksDataStoreCorrect() = runTest {
         repository.refreshTeamStats()
-        repository.refreshTeamStats(HOME_TEAM_ID)
-        repository.refreshTeamPlayersStats(HOME_TEAM_ID)
-        val actual = repository.getTeamReboundsRank(HOME_TEAM_ID).first()
-        val expected = localDataSource.getTeamReboundsRank(HOME_TEAM_ID).first()
+        repository.refreshTeamStats(HomeTeamId)
+        repository.refreshTeamPlayersStats(HomeTeamId)
+        val actual = repository.getTeamReboundsRank(HomeTeamId).first()
+        val expected = localDataSource.getTeamReboundsRank(HomeTeamId).first()
         assertThat(actual, `is`(expected))
     }
 
     @Test
     fun getTeamAssistsRank_checksDataStoreCorrect() = runTest {
         repository.refreshTeamStats()
-        repository.refreshTeamStats(HOME_TEAM_ID)
-        repository.refreshTeamPlayersStats(HOME_TEAM_ID)
-        val actual = repository.getTeamAssistsRank(HOME_TEAM_ID).first()
-        val expected = localDataSource.getTeamAssistsRank(HOME_TEAM_ID).first()
+        repository.refreshTeamStats(HomeTeamId)
+        repository.refreshTeamPlayersStats(HomeTeamId)
+        val actual = repository.getTeamAssistsRank(HomeTeamId).first()
+        val expected = localDataSource.getTeamAssistsRank(HomeTeamId).first()
         assertThat(actual, `is`(expected))
     }
 
     @Test
     fun getTeamPlusMinusRank_checksDataStoreCorrect() = runTest {
         repository.refreshTeamStats()
-        repository.refreshTeamStats(HOME_TEAM_ID)
-        repository.refreshTeamPlayersStats(HOME_TEAM_ID)
-        val actual = repository.getTeamPlusMinusRank(HOME_TEAM_ID).first()
-        val expected = localDataSource.getTeamPlusMinusRank(HOME_TEAM_ID).first()
+        repository.refreshTeamStats(HomeTeamId)
+        repository.refreshTeamPlayersStats(HomeTeamId)
+        val actual = repository.getTeamPlusMinusRank(HomeTeamId).first()
+        val expected = localDataSource.getTeamPlusMinusRank(HomeTeamId).first()
         assertThat(actual, `is`(expected))
     }
 
     @Test
     fun getPlayerCareer_checksDataStoreCorrect() = runTest {
-        repository.refreshPlayerStats(HOME_PLAYER_ID)
-        val actual = repository.getPlayerCareer(HOME_PLAYER_ID).first()
-        val expected = localDataSource.getPlayerCareer(HOME_PLAYER_ID).first()
+        repository.refreshPlayerStats(HomePlayerId)
+        val actual = repository.getPlayerCareer(HomePlayerId).first()
+        val expected = localDataSource.getPlayerCareer(HomePlayerId).first()
         assertThat(actual, `is`(expected))
     }
 
     @Test
     fun login_checksDataStoreCorrect() = runTest {
-        repository.login(USER_ACCOUNT, USER_PASSWORD)
-        assertThat(dataStore.userData.value?.account, `is`(USER_ACCOUNT))
-        assertThat(dataStore.userData.value?.password, `is`(USER_PASSWORD))
+        repository.login(UserAccount, UserPassword)
+        assertThat(dataStore.userData.value?.account, `is`(UserAccount))
+        assertThat(dataStore.userData.value?.password, `is`(UserPassword))
     }
 
     @Test
     fun logout_checksDataStoreCorrect() = runTest {
-        repository.login(USER_ACCOUNT, USER_PASSWORD)
+        repository.login(UserAccount, UserPassword)
         repository.logout()
         assertThat(dataStore.userData.value, nullValue())
     }
 
     @Test
     fun register_checksDataStoreCorrect() = runTest {
-        repository.register(USER_ACCOUNT, USER_PASSWORD)
-        assertThat(dataStore.userData.value?.account, `is`(USER_ACCOUNT))
-        assertThat(dataStore.userData.value?.password, `is`(USER_PASSWORD))
+        repository.register(UserAccount, UserPassword)
+        assertThat(dataStore.userData.value?.account, `is`(UserAccount))
+        assertThat(dataStore.userData.value?.password, `is`(UserPassword))
     }
 
     @Test
     fun updatePassword_checksDataStoreCorrect() = runTest {
-        repository.login(USER_ACCOUNT, USER_PASSWORD)
+        repository.login(UserAccount, UserPassword)
         val newPassword = "newPassword"
         repository.updatePassword(newPassword)
         assertThat(dataStore.userData.value?.password, `is`(newPassword))
@@ -353,47 +353,47 @@ class NbaRepositoryTest {
 
     @Test
     fun updatePoints_checksDataStoreCorrect() = runTest {
-        repository.login(USER_ACCOUNT, USER_PASSWORD)
-        repository.updatePoints(USER_POINTS * 2)
-        assertThat(dataStore.userData.value?.points, `is`(USER_POINTS * 2))
+        repository.login(UserAccount, UserPassword)
+        repository.updatePoints(UserPoints * 2)
+        assertThat(dataStore.userData.value?.points, `is`(UserPoints * 2))
     }
 
     @Test
     fun addPoints_checksDataStoreCorrect() = runTest {
-        repository.login(USER_ACCOUNT, USER_PASSWORD)
+        repository.login(UserAccount, UserPassword)
         val originalPoint = dataStore.userData.value?.points.getOrAssert()
-        repository.addPoints(USER_POINTS)
-        assertThat(dataStore.userData.value?.points, `is`(originalPoint + USER_POINTS))
+        repository.addPoints(UserPoints)
+        assertThat(dataStore.userData.value?.points, `is`(originalPoint + UserPoints))
     }
 
     @Test
     fun bet_checksDataStoreCorrect() = runTest {
         repository.refreshSchedule()
-        repository.login(USER_ACCOUNT, USER_PASSWORD)
+        repository.login(UserAccount, UserPassword)
         val originalPoint = dataStore.userData.value?.points.getOrAssert()
-        repository.bet(FINAL_GAME_ID, USER_POINTS, 0)
+        repository.bet(FinalGameId, UserPoints, 0)
         val expectedGame = NbaGameAndBet(
-            game = localDataSource.games.value.firstOrNull { it.gameId == FINAL_GAME_ID }
+            game = localDataSource.games.value.firstOrNull { it.gameId == FinalGameId }
                 .getOrAssert(),
             bets = listOf(
                 Bets(
-                    account = USER_ACCOUNT,
-                    gameId = FINAL_GAME_ID,
-                    homePoints = USER_POINTS,
+                    account = UserAccount,
+                    gameId = FinalGameId,
+                    homePoints = UserPoints,
                     awayPoints = 0
                 )
             )
         )
         val actualGame = localDataSource.gamesAndBets.value
         assertThat(actualGame, `is`(listOf(expectedGame)))
-        assertThat(dataStore.userData.value?.points, `is`(originalPoint - USER_POINTS))
+        assertThat(dataStore.userData.value?.points, `is`(originalPoint - UserPoints))
     }
 
     @Test
     fun getGamesAndBets_checksDataStoreCorrect() = runTest {
         repository.refreshSchedule()
-        repository.login(USER_ACCOUNT, USER_PASSWORD)
-        repository.bet(FINAL_GAME_ID, USER_POINTS, 0)
+        repository.login(UserAccount, UserPassword)
+        repository.bet(FinalGameId, UserPoints, 0)
         val expected = localDataSource.gamesAndBets.value
         val actual = repository.getGamesAndBets().first()
         assertThat(actual, `is`(expected))
@@ -402,8 +402,8 @@ class NbaRepositoryTest {
     @Test
     fun getBetsAndGames_checksDataStoreCorrect() = runTest {
         repository.refreshSchedule()
-        repository.login(USER_ACCOUNT, USER_PASSWORD)
-        repository.bet(FINAL_GAME_ID, USER_POINTS, 0)
+        repository.login(UserAccount, UserPassword)
+        repository.bet(FinalGameId, UserPoints, 0)
         val expected = localDataSource.getBetsAndGames().first()
         val actual = repository.getBetsAndGames().first()
         assertThat(actual, `is`(expected))
@@ -412,18 +412,18 @@ class NbaRepositoryTest {
     @Test
     fun getBetsAndGames_specificAccount_checksDataStoreCorrect() = runTest {
         repository.refreshSchedule()
-        repository.login(USER_ACCOUNT, USER_PASSWORD)
-        repository.bet(FINAL_GAME_ID, USER_POINTS, 0)
-        val expected = localDataSource.getBetsAndGamesByUser(USER_ACCOUNT).first()
-        val actual = repository.getBetsAndGames(USER_ACCOUNT).first()
+        repository.login(UserAccount, UserPassword)
+        repository.bet(FinalGameId, UserPoints, 0)
+        val expected = localDataSource.getBetsAndGamesByUser(UserAccount).first()
+        val actual = repository.getBetsAndGames(UserAccount).first()
         assertThat(actual, `is`(expected))
     }
 
     @Test
     fun deleteBets_checksDataStoreCorrect() = runTest {
         repository.refreshSchedule()
-        repository.login(USER_ACCOUNT, USER_PASSWORD)
-        repository.bet(FINAL_GAME_ID, USER_POINTS, 0)
+        repository.login(UserAccount, UserPassword)
+        repository.bet(FinalGameId, UserPoints, 0)
         val bets = localDataSource.gamesAndBets.value.first().bets.first()
         repository.deleteBets(bets)
         assertThat(localDataSource.gamesAndBets.value.first().bets, `is`(emptyList()))

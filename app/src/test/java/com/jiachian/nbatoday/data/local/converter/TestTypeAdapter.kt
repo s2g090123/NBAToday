@@ -9,9 +9,9 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParseException
 import com.google.gson.JsonSerializationContext
 import com.google.gson.JsonSerializer
-import com.jiachian.nbatoday.AWAY_TEAM
-import com.jiachian.nbatoday.HOME_TEAM
-import com.jiachian.nbatoday.HOME_TEAM_ID
+import com.jiachian.nbatoday.AwayTeam
+import com.jiachian.nbatoday.HomeTeam
+import com.jiachian.nbatoday.HomeTeamId
 import com.jiachian.nbatoday.data.local.team.NBATeam
 import java.lang.reflect.Type
 
@@ -39,7 +39,7 @@ class TestNBATeamTypeAdapter : JsonDeserializer<NBATeam>, JsonSerializer<NBATeam
         val jsonObject = jsonElement.asJsonObject
         val data = jsonObject.get(DATA).asJsonObject
         val teamId = data.get(TEAM_ID).asInt
-        return if (teamId == HOME_TEAM_ID) HOME_TEAM else AWAY_TEAM
+        return if (teamId == HomeTeamId) HomeTeam else AwayTeam
     }
 
     override fun serialize(
@@ -67,6 +67,6 @@ class TestNBATeamDeserializer : JsonDeserializer<NBATeam> {
     ): NBATeam {
         val jsonObject = jsonElement.asJsonObject
         val teamId = jsonObject.get(TEAM_ID).asInt
-        return NBATeam.getTeamById(teamId) ?: if (teamId == HOME_TEAM_ID) HOME_TEAM else AWAY_TEAM
+        return NBATeam.getTeamById(teamId) ?: if (teamId == HomeTeamId) HomeTeam else AwayTeam
     }
 }

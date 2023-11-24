@@ -1,11 +1,11 @@
 package com.jiachian.nbatoday.data
 
-import com.jiachian.nbatoday.AWAY_TEAM
-import com.jiachian.nbatoday.AWAY_TEAM_ID
-import com.jiachian.nbatoday.BASIC_NUMBER
-import com.jiachian.nbatoday.BASIC_PERCENTAGE
-import com.jiachian.nbatoday.HOME_TEAM
-import com.jiachian.nbatoday.HOME_TEAM_ID
+import com.jiachian.nbatoday.AwayTeam
+import com.jiachian.nbatoday.AwayTeamId
+import com.jiachian.nbatoday.BasicNumber
+import com.jiachian.nbatoday.BasicPercentage
+import com.jiachian.nbatoday.HomeTeam
+import com.jiachian.nbatoday.HomeTeamId
 import com.jiachian.nbatoday.data.local.team.NBATeam
 import com.jiachian.nbatoday.data.local.team.TeamStats
 
@@ -13,63 +13,63 @@ object TeamStatsFactory {
 
     fun getHomeTeamStats(): TeamStats {
         return TeamStats(
-            teamId = HOME_TEAM_ID,
-            team = HOME_TEAM,
+            teamId = HomeTeamId,
+            team = HomeTeam,
             teamConference = NBATeam.Conference.EAST,
-            gamePlayed = BASIC_NUMBER,
-            win = BASIC_NUMBER,
-            lose = BASIC_NUMBER,
-            winPercentage = BASIC_PERCENTAGE,
-            fieldGoalsMade = BASIC_NUMBER,
-            fieldGoalsAttempted = BASIC_NUMBER,
-            fieldGoalsPercentage = BASIC_PERCENTAGE,
-            threePointersMade = BASIC_NUMBER,
-            threePointersAttempted = BASIC_NUMBER,
-            threePointersPercentage = BASIC_PERCENTAGE,
-            freeThrowsMade = BASIC_NUMBER,
-            freeThrowsAttempted = BASIC_NUMBER,
-            freeThrowsPercentage = BASIC_PERCENTAGE,
-            reboundsDefensive = BASIC_NUMBER,
-            reboundsOffensive = BASIC_NUMBER,
-            reboundsTotal = BASIC_NUMBER,
-            assists = BASIC_NUMBER,
-            turnovers = BASIC_NUMBER,
-            steals = BASIC_NUMBER,
-            blocks = BASIC_NUMBER,
-            foulsPersonal = BASIC_NUMBER,
-            points = BASIC_NUMBER,
-            plusMinus = BASIC_NUMBER
+            gamePlayed = BasicNumber,
+            win = BasicNumber,
+            lose = BasicNumber,
+            winPercentage = BasicPercentage,
+            fieldGoalsMade = BasicNumber,
+            fieldGoalsAttempted = BasicNumber,
+            fieldGoalsPercentage = BasicPercentage,
+            threePointersMade = BasicNumber,
+            threePointersAttempted = BasicNumber,
+            threePointersPercentage = BasicPercentage,
+            freeThrowsMade = BasicNumber,
+            freeThrowsAttempted = BasicNumber,
+            freeThrowsPercentage = BasicPercentage,
+            reboundsDefensive = BasicNumber,
+            reboundsOffensive = BasicNumber,
+            reboundsTotal = BasicNumber,
+            assists = BasicNumber,
+            turnovers = BasicNumber,
+            steals = BasicNumber,
+            blocks = BasicNumber,
+            foulsPersonal = BasicNumber,
+            points = BasicNumber,
+            plusMinus = BasicNumber
         )
     }
 
     fun getAwayTeamStats(): TeamStats {
         return TeamStats(
-            teamId = AWAY_TEAM_ID,
-            team = AWAY_TEAM,
+            teamId = AwayTeamId,
+            team = AwayTeam,
             teamConference = NBATeam.Conference.WEST,
-            gamePlayed = BASIC_NUMBER,
-            win = BASIC_NUMBER,
-            lose = BASIC_NUMBER,
-            winPercentage = BASIC_PERCENTAGE,
-            fieldGoalsMade = BASIC_NUMBER,
-            fieldGoalsAttempted = BASIC_NUMBER,
-            fieldGoalsPercentage = BASIC_PERCENTAGE,
-            threePointersMade = BASIC_NUMBER,
-            threePointersAttempted = BASIC_NUMBER,
-            threePointersPercentage = BASIC_PERCENTAGE,
-            freeThrowsMade = BASIC_NUMBER,
-            freeThrowsAttempted = BASIC_NUMBER,
-            freeThrowsPercentage = BASIC_PERCENTAGE,
-            reboundsDefensive = BASIC_NUMBER,
-            reboundsOffensive = BASIC_NUMBER,
-            reboundsTotal = BASIC_NUMBER,
-            assists = BASIC_NUMBER,
-            turnovers = BASIC_NUMBER,
-            steals = BASIC_NUMBER,
-            blocks = BASIC_NUMBER,
-            foulsPersonal = BASIC_NUMBER,
-            points = BASIC_NUMBER,
-            plusMinus = BASIC_NUMBER
+            gamePlayed = BasicNumber,
+            win = BasicNumber,
+            lose = BasicNumber,
+            winPercentage = BasicPercentage,
+            fieldGoalsMade = BasicNumber,
+            fieldGoalsAttempted = BasicNumber,
+            fieldGoalsPercentage = BasicPercentage,
+            threePointersMade = BasicNumber,
+            threePointersAttempted = BasicNumber,
+            threePointersPercentage = BasicPercentage,
+            freeThrowsMade = BasicNumber,
+            freeThrowsAttempted = BasicNumber,
+            freeThrowsPercentage = BasicPercentage,
+            reboundsDefensive = BasicNumber,
+            reboundsOffensive = BasicNumber,
+            reboundsTotal = BasicNumber,
+            assists = BasicNumber,
+            turnovers = BasicNumber,
+            steals = BasicNumber,
+            blocks = BasicNumber,
+            foulsPersonal = BasicNumber,
+            points = BasicNumber,
+            plusMinus = BasicNumber
         )
     }
 }

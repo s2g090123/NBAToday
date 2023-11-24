@@ -1,7 +1,7 @@
 package com.jiachian.nbatoday.data.remote
 
-import com.jiachian.nbatoday.USER_NAME
-import com.jiachian.nbatoday.USER_POINTS
+import com.jiachian.nbatoday.UserName
+import com.jiachian.nbatoday.UserPoints
 import com.jiachian.nbatoday.data.remote.game.GameScoreboard
 import com.jiachian.nbatoday.data.remote.game.Schedule
 import com.jiachian.nbatoday.data.remote.player.RemotePlayerDetail
@@ -60,11 +60,11 @@ class TestRemoteDataSource : RemoteDataSource() {
     }
 
     override suspend fun login(account: String, password: String): User {
-        return User(account, USER_NAME, USER_POINTS, password, "")
+        return User(account, UserName, UserPoints, password, "")
     }
 
     override suspend fun register(account: String, password: String): User {
-        return User(account, USER_NAME, USER_POINTS, password, "")
+        return User(account, UserName, UserPoints, password, "")
     }
 
     override suspend fun updatePassword(account: String, password: String, token: String): String {

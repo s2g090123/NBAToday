@@ -1,31 +1,31 @@
 package com.jiachian.nbatoday.data
 
-import com.jiachian.nbatoday.AWAY_PLAYER_FULL_NAME
-import com.jiachian.nbatoday.AWAY_PLAYER_ID
-import com.jiachian.nbatoday.AWAY_PLAYER_LAST_NAME
-import com.jiachian.nbatoday.AWAY_TEAM
-import com.jiachian.nbatoday.AWAY_TEAM_ABBR
-import com.jiachian.nbatoday.AWAY_TEAM_ID
-import com.jiachian.nbatoday.BASIC_NUMBER
-import com.jiachian.nbatoday.BASIC_PERCENTAGE
-import com.jiachian.nbatoday.BASIC_POSITION
-import com.jiachian.nbatoday.GAME_DATE
-import com.jiachian.nbatoday.GAME_SEASON
-import com.jiachian.nbatoday.GAME_SEASON_NEXT
-import com.jiachian.nbatoday.HOME_PLAYER_FULL_NAME
-import com.jiachian.nbatoday.HOME_PLAYER_ID
-import com.jiachian.nbatoday.HOME_PLAYER_LAST_NAME
-import com.jiachian.nbatoday.HOME_TEAM
-import com.jiachian.nbatoday.HOME_TEAM_ABBR
-import com.jiachian.nbatoday.HOME_TEAM_ID
-import com.jiachian.nbatoday.TEAM_CITY
+import com.jiachian.nbatoday.AwayPlayerFullName
+import com.jiachian.nbatoday.AwayPlayerId
+import com.jiachian.nbatoday.AwayPlayerLastName
+import com.jiachian.nbatoday.AwayTeam
+import com.jiachian.nbatoday.AwayTeamAbbr
+import com.jiachian.nbatoday.AwayTeamId
+import com.jiachian.nbatoday.BasicNumber
+import com.jiachian.nbatoday.BasicPercentage
+import com.jiachian.nbatoday.BasicPosition
+import com.jiachian.nbatoday.GameDate
+import com.jiachian.nbatoday.GameSeason
+import com.jiachian.nbatoday.GameSeasonNext
+import com.jiachian.nbatoday.HomePlayerFullName
+import com.jiachian.nbatoday.HomePlayerId
+import com.jiachian.nbatoday.HomePlayerLastName
+import com.jiachian.nbatoday.HomeTeam
+import com.jiachian.nbatoday.HomeTeamAbbr
+import com.jiachian.nbatoday.HomeTeamId
+import com.jiachian.nbatoday.TeamCity
 import com.jiachian.nbatoday.data.local.player.PlayerCareer
 
 object PlayerCareerFactory {
 
     fun createHomePlayerCareer(): PlayerCareer {
         return PlayerCareer(
-            personId = HOME_PLAYER_ID,
+            personId = HomePlayerId,
             info = createHomePlayerInfo(),
             stats = createHomePlayerStats()
         )
@@ -33,7 +33,7 @@ object PlayerCareerFactory {
 
     fun createAwayPlayerCareer(): PlayerCareer {
         return PlayerCareer(
-            personId = AWAY_PLAYER_ID,
+            personId = AwayPlayerId,
             info = createAwayPlayerInfo(),
             stats = createAwayPlayerStats()
         )
@@ -41,23 +41,23 @@ object PlayerCareerFactory {
 
     private fun createHomePlayerInfo(): PlayerCareer.PlayerCareerInfo {
         return PlayerCareer.PlayerCareerInfo(
-            team = HOME_TEAM,
-            playerName = HOME_PLAYER_FULL_NAME,
-            playerNameAbbr = HOME_PLAYER_LAST_NAME,
-            playerAge = BASIC_NUMBER,
-            birthDate = GAME_DATE,
-            country = TEAM_CITY,
-            school = TEAM_CITY,
-            height = BASIC_NUMBER.toDouble(),
-            weight = BASIC_NUMBER.toDouble(),
-            seasonExperience = BASIC_NUMBER,
-            jersey = BASIC_NUMBER,
-            position = BASIC_POSITION,
-            fromYear = BASIC_NUMBER,
-            toYear = BASIC_NUMBER,
-            draftYear = BASIC_NUMBER,
-            draftRound = BASIC_NUMBER,
-            draftNumber = BASIC_NUMBER,
+            team = HomeTeam,
+            playerName = HomePlayerFullName,
+            playerNameAbbr = HomePlayerLastName,
+            playerAge = BasicNumber,
+            birthDate = GameDate,
+            country = TeamCity,
+            school = TeamCity,
+            height = BasicNumber.toDouble(),
+            weight = BasicNumber.toDouble(),
+            seasonExperience = BasicNumber,
+            jersey = BasicNumber,
+            position = BasicPosition,
+            fromYear = BasicNumber,
+            toYear = BasicNumber,
+            draftYear = BasicNumber,
+            draftRound = BasicNumber,
+            draftNumber = BasicNumber,
             isGreatest75 = true,
             headlineStats = createHeadlineStats()
         )
@@ -65,23 +65,23 @@ object PlayerCareerFactory {
 
     private fun createAwayPlayerInfo(): PlayerCareer.PlayerCareerInfo {
         return PlayerCareer.PlayerCareerInfo(
-            team = AWAY_TEAM,
-            playerName = AWAY_PLAYER_FULL_NAME,
-            playerNameAbbr = AWAY_PLAYER_LAST_NAME,
-            playerAge = BASIC_NUMBER,
-            birthDate = GAME_DATE,
-            country = TEAM_CITY,
-            school = TEAM_CITY,
-            height = BASIC_NUMBER.toDouble(),
-            weight = BASIC_NUMBER.toDouble(),
-            seasonExperience = BASIC_NUMBER,
-            jersey = BASIC_NUMBER,
-            position = BASIC_POSITION,
-            fromYear = BASIC_NUMBER,
-            toYear = BASIC_NUMBER,
-            draftYear = BASIC_NUMBER,
-            draftRound = BASIC_NUMBER,
-            draftNumber = BASIC_NUMBER,
+            team = AwayTeam,
+            playerName = AwayPlayerFullName,
+            playerNameAbbr = AwayPlayerLastName,
+            playerAge = BasicNumber,
+            birthDate = GameDate,
+            country = TeamCity,
+            school = TeamCity,
+            height = BasicNumber.toDouble(),
+            weight = BasicNumber.toDouble(),
+            seasonExperience = BasicNumber,
+            jersey = BasicNumber,
+            position = BasicPosition,
+            fromYear = BasicNumber,
+            toYear = BasicNumber,
+            draftYear = BasicNumber,
+            draftRound = BasicNumber,
+            draftNumber = BasicNumber,
             isGreatest75 = true,
             headlineStats = createHeadlineStats()
         )
@@ -89,11 +89,11 @@ object PlayerCareerFactory {
 
     private fun createHeadlineStats(): PlayerCareer.PlayerCareerInfo.HeadlineStats {
         return PlayerCareer.PlayerCareerInfo.HeadlineStats(
-            timeFrame = GAME_SEASON,
-            points = BASIC_NUMBER.toDouble(),
-            assists = BASIC_NUMBER.toDouble(),
-            rebounds = BASIC_NUMBER.toDouble(),
-            impact = BASIC_PERCENTAGE
+            timeFrame = GameSeason,
+            points = BasicNumber.toDouble(),
+            assists = BasicNumber.toDouble(),
+            rebounds = BasicNumber.toDouble(),
+            impact = BasicPercentage
         )
     }
 
@@ -114,60 +114,60 @@ object PlayerCareerFactory {
     private fun createHomeStats(): ArrayList<PlayerCareer.PlayerCareerStats.Stats> {
         return arrayListOf(
             PlayerCareer.PlayerCareerStats.Stats(
-                timeFrame = GAME_SEASON_NEXT,
-                teamId = HOME_TEAM_ID,
-                teamNameAbbr = HOME_TEAM_ABBR,
-                gamePlayed = BASIC_NUMBER - 1,
-                win = BASIC_NUMBER - 1,
-                lose = BASIC_NUMBER - 1,
-                winPercentage = BASIC_PERCENTAGE - 1,
-                fieldGoalsMade = BASIC_NUMBER - 1,
-                fieldGoalsAttempted = BASIC_NUMBER - 1,
-                fieldGoalsPercentage = BASIC_PERCENTAGE - 1,
-                threePointersMade = BASIC_NUMBER - 1,
-                threePointersAttempted = BASIC_NUMBER - 1,
-                threePointersPercentage = BASIC_PERCENTAGE - 1,
-                freeThrowsMade = BASIC_NUMBER - 1,
-                freeThrowsAttempted = BASIC_NUMBER - 1,
-                freeThrowsPercentage = BASIC_PERCENTAGE - 1,
-                reboundsOffensive = BASIC_NUMBER - 1,
-                reboundsDefensive = BASIC_NUMBER - 1,
-                reboundsTotal = BASIC_NUMBER - 1,
-                assists = BASIC_NUMBER - 1,
-                turnovers = BASIC_NUMBER - 1,
-                steals = BASIC_NUMBER - 1,
-                blocks = BASIC_NUMBER - 1,
-                foulsPersonal = BASIC_NUMBER - 1,
-                points = BASIC_NUMBER - 1,
-                plusMinus = BASIC_NUMBER - 1
+                timeFrame = GameSeasonNext,
+                teamId = HomeTeamId,
+                teamNameAbbr = HomeTeamAbbr,
+                gamePlayed = BasicNumber - 1,
+                win = BasicNumber - 1,
+                lose = BasicNumber - 1,
+                winPercentage = BasicPercentage - 1,
+                fieldGoalsMade = BasicNumber - 1,
+                fieldGoalsAttempted = BasicNumber - 1,
+                fieldGoalsPercentage = BasicPercentage - 1,
+                threePointersMade = BasicNumber - 1,
+                threePointersAttempted = BasicNumber - 1,
+                threePointersPercentage = BasicPercentage - 1,
+                freeThrowsMade = BasicNumber - 1,
+                freeThrowsAttempted = BasicNumber - 1,
+                freeThrowsPercentage = BasicPercentage - 1,
+                reboundsOffensive = BasicNumber - 1,
+                reboundsDefensive = BasicNumber - 1,
+                reboundsTotal = BasicNumber - 1,
+                assists = BasicNumber - 1,
+                turnovers = BasicNumber - 1,
+                steals = BasicNumber - 1,
+                blocks = BasicNumber - 1,
+                foulsPersonal = BasicNumber - 1,
+                points = BasicNumber - 1,
+                plusMinus = BasicNumber - 1
             ),
             PlayerCareer.PlayerCareerStats.Stats(
-                timeFrame = GAME_SEASON,
-                teamId = HOME_TEAM_ID,
-                teamNameAbbr = HOME_TEAM_ABBR,
-                gamePlayed = BASIC_NUMBER,
-                win = BASIC_NUMBER,
-                lose = BASIC_NUMBER,
-                winPercentage = BASIC_PERCENTAGE,
-                fieldGoalsMade = BASIC_NUMBER,
-                fieldGoalsAttempted = BASIC_NUMBER,
-                fieldGoalsPercentage = BASIC_PERCENTAGE,
-                threePointersMade = BASIC_NUMBER,
-                threePointersAttempted = BASIC_NUMBER,
-                threePointersPercentage = BASIC_PERCENTAGE,
-                freeThrowsMade = BASIC_NUMBER,
-                freeThrowsAttempted = BASIC_NUMBER,
-                freeThrowsPercentage = BASIC_PERCENTAGE,
-                reboundsOffensive = BASIC_NUMBER,
-                reboundsDefensive = BASIC_NUMBER,
-                reboundsTotal = BASIC_NUMBER,
-                assists = BASIC_NUMBER,
-                turnovers = BASIC_NUMBER,
-                steals = BASIC_NUMBER,
-                blocks = BASIC_NUMBER,
-                foulsPersonal = BASIC_NUMBER,
-                points = BASIC_NUMBER,
-                plusMinus = BASIC_NUMBER
+                timeFrame = GameSeason,
+                teamId = HomeTeamId,
+                teamNameAbbr = HomeTeamAbbr,
+                gamePlayed = BasicNumber,
+                win = BasicNumber,
+                lose = BasicNumber,
+                winPercentage = BasicPercentage,
+                fieldGoalsMade = BasicNumber,
+                fieldGoalsAttempted = BasicNumber,
+                fieldGoalsPercentage = BasicPercentage,
+                threePointersMade = BasicNumber,
+                threePointersAttempted = BasicNumber,
+                threePointersPercentage = BasicPercentage,
+                freeThrowsMade = BasicNumber,
+                freeThrowsAttempted = BasicNumber,
+                freeThrowsPercentage = BasicPercentage,
+                reboundsOffensive = BasicNumber,
+                reboundsDefensive = BasicNumber,
+                reboundsTotal = BasicNumber,
+                assists = BasicNumber,
+                turnovers = BasicNumber,
+                steals = BasicNumber,
+                blocks = BasicNumber,
+                foulsPersonal = BasicNumber,
+                points = BasicNumber,
+                plusMinus = BasicNumber
             )
         )
     }
@@ -175,32 +175,32 @@ object PlayerCareerFactory {
     private fun createAwayStats(): ArrayList<PlayerCareer.PlayerCareerStats.Stats> {
         return arrayListOf(
             PlayerCareer.PlayerCareerStats.Stats(
-                timeFrame = GAME_SEASON,
-                teamId = AWAY_TEAM_ID,
-                teamNameAbbr = AWAY_TEAM_ABBR,
-                gamePlayed = BASIC_NUMBER,
-                win = BASIC_NUMBER,
-                lose = BASIC_NUMBER,
-                winPercentage = BASIC_PERCENTAGE,
-                fieldGoalsMade = BASIC_NUMBER,
-                fieldGoalsAttempted = BASIC_NUMBER,
-                fieldGoalsPercentage = BASIC_PERCENTAGE,
-                threePointersMade = BASIC_NUMBER,
-                threePointersAttempted = BASIC_NUMBER,
-                threePointersPercentage = BASIC_PERCENTAGE,
-                freeThrowsMade = BASIC_NUMBER,
-                freeThrowsAttempted = BASIC_NUMBER,
-                freeThrowsPercentage = BASIC_PERCENTAGE,
-                reboundsOffensive = BASIC_NUMBER,
-                reboundsDefensive = BASIC_NUMBER,
-                reboundsTotal = BASIC_NUMBER,
-                assists = BASIC_NUMBER,
-                turnovers = BASIC_NUMBER,
-                steals = BASIC_NUMBER,
-                blocks = BASIC_NUMBER,
-                foulsPersonal = BASIC_NUMBER,
-                points = BASIC_NUMBER,
-                plusMinus = BASIC_NUMBER
+                timeFrame = GameSeason,
+                teamId = AwayTeamId,
+                teamNameAbbr = AwayTeamAbbr,
+                gamePlayed = BasicNumber,
+                win = BasicNumber,
+                lose = BasicNumber,
+                winPercentage = BasicPercentage,
+                fieldGoalsMade = BasicNumber,
+                fieldGoalsAttempted = BasicNumber,
+                fieldGoalsPercentage = BasicPercentage,
+                threePointersMade = BasicNumber,
+                threePointersAttempted = BasicNumber,
+                threePointersPercentage = BasicPercentage,
+                freeThrowsMade = BasicNumber,
+                freeThrowsAttempted = BasicNumber,
+                freeThrowsPercentage = BasicPercentage,
+                reboundsOffensive = BasicNumber,
+                reboundsDefensive = BasicNumber,
+                reboundsTotal = BasicNumber,
+                assists = BasicNumber,
+                turnovers = BasicNumber,
+                steals = BasicNumber,
+                blocks = BasicNumber,
+                foulsPersonal = BasicNumber,
+                points = BasicNumber,
+                plusMinus = BasicNumber
             )
         )
     }
@@ -208,32 +208,32 @@ object PlayerCareerFactory {
     private fun createHomeRanks(): ArrayList<PlayerCareer.PlayerCareerStats.Rank> {
         return arrayListOf(
             PlayerCareer.PlayerCareerStats.Rank(
-                timeFrame = GAME_SEASON,
-                teamId = HOME_TEAM_ID,
-                teamNameAbbr = HOME_TEAM_ABBR,
-                gamePlayedRank = BASIC_NUMBER,
-                winRank = BASIC_NUMBER,
-                loseRank = BASIC_NUMBER,
-                winPercentageRank = BASIC_NUMBER,
-                fieldGoalsMadeRank = BASIC_NUMBER,
-                fieldGoalsAttemptedRank = BASIC_NUMBER,
-                fieldGoalsPercentageRank = BASIC_NUMBER,
-                threePointersMadeRank = BASIC_NUMBER,
-                threePointersAttemptedRank = BASIC_NUMBER,
-                threePointersPercentageRank = BASIC_NUMBER,
-                freeThrowsMadeRank = BASIC_NUMBER,
-                freeThrowsAttemptedRank = BASIC_NUMBER,
-                freeThrowsPercentageRank = BASIC_NUMBER,
-                reboundsOffensiveRank = BASIC_NUMBER,
-                reboundsDefensiveRank = BASIC_NUMBER,
-                reboundsTotalRank = BASIC_NUMBER,
-                assistsRank = BASIC_NUMBER,
-                turnoversRank = BASIC_NUMBER,
-                stealsRank = BASIC_NUMBER,
-                blocksRank = BASIC_NUMBER,
-                foulsPersonalRank = BASIC_NUMBER,
-                pointsRank = BASIC_NUMBER,
-                plusMinusRank = BASIC_NUMBER
+                timeFrame = GameSeason,
+                teamId = HomeTeamId,
+                teamNameAbbr = HomeTeamAbbr,
+                gamePlayedRank = BasicNumber,
+                winRank = BasicNumber,
+                loseRank = BasicNumber,
+                winPercentageRank = BasicNumber,
+                fieldGoalsMadeRank = BasicNumber,
+                fieldGoalsAttemptedRank = BasicNumber,
+                fieldGoalsPercentageRank = BasicNumber,
+                threePointersMadeRank = BasicNumber,
+                threePointersAttemptedRank = BasicNumber,
+                threePointersPercentageRank = BasicNumber,
+                freeThrowsMadeRank = BasicNumber,
+                freeThrowsAttemptedRank = BasicNumber,
+                freeThrowsPercentageRank = BasicNumber,
+                reboundsOffensiveRank = BasicNumber,
+                reboundsDefensiveRank = BasicNumber,
+                reboundsTotalRank = BasicNumber,
+                assistsRank = BasicNumber,
+                turnoversRank = BasicNumber,
+                stealsRank = BasicNumber,
+                blocksRank = BasicNumber,
+                foulsPersonalRank = BasicNumber,
+                pointsRank = BasicNumber,
+                plusMinusRank = BasicNumber
             )
         )
     }
@@ -241,32 +241,32 @@ object PlayerCareerFactory {
     private fun createAwayRanks(): ArrayList<PlayerCareer.PlayerCareerStats.Rank> {
         return arrayListOf(
             PlayerCareer.PlayerCareerStats.Rank(
-                timeFrame = GAME_SEASON,
-                teamId = AWAY_TEAM_ID,
-                teamNameAbbr = AWAY_TEAM_ABBR,
-                gamePlayedRank = BASIC_NUMBER,
-                winRank = BASIC_NUMBER,
-                loseRank = BASIC_NUMBER,
-                winPercentageRank = BASIC_NUMBER,
-                fieldGoalsMadeRank = BASIC_NUMBER,
-                fieldGoalsAttemptedRank = BASIC_NUMBER,
-                fieldGoalsPercentageRank = BASIC_NUMBER,
-                threePointersMadeRank = BASIC_NUMBER,
-                threePointersAttemptedRank = BASIC_NUMBER,
-                threePointersPercentageRank = BASIC_NUMBER,
-                freeThrowsMadeRank = BASIC_NUMBER,
-                freeThrowsAttemptedRank = BASIC_NUMBER,
-                freeThrowsPercentageRank = BASIC_NUMBER,
-                reboundsOffensiveRank = BASIC_NUMBER,
-                reboundsDefensiveRank = BASIC_NUMBER,
-                reboundsTotalRank = BASIC_NUMBER,
-                assistsRank = BASIC_NUMBER,
-                turnoversRank = BASIC_NUMBER,
-                stealsRank = BASIC_NUMBER,
-                blocksRank = BASIC_NUMBER,
-                foulsPersonalRank = BASIC_NUMBER,
-                pointsRank = BASIC_NUMBER,
-                plusMinusRank = BASIC_NUMBER
+                timeFrame = GameSeason,
+                teamId = AwayTeamId,
+                teamNameAbbr = AwayTeamAbbr,
+                gamePlayedRank = BasicNumber,
+                winRank = BasicNumber,
+                loseRank = BasicNumber,
+                winPercentageRank = BasicNumber,
+                fieldGoalsMadeRank = BasicNumber,
+                fieldGoalsAttemptedRank = BasicNumber,
+                fieldGoalsPercentageRank = BasicNumber,
+                threePointersMadeRank = BasicNumber,
+                threePointersAttemptedRank = BasicNumber,
+                threePointersPercentageRank = BasicNumber,
+                freeThrowsMadeRank = BasicNumber,
+                freeThrowsAttemptedRank = BasicNumber,
+                freeThrowsPercentageRank = BasicNumber,
+                reboundsOffensiveRank = BasicNumber,
+                reboundsDefensiveRank = BasicNumber,
+                reboundsTotalRank = BasicNumber,
+                assistsRank = BasicNumber,
+                turnoversRank = BasicNumber,
+                stealsRank = BasicNumber,
+                blocksRank = BasicNumber,
+                foulsPersonalRank = BasicNumber,
+                pointsRank = BasicNumber,
+                plusMinusRank = BasicNumber
             )
         )
     }
