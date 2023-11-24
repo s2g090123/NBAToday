@@ -13,8 +13,8 @@ import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.unit.dp
 import androidx.test.core.app.ApplicationProvider
-import com.jiachian.nbatoday.ColorTransparency25
 import com.jiachian.nbatoday.R
+import com.jiachian.nbatoday.Transparency25
 import com.jiachian.nbatoday.compose.widget.FocusableColumn
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.`is`
@@ -49,7 +49,7 @@ class ComposeUtilsTest {
     fun getDividerPrimaryColor() {
         composeTestRule.setContent {
             val actual = dividerPrimaryColor()
-            val expected = MaterialTheme.colors.primary.copy(ColorTransparency25)
+            val expected = MaterialTheme.colors.primary.copy(Transparency25)
             assertThat(actual, `is`(expected))
         }
     }
@@ -58,7 +58,7 @@ class ComposeUtilsTest {
     fun getDividerSecondaryColor() {
         composeTestRule.setContent {
             val actual = dividerSecondaryColor()
-            val expected = MaterialTheme.colors.secondary.copy(ColorTransparency25)
+            val expected = MaterialTheme.colors.secondary.copy(Transparency25)
             assertThat(actual, `is`(expected))
         }
     }

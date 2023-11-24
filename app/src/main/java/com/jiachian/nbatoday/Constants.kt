@@ -12,8 +12,8 @@ const val NbaLeagueId = "00"
 
 const val CurrentSeason = "2023-24"
 
-const val ColorTransparency50 = 0.5f
-const val ColorTransparency25 = 0.25f
+const val Transparency50 = 0.5f
+const val Transparency25 = 0.25f
 
 const val ScrollHeightRatio = 0.7f
 
@@ -27,3 +27,5 @@ const val OneHundredPercentage = 100
 const val FirstRank = 1
 const val SecondRank = 2
 const val ThirdRank = 3
+
+const val NA = "N/A"

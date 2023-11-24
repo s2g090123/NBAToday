@@ -21,8 +21,8 @@ import kotlinx.coroutines.withContext
 
 private const val RandomBound = 359
 private const val TurnTableDuration = 8000
-private const val TurnTableOneRoundAngle = 360
-private const val TurnTableOneRoundAngleHalf = TurnTableOneRoundAngle / 2
+private const val RoundAngle = 360
+private const val RoundAngleHalf = RoundAngle / 2
 private const val OneSecondMs = 1000
 private const val MinOneStep = 2
 private const val MaxOneStep = 10
@@ -73,9 +73,15 @@ class BetViewModel(
 
     fun clickBetAndGame(betAndGame: BetAndNbaGame) {
         when (betAndGame.game.gameStatus) {
-            GameStatusCode.COMING_SOON -> screenStateHelper.openScreen(NbaScreenState.Team(betAndGame.game.homeTeam.team))
-            GameStatusCode.PLAYING -> screenStateHelper.openScreen(NbaScreenState.BoxScore(betAndGame.game))
-            GameStatusCode.FINAL -> settleBets(betAndGame)
+            GameStatusCode.COMING_SOON -> {
+                screenStateHelper.openScreen(NbaScreenState.Team(betAndGame.game.homeTeam.team))
+            }
+            GameStatusCode.PLAYING -> {
+                screenStateHelper.openScreen(NbaScreenState.BoxScore(betAndGame.game))
+            }
+            GameStatusCode.FINAL -> {
+                settleBets(betAndGame)
+            }
         }
     }
 
@@ -115,13 +121,15 @@ class BetViewModel(
             isTurnTableStartingImp.value = true
             var remainTime = TurnTableDuration
             withContext(dispatcherProvider.io) {
-                while (remainTime > 0 || currentAngle.value != rewardAngle.value) {
+                val current = currentAngle.value
+                val reward = rewardAngle.value
+                while (remainTime > 0 || current != reward) {
                     val step = when {
                         remainTime <= 0 -> {
-                            if (
-                                (currentAngle.value > rewardAngle.value && TurnTableOneRoundAngle - currentAngle.value + rewardAngle.value > TurnTableOneRoundAngleHalf) ||
-                                rewardAngle.value - currentAngle.value > TurnTableOneRoundAngleHalf
-                            ) {
+                            val remainingAngle = RoundAngle - current + reward
+                            val rewardAngleDifference = reward - current
+                            val isDifferenceTooLarge = current > reward && remainingAngle > RoundAngleHalf
+                            if (isDifferenceTooLarge || rewardAngleDifference > RoundAngleHalf) {
                                 2
                             } else {
                                 1
@@ -132,12 +140,11 @@ class BetViewModel(
                     val delay = if (remainTime <= 0) MaxDelay else MinDelay
                     delay(delay.toLong())
                     remainTime -= delay
-                    currentAngleImp.value =
-                        if (remainTime <= 0 && currentAngle.value < rewardAngle.value) {
-                            (currentAngle.value + step).coerceAtMost(rewardAngle.value)
-                        } else {
-                            (currentAngle.value + step) % TurnTableOneRoundAngle
-                        }
+                    currentAngleImp.value = if (remainTime <= 0 && current < reward) {
+                        (current + step).coerceAtMost(reward)
+                    } else {
+                        (current + step) % RoundAngle
+                    }
                 }
                 delay(StepDelay)
                 closeTurnTable()

@@ -55,8 +55,8 @@ import coil.compose.AsyncImage
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 import com.google.accompanist.flowlayout.FlowRow
-import com.jiachian.nbatoday.ColorTransparency25
 import com.jiachian.nbatoday.R
+import com.jiachian.nbatoday.Transparency25
 import com.jiachian.nbatoday.compose.screen.card.GameStatusCard
 import com.jiachian.nbatoday.compose.widget.DisableOverscroll
 import com.jiachian.nbatoday.compose.widget.RefreshingScreen
@@ -200,7 +200,7 @@ private fun CalendarArrowButton(
         Icon(
             painter = painterResource(if (isLeft) R.drawable.ic_black_left_arrow else R.drawable.ic_black_right_arrow),
             contentDescription = null,
-            tint = MaterialTheme.colors.secondaryVariant.copy(if (enabled) 1f else ColorTransparency25)
+            tint = MaterialTheme.colors.secondaryVariant.copy(if (enabled) 1f else Transparency25)
         )
     }
 }
@@ -370,7 +370,7 @@ private fun DateBox(
             color = if (isSelected && dateData.isCurrentMonth) {
                 MaterialTheme.colors.secondary
             } else {
-                MaterialTheme.colors.secondaryVariant.copy(if (dateData.isCurrentMonth) 1f else ColorTransparency25)
+                MaterialTheme.colors.secondaryVariant.copy(if (dateData.isCurrentMonth) 1f else Transparency25)
             },
             fontSize = 12.sp,
             fontWeight = FontWeight.Medium

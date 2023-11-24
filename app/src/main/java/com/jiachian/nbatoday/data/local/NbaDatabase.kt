@@ -28,7 +28,14 @@ import com.jiachian.nbatoday.data.local.score.GameBoxScore
 import com.jiachian.nbatoday.data.local.team.TeamStats
 
 @Database(
-    entities = [NbaGame::class, GameBoxScore::class, TeamStats::class, PlayerStats::class, PlayerCareer::class, Bets::class],
+    entities = [
+        NbaGame::class,
+        GameBoxScore::class,
+        TeamStats::class,
+        PlayerStats::class,
+        PlayerCareer::class,
+        Bets::class
+    ],
     version = 1
 )
 @TypeConverters(

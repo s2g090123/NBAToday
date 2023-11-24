@@ -19,7 +19,13 @@ class NbaGameRemoteSource : GameRemoteSource() {
         return gameService.getScoreboard(leagueId, gameDate).body()
     }
 
-    override suspend fun getScoreboard(leagueId: String, year: Int, month: Int, day: Int, offset: Int): List<GameScoreboard>? {
+    override suspend fun getScoreboard(
+        leagueId: String,
+        year: Int,
+        month: Int,
+        day: Int,
+        offset: Int
+    ): List<GameScoreboard>? {
         return gameService.getScoreboards(leagueId, year, month, day, offset).body()
     }
 

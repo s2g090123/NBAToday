@@ -119,7 +119,7 @@ private fun NbaScreen(viewModel: MainViewModel) {
     ) {
         composable("splash") {
             SplashScreen(
-                listOf(MaterialTheme.colors.secondary.copy(ColorTransparency25), MaterialTheme.colors.secondary)
+                listOf(MaterialTheme.colors.secondary.copy(Transparency25), MaterialTheme.colors.secondary)
             )
         }
         composable("home") {
@@ -140,7 +140,7 @@ private fun SplashScreen(
 ) {
     val infiniteAnimation = rememberInfiniteTransition()
     val colorAnimation by infiniteAnimation.animateColor(
-        initialValue = MaterialTheme.colors.secondary.copy(ColorTransparency25),
+        initialValue = MaterialTheme.colors.secondary.copy(Transparency25),
         targetValue = MaterialTheme.colors.secondary,
         animationSpec = InfiniteRepeatableSpec(
             animation = tween(durationMillis = 300, easing = FastOutSlowInEasing),

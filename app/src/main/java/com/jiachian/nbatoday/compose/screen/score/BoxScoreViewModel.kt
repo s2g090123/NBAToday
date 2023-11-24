@@ -1,6 +1,5 @@
 package com.jiachian.nbatoday.compose.screen.score
 
-import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.compose.screen.label.LabelHelper
 import com.jiachian.nbatoday.compose.screen.score.data.ScoreLeaderRowData
@@ -18,7 +17,6 @@ import com.jiachian.nbatoday.data.repository.game.GameRepository
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.utils.ScreenStateHelper
-import com.jiachian.nbatoday.utils.getOrNA
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -143,61 +141,20 @@ class BoxScoreViewModel(
         selectedTabImp.value = tab
     }
 
-    private fun ScoreLabel.transformRowData(stats: GameBoxScore.BoxScoreTeam.Player.Statistics): ScoreRowData.RowData {
-        val value = when (textRes) {
-            R.string.label_min -> stats.minutes
-            R.string.label_fgm -> stats.fieldGoalProportion
-            R.string.label_3pm -> stats.threePointProportion
-            R.string.label_ftm -> stats.freeThrowProportion
-            R.string.label_plus_minus -> stats.plusMinusPoints
-            R.string.label_or -> stats.reboundsOffensive
-            R.string.label_dr -> stats.reboundsDefensive
-            R.string.label_tr -> stats.reboundsTotal
-            R.string.label_as -> stats.assists
-            R.string.label_pf -> stats.foulsPersonal
-            R.string.label_st -> stats.steals
-            R.string.label_to -> stats.turnovers
-            R.string.label_bs -> stats.blocks
-            R.string.label_ba -> stats.blocksReceived
-            R.string.label_pts -> stats.points
-            R.string.label_eff -> stats.efficiency
-            else -> ""
-        }.toString()
+    private fun ScoreLabel.transformRowData(
+        stats: GameBoxScore.BoxScoreTeam.Player.Statistics
+    ): ScoreRowData.RowData {
         return ScoreRowData.RowData(
-            value = value,
+            value = LabelHelper.getValueByLabel(this, stats),
             textWidth = width,
             textAlign = textAlign
         )
     }
 
     private fun ScoreTeamLabel.transformRowData(score: GameBoxScore?): ScoreTeamRowData {
-        val homeStats = score?.homeTeam?.statistics
-        val awayStats = score?.awayTeam?.statistics
-        val (home, away) = when (textRes) {
-            R.string.box_score_statistics_points -> homeStats?.points.getOrNA() to awayStats?.points.getOrNA()
-            R.string.box_score_statistics_fieldGoal -> homeStats?.fieldGoalsFormat.getOrNA() to awayStats?.fieldGoalsFormat.getOrNA()
-            R.string.box_score_statistics_twoPoints -> homeStats?.twoPointsFormat.getOrNA() to awayStats?.twoPointsFormat.getOrNA()
-            R.string.box_score_statistics_threePoints -> homeStats?.threePointsFormat.getOrNA() to awayStats?.threePointsFormat.getOrNA()
-            R.string.box_score_statistics_freeThrows -> homeStats?.freeThrowFormat.getOrNA() to awayStats?.freeThrowFormat.getOrNA()
-            R.string.box_score_statistics_rebounds -> homeStats?.reboundsTotal.getOrNA() to awayStats?.reboundsTotal.getOrNA()
-            R.string.box_score_statistics_reboundsDef -> homeStats?.reboundsDefensive.getOrNA() to awayStats?.reboundsDefensive.getOrNA()
-            R.string.box_score_statistics_reboundsOff -> homeStats?.reboundsOffensive.getOrNA() to awayStats?.reboundsOffensive.getOrNA()
-            R.string.box_score_statistics_assists -> homeStats?.assists.getOrNA() to awayStats?.assists.getOrNA()
-            R.string.box_score_statistics_blocks -> homeStats?.blocks.getOrNA() to awayStats?.blocks.getOrNA()
-            R.string.box_score_statistics_steals -> homeStats?.steals.getOrNA() to awayStats?.steals.getOrNA()
-            R.string.box_score_statistics_turnovers -> homeStats?.turnovers.getOrNA() to awayStats?.turnovers.getOrNA()
-            R.string.box_score_statistics_pointsFastBreak -> homeStats?.pointsFastBreak.getOrNA() to awayStats?.pointsFastBreak.getOrNA()
-            R.string.box_score_statistics_pointsFromTurnOvers -> homeStats?.pointsFromTurnovers.getOrNA() to awayStats?.pointsFromTurnovers.getOrNA()
-            R.string.box_score_statistics_pointsInPaint -> homeStats?.pointsInThePaint.getOrNA() to awayStats?.pointsInThePaint.getOrNA()
-            R.string.box_score_statistics_pointsSecondChance -> homeStats?.pointsSecondChance.getOrNA() to awayStats?.pointsSecondChance.getOrNA()
-            R.string.box_score_statistics_benchPoints -> homeStats?.benchPoints.getOrNA() to awayStats?.benchPoints.getOrNA()
-            R.string.box_score_statistics_foulsPersonal -> homeStats?.foulsPersonal.getOrNA() to awayStats?.foulsPersonal.getOrNA()
-            R.string.box_score_statistics_foulsTechnical -> homeStats?.foulsTechnical.getOrNA() to awayStats?.foulsTechnical.getOrNA()
-            else -> "" to ""
-        }
         return ScoreTeamRowData(
-            homeValue = home,
-            awayValue = away,
+            homeValue = LabelHelper.getValueByLabel(this, score?.homeTeam?.statistics),
+            awayValue = LabelHelper.getValueByLabel(this, score?.awayTeam?.statistics),
             label = this
         )
     }
@@ -206,32 +163,9 @@ class BoxScoreViewModel(
         homeLeader: GameBoxScore.BoxScoreTeam.Player?,
         awayLeader: GameBoxScore.BoxScoreTeam.Player?
     ): ScoreLeaderRowData {
-        val homeStats = homeLeader?.statistics
-        val awayStats = awayLeader?.statistics
-        val (home, away) = when (textRes) {
-            R.string.box_score_leader_statistics_name -> homeLeader?.nameAbbr.getOrNA() to awayLeader?.nameAbbr.getOrNA()
-            R.string.box_score_leader_statistics_position -> homeLeader?.position.getOrNA() to awayLeader?.position.getOrNA()
-            R.string.box_score_leader_statistics_time -> homeStats?.minutes.getOrNA() to awayStats?.minutes.getOrNA()
-            R.string.box_score_leader_statistics_points -> homeStats?.points.getOrNA() to awayStats?.points.getOrNA()
-            R.string.box_score_leader_statistics_plusMinusPoints -> homeStats?.plusMinusPoints.getOrNA() to awayStats?.plusMinusPoints.getOrNA()
-            R.string.box_score_leader_statistics_fieldGoal -> homeStats?.fieldGoalsFormat.getOrNA() to awayStats?.fieldGoalsFormat.getOrNA()
-            R.string.box_score_leader_statistics_twoPoints -> homeStats?.twoPointsFormat.getOrNA() to awayStats?.twoPointsFormat.getOrNA()
-            R.string.box_score_leader_statistics_threePoints -> homeStats?.threePointsFormat.getOrNA() to awayStats?.threePointsFormat.getOrNA()
-            R.string.box_score_leader_statistics_freeThrows -> homeStats?.freeThrowFormat.getOrNA() to awayStats?.freeThrowFormat.getOrNA()
-            R.string.box_score_leader_statistics_rebounds -> homeStats?.reboundsTotal.getOrNA() to awayStats?.reboundsTotal.getOrNA()
-            R.string.box_score_leader_statistics_reboundsDef -> homeStats?.reboundsDefensive.getOrNA() to awayStats?.reboundsDefensive.getOrNA()
-            R.string.box_score_leader_statistics_reboundsOff -> homeStats?.reboundsOffensive.getOrNA() to awayStats?.reboundsOffensive.getOrNA()
-            R.string.box_score_leader_statistics_assists -> homeStats?.assists.getOrNA() to awayStats?.assists.getOrNA()
-            R.string.box_score_leader_statistics_blocks -> homeStats?.blocks.getOrNA() to awayStats?.blocks.getOrNA()
-            R.string.box_score_leader_statistics_steals -> homeStats?.steals.getOrNA() to awayStats?.steals.getOrNA()
-            R.string.box_score_leader_statistics_turnovers -> homeStats?.turnovers.getOrNA() to awayStats?.turnovers.getOrNA()
-            R.string.box_score_leader_statistics_foulsPersonal -> homeStats?.foulsPersonal.getOrNA() to awayStats?.foulsPersonal.getOrNA()
-            R.string.box_score_leader_statistics_foulsTechnical -> homeStats?.foulsTechnical.getOrNA() to awayStats?.foulsTechnical.getOrNA()
-            else -> "" to ""
-        }
         return ScoreLeaderRowData(
-            homeValue = home,
-            awayValue = away,
+            homeValue = LabelHelper.getValueByLabel(this, homeLeader),
+            awayValue = LabelHelper.getValueByLabel(this, awayLeader),
             label = this
         )
     }

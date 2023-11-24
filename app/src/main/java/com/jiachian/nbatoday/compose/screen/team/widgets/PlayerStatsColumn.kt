@@ -37,7 +37,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.jiachian.nbatoday.ColorTransparency25
+import com.jiachian.nbatoday.Transparency25
 import com.jiachian.nbatoday.compose.screen.team.PlayerSort
 import com.jiachian.nbatoday.compose.screen.team.TeamPlayerLabel
 import com.jiachian.nbatoday.compose.screen.team.TeamViewModel
@@ -122,7 +122,7 @@ private fun PlayerStatsHeader(
         )
         Divider(
             modifier = Modifier.width(dividerWidth),
-            color = viewModel.colors.secondary.copy(ColorTransparency25),
+            color = viewModel.colors.secondary.copy(Transparency25),
             thickness = 3.dp,
         )
     }
@@ -160,7 +160,7 @@ private fun PlayerStatsLabel(
         modifier = Modifier
             .width(label.width)
             .height(40.dp)
-            .background(if (isSelected) color.copy(ColorTransparency25) else Color.Transparent)
+            .background(if (isSelected) color.copy(Transparency25) else Color.Transparent)
             .rippleClickable { onClick(label) }
             .padding(8.dp),
     ) {
@@ -203,7 +203,7 @@ private fun PlayerStatsRow(
         if (divider) {
             Divider(
                 modifier = Modifier.width(dividerWidth),
-                color = viewModel.colors.secondary.copy(ColorTransparency25),
+                color = viewModel.colors.secondary.copy(Transparency25),
                 thickness = 1.dp,
             )
         }
@@ -222,7 +222,7 @@ private fun PlayerStatsText(
             .testTag("PlayerStatistics_Text_PlayerStats")
             .width(width)
             .height(40.dp)
-            .background(if (isSelected) color.copy(ColorTransparency25) else Color.Transparent)
+            .background(if (isSelected) color.copy(Transparency25) else Color.Transparent)
             .padding(8.dp),
         text = text,
         textAlign = if (isSelected) TextAlign.Center else TextAlign.End,

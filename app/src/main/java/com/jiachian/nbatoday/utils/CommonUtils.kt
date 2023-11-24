@@ -4,6 +4,7 @@ import android.content.Context
 import android.widget.Toast
 import androidx.annotation.StringRes
 import com.jiachian.nbatoday.FirstRank
+import com.jiachian.nbatoday.NA
 import com.jiachian.nbatoday.SecondRank
 import com.jiachian.nbatoday.ThirdRank
 import com.jiachian.nbatoday.data.local.team.NBATeam
@@ -11,7 +12,7 @@ import com.jiachian.nbatoday.data.local.team.teamOfficial
 import com.jiachian.nbatoday.data.remote.game.GameStatusCode
 import kotlin.math.pow
 
-inline fun <reified T : Any> T?.getOrNA(): String = this?.toString() ?: "N/A"
+inline fun <reified T : Any> T?.getOrNA(): String = this?.toString() ?: NA
 
 inline fun <reified T : Any> T?.isNull(): Boolean = this == null
 

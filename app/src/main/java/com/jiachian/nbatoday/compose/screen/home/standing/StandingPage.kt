@@ -58,8 +58,8 @@ import coil.request.ImageRequest
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
-import com.jiachian.nbatoday.ColorTransparency25
 import com.jiachian.nbatoday.R
+import com.jiachian.nbatoday.Transparency25
 import com.jiachian.nbatoday.compose.widget.DisableOverscroll
 import com.jiachian.nbatoday.data.local.team.NBATeam
 import com.jiachian.nbatoday.data.local.team.TeamStats
@@ -274,7 +274,7 @@ private fun TeamStatsRow(
                         .height(40.dp)
                         .background(
                             if (label.sort == sorting) {
-                                MaterialTheme.colors.secondary.copy(ColorTransparency25)
+                                MaterialTheme.colors.secondary.copy(Transparency25)
                             } else {
                                 Color.Transparent
                             }
@@ -328,7 +328,7 @@ private fun TeamStatsTab(
             .height(40.dp)
             .background(
                 if (isSelected) {
-                    MaterialTheme.colors.secondary.copy(ColorTransparency25)
+                    MaterialTheme.colors.secondary.copy(Transparency25)
                 } else {
                     Color.Transparent
                 }

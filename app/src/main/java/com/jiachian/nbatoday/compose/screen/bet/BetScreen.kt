@@ -313,7 +313,10 @@ private fun RewardPointDialog(
         title = {
             Text(
                 modifier = Modifier.testTag("RewardPointDialog_text_title"),
-                text = stringResource(if (rewardPoints >= 0) R.string.bet_reward_win_title else R.string.bet_reward_lose_title),
+                text = stringResource(
+                    if (rewardPoints >= 0) R.string.bet_reward_win_title
+                    else R.string.bet_reward_lose_title
+                ),
                 color = MaterialTheme.colors.primary,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Medium

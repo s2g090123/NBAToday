@@ -38,8 +38,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
-import com.jiachian.nbatoday.ColorTransparency50
 import com.jiachian.nbatoday.R
+import com.jiachian.nbatoday.Transparency50
 import com.jiachian.nbatoday.compose.screen.score.data.ScoreRowData
 import com.jiachian.nbatoday.compose.screen.score.label.ScoreLabel
 import com.jiachian.nbatoday.compose.screen.score.label.ScoreLabelType
@@ -232,7 +232,7 @@ private fun PlayerNotPlayReasonText(reason: String) {
         text = stringResource(R.string.box_score_player_dnp),
         textAlign = TextAlign.Center,
         fontSize = 16.sp,
-        color = MaterialTheme.colors.secondary.copy(ColorTransparency50)
+        color = MaterialTheme.colors.secondary.copy(Transparency50)
     )
     Text(
         modifier = Modifier
@@ -240,7 +240,7 @@ private fun PlayerNotPlayReasonText(reason: String) {
             .padding(start = 16.dp),
         text = reason,
         fontSize = 16.sp,
-        color = MaterialTheme.colors.secondary.copy(ColorTransparency50)
+        color = MaterialTheme.colors.secondary.copy(Transparency50)
     )
 }
 
