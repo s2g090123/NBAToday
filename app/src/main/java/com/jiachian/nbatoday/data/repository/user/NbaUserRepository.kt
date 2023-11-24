@@ -92,6 +92,5 @@ class NbaUserRepository(
                 )
             )
         }
-
     }
 }

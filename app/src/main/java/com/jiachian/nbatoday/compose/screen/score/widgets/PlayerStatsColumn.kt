@@ -218,7 +218,6 @@ private fun PlayerStatsRow(
                     textAlign = statsRowData.textAlign
                 )
             }
-
         }
     }
 }
