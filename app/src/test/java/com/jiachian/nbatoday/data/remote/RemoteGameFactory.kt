@@ -66,7 +66,7 @@ object RemoteGameFactory {
                         gameDate = GameDate,
                         games = listOf(
                             Schedule.LeagueSchedule.GameDate.Game(
-                                awayTeam = Schedule.LeagueSchedule.GameDate.Game.AwayTeam(
+                                awayTeam = Schedule.LeagueSchedule.GameDate.Game.Team(
                                     losses = BasicNumber,
                                     score = BasicNumber,
                                     teamCity = TeamCity,

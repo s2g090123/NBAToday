@@ -25,7 +25,7 @@ import com.jiachian.nbatoday.data.TestRepository
 import com.jiachian.nbatoday.data.local.NbaGame
 import com.jiachian.nbatoday.data.remote.game.GameStatusCode
 import com.jiachian.nbatoday.rule.TestCoroutineEnvironment
-import com.jiachian.nbatoday.utils.getOrAssert
+import com.jiachian.nbatoday.utils.getOrError
 import com.jiachian.nbatoday.utils.onNodeWithMergedTag
 import com.jiachian.nbatoday.utils.onNodeWithTag
 import java.util.Date
@@ -184,7 +184,7 @@ class GameCalendarScreenTest {
             .onNodeWithMergedTag("CalendarContent_LVG_Games")
             .onChildAt(1)
             .performClick()
-        val games = viewModel.selectGames.value.getOrAssert()
+        val games = viewModel.selectGames.value.getOrError()
         assertTrue(games.isNotEmpty())
         val game = games.first()
         gameDateRoot

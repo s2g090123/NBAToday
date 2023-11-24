@@ -35,10 +35,10 @@ data class RemoteTeamPlayerStats(
 
     fun toLocal(): List<PlayerStats> {
         val teamId = parameters?.teamId ?: return emptyList()
-        val rowData = result?.rowData ?: return emptyList()
-        return rowData.mapNotNull { data ->
+        val rowData = result?.rowData
+        return rowData?.mapNotNull { data ->
             createPlayerStats(data, teamId) ?: return@mapNotNull null
-        }
+        } ?: emptyList()
     }
 
     private fun getPlayerResult(data: List<String>, name: String): String? {

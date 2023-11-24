@@ -160,7 +160,7 @@ data class RemoteGameBoxScore(
                 }
 
                 fun toLocal(): GameBoxScore.BoxScoreTeam.Player? {
-                    statistics ?: return null
+                    if (statistics == null || personId == null) return null
                     val notPlaying = when (notPlayingReason) {
                         "INACTIVE_INJURY" -> "Injury"
                         "INACTIVE_GLEAGUE_TWOWAY" -> "G League Two Way"
@@ -175,7 +175,7 @@ data class RemoteGameBoxScore(
                         status = status ?: PlayerActiveStatus.INACTIVE,
                         notPlayingReason = notPlaying,
                         order = order.getOrZero(),
-                        personId = personId ?: return null,
+                        personId = personId,
                         jerseyNum = jerseyNum.getOrNA(),
                         position = position.getOrNA(),
                         starter = isStarter(),
@@ -298,9 +298,7 @@ data class RemoteGameBoxScore(
 
         @SuppressLint("SimpleDateFormat")
         fun toLocal(): GameBoxScore? {
-            gameId ?: return null
-            homeTeam ?: return null
-            awayTeam ?: return null
+            if (gameId == null || homeTeam == null || awayTeam == null) return null
             return GameBoxScore(
                 gameId = gameId,
                 gameDate = getGameDate(),

@@ -5,9 +5,9 @@ import com.jiachian.nbatoday.data.local.team.NBATeam
 import com.jiachian.nbatoday.data.local.team.teamOfficial
 import com.jiachian.nbatoday.data.remote.leader.GameLeaders
 import com.jiachian.nbatoday.data.remote.team.GameTeam
+import com.jiachian.nbatoday.utils.getOrError
 import com.jiachian.nbatoday.utils.getOrNA
 import com.jiachian.nbatoday.utils.getOrZero
-import com.jiachian.nbatoday.utils.getValueOrAssert
 import com.jiachian.nbatoday.utils.isNull
 import com.jiachian.nbatoday.utils.toGameStatusCode
 
@@ -102,11 +102,11 @@ data class GameScoreboard(
                 null
             } else {
                 GameUpdateData(
-                    gameId = gameId.getValueOrAssert(),
-                    gameStatus = gameStatus.getValueOrAssert(),
-                    gameStatusText = gameStatusText.getValueOrAssert(),
-                    homeTeam = homeTeam.getValueOrAssert(),
-                    awayTeam = awayTeam.getValueOrAssert(),
+                    gameId = gameId.getOrError(),
+                    gameStatus = gameStatus.getOrError(),
+                    gameStatusText = gameStatusText.getOrError(),
+                    homeTeam = homeTeam.getOrError(),
+                    awayTeam = awayTeam.getOrError(),
                     gameLeaders = GameLeaders(gameHomeLeaders, gameAwayLeaders),
                     teamLeaders = GameLeaders(teamHomeLeaders, teamAwayLeaders)
                 )

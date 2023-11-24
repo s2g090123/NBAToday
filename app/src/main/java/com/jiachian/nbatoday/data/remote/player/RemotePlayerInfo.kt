@@ -7,6 +7,7 @@ import com.jiachian.nbatoday.data.local.player.PlayerCareerInfoUpdate
 import com.jiachian.nbatoday.data.local.team.NBATeam
 import com.jiachian.nbatoday.data.local.team.teamOfficial
 import com.jiachian.nbatoday.utils.NbaUtils
+import com.jiachian.nbatoday.utils.getOrError
 import com.jiachian.nbatoday.utils.getOrNA
 import com.jiachian.nbatoday.utils.getOrZero
 import java.text.SimpleDateFormat
@@ -50,33 +51,37 @@ data class RemotePlayerInfo(
         }
 
     fun toUpdateData(): PlayerCareerInfoUpdate? {
-        return PlayerCareerInfoUpdate(
-            getPlayerInfo("PERSON_ID")?.toIntOrNull() ?: return null,
-            createPlayerCareerInfo() ?: return null
-        )
+        val personId = getPlayerInfo("PERSON_ID")?.toIntOrNull()
+        val info = createPlayerCareerInfo()
+        if (personId == null || info == null) return null
+        return PlayerCareerInfoUpdate(personId, info)
     }
 
     private fun getPlayerInfo(name: String): String? {
-        val infoResult = infoResult ?: return null
-        val playerInfoRowData = infoResult.rowData?.getOrNull(0) ?: return null
-        val playerInfoHeaders = infoResult.headers ?: return null
+        val playerInfoRowData = infoResult?.rowData?.getOrNull(0)
+        val playerInfoHeaders = infoResult?.headers
+        if (playerInfoRowData == null || playerInfoHeaders == null) return null
         return playerInfoRowData.getOrNull(playerInfoHeaders.indexOf(name))
     }
 
     private fun getPlayerStats(name: String): String? {
-        val statsResult = statsResult ?: return null
-        val headlineRowData = statsResult.rowData?.getOrNull(0) ?: return null
-        val headlineHeaders = statsResult.headers ?: return null
+        val headlineRowData = statsResult?.rowData?.getOrNull(0)
+        val headlineHeaders = statsResult?.headers
+        if (headlineRowData == null || headlineHeaders == null) return null
         return headlineRowData.getOrNull(headlineHeaders.indexOf(name))
     }
 
     private fun createPlayerCareerInfo(): PlayerCareer.PlayerCareerInfo? {
+        val playerName = getPlayerInfo("DISPLAY_FIRST_LAST")
+        val jersey = getPlayerInfo("JERSEY")?.toIntOrNull()
+        val stats = createPlayerCareerStats()
+        if (playerName == null || jersey == null || stats == null) return null
         val birthDate = getBirthDate()
         val team = getPlayerInfo("TEAM_ID")?.toIntOrNull()?.let { teamId ->
             NBATeam.getTeamById(teamId)
         } ?: teamOfficial
         return PlayerCareer.PlayerCareerInfo(
-            playerName = getPlayerInfo("DISPLAY_FIRST_LAST") ?: return null,
+            playerName = playerName,
             playerNameAbbr = getPlayerInfo("DISPLAY_FI_LAST").getOrNA(),
             playerAge = getAge(birthDate),
             birthDate = formatBirthDate(birthDate),
@@ -85,7 +90,7 @@ data class RemotePlayerInfo(
             height = getHeight(),
             weight = getWeight(),
             seasonExperience = getPlayerInfo("SEASON_EXP")?.toIntOrNull().getOrZero(),
-            jersey = getPlayerInfo("JERSEY")?.toIntOrNull() ?: return null,
+            jersey = jersey,
             position = getPlayerInfo("POSITION").getOrNA(),
             team = team,
             fromYear = getPlayerInfo("FROM_YEAR")?.toIntOrNull().getOrZero(),
@@ -94,17 +99,25 @@ data class RemotePlayerInfo(
             draftRound = getPlayerInfo("DRAFT_ROUND")?.toIntOrNull().getOrZero(),
             draftNumber = getPlayerInfo("DRAFT_NUMBER")?.toIntOrNull().getOrZero(),
             isGreatest75 = getPlayerInfo("GREATEST_75_FLAG") == "Y",
-            headlineStats = createPlayerCareerStats() ?: return null
+            headlineStats = stats
         )
     }
 
     private fun createPlayerCareerStats(): PlayerCareer.PlayerCareerInfo.HeadlineStats? {
+        val timeFrame = getPlayerStats("TimeFrame")
+        val points = getPlayerStats("PTS")?.toDoubleOrNull()
+        val assists = getPlayerStats("AST")?.toDoubleOrNull()
+        val rebounds = getPlayerStats("REB")?.toDoubleOrNull()
+        val impact = getPlayerStats("PIE")?.toDoubleOrNull()
+        val isTimeValid = timeFrame != null
+        val isStatsValid = points != null && assists != null && rebounds != null && impact != null
+        if (!isTimeValid || !isStatsValid) return null
         return PlayerCareer.PlayerCareerInfo.HeadlineStats(
-            getPlayerStats("TimeFrame") ?: return null,
-            getPlayerStats("PTS")?.toDoubleOrNull() ?: return null,
-            getPlayerStats("AST")?.toDoubleOrNull() ?: return null,
-            getPlayerStats("REB")?.toDoubleOrNull() ?: return null,
-            getPlayerStats("PIE")?.toDoubleOrNull() ?: return null
+            timeFrame.getOrError(),
+            points.getOrError(),
+            assists.getOrError(),
+            rebounds.getOrError(),
+            impact.getOrError()
         )
     }
 

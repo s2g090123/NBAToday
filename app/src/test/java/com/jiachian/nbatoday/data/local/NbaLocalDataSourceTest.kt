@@ -20,7 +20,7 @@ import com.jiachian.nbatoday.data.local.team.NBATeam
 import com.jiachian.nbatoday.data.remote.game.GameScoreUpdateData
 import com.jiachian.nbatoday.data.remote.game.GameStatusCode
 import com.jiachian.nbatoday.data.remote.game.GameUpdateData
-import com.jiachian.nbatoday.utils.getOrAssert
+import com.jiachian.nbatoday.utils.getOrError
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -116,8 +116,8 @@ class NbaLocalDataSourceTest {
                     gameStatusText = finalGame.gameStatusText,
                     homeTeam = finalGame.homeTeam,
                     awayTeam = finalGame.awayTeam,
-                    gameLeaders = finalGame.gameLeaders.getOrAssert(),
-                    teamLeaders = finalGame.teamLeaders.getOrAssert()
+                    gameLeaders = finalGame.gameLeaders.getOrError(),
+                    teamLeaders = finalGame.teamLeaders.getOrError()
                 )
             )
         )

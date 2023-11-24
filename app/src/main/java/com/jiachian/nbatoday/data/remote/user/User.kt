@@ -6,4 +6,8 @@ data class User(
     val points: Long?,
     val password: String?,
     val token: String?
-)
+) {
+    fun isAvailable(): Boolean {
+        return account != null && token != null
+    }
+}

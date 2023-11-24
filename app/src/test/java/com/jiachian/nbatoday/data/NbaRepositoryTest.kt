@@ -17,7 +17,7 @@ import com.jiachian.nbatoday.data.remote.RemoteTeamFactory
 import com.jiachian.nbatoday.data.remote.TestRemoteDataSource
 import com.jiachian.nbatoday.rule.CalendarRule
 import com.jiachian.nbatoday.utils.NbaUtils
-import com.jiachian.nbatoday.utils.getOrAssert
+import com.jiachian.nbatoday.utils.getOrError
 import io.mockk.every
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
@@ -361,7 +361,7 @@ class NbaRepositoryTest {
     @Test
     fun addPoints_checksDataStoreCorrect() = runTest {
         repository.login(UserAccount, UserPassword)
-        val originalPoint = dataStore.userData.value?.points.getOrAssert()
+        val originalPoint = dataStore.userData.value?.points.getOrError()
         repository.addPoints(UserPoints)
         assertThat(dataStore.userData.value?.points, `is`(originalPoint + UserPoints))
     }
@@ -370,11 +370,11 @@ class NbaRepositoryTest {
     fun bet_checksDataStoreCorrect() = runTest {
         repository.refreshSchedule()
         repository.login(UserAccount, UserPassword)
-        val originalPoint = dataStore.userData.value?.points.getOrAssert()
+        val originalPoint = dataStore.userData.value?.points.getOrError()
         repository.bet(FinalGameId, UserPoints, 0)
         val expectedGame = NbaGameAndBet(
             game = localDataSource.games.value.firstOrNull { it.gameId == FinalGameId }
-                .getOrAssert(),
+                .getOrError(),
             bets = listOf(
                 Bets(
                     account = UserAccount,

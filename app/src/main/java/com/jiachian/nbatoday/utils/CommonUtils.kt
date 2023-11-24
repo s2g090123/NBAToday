@@ -16,7 +16,7 @@ inline fun <reified T : Any> T?.getOrNA(): String = this?.toString() ?: NA
 
 inline fun <reified T : Any> T?.isNull(): Boolean = this == null
 
-inline fun <reified T : Any> T?.getValueOrAssert(): T {
+inline fun <reified T : Any> T?.getOrError(): T {
     return this ?: throw AssertionError("${T::class.simpleName} is expectedly nonNull.")
 }
 

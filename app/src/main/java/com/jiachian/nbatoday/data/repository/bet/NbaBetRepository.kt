@@ -14,8 +14,8 @@ class NbaBetRepository(
     private val user = userRepository.user
 
     override suspend fun bet(gameId: String, homePoints: Long, awayPoints: Long) {
-        val user = user.firstOrNull() ?: return
-        val account = user.account ?: return
+        val user = user.firstOrNull()
+        val account = user?.account ?: return
         val remainPoints = (user.points ?: 0) - homePoints - awayPoints
         if (remainPoints < 0) return
         isProgressingImp.value = true

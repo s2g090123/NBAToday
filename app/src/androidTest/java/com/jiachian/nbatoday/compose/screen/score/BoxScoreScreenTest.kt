@@ -14,7 +14,7 @@ import com.jiachian.nbatoday.data.TestRepository
 import com.jiachian.nbatoday.data.local.score.GameBoxScore
 import com.jiachian.nbatoday.data.remote.score.PlayerActiveStatus
 import com.jiachian.nbatoday.utils.assertPopupExist
-import com.jiachian.nbatoday.utils.getOrAssert
+import com.jiachian.nbatoday.utils.getOrError
 import com.jiachian.nbatoday.utils.onNodeWithMergedTag
 import com.jiachian.nbatoday.utils.onNodeWithTag
 import com.jiachian.nbatoday.utils.onPopup
@@ -73,8 +73,8 @@ class BoxScoreScreenTest : BaseAndroidTest() {
 
     @Test
     fun boxScore_checksGameInfoUI() {
-        val home = score.homeTeam.getOrAssert()
-        val away = score.awayTeam.getOrAssert()
+        val home = score.homeTeam.getOrError()
+        val away = score.awayTeam.getOrError()
         composeTestRule
             .onNodeWithMergedTag("ScoreScreen_Text_Date")
             .assertTextEquals(score.gameDate)
@@ -137,7 +137,7 @@ class BoxScoreScreenTest : BaseAndroidTest() {
     @Test
     fun boxScore_checksHomePlayerStatsUI() {
         val scoreLabel = LabelHelper.createScoreLabel()
-        val home = score.homeTeam.getOrAssert()
+        val home = score.homeTeam.getOrError()
         composeTestRule
             .onNodeWithMergedTag("ScoreDetail_Tab_Home")
             .performClick()
@@ -199,7 +199,7 @@ class BoxScoreScreenTest : BaseAndroidTest() {
     @Test
     fun boxScore_checksAwayPlayerStatsUI() {
         val scoreLabel = LabelHelper.createScoreLabel()
-        val away = score.awayTeam.getOrAssert()
+        val away = score.awayTeam.getOrError()
         composeTestRule
             .onNodeWithMergedTag("ScoreDetail_Tab_Away")
             .performClick()
@@ -260,8 +260,8 @@ class BoxScoreScreenTest : BaseAndroidTest() {
 
     @Test
     fun boxScore_checksTeamStatsUI() {
-        val home = score.homeTeam.getOrAssert().statistics.getOrAssert()
-        val away = score.awayTeam.getOrAssert().statistics.getOrAssert()
+        val home = score.homeTeam.getOrError().statistics.getOrError()
+        val away = score.awayTeam.getOrError().statistics.getOrError()
         composeTestRule
             .onNodeWithMergedTag("ScoreDetail_Tab_TeamStats")
             .performClick()
@@ -388,10 +388,10 @@ class BoxScoreScreenTest : BaseAndroidTest() {
 
     @Test
     fun boxScore_checksLeaderStatsUI() {
-        val homeLeader = viewModel.homeLeader.value.getOrAssert()
-        val awayLeader = viewModel.awayLeader.value.getOrAssert()
-        val homeStats = homeLeader.statistics.getOrAssert()
-        val awayStats = awayLeader.statistics.getOrAssert()
+        val homeLeader = viewModel.homeLeader.value.getOrError()
+        val awayLeader = viewModel.awayLeader.value.getOrError()
+        val homeStats = homeLeader.statistics.getOrError()
+        val awayStats = awayLeader.statistics.getOrError()
         composeTestRule
             .onNodeWithMergedTag("ScoreDetail_Tab_LeaderStats")
             .performClick()
@@ -515,7 +515,7 @@ class BoxScoreScreenTest : BaseAndroidTest() {
         label: ScoreLabel,
         player: GameBoxScore.BoxScoreTeam.Player
     ): String {
-        val statistics = player.statistics.getOrAssert()
+        val statistics = player.statistics.getOrError()
         return when (label.textRes) {
             R.string.label_min -> statistics.minutes
             R.string.label_fgm -> statistics.fieldGoalProportion
