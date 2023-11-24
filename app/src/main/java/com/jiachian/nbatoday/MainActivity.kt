@@ -65,6 +65,9 @@ import com.jiachian.nbatoday.compose.theme.NBATodayTheme
 import com.jiachian.nbatoday.utils.LocalActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
+private const val SplashOffsetAnimationDurationMs = 2000
+
+
 class MainActivity : ComponentActivity() {
 
     private val viewModel by viewModel<MainViewModel>()
@@ -116,7 +119,7 @@ private fun NbaScreen(viewModel: MainViewModel) {
     ) {
         composable("splash") {
             SplashScreen(
-                listOf(MaterialTheme.colors.secondary.copy(0.25f), MaterialTheme.colors.secondary)
+                listOf(MaterialTheme.colors.secondary.copy(ColorTransparency25), MaterialTheme.colors.secondary)
             )
         }
         composable("home") {
@@ -137,7 +140,7 @@ private fun SplashScreen(
 ) {
     val infiniteAnimation = rememberInfiniteTransition()
     val colorAnimation by infiniteAnimation.animateColor(
-        initialValue = MaterialTheme.colors.secondary.copy(0.25f),
+        initialValue = MaterialTheme.colors.secondary.copy(ColorTransparency25),
         targetValue = MaterialTheme.colors.secondary,
         animationSpec = InfiniteRepeatableSpec(
             animation = tween(durationMillis = 300, easing = FastOutSlowInEasing),
@@ -148,7 +151,7 @@ private fun SplashScreen(
         initialValue = 0f,
         targetValue = 1f,
         animationSpec = infiniteRepeatable(
-            animation = tween(2000, easing = LinearEasing),
+            animation = tween(SplashOffsetAnimationDurationMs, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse
         )
     )

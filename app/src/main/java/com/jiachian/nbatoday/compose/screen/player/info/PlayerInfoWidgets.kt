@@ -36,6 +36,8 @@ import com.jiachian.nbatoday.compose.widget.TeamLogoImage
 import com.jiachian.nbatoday.data.local.player.PlayerCareer
 import com.jiachian.nbatoday.data.local.team.NBATeam
 
+private const val PlayerImageAspectRatio = 1.36f
+
 @Composable
 fun PlayerCareerInfo(
     modifier: Modifier = Modifier,
@@ -84,7 +86,7 @@ private fun TeamAndPlayerImage(
             modifier = Modifier
                 .padding(top = 16.dp, end = 16.dp)
                 .weight(2f)
-                .aspectRatio(1.36f),
+                .aspectRatio(PlayerImageAspectRatio),
             playerId = playerId
         )
     }

@@ -3,6 +3,9 @@ package com.jiachian.nbatoday.utils
 import android.content.Context
 import android.widget.Toast
 import androidx.annotation.StringRes
+import com.jiachian.nbatoday.FirstRank
+import com.jiachian.nbatoday.SecondRank
+import com.jiachian.nbatoday.ThirdRank
 import com.jiachian.nbatoday.data.local.team.NBATeam
 import com.jiachian.nbatoday.data.local.team.teamOfficial
 import com.jiachian.nbatoday.data.remote.game.GameStatusCode
@@ -26,9 +29,9 @@ fun NBATeam?.getLogoRes(): Int = this?.logoRes ?: teamOfficial.logoRes
 
 fun Int.toRank(): String {
     return when (this) {
-        1 -> "1st"
-        2 -> "2nd"
-        3 -> "3rd"
+        FirstRank -> "1st"
+        SecondRank -> "2nd"
+        ThirdRank -> "3rd"
         else -> "${this}th"
     }
 }

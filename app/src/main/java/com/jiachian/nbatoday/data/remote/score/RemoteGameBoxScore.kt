@@ -1,6 +1,10 @@
 package com.jiachian.nbatoday.data.remote.score
 
 import android.annotation.SuppressLint
+import com.jiachian.nbatoday.FirstPeriod
+import com.jiachian.nbatoday.ForthPeriod
+import com.jiachian.nbatoday.SecondPeriod
+import com.jiachian.nbatoday.ThirdPeriod
 import com.jiachian.nbatoday.data.local.score.GameBoxScore
 import com.jiachian.nbatoday.data.local.team.NBATeam
 import com.jiachian.nbatoday.data.local.team.teamOfficial
@@ -12,6 +16,11 @@ import com.jiachian.nbatoday.utils.getOrZero
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Calendar
+
+private const val TotalPeriod = 4
+
+private const val PercentageMultiplier = 1000
+private const val PercentageDivider = 10.0
 
 data class RemoteGameBoxScore(
     val game: Game?
@@ -46,11 +55,11 @@ data class RemoteGameBoxScore(
                     val period = period ?: 0
                     val periodLabel = when {
                         period <= 0 -> ""
-                        period == 1 -> "1st"
-                        period == 2 -> "2nd"
-                        period == 3 -> "3rd"
-                        period == 4 -> "4th"
-                        else -> "OT${period - 4}"
+                        period == FirstPeriod -> "1st"
+                        period == SecondPeriod -> "2nd"
+                        period == ThirdPeriod -> "3rd"
+                        period == ForthPeriod -> "4th"
+                        else -> "OT${period - TotalPeriod}"
                     }
                     return GameBoxScore.BoxScoreTeam.Period(
                         period = period,
@@ -325,4 +334,4 @@ data class RemoteGameBoxScore(
     }
 }
 
-private fun Double.toPercentage(): Double = times(1000).toInt().div(10.0)
+private fun Double.toPercentage(): Double = times(PercentageMultiplier).toInt().div(PercentageDivider)

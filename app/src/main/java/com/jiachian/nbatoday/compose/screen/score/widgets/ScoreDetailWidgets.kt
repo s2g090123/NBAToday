@@ -14,7 +14,12 @@ import androidx.compose.ui.unit.dp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
+import com.jiachian.nbatoday.ScrollHeightRatio
 import com.jiachian.nbatoday.compose.screen.score.BoxScoreViewModel
+import com.jiachian.nbatoday.compose.screen.score.tab.BoxScoreTab.Companion.AwayIndex
+import com.jiachian.nbatoday.compose.screen.score.tab.BoxScoreTab.Companion.HomeIndex
+import com.jiachian.nbatoday.compose.screen.score.tab.BoxScoreTab.Companion.LeaderIndex
+import com.jiachian.nbatoday.compose.screen.score.tab.BoxScoreTab.Companion.StatsIndex
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -33,43 +38,43 @@ fun ScoreDetailPager(
         userScrollEnabled = false
     ) { index ->
         when (index) {
-            0 -> {
+            HomeIndex -> {
                 PlayerStatistics(
                     modifier = Modifier
                         .testTag("ScoreDetail_PlayerStatistics_Home")
-                        .height((LocalConfiguration.current.screenHeightDp * 0.7f).dp)
+                        .height((LocalConfiguration.current.screenHeightDp * ScrollHeightRatio).dp)
                         .fillMaxWidth(),
                     scoreRowData = homeScoreRowData,
                     labels = viewModel.statsLabels,
                     showPlayerCareer = viewModel::openPlayerCareer
                 )
             }
-            1 -> {
+            AwayIndex -> {
                 PlayerStatistics(
                     modifier = Modifier
                         .testTag("ScoreDetail_PlayerStatistics_Away")
-                        .height((LocalConfiguration.current.screenHeightDp * 0.7f).dp)
+                        .height((LocalConfiguration.current.screenHeightDp * ScrollHeightRatio).dp)
                         .fillMaxWidth(),
                     scoreRowData = awayScoreRowData,
                     labels = viewModel.statsLabels,
                     showPlayerCareer = viewModel::openPlayerCareer
                 )
             }
-            2 -> {
+            StatsIndex -> {
                 TeamStatistics(
                     modifier = Modifier
                         .testTag("ScoreDetail_TeamStatistics")
-                        .heightIn(max = (LocalConfiguration.current.screenHeightDp * 0.7f).dp)
+                        .heightIn(max = (LocalConfiguration.current.screenHeightDp * ScrollHeightRatio).dp)
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp),
                     viewModel = viewModel
                 )
             }
-            3 -> {
+            LeaderIndex -> {
                 LeaderStatistics(
                     modifier = Modifier
                         .testTag("ScoreDetail_LeaderStatistics")
-                        .heightIn(max = (LocalConfiguration.current.screenHeightDp * 0.7f).dp)
+                        .heightIn(max = (LocalConfiguration.current.screenHeightDp * ScrollHeightRatio).dp)
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp),
                     viewModel = viewModel

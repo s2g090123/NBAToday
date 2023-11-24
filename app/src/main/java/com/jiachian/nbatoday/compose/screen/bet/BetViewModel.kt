@@ -19,6 +19,26 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+private const val RandomBound = 359
+private const val TurnTableDuration = 8000
+private const val TurnTableOneRoundAngle = 360
+private const val TurnTableOneRoundAngleHalf = TurnTableOneRoundAngle / 2
+private const val OneSecondMs = 1000
+private const val MinOneStep = 2
+private const val MaxOneStep = 10
+private const val MinDelay = 15
+private const val MaxDelay = 25
+private const val StepDelay = 500L
+
+private const val FirstSectorMinAngle = 0f
+private const val FirstSectorMaxAngle = 89f
+private const val SecondSectorMinAngle = 90f
+private const val SecondSectorMaxAngle = 179f
+private const val ThirdSectorMinAngle = 180f
+private const val ThirdSectorMaxAngle = 269f
+
+private const val MaxMagnification = 4
+
 class BetViewModel(
     account: String,
     private val repository: BetRepository,
@@ -86,40 +106,40 @@ class BetViewModel(
     fun startTurnTable(turnTableData: BetsTurnTableData) {
         coroutineScope.launch {
             isRefreshingImp.value = true
-            rewardAngleImp.value = Random().nextInt(359).toFloat()
+            rewardAngleImp.value = Random().nextInt(RandomBound).toFloat()
             val rewardPoints = getRewardPoints(turnTableData, rewardAngle.value)
             withContext(dispatcherProvider.io) {
                 repository.addPoints(rewardPoints)
             }
             isRefreshingImp.value = false
             isTurnTableStartingImp.value = true
-            var remainTime = 8000
+            var remainTime = TurnTableDuration
             withContext(dispatcherProvider.io) {
                 while (remainTime > 0 || currentAngle.value != rewardAngle.value) {
                     val step = when {
                         remainTime <= 0 -> {
                             if (
-                                (currentAngle.value > rewardAngle.value && 360 - currentAngle.value + rewardAngle.value > 180) ||
-                                rewardAngle.value - currentAngle.value > 180
+                                (currentAngle.value > rewardAngle.value && TurnTableOneRoundAngle - currentAngle.value + rewardAngle.value > TurnTableOneRoundAngleHalf) ||
+                                rewardAngle.value - currentAngle.value > TurnTableOneRoundAngleHalf
                             ) {
                                 2
                             } else {
                                 1
                             }
                         }
-                        else -> (remainTime * 2 / 1000).coerceIn(2, 10)
+                        else -> (remainTime * 2 / OneSecondMs).coerceIn(MinOneStep, MaxOneStep)
                     }
-                    val delay = if (remainTime <= 0) 25 else 15
+                    val delay = if (remainTime <= 0) MaxDelay else MinDelay
                     delay(delay.toLong())
                     remainTime -= delay
                     currentAngleImp.value =
                         if (remainTime <= 0 && currentAngle.value < rewardAngle.value) {
                             (currentAngle.value + step).coerceAtMost(rewardAngle.value)
                         } else {
-                            (currentAngle.value + step) % 360
+                            (currentAngle.value + step) % TurnTableOneRoundAngle
                         }
                 }
-                delay(500)
+                delay(StepDelay)
                 closeTurnTable()
                 showRewardPointsImp.value = rewardPoints
             }
@@ -135,13 +155,13 @@ class BetViewModel(
         angle: Float
     ): Long {
         return when (angle) {
-            in 0f..89f -> {
+            in FirstSectorMinAngle..FirstSectorMaxAngle -> {
                 -abs(turnTableData.winPoints) + abs(turnTableData.losePoints)
             }
-            in 90f..179f -> {
-                abs(turnTableData.winPoints) * 4
+            in SecondSectorMinAngle..SecondSectorMaxAngle -> {
+                abs(turnTableData.winPoints) * MaxMagnification
             }
-            in 180f..269f -> {
+            in ThirdSectorMinAngle..ThirdSectorMaxAngle -> {
                 -abs(turnTableData.winPoints)
             }
             else -> {

@@ -8,6 +8,11 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 abstract class RemoteSource {
+    companion object {
+        private const val ConnectTimeOut = 5L
+        private const val ReadTimeOut = 20L
+    }
+
     private val gson = GsonBuilder().setLenient().create()
 
     protected val retrofit: Retrofit = Retrofit.Builder()
@@ -18,8 +23,8 @@ abstract class RemoteSource {
 
     private fun buildHttpClient(): OkHttpClient {
         return OkHttpClient.Builder()
-            .connectTimeout(5, TimeUnit.SECONDS)
-            .readTimeout(20, TimeUnit.SECONDS)
+            .connectTimeout(ConnectTimeOut, TimeUnit.SECONDS)
+            .readTimeout(ReadTimeOut, TimeUnit.SECONDS)
             .build()
     }
 }

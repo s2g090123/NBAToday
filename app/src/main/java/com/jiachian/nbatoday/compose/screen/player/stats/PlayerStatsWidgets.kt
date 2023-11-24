@@ -40,6 +40,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.jiachian.nbatoday.ColorTransparency25
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.screen.player.CareerStatsLabel
 import com.jiachian.nbatoday.compose.screen.player.CareerStatsRowData
@@ -190,7 +191,7 @@ private fun PlayerStatsText(
             .testTag("PlayerCareerStats_Text_Stats")
             .width(rowData.textWidth)
             .height(40.dp)
-            .background(if (rowData.isFocus) MaterialTheme.colors.secondary.copy(0.25f) else Color.Transparent)
+            .background(if (rowData.isFocus) MaterialTheme.colors.secondary.copy(ColorTransparency25) else Color.Transparent)
             .padding(8.dp),
         text = rowData.value,
         textAlign = if (rowData.isFocus) TextAlign.Center else rowData.textAlign,
@@ -233,7 +234,7 @@ private fun PlayerStatsLabel(
         modifier = Modifier
             .width(label.textWidth)
             .height(40.dp)
-            .background(if (isFocus) MaterialTheme.colors.secondary.copy(0.25f) else Color.Transparent)
+            .background(if (isFocus) MaterialTheme.colors.secondary.copy(ColorTransparency25) else Color.Transparent)
             .rippleClickable { onClick() }
             .padding(8.dp)
     ) {
@@ -262,7 +263,7 @@ private fun PlayerStatsYearContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(40.dp)
-                    .background(if (isFocus) MaterialTheme.colors.secondary.copy(0.25f) else Color.Transparent)
+                    .background(if (isFocus) MaterialTheme.colors.secondary.copy(ColorTransparency25) else Color.Transparent)
                     .rippleClickable { onClickLabel() }
                     .padding(8.dp),
                 text = "By Year",
@@ -305,7 +306,7 @@ private fun PlayerStatsYearColumn(
                         .testTag("PlayerCareerStats_Row_Year")
                         .fillMaxWidth()
                         .height(40.dp)
-                        .background(if (isFocus) MaterialTheme.colors.secondary.copy(0.25f) else Color.Transparent),
+                        .background(if (isFocus) MaterialTheme.colors.secondary.copy(ColorTransparency25) else Color.Transparent),
                     time = data.timeFrame,
                     teamNameAbbr = data.teamNameAbbr
                 )

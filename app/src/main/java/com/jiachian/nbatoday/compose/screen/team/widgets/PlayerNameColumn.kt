@@ -20,6 +20,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.jiachian.nbatoday.ColorTransparency25
 import com.jiachian.nbatoday.compose.screen.team.TeamViewModel
 import com.jiachian.nbatoday.compose.widget.DisableOverscroll
 import com.jiachian.nbatoday.data.local.player.PlayerStats
@@ -43,7 +44,7 @@ fun PlayerNamesColumn(
             stickyHeader {
                 PlayerNamesHeader(
                     modifier = Modifier.background(viewModel.colors.primary),
-                    dividerColor = viewModel.colors.secondary.copy(0.25f),
+                    dividerColor = viewModel.colors.secondary.copy(ColorTransparency25),
                 )
             }
             itemsIndexed(players) { index, stat ->
@@ -102,7 +103,7 @@ private fun PlayerName(
         if (divider) {
             Divider(
                 modifier = Modifier.fillMaxWidth(),
-                color = textColor.copy(0.25f),
+                color = textColor.copy(ColorTransparency25),
                 thickness = 1.dp,
             )
         }

@@ -55,6 +55,7 @@ import coil.compose.AsyncImage
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 import com.google.accompanist.flowlayout.FlowRow
+import com.jiachian.nbatoday.ColorTransparency25
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.screen.card.GameStatusCard
 import com.jiachian.nbatoday.compose.widget.DisableOverscroll
@@ -65,6 +66,8 @@ import com.jiachian.nbatoday.utils.NbaUtils
 import com.jiachian.nbatoday.utils.noRippleClickable
 import com.jiachian.nbatoday.utils.rippleClickable
 import java.util.Date
+
+private const val DaysPerWeek = 7
 
 @Composable
 fun GameCalendarScreen(
@@ -100,7 +103,6 @@ fun GameCalendarScreen(
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun CalendarTopBar(
     modifier: Modifier = Modifier,
@@ -198,7 +200,7 @@ private fun CalendarArrowButton(
         Icon(
             painter = painterResource(if (isLeft) R.drawable.ic_black_left_arrow else R.drawable.ic_black_right_arrow),
             contentDescription = null,
-            tint = MaterialTheme.colors.secondaryVariant.copy(if (enabled) 1f else 0.25f)
+            tint = MaterialTheme.colors.secondaryVariant.copy(if (enabled) 1f else ColorTransparency25)
         )
     }
 }
@@ -247,7 +249,7 @@ private fun CalendarTable(
     DisableOverscroll {
         LazyVerticalGrid(
             modifier = modifier,
-            columns = GridCells.Fixed(7)
+            columns = GridCells.Fixed(DaysPerWeek)
         ) {
             itemsIndexed(calendarList) { index, dateData ->
                 val games = gameList.getOrNull(index)
@@ -314,7 +316,7 @@ private fun DayAbbrTextRow(
     Row(
         modifier = modifier
     ) {
-        repeat(7) {
+        repeat(DaysPerWeek) {
             Text(
                 modifier = Modifier.weight(1f),
                 text = when (it) {
@@ -368,7 +370,7 @@ private fun DateBox(
             color = if (isSelected && dateData.isCurrentMonth) {
                 MaterialTheme.colors.secondary
             } else {
-                MaterialTheme.colors.secondaryVariant.copy(if (dateData.isCurrentMonth) 1f else 0.25f)
+                MaterialTheme.colors.secondaryVariant.copy(if (dateData.isCurrentMonth) 1f else ColorTransparency25)
             },
             fontSize = 12.sp,
             fontWeight = FontWeight.Medium

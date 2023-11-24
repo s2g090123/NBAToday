@@ -23,6 +23,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.withContext
 
+private const val DaysPerWeek = 7
+
 class CalendarViewModel(
     val date: Date,
     repository: GameRepository,
@@ -162,7 +164,7 @@ class CalendarViewModel(
             }
             val data = mutableListOf<CalendarData>()
             while (cal.get(Calendar.YEAR) <= year && cal.get(Calendar.MONTH) + 1 <= month) {
-                repeat(7) {
+                repeat(DaysPerWeek) {
                     val currentMonth = cal.get(Calendar.MONTH) + 1
                     val currentDay = cal.get(Calendar.DAY_OF_MONTH)
                     data.add(
@@ -200,7 +202,7 @@ class CalendarViewModel(
             }
             val data = mutableListOf<List<NbaGameAndBet>>()
             while (cal.get(Calendar.YEAR) <= year && cal.get(Calendar.MONTH) + 1 <= month) {
-                repeat(7) {
+                repeat(DaysPerWeek) {
                     data.add(games.filter { it.game.gameDate.time == cal.timeInMillis })
                     cal.add(Calendar.DAY_OF_MONTH, 1)
                 }

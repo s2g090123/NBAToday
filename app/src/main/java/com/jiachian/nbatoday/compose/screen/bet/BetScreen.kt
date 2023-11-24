@@ -50,6 +50,8 @@ import com.jiachian.nbatoday.utils.noRippleClickable
 import com.jiachian.nbatoday.utils.rippleClickable
 import kotlin.math.abs
 
+private const val CrownIconRotationZ = -45f
+
 @Composable
 fun BetScreen(
     viewModel: BetViewModel,
@@ -276,7 +278,7 @@ private fun BetCardTeamInfo(
                         .graphicsLayer {
                             translationX = -6.dp.toPx()
                             translationY = -14.dp.toPx()
-                            rotationZ = -45f
+                            rotationZ = CrownIconRotationZ
                         },
                     painter = painterResource(R.drawable.ic_black_crown),
                     contentDescription = null,

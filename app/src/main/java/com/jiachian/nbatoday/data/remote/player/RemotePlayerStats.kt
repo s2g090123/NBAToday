@@ -1,6 +1,7 @@
 package com.jiachian.nbatoday.data.remote.player
 
 import com.google.gson.annotations.SerializedName
+import com.jiachian.nbatoday.OneHundredPercentage
 import com.jiachian.nbatoday.data.local.player.PlayerCareer
 import com.jiachian.nbatoday.data.local.player.PlayerCareerStatsUpdate
 import com.jiachian.nbatoday.utils.getOrNA
@@ -116,5 +117,5 @@ data class RemotePlayerStats(
         )
     }
 
-    private fun Double.toPercentage(): Double = this * 100
+    private fun Double.toPercentage(): Double = this * OneHundredPercentage
 }

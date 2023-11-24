@@ -55,6 +55,11 @@ import com.jiachian.nbatoday.utils.isPhone
 import com.jiachian.nbatoday.utils.isPortrait
 import com.jiachian.nbatoday.utils.rippleClickable
 
+private const val GridCellsStyle1 = 2
+private const val GridCellsStyle2 = 3
+private const val GridCellsStyle3 = 4
+private const val GridCellsStyle4 = 6
+
 @Composable
 fun UserPage(
     modifier: Modifier,
@@ -112,10 +117,10 @@ private fun ThemesTable(
         modifier = modifier,
         columns = GridCells.Fixed(
             when {
-                isPhone && isPortrait -> 2
-                isPhone && !isPortrait -> 3
-                !isPhone && isPortrait -> 4
-                else -> 6
+                isPhone && isPortrait -> GridCellsStyle1
+                isPhone && !isPortrait -> GridCellsStyle2
+                !isPhone && isPortrait -> GridCellsStyle3
+                else -> GridCellsStyle4
             }
         ),
         contentPadding = PaddingValues(16.dp),

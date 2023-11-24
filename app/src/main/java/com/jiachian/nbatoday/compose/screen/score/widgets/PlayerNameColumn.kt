@@ -21,6 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.jiachian.nbatoday.ColorTransparency50
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.screen.score.data.ScoreRowData
 import com.jiachian.nbatoday.compose.widget.DisableOverscroll
@@ -90,7 +91,7 @@ private fun PlayerColumn(
                         text = rowData.nameAbbr,
                         textAlign = TextAlign.Start,
                         fontSize = 16.sp,
-                        color = MaterialTheme.colors.secondary.copy(if (rowData.notPlaying) 0.5f else 1f),
+                        color = MaterialTheme.colors.secondary.copy(if (rowData.notPlaying) ColorTransparency50 else 1f),
                         maxLines = 1,
                         softWrap = false
                     )

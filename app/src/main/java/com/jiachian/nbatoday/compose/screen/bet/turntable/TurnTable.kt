@@ -25,6 +25,12 @@ import androidx.compose.ui.unit.dp
 import com.jiachian.nbatoday.compose.screen.bet.BetViewModel
 import com.jiachian.nbatoday.compose.widget.BackHandle
 
+private const val TurnTableBorderWidthScale = 3
+private const val FirstSectorRotation = 45f
+private const val SecondSectorRotation = 135f
+private const val ThirdSectorRotation = 225f
+private const val ForthSectorRotation = 315f
+
 @OptIn(ExperimentalTextApi::class)
 @Composable
 fun BetTurnTable(
@@ -103,14 +109,14 @@ private fun TurnTableContent(
 ) {
     Canvas(modifier = modifier) {
         val borderWidth = 2.dp.toPx()
-        val turnTableSize = size.width - borderWidth * 3
+        val turnTableSize = size.width - borderWidth * TurnTableBorderWidthScale
         drawTurnTableBottom(borderWidth = borderWidth)
         drawTurnTableArc(
             borderWidth = borderWidth,
             turnTableSize = turnTableSize
         )
         drawTurnTableLine(borderWidth = borderWidth)
-        rotate(45f) {
+        rotate(FirstSectorRotation) {
             drawText(
                 textMeasurer = textMeasurer,
                 text = "X2\n-0",
@@ -120,7 +126,7 @@ private fun TurnTableContent(
                 borderWidth = borderWidth
             )
         }
-        rotate(135f) {
+        rotate(SecondSectorRotation) {
             drawText(
                 textMeasurer = textMeasurer,
                 text = "+0",
@@ -130,7 +136,7 @@ private fun TurnTableContent(
                 borderWidth = borderWidth
             )
         }
-        rotate(225f) {
+        rotate(ThirdSectorRotation) {
             drawText(
                 textMeasurer = textMeasurer,
                 text = "X5",
@@ -140,7 +146,7 @@ private fun TurnTableContent(
                 borderWidth = borderWidth
             )
         }
-        rotate(315f) {
+        rotate(ForthSectorRotation) {
             drawText(
                 textMeasurer = textMeasurer,
                 text = "+0\n-0",

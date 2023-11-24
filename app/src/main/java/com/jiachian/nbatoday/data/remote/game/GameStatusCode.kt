@@ -2,13 +2,17 @@ package com.jiachian.nbatoday.data.remote.game
 
 import com.google.gson.annotations.SerializedName
 
+private const val ComingSoonStatusCode = 1
+private const val PlayingStatusCode = 2
+private const val FinalStatusCode = 3
+
 enum class GameStatusCode(val status: Int) {
-    @SerializedName("1")
-    COMING_SOON(1), // 比賽尚未開始
+    @SerializedName(ComingSoonStatusCode.toString())
+    COMING_SOON(ComingSoonStatusCode), // 比賽尚未開始
 
-    @SerializedName("2")
-    PLAYING(2), // 比賽進行中
+    @SerializedName(PlayingStatusCode.toString())
+    PLAYING(PlayingStatusCode), // 比賽進行中
 
-    @SerializedName("3")
-    FINAL(3) // 比賽已經結束
+    @SerializedName(FinalStatusCode.toString())
+    FINAL(FinalStatusCode) // 比賽已經結束
 }

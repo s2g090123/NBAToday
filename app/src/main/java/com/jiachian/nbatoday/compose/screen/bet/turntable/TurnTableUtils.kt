@@ -16,6 +16,9 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+private const val TableBorderWidthScale = 3
+private const val TableQuarter = 4f
+
 fun DrawScope.drawTurnTableBottom(borderWidth: Float) {
     drawCircle(
         color = Color.Black,
@@ -37,7 +40,7 @@ fun DrawScope.drawTurnTableArc(
         startAngle = -90f,
         sweepAngle = 90f,
         useCenter = true,
-        topLeft = Offset(borderWidth * 3 / 2, borderWidth * 3 / 2),
+        topLeft = Offset(borderWidth * TableBorderWidthScale / 2, borderWidth * TableBorderWidthScale / 2),
         size = Size(turnTableSize, turnTableSize)
     )
     drawArc(
@@ -45,7 +48,7 @@ fun DrawScope.drawTurnTableArc(
         startAngle = 0f,
         sweepAngle = 90f,
         useCenter = true,
-        topLeft = Offset(borderWidth * 3 / 2, borderWidth * 3 / 2),
+        topLeft = Offset(borderWidth * TableBorderWidthScale / 2, borderWidth * TableBorderWidthScale / 2),
         size = Size(turnTableSize, turnTableSize)
     )
     drawArc(
@@ -53,7 +56,7 @@ fun DrawScope.drawTurnTableArc(
         startAngle = 90f,
         sweepAngle = 90f,
         useCenter = true,
-        topLeft = Offset(borderWidth * 3 / 2, borderWidth * 3 / 2),
+        topLeft = Offset(borderWidth * TableBorderWidthScale / 2, borderWidth * TableBorderWidthScale / 2),
         size = Size(turnTableSize, turnTableSize)
     )
     drawArc(
@@ -61,7 +64,7 @@ fun DrawScope.drawTurnTableArc(
         startAngle = 180f,
         sweepAngle = 90f,
         useCenter = true,
-        topLeft = Offset(borderWidth * 3 / 2, borderWidth * 3 / 2),
+        topLeft = Offset(borderWidth * TableBorderWidthScale / 2, borderWidth * TableBorderWidthScale / 2),
         size = Size(turnTableSize, turnTableSize)
     )
 }
@@ -71,14 +74,14 @@ fun DrawScope.drawTurnTableLine(
 ) {
     drawLine(
         color = Color.Red,
-        start = Offset(borderWidth * 3 / 2, size.height / 2f),
-        end = Offset(size.width - borderWidth * 3 / 2, size.height / 2f),
+        start = Offset(borderWidth * TableBorderWidthScale / 2, size.height / 2f),
+        end = Offset(size.width - borderWidth * TableBorderWidthScale / 2, size.height / 2f),
         strokeWidth = 4.dp.toPx()
     )
     drawLine(
         color = Color.Red,
-        start = Offset(size.width / 2f, borderWidth * 3 / 2),
-        end = Offset(size.width / 2f, size.height - borderWidth * 3 / 2),
+        start = Offset(size.width / 2f, borderWidth * TableBorderWidthScale / 2),
+        end = Offset(size.width / 2f, size.height - borderWidth * TableBorderWidthScale / 2),
         strokeWidth = 4.dp.toPx()
     )
 }
@@ -103,7 +106,7 @@ fun DrawScope.drawText(
         ),
         topLeft = Offset(
             center.x - textSize.width / 2f,
-            borderWidth * 3 / 2 + tableSize / 4f - textSize.height / 2f - 12.dp.toPx()
+            borderWidth * TableBorderWidthScale / 2 + tableSize / TableQuarter - textSize.height / 2f - 12.dp.toPx()
         )
     )
 }

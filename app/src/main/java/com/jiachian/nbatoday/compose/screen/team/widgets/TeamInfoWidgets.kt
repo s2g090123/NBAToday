@@ -22,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.jiachian.nbatoday.ColorTransparency25
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.screen.team.TeamViewModel
 import com.jiachian.nbatoday.compose.widget.TeamLogoImage
@@ -190,7 +191,7 @@ private fun TeamRankBox(
                 modifier = Modifier
                     .fillMaxHeight()
                     .width(1.dp),
-                color = textColor.copy(0.25f)
+                color = textColor.copy(ColorTransparency25)
             )
         }
     }

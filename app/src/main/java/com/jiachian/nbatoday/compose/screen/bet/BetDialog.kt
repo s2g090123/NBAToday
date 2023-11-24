@@ -31,6 +31,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.jiachian.nbatoday.ColorTransparency25
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.widget.CustomOutlinedTextField
 import com.jiachian.nbatoday.compose.widget.TeamLogoImage
@@ -96,7 +97,7 @@ private fun BetDialogBottomButtons(
                 .rippleClickable(isConfirmEnable) { onClickConfirm() }
                 .padding(10.dp),
             text = stringResource(R.string.bet_confirm),
-            color = MaterialTheme.colors.primary.copy(if (isConfirmEnable) 1f else 0.25f),
+            color = MaterialTheme.colors.primary.copy(if (isConfirmEnable) 1f else ColorTransparency25),
             fontSize = 16.sp,
             fontWeight = FontWeight.Medium
         )
