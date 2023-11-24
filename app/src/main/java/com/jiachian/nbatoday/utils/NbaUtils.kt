@@ -5,6 +5,7 @@ import com.jiachian.nbatoday.CdnBaseUrl
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
+import java.util.Locale
 import java.util.TimeZone
 
 object NbaUtils {
@@ -34,7 +35,7 @@ object NbaUtils {
     }
 
     fun formatDate(year: Int, month: Int, day: Int): String {
-        return String.format("%d-%d-%d", year, month, day)
+        return String.format(Locale.US, "%d-%d-%d", year, month, day)
     }
 
     @SuppressLint("SimpleDateFormat")
