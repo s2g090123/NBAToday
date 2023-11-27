@@ -12,7 +12,12 @@ class NbaBetLocalSource(
         return betDao.getBetsAndGamesByUser(account)
     }
 
-    override suspend fun insertBet(account: String, gameId: String, homePoints: Long, awayPoints: Long) {
+    override suspend fun insertBet(
+        account: String,
+        gameId: String,
+        homePoints: Long,
+        awayPoints: Long
+    ) {
         val bets = Bets(
             account = account,
             gameId = gameId,
