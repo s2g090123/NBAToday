@@ -4,7 +4,7 @@ import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.jiachian.nbatoday.data.local.team.NBATeam
 
-class NBATeamConverter(private val gson: Gson = generalGson) {
+class NBATeamConverter(private val gson: Gson = typeAdapterGson) {
 
     @TypeConverter
     fun from(value: NBATeam): String {

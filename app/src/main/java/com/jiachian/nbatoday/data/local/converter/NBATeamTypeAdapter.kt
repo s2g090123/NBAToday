@@ -13,7 +13,7 @@ import com.jiachian.nbatoday.data.local.team.NBATeam
 import com.jiachian.nbatoday.data.local.team.teamOfficial
 import java.lang.reflect.Type
 
-val generalGson: Gson = GsonBuilder()
+val typeAdapterGson: Gson = GsonBuilder()
     .registerTypeAdapter(NBATeam::class.java, NBATeamTypeAdapter())
     .create()
 
