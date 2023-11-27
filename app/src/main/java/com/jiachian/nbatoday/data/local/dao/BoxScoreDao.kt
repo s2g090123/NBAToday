@@ -12,12 +12,12 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface BoxScoreDao {
-    @Update(entity = NbaGame::class, onConflict = OnConflictStrategy.REPLACE)
-    suspend fun updateGamesScore(games: List<GameScoreUpdateData>)
-
     @Query("SELECT * FROM nba_game_box_score WHERE game_id == :gameId")
     fun getGameBoxScore(gameId: String): Flow<GameBoxScore?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertGameBoxScore(boxScore: GameBoxScore)
+
+    @Update(entity = NbaGame::class, onConflict = OnConflictStrategy.REPLACE)
+    suspend fun updateGamesScore(games: List<GameScoreUpdateData>)
 }
