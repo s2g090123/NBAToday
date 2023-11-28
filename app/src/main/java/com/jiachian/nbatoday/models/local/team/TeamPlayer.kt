@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 import com.jiachian.nbatoday.utils.decimalFormat
 
 @Entity(tableName = "team_player")
-data class TeamPlayerStats(
+data class TeamPlayer(
     @ColumnInfo(name = "player_id") @PrimaryKey val playerId: Int,
     @ColumnInfo(name = "team_id") val teamId: Int,
     @ColumnInfo(name = "player_name") val playerName: String, // A.J. Lawson

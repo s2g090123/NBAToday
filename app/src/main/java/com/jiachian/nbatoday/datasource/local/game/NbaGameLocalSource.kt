@@ -2,6 +2,7 @@ package com.jiachian.nbatoday.datasource.local.game
 
 import com.jiachian.nbatoday.database.dao.GameDao
 import com.jiachian.nbatoday.models.local.game.Game
+import com.jiachian.nbatoday.models.local.game.GameScoreUpdateData
 import com.jiachian.nbatoday.models.local.game.GameUpdateData
 import com.jiachian.nbatoday.models.local.game.NbaGameAndBet
 import kotlinx.coroutines.flow.Flow
@@ -33,7 +34,11 @@ class NbaGameLocalSource(
         gameDao.updateGames(games)
     }
 
+    override suspend fun updateGamesScore(games: List<GameScoreUpdateData>) {
+        gameDao.updateGameScores(games)
+    }
+
     override suspend fun existsGame(): Boolean {
-        return gameDao.exitsGames()
+        return gameDao.exitsGame()
     }
 }

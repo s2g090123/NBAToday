@@ -14,13 +14,13 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.jiachian.nbatoday.compose.screen.team.TeamViewModel
-import com.jiachian.nbatoday.models.local.team.TeamPlayerStats
+import com.jiachian.nbatoday.models.local.team.TeamPlayer
 
 @Composable
 fun PlayerStatistics(
     modifier: Modifier = Modifier,
     viewModel: TeamViewModel,
-    players: List<TeamPlayerStats>
+    players: List<TeamPlayer>
 ) {
     val playerState = rememberLazyListState()
     val statsState = rememberLazyListState()

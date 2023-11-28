@@ -3,8 +3,8 @@ package com.jiachian.nbatoday.repository.team
 import com.jiachian.nbatoday.datasource.local.team.TeamLocalSource
 import com.jiachian.nbatoday.datasource.remote.team.TeamRemoteSource
 import com.jiachian.nbatoday.models.local.team.NBATeam
+import com.jiachian.nbatoday.models.local.team.Team
 import com.jiachian.nbatoday.models.local.team.TeamAndPlayers
-import com.jiachian.nbatoday.models.local.team.TeamStats
 import com.jiachian.nbatoday.models.remote.team.toTeamPlayerStats
 import com.jiachian.nbatoday.models.remote.team.toTeamStats
 import kotlinx.coroutines.flow.Flow
@@ -36,7 +36,7 @@ class NbaTeamRepository(
         }
     }
 
-    override fun getTeamStats(): Flow<List<TeamStats>> {
+    override fun getTeamStats(): Flow<List<Team>> {
         return teamLocalSource.getTeamStats()
     }
 

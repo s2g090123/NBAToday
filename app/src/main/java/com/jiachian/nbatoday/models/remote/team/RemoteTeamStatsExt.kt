@@ -1,22 +1,22 @@
 package com.jiachian.nbatoday.models.remote.team
 
 import com.jiachian.nbatoday.models.local.team.NBATeam
-import com.jiachian.nbatoday.models.local.team.TeamStats
+import com.jiachian.nbatoday.models.local.team.Team
 import com.jiachian.nbatoday.utils.decimalFormat
 import com.jiachian.nbatoday.utils.getOrZero
 import com.jiachian.nbatoday.utils.toPercentage
 
-fun RemoteTeamStats.toTeamStats(): List<TeamStats> {
+fun RemoteTeamStats.toTeamStats(): List<Team> {
     val rowData = result?.rowData ?: return emptyList()
     return rowData.mapNotNull { data ->
         createTeamStats(data) ?: return@mapNotNull null
     }
 }
 
-private fun RemoteTeamStats.createTeamStats(data: List<String>): TeamStats? {
+private fun RemoteTeamStats.createTeamStats(data: List<String>): Team? {
     val teamId = getStatsResult(data, "TEAM_ID")?.toIntOrNull() ?: return null
     val team = NBATeam.getTeamById(teamId)
-    return TeamStats(
+    return Team(
         teamId = teamId,
         team = team,
         teamConference = team.conference,

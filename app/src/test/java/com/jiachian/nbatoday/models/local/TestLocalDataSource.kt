@@ -11,9 +11,9 @@ import com.jiachian.nbatoday.models.local.player.PlayerCareerInfoUpdate
 import com.jiachian.nbatoday.models.local.player.PlayerCareerStatsUpdate
 import com.jiachian.nbatoday.models.local.score.BoxScore
 import com.jiachian.nbatoday.models.local.team.NBATeam
+import com.jiachian.nbatoday.models.local.team.Team
 import com.jiachian.nbatoday.models.local.team.TeamAndPlayers
-import com.jiachian.nbatoday.models.local.team.TeamPlayerStats
-import com.jiachian.nbatoday.models.local.team.TeamStats
+import com.jiachian.nbatoday.models.local.team.TeamPlayer
 import java.util.Date
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,9 +27,9 @@ class TestLocalDataSource : LocalDataSource() {
 
     private val boxScores = MutableStateFlow(emptyList<BoxScore>())
 
-    private val teamStats = MutableStateFlow(emptyList<TeamStats>())
+    private val team = MutableStateFlow(emptyList<Team>())
 
-    private val teamPlayerStats = MutableStateFlow(emptyList<TeamPlayerStats>())
+    private val teamPlayer = MutableStateFlow(emptyList<TeamPlayer>())
 
     private val playerCareer = MutableStateFlow(emptyList<PlayerCareer>())
 
@@ -132,19 +132,19 @@ class TestLocalDataSource : LocalDataSource() {
         }
     }
 
-    override fun getTeamStats(): Flow<List<TeamStats>> {
-        return teamStats
+    override fun getTeamStats(): Flow<List<Team>> {
+        return team
     }
 
     override fun getTeamAndPlayersStats(teamId: Int): Flow<TeamAndPlayers?> {
-        return combine(teamStats, teamPlayerStats) { teams, players ->
+        return combine(team, teamPlayer) { teams, players ->
             val team = teams.find { it.teamId == teamId }
             TeamAndPlayers(team, players)
         }
     }
 
     override fun getTeamRank(teamId: Int, conference: NBATeam.Conference): Flow<Int> {
-        return teamStats.map {
+        return team.map {
             it.filter { team ->
                 team.teamConference == conference
             }.sortedByDescending { team ->
@@ -156,7 +156,7 @@ class TestLocalDataSource : LocalDataSource() {
     }
 
     override fun getTeamPointsRank(teamId: Int): Flow<Int> {
-        return teamStats.map {
+        return team.map {
             it.sortedByDescending { team ->
                 team.points
             }.indexOfFirst { team ->
@@ -166,7 +166,7 @@ class TestLocalDataSource : LocalDataSource() {
     }
 
     override fun getTeamReboundsRank(teamId: Int): Flow<Int> {
-        return teamStats.map {
+        return team.map {
             it.sortedByDescending { team ->
                 team.reboundsTotal
             }.indexOfFirst { team ->
@@ -176,7 +176,7 @@ class TestLocalDataSource : LocalDataSource() {
     }
 
     override fun getTeamAssistsRank(teamId: Int): Flow<Int> {
-        return teamStats.map {
+        return team.map {
             it.sortedByDescending { team ->
                 team.assists
             }.indexOfFirst { team ->
@@ -186,7 +186,7 @@ class TestLocalDataSource : LocalDataSource() {
     }
 
     override fun getTeamPlusMinusRank(teamId: Int): Flow<Int> {
-        return teamStats.map {
+        return team.map {
             it.sortedByDescending { team ->
                 team.plusMinus
             }.indexOfFirst { team ->
@@ -195,32 +195,32 @@ class TestLocalDataSource : LocalDataSource() {
         }
     }
 
-    override suspend fun updateTeamStats(stats: TeamStats) {
-        val update = teamStats.value.toMutableList().apply {
+    override suspend fun updateTeamStats(stats: Team) {
+        val update = team.value.toMutableList().apply {
             removeIf { it.teamId == stats.teamId }
             add(stats)
         }
-        teamStats.value = update
+        team.value = update
     }
 
-    override suspend fun updateTeamStats(stats: List<TeamStats>) {
-        val update = teamStats.value.toMutableList().apply {
+    override suspend fun updateTeamStats(stats: List<Team>) {
+        val update = team.value.toMutableList().apply {
             stats.forEach { team ->
                 removeIf { it.teamId == team.teamId }
             }
             addAll(stats)
         }
-        teamStats.value = update
+        team.value = update
     }
 
-    override suspend fun updatePlayerStats(stats: List<TeamPlayerStats>) {
-        val update = teamPlayerStats.value.toMutableList().apply {
+    override suspend fun updatePlayerStats(stats: List<TeamPlayer>) {
+        val update = teamPlayer.value.toMutableList().apply {
             stats.forEach { player ->
                 removeIf { it.playerId == player.playerId }
             }
             addAll(stats)
         }
-        teamPlayerStats.value = update
+        teamPlayer.value = update
     }
 
     override suspend fun updatePlayerCareerStats(stats: PlayerCareerStatsUpdate) {
@@ -237,7 +237,7 @@ class TestLocalDataSource : LocalDataSource() {
     }
 
     override suspend fun deletePlayerStats(teamId: Int, playerIds: List<Int>) {
-        teamPlayerStats.value = teamPlayerStats.value.toMutableList().apply {
+        teamPlayer.value = teamPlayer.value.toMutableList().apply {
             removeIf { it.teamId == teamId && it.playerId in playerIds }
         }
     }

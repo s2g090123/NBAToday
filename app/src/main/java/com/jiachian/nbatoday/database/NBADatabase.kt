@@ -7,6 +7,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.jiachian.nbatoday.converter.BoxScoreTeamConverter
+import com.jiachian.nbatoday.converter.ConferenceConverter
 import com.jiachian.nbatoday.converter.DateConverter
 import com.jiachian.nbatoday.converter.GameLeadersConverter
 import com.jiachian.nbatoday.converter.GameTeamConverter
@@ -14,7 +15,6 @@ import com.jiachian.nbatoday.converter.NBATeamConverter
 import com.jiachian.nbatoday.converter.PlayerCareerInfoConverter
 import com.jiachian.nbatoday.converter.PlayerCareerStatsConverter
 import com.jiachian.nbatoday.converter.PointsLeaderConverter
-import com.jiachian.nbatoday.converter.TeamConferenceConverter
 import com.jiachian.nbatoday.database.dao.BetDao
 import com.jiachian.nbatoday.database.dao.BoxScoreDao
 import com.jiachian.nbatoday.database.dao.GameDao
@@ -24,15 +24,15 @@ import com.jiachian.nbatoday.models.local.bet.Bet
 import com.jiachian.nbatoday.models.local.game.Game
 import com.jiachian.nbatoday.models.local.player.PlayerCareer
 import com.jiachian.nbatoday.models.local.score.BoxScore
-import com.jiachian.nbatoday.models.local.team.TeamPlayerStats
-import com.jiachian.nbatoday.models.local.team.TeamStats
+import com.jiachian.nbatoday.models.local.team.Team
+import com.jiachian.nbatoday.models.local.team.TeamPlayer
 
 @Database(
     entities = [
         Game::class,
         BoxScore::class,
-        TeamStats::class,
-        TeamPlayerStats::class,
+        Team::class,
+        TeamPlayer::class,
         PlayerCareer::class,
         Bet::class
     ],
@@ -43,29 +43,29 @@ import com.jiachian.nbatoday.models.local.team.TeamStats
     PointsLeaderConverter::class,
     GameLeadersConverter::class,
     BoxScoreTeamConverter::class,
-    TeamConferenceConverter::class,
+    ConferenceConverter::class,
     PlayerCareerInfoConverter::class,
     PlayerCareerStatsConverter::class,
     NBATeamConverter::class,
     DateConverter::class
 )
-abstract class NbaDatabase : RoomDatabase() {
+abstract class NBADatabase : RoomDatabase() {
 
     companion object {
 
         private const val DATABASE_NAME = "nba_database"
 
         @Volatile
-        private var instance: NbaDatabase? = null
+        private var instance: NBADatabase? = null
 
-        fun getInstance(context: Context): NbaDatabase {
+        fun getInstance(context: Context): NBADatabase {
             return instance ?: synchronized(this) {
                 buildDatabase(context).also { instance = it }
             }
         }
 
-        private fun buildDatabase(context: Context): NbaDatabase {
-            return Room.databaseBuilder(context, NbaDatabase::class.java, DATABASE_NAME).build()
+        private fun buildDatabase(context: Context): NBADatabase {
+            return Room.databaseBuilder(context, NBADatabase::class.java, DATABASE_NAME).build()
         }
 
         @VisibleForTesting

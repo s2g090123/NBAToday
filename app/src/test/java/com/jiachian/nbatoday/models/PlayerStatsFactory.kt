@@ -10,12 +10,12 @@ import com.jiachian.nbatoday.HomePlayerFullName
 import com.jiachian.nbatoday.HomePlayerId
 import com.jiachian.nbatoday.HomePlayerLastName
 import com.jiachian.nbatoday.HomeTeamId
-import com.jiachian.nbatoday.models.local.team.TeamPlayerStats
+import com.jiachian.nbatoday.models.local.team.TeamPlayer
 
 object PlayerStatsFactory {
 
-    fun getHomePlayerStats(): TeamPlayerStats {
-        return TeamPlayerStats(
+    fun getHomePlayerStats(): TeamPlayer {
+        return TeamPlayer(
             playerId = HomePlayerId,
             teamId = HomeTeamId,
             playerName = HomePlayerFullName,
@@ -46,8 +46,8 @@ object PlayerStatsFactory {
         )
     }
 
-    fun getAwayPlayerStats(): TeamPlayerStats {
-        return TeamPlayerStats(
+    fun getAwayPlayerStats(): TeamPlayer {
+        return TeamPlayer(
             playerId = AwayPlayerId,
             teamId = AwayTeamId,
             playerName = AwayPlayerFullName,

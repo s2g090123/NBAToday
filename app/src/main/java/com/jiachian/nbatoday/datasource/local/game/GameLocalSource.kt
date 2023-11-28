@@ -1,6 +1,7 @@
 package com.jiachian.nbatoday.datasource.local.game
 
 import com.jiachian.nbatoday.models.local.game.Game
+import com.jiachian.nbatoday.models.local.game.GameScoreUpdateData
 import com.jiachian.nbatoday.models.local.game.GameUpdateData
 import com.jiachian.nbatoday.models.local.game.NbaGameAndBet
 import kotlinx.coroutines.flow.Flow
@@ -13,6 +14,7 @@ abstract class GameLocalSource {
 
     abstract suspend fun insertGames(games: List<Game>)
     abstract suspend fun updateGames(games: List<GameUpdateData>)
+    abstract suspend fun updateGamesScore(games: List<GameScoreUpdateData>)
 
     abstract suspend fun existsGame(): Boolean
 }

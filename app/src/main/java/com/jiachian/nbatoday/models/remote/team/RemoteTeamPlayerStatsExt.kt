@@ -1,11 +1,11 @@
 package com.jiachian.nbatoday.models.remote.team
 
-import com.jiachian.nbatoday.models.local.team.TeamPlayerStats
+import com.jiachian.nbatoday.models.local.team.TeamPlayer
 import com.jiachian.nbatoday.utils.getOrNA
 import com.jiachian.nbatoday.utils.getOrZero
 import com.jiachian.nbatoday.utils.toPercentage
 
-fun RemoteTeamPlayerStats.toTeamPlayerStats(): List<TeamPlayerStats> {
+fun RemoteTeamPlayerStats.toTeamPlayerStats(): List<TeamPlayer> {
     val teamId = parameters?.teamId ?: return emptyList()
     val rowData = result?.rowData
     return rowData?.mapNotNull { data ->
@@ -13,8 +13,8 @@ fun RemoteTeamPlayerStats.toTeamPlayerStats(): List<TeamPlayerStats> {
     } ?: emptyList()
 }
 
-private fun RemoteTeamPlayerStats.createPlayerStats(data: List<String>, teamId: Int): TeamPlayerStats? {
-    return TeamPlayerStats(
+private fun RemoteTeamPlayerStats.createPlayerStats(data: List<String>, teamId: Int): TeamPlayer? {
+    return TeamPlayer(
         playerId = getPlayerResult(data, "PLAYER_ID")?.toIntOrNull() ?: return null,
         teamId = teamId,
         playerName = getPlayerResult(data, "PLAYER_NAME").getOrNA(),

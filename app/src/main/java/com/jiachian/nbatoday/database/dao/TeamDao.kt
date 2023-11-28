@@ -5,18 +5,18 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.jiachian.nbatoday.models.local.team.NBATeam
+import com.jiachian.nbatoday.models.local.team.Team
 import com.jiachian.nbatoday.models.local.team.TeamAndPlayers
-import com.jiachian.nbatoday.models.local.team.TeamPlayerStats
-import com.jiachian.nbatoday.models.local.team.TeamStats
+import com.jiachian.nbatoday.models.local.team.TeamPlayer
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TeamDao {
     @Query("SELECT * FROM team")
-    fun getTeamStats(): Flow<List<TeamStats>>
+    fun getTeams(): Flow<List<Team>>
 
     @Query("SELECT * FROM team WHERE team_id == :teamId")
-    fun getTeamAndPlayerStats(teamId: Int): Flow<TeamAndPlayers?>
+    fun getTeamsAndPlayers(teamId: Int): Flow<TeamAndPlayers?>
 
     @Query(
         """
@@ -105,11 +105,11 @@ interface TeamDao {
     fun getPlusMinusRank(teamId: Int): Flow<Int>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertTeamStats(stats: List<TeamStats>)
+    suspend fun insertTeams(stats: List<Team>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertPlayerStats(stats: List<TeamPlayerStats>)
+    suspend fun insertTeamsAndPlayers(stats: List<TeamPlayer>)
 
     @Query("DELETE FROM team_player WHERE team_id == :teamId AND player_id IN (:playerIds)")
-    suspend fun deleteTeamPlayersStats(teamId: Int, playerIds: List<Int>)
+    suspend fun deleteTeamPlayers(teamId: Int, playerIds: List<Int>)
 }

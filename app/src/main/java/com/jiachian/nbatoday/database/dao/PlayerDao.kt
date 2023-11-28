@@ -16,14 +16,14 @@ interface PlayerDao {
     fun exitsPlayer(playerId: Int): Boolean
 
     @Query("SELECT * FROM player WHERE player_id == :playerId")
-    fun getPlayerCareer(playerId: Int): Flow<PlayerCareer?>
+    fun getPlayers(playerId: Int): Flow<PlayerCareer?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertPlayerCareer(stats: PlayerCareer)
+    suspend fun insertPlayers(stats: PlayerCareer)
 
     @Update(entity = PlayerCareer::class, onConflict = OnConflictStrategy.REPLACE)
-    suspend fun updatePlayerCareerInfo(info: PlayerCareerInfoUpdate)
+    suspend fun updatePlayerInfo(info: PlayerCareerInfoUpdate)
 
     @Update(entity = PlayerCareer::class, onConflict = OnConflictStrategy.REPLACE)
-    suspend fun updatePlayerCareerStats(stats: PlayerCareerStatsUpdate)
+    suspend fun updatePlayerStats(stats: PlayerCareerStatsUpdate)
 }

@@ -18,9 +18,9 @@ import com.jiachian.nbatoday.models.local.game.NbaGameAndBet
 import com.jiachian.nbatoday.models.local.player.PlayerCareer
 import com.jiachian.nbatoday.models.local.score.BoxScore
 import com.jiachian.nbatoday.models.local.team.NBATeam
+import com.jiachian.nbatoday.models.local.team.Team
 import com.jiachian.nbatoday.models.local.team.TeamAndPlayers
-import com.jiachian.nbatoday.models.local.team.TeamPlayerStats
-import com.jiachian.nbatoday.models.local.team.TeamStats
+import com.jiachian.nbatoday.models.local.team.TeamPlayer
 import com.jiachian.nbatoday.models.local.user.User
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,9 +32,9 @@ class TestRepository : BaseRepository {
 
     private val games = MutableStateFlow(emptyList<Game>())
 
-    private val teams = MutableStateFlow(emptyList<TeamStats>())
+    private val teams = MutableStateFlow(emptyList<Team>())
 
-    private val players = MutableStateFlow(emptyList<TeamPlayerStats>())
+    private val players = MutableStateFlow(emptyList<TeamPlayer>())
 
     private val playersCareer = MutableStateFlow(emptyList<PlayerCareer>())
 
@@ -217,7 +217,7 @@ class TestRepository : BaseRepository {
         }
     }
 
-    override fun getTeamStats(): Flow<List<TeamStats>> {
+    override fun getTeamStats(): Flow<List<Team>> {
         return teams
     }
 

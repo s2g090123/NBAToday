@@ -1,13 +1,13 @@
 package com.jiachian.nbatoday.models.local.converter
 
-import com.jiachian.nbatoday.converter.TeamConferenceConverter
+import com.jiachian.nbatoday.converter.ConferenceConverter
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
 
 class TeamConferenceConverterTest {
-    private val converter = TeamConferenceConverter()
+    private val converter = ConferenceConverter()
 
     @Test
     fun from_ConferenceToString_isCorrect() {

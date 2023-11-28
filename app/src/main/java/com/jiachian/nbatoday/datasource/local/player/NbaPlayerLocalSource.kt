@@ -10,19 +10,19 @@ class NbaPlayerLocalSource(
     private val playerDao: PlayerDao,
 ) : PlayerLocalSource() {
     override fun getPlayerCareer(playerId: Int): Flow<PlayerCareer?> {
-        return playerDao.getPlayerCareer(playerId)
+        return playerDao.getPlayers(playerId)
     }
 
     override suspend fun insertPlayerCareer(stats: PlayerCareer) {
-        playerDao.insertPlayerCareer(stats)
+        playerDao.insertPlayers(stats)
     }
 
     override suspend fun updatePlayerCareerInfo(info: PlayerCareerInfoUpdate) {
-        playerDao.updatePlayerCareerInfo(info)
+        playerDao.updatePlayerInfo(info)
     }
 
     override suspend fun updatePlayerCareerStats(stats: PlayerCareerStatsUpdate) {
-        playerDao.updatePlayerCareerStats(stats)
+        playerDao.updatePlayerStats(stats)
     }
 
     override suspend fun existPlayer(playerId: Int): Boolean {

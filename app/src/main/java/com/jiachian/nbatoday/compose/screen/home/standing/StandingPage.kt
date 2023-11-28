@@ -62,7 +62,7 @@ import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.Transparency25
 import com.jiachian.nbatoday.compose.widget.DisableOverscroll
 import com.jiachian.nbatoday.models.local.team.NBATeam
-import com.jiachian.nbatoday.models.local.team.TeamStats
+import com.jiachian.nbatoday.models.local.team.Team
 import com.jiachian.nbatoday.utils.NbaUtils
 import com.jiachian.nbatoday.utils.dividerSecondaryColor
 import com.jiachian.nbatoday.utils.px2Dp
@@ -75,7 +75,7 @@ fun StandingPage(
     modifier: Modifier = Modifier,
     viewModel: StandingPageViewModel,
 ) {
-    val teamStats by viewModel.teamStats.collectAsState()
+    val teamStats by viewModel.team.collectAsState()
     val selectedConference by viewModel.selectedConference.collectAsState()
     val isRefreshing by viewModel.isRefreshingTeamStats.collectAsState()
     val pagerState = rememberPagerState()
@@ -173,7 +173,7 @@ private fun StandingTabRow(
 private fun TeamStanding(
     modifier: Modifier = Modifier,
     viewModel: StandingPageViewModel,
-    teamStats: List<TeamStats>
+    teamStats: List<Team>
 ) {
     val teamState = rememberLazyListState()
     val statsState = rememberLazyListState()
@@ -211,7 +211,7 @@ private fun TeamStandingStatsTable(
     modifier: Modifier = Modifier,
     viewModel: StandingPageViewModel,
     statsState: LazyListState,
-    teamStats: List<TeamStats>,
+    teamStats: List<Team>,
 ) {
     var dividerWidth by remember { mutableStateOf(0) }
     Column(modifier = modifier) {
@@ -257,7 +257,7 @@ private fun TeamStandingStatsTable(
 private fun TeamStatsRow(
     modifier: Modifier = Modifier,
     viewModel: StandingPageViewModel,
-    stats: TeamStats,
+    stats: Team,
     dividerVisible: Boolean,
     dividerWidth: Dp,
     dividerThickness: Dp,
@@ -352,7 +352,7 @@ private fun TeamStatsTab(
 @Composable
 private fun TeamStandingNameTable(
     teamState: LazyListState,
-    teamStats: List<TeamStats>,
+    teamStats: List<Team>,
     onClickTeam: (NBATeam) -> Unit
 ) {
     var teamNameWidth by remember { mutableStateOf(0) }

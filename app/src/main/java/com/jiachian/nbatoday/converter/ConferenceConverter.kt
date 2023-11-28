@@ -3,7 +3,7 @@ package com.jiachian.nbatoday.converter
 import androidx.room.TypeConverter
 import com.jiachian.nbatoday.models.local.team.NBATeam
 
-class TeamConferenceConverter {
+class ConferenceConverter {
     @TypeConverter
     fun from(value: NBATeam.Conference): String {
         return value.name

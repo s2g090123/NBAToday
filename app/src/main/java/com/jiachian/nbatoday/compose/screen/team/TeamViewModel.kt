@@ -9,7 +9,7 @@ import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.models.local.game.Game
 import com.jiachian.nbatoday.models.local.game.NbaGameAndBet
 import com.jiachian.nbatoday.models.local.team.NBATeam
-import com.jiachian.nbatoday.models.local.team.TeamPlayerStats
+import com.jiachian.nbatoday.models.local.team.TeamPlayer
 import com.jiachian.nbatoday.repository.game.GameRepository
 import com.jiachian.nbatoday.repository.team.TeamRepository
 import com.jiachian.nbatoday.utils.ComposeViewModelProvider
@@ -47,7 +47,7 @@ class TeamViewModel(
     private val teamAndPlayersStats = teamRepository.getTeamAndPlayersStats(team.teamId)
 
     val teamStats = teamAndPlayersStats.map {
-        it?.teamStats
+        it?.team
     }.stateIn(coroutineScope, SharingStarted.Lazily, null)
 
     val teamRank = teamRepository.getTeamRank(team.teamId, team.conference)
@@ -77,7 +77,7 @@ class TeamViewModel(
         val playerStats = stats?.playersStats ?: emptyList()
         when (sort) {
             PlayerSort.GP -> playerStats.sortedWith(
-                compareByDescending<TeamPlayerStats> {
+                compareByDescending<TeamPlayer> {
                     it.gamePlayed
                 }.thenByDescending {
                     it.winPercentage
@@ -85,7 +85,7 @@ class TeamViewModel(
             )
 
             PlayerSort.W -> playerStats.sortedWith(
-                compareByDescending<TeamPlayerStats> {
+                compareByDescending<TeamPlayer> {
                     it.win
                 }.thenByDescending {
                     it.winPercentage
@@ -93,7 +93,7 @@ class TeamViewModel(
             )
 
             PlayerSort.L -> playerStats.sortedWith(
-                compareBy<TeamPlayerStats> {
+                compareBy<TeamPlayer> {
                     it.lose
                 }.thenByDescending {
                     it.winPercentage
@@ -101,7 +101,7 @@ class TeamViewModel(
             )
 
             PlayerSort.WINP -> playerStats.sortedWith(
-                compareByDescending<TeamPlayerStats> {
+                compareByDescending<TeamPlayer> {
                     it.winPercentage
                 }.thenByDescending {
                     it.winPercentage
@@ -109,7 +109,7 @@ class TeamViewModel(
             )
 
             PlayerSort.PTS -> playerStats.sortedWith(
-                compareByDescending<TeamPlayerStats> {
+                compareByDescending<TeamPlayer> {
                     it.points.toDouble() / it.gamePlayed
                 }.thenByDescending {
                     it.winPercentage
@@ -117,7 +117,7 @@ class TeamViewModel(
             )
 
             PlayerSort.FGM -> playerStats.sortedWith(
-                compareByDescending<TeamPlayerStats> {
+                compareByDescending<TeamPlayer> {
                     it.fieldGoalsMade.toDouble() / it.gamePlayed
                 }.thenByDescending {
                     it.winPercentage
@@ -125,7 +125,7 @@ class TeamViewModel(
             )
 
             PlayerSort.FGA -> playerStats.sortedWith(
-                compareByDescending<TeamPlayerStats> {
+                compareByDescending<TeamPlayer> {
                     it.fieldGoalsAttempted.toDouble() / it.gamePlayed
                 }.thenByDescending {
                     it.winPercentage
@@ -133,7 +133,7 @@ class TeamViewModel(
             )
 
             PlayerSort.FGP -> playerStats.sortedWith(
-                compareByDescending<TeamPlayerStats> {
+                compareByDescending<TeamPlayer> {
                     it.fieldGoalsPercentage
                 }.thenByDescending {
                     it.winPercentage
@@ -141,7 +141,7 @@ class TeamViewModel(
             )
 
             PlayerSort.PM3 -> playerStats.sortedWith(
-                compareByDescending<TeamPlayerStats> {
+                compareByDescending<TeamPlayer> {
                     it.threePointersMade.toDouble() / it.gamePlayed
                 }.thenByDescending {
                     it.winPercentage
@@ -149,7 +149,7 @@ class TeamViewModel(
             )
 
             PlayerSort.PA3 -> playerStats.sortedWith(
-                compareByDescending<TeamPlayerStats> {
+                compareByDescending<TeamPlayer> {
                     it.threePointersAttempted.toDouble() / it.gamePlayed
                 }.thenByDescending {
                     it.winPercentage
@@ -157,7 +157,7 @@ class TeamViewModel(
             )
 
             PlayerSort.PP3 -> playerStats.sortedWith(
-                compareByDescending<TeamPlayerStats> {
+                compareByDescending<TeamPlayer> {
                     it.threePointersPercentage
                 }.thenByDescending {
                     it.winPercentage
@@ -165,7 +165,7 @@ class TeamViewModel(
             )
 
             PlayerSort.FTM -> playerStats.sortedWith(
-                compareByDescending<TeamPlayerStats> {
+                compareByDescending<TeamPlayer> {
                     it.freeThrowsMade.toDouble() / it.gamePlayed
                 }.thenByDescending {
                     it.winPercentage
@@ -173,7 +173,7 @@ class TeamViewModel(
             )
 
             PlayerSort.FTA -> playerStats.sortedWith(
-                compareByDescending<TeamPlayerStats> {
+                compareByDescending<TeamPlayer> {
                     it.freeThrowsAttempted.toDouble() / it.gamePlayed
                 }.thenByDescending {
                     it.winPercentage
@@ -181,7 +181,7 @@ class TeamViewModel(
             )
 
             PlayerSort.FTP -> playerStats.sortedWith(
-                compareByDescending<TeamPlayerStats> {
+                compareByDescending<TeamPlayer> {
                     it.freeThrowsPercentage
                 }.thenByDescending {
                     it.winPercentage
@@ -189,7 +189,7 @@ class TeamViewModel(
             )
 
             PlayerSort.OREB -> playerStats.sortedWith(
-                compareByDescending<TeamPlayerStats> {
+                compareByDescending<TeamPlayer> {
                     it.reboundsOffensive.toDouble() / it.gamePlayed
                 }.thenByDescending {
                     it.winPercentage
@@ -197,7 +197,7 @@ class TeamViewModel(
             )
 
             PlayerSort.DREB -> playerStats.sortedWith(
-                compareByDescending<TeamPlayerStats> {
+                compareByDescending<TeamPlayer> {
                     it.reboundsDefensive.toDouble() / it.gamePlayed
                 }.thenByDescending {
                     it.winPercentage
@@ -205,7 +205,7 @@ class TeamViewModel(
             )
 
             PlayerSort.REB -> playerStats.sortedWith(
-                compareByDescending<TeamPlayerStats> {
+                compareByDescending<TeamPlayer> {
                     it.reboundsTotal.toDouble() / it.gamePlayed
                 }.thenByDescending {
                     it.winPercentage
@@ -213,7 +213,7 @@ class TeamViewModel(
             )
 
             PlayerSort.AST -> playerStats.sortedWith(
-                compareByDescending<TeamPlayerStats> {
+                compareByDescending<TeamPlayer> {
                     it.assists.toDouble() / it.gamePlayed
                 }.thenByDescending {
                     it.winPercentage
@@ -221,7 +221,7 @@ class TeamViewModel(
             )
 
             PlayerSort.TOV -> playerStats.sortedWith(
-                compareBy<TeamPlayerStats> {
+                compareBy<TeamPlayer> {
                     it.turnovers.toDouble() / it.gamePlayed
                 }.thenByDescending {
                     it.winPercentage
@@ -229,7 +229,7 @@ class TeamViewModel(
             )
 
             PlayerSort.STL -> playerStats.sortedWith(
-                compareByDescending<TeamPlayerStats> {
+                compareByDescending<TeamPlayer> {
                     it.steals.toDouble() / it.gamePlayed
                 }.thenByDescending {
                     it.winPercentage
@@ -237,7 +237,7 @@ class TeamViewModel(
             )
 
             PlayerSort.BLK -> playerStats.sortedWith(
-                compareByDescending<TeamPlayerStats> {
+                compareByDescending<TeamPlayer> {
                     it.blocks.toDouble() / it.gamePlayed
                 }.thenByDescending {
                     it.winPercentage
@@ -245,7 +245,7 @@ class TeamViewModel(
             )
 
             PlayerSort.PF -> playerStats.sortedWith(
-                compareBy<TeamPlayerStats> {
+                compareBy<TeamPlayer> {
                     it.foulsPersonal.toDouble() / it.gamePlayed
                 }.thenByDescending {
                     it.winPercentage
@@ -253,7 +253,7 @@ class TeamViewModel(
             )
 
             PlayerSort.PLUSMINUS -> playerStats.sortedWith(
-                compareByDescending<TeamPlayerStats> {
+                compareByDescending<TeamPlayer> {
                     it.plusMinus
                 }.thenByDescending {
                     it.winPercentage
@@ -266,7 +266,7 @@ class TeamViewModel(
         a != null && b.isNotEmpty()
     }.stateIn(coroutineScope, SharingStarted.Lazily, false)
 
-    val getStatsTextByLabel = { label: TeamPlayerLabel, stats: TeamPlayerStats ->
+    val getStatsTextByLabel = { label: TeamPlayerLabel, stats: TeamPlayer ->
         when (label) {
             TeamPlayerLabel.GP -> stats.gamePlayed
             TeamPlayerLabel.WIN -> stats.win

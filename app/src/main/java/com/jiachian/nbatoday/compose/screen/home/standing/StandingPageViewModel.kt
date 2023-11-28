@@ -8,7 +8,7 @@ import com.jiachian.nbatoday.compose.state.NbaScreenState
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.models.local.team.NBATeam
-import com.jiachian.nbatoday.models.local.team.TeamStats
+import com.jiachian.nbatoday.models.local.team.Team
 import com.jiachian.nbatoday.repository.team.TeamRepository
 import com.jiachian.nbatoday.utils.ScreenStateHelper
 import kotlinx.coroutines.CoroutineScope
@@ -28,185 +28,185 @@ class StandingPageViewModel(
 ) : ComposeViewModel(coroutineScope) {
 
     private val labelToEvaluationAccessor = mapOf(
-        "GP" to { stats: TeamStats -> stats.gamePlayed.toString() },
-        "W" to { stats: TeamStats -> stats.win.toString() },
-        "L" to { stats: TeamStats -> stats.lose.toString() },
-        "WIN%" to { stats: TeamStats -> stats.winPercentage.toString() },
-        "PTS" to { stats: TeamStats -> (stats.points.toDouble() / stats.gamePlayed).toString() },
-        "FGM" to { stats: TeamStats -> (stats.fieldGoalsMade.toDouble() / stats.gamePlayed).toString() },
-        "FGA" to { stats: TeamStats -> (stats.fieldGoalsAttempted.toDouble() / stats.gamePlayed).toString() },
-        "FG%" to { stats: TeamStats -> stats.fieldGoalsPercentage.toString() },
-        "3PM" to { stats: TeamStats -> (stats.threePointersMade.toDouble() / stats.gamePlayed).toString() },
-        "3PA" to { stats: TeamStats -> (stats.threePointersAttempted.toDouble() / stats.gamePlayed).toString() },
-        "3P%" to { stats: TeamStats -> stats.threePointersPercentage.toString() },
-        "FTM" to { stats: TeamStats -> (stats.freeThrowsMade.toDouble() / stats.gamePlayed).toString() },
-        "FTA" to { stats: TeamStats -> (stats.freeThrowsAttempted.toDouble() / stats.gamePlayed).toString() },
-        "FT%" to { stats: TeamStats -> stats.freeThrowsPercentage.toString() },
-        "OREB" to { stats: TeamStats -> (stats.reboundsOffensive.toDouble() / stats.gamePlayed).toString() },
-        "DREB" to { stats: TeamStats -> (stats.reboundsDefensive.toDouble() / stats.gamePlayed).toString() },
-        "REB" to { stats: TeamStats -> (stats.reboundsTotal.toDouble() / stats.gamePlayed).toString() },
-        "AST" to { stats: TeamStats -> (stats.assists.toDouble() / stats.gamePlayed).toString() },
-        "TOV" to { stats: TeamStats -> (stats.turnovers.toDouble() / stats.gamePlayed).toString() },
-        "STL" to { stats: TeamStats -> (stats.steals.toDouble() / stats.gamePlayed).toString() },
-        "BLK" to { stats: TeamStats -> (stats.blocks.toDouble() / stats.gamePlayed).toString() },
-        "PF" to { stats: TeamStats -> (stats.foulsPersonal.toDouble() / stats.gamePlayed).toString() }
+        "GP" to { stats: Team -> stats.gamePlayed.toString() },
+        "W" to { stats: Team -> stats.win.toString() },
+        "L" to { stats: Team -> stats.lose.toString() },
+        "WIN%" to { stats: Team -> stats.winPercentage.toString() },
+        "PTS" to { stats: Team -> (stats.points.toDouble() / stats.gamePlayed).toString() },
+        "FGM" to { stats: Team -> (stats.fieldGoalsMade.toDouble() / stats.gamePlayed).toString() },
+        "FGA" to { stats: Team -> (stats.fieldGoalsAttempted.toDouble() / stats.gamePlayed).toString() },
+        "FG%" to { stats: Team -> stats.fieldGoalsPercentage.toString() },
+        "3PM" to { stats: Team -> (stats.threePointersMade.toDouble() / stats.gamePlayed).toString() },
+        "3PA" to { stats: Team -> (stats.threePointersAttempted.toDouble() / stats.gamePlayed).toString() },
+        "3P%" to { stats: Team -> stats.threePointersPercentage.toString() },
+        "FTM" to { stats: Team -> (stats.freeThrowsMade.toDouble() / stats.gamePlayed).toString() },
+        "FTA" to { stats: Team -> (stats.freeThrowsAttempted.toDouble() / stats.gamePlayed).toString() },
+        "FT%" to { stats: Team -> stats.freeThrowsPercentage.toString() },
+        "OREB" to { stats: Team -> (stats.reboundsOffensive.toDouble() / stats.gamePlayed).toString() },
+        "DREB" to { stats: Team -> (stats.reboundsDefensive.toDouble() / stats.gamePlayed).toString() },
+        "REB" to { stats: Team -> (stats.reboundsTotal.toDouble() / stats.gamePlayed).toString() },
+        "AST" to { stats: Team -> (stats.assists.toDouble() / stats.gamePlayed).toString() },
+        "TOV" to { stats: Team -> (stats.turnovers.toDouble() / stats.gamePlayed).toString() },
+        "STL" to { stats: Team -> (stats.steals.toDouble() / stats.gamePlayed).toString() },
+        "BLK" to { stats: Team -> (stats.blocks.toDouble() / stats.gamePlayed).toString() },
+        "PF" to { stats: Team -> (stats.foulsPersonal.toDouble() / stats.gamePlayed).toString() }
     )
     private val standingSortImp = MutableStateFlow(StandingSort.WINP)
     val standingSort = standingSortImp.asStateFlow()
-    val teamStats = combine(
+    val team = combine(
         repository.getTeamStats(),
         standingSort
     ) { teamStats, sort ->
         when (sort) {
             StandingSort.GP -> teamStats.sortedWith(
-                compareByDescending<TeamStats> {
+                compareByDescending<Team> {
                     it.gamePlayed
                 }.thenByDescending {
                     it.winPercentage
                 }
             )
             StandingSort.W -> teamStats.sortedWith(
-                compareByDescending<TeamStats> {
+                compareByDescending<Team> {
                     it.win
                 }.thenByDescending {
                     it.winPercentage
                 }
             )
             StandingSort.L -> teamStats.sortedWith(
-                compareBy<TeamStats> {
+                compareBy<Team> {
                     it.lose
                 }.thenByDescending {
                     it.winPercentage
                 }
             )
             StandingSort.WINP -> teamStats.sortedWith(
-                compareByDescending<TeamStats> {
+                compareByDescending<Team> {
                     it.winPercentage
                 }.thenByDescending {
                     it.winPercentage
                 }
             )
             StandingSort.PTS -> teamStats.sortedWith(
-                compareByDescending<TeamStats> {
+                compareByDescending<Team> {
                     it.points.toDouble() / it.gamePlayed
                 }.thenByDescending {
                     it.winPercentage
                 }
             )
             StandingSort.FGM -> teamStats.sortedWith(
-                compareByDescending<TeamStats> {
+                compareByDescending<Team> {
                     it.fieldGoalsMade.toDouble() / it.gamePlayed
                 }.thenByDescending {
                     it.winPercentage
                 }
             )
             StandingSort.FGA -> teamStats.sortedWith(
-                compareByDescending<TeamStats> {
+                compareByDescending<Team> {
                     it.fieldGoalsAttempted.toDouble() / it.gamePlayed
                 }.thenByDescending {
                     it.winPercentage
                 }
             )
             StandingSort.FGP -> teamStats.sortedWith(
-                compareByDescending<TeamStats> {
+                compareByDescending<Team> {
                     it.fieldGoalsPercentage
                 }.thenByDescending {
                     it.winPercentage
                 }
             )
             StandingSort.PM3 -> teamStats.sortedWith(
-                compareByDescending<TeamStats> {
+                compareByDescending<Team> {
                     it.threePointersMade.toDouble() / it.gamePlayed
                 }.thenByDescending {
                     it.winPercentage
                 }
             )
             StandingSort.PA3 -> teamStats.sortedWith(
-                compareByDescending<TeamStats> {
+                compareByDescending<Team> {
                     it.threePointersAttempted.toDouble() / it.gamePlayed
                 }.thenByDescending {
                     it.winPercentage
                 }
             )
             StandingSort.PP3 -> teamStats.sortedWith(
-                compareByDescending<TeamStats> {
+                compareByDescending<Team> {
                     it.threePointersPercentage
                 }.thenByDescending {
                     it.winPercentage
                 }
             )
             StandingSort.FTM -> teamStats.sortedWith(
-                compareByDescending<TeamStats> {
+                compareByDescending<Team> {
                     it.freeThrowsMade.toDouble() / it.gamePlayed
                 }.thenByDescending {
                     it.winPercentage
                 }
             )
             StandingSort.FTA -> teamStats.sortedWith(
-                compareByDescending<TeamStats> {
+                compareByDescending<Team> {
                     it.freeThrowsAttempted.toDouble() / it.gamePlayed
                 }.thenByDescending {
                     it.winPercentage
                 }
             )
             StandingSort.FTP -> teamStats.sortedWith(
-                compareByDescending<TeamStats> {
+                compareByDescending<Team> {
                     it.freeThrowsPercentage
                 }.thenByDescending {
                     it.winPercentage
                 }
             )
             StandingSort.OREB -> teamStats.sortedWith(
-                compareByDescending<TeamStats> {
+                compareByDescending<Team> {
                     it.reboundsOffensive.toDouble() / it.gamePlayed
                 }.thenByDescending {
                     it.winPercentage
                 }
             )
             StandingSort.DREB -> teamStats.sortedWith(
-                compareByDescending<TeamStats> {
+                compareByDescending<Team> {
                     it.reboundsDefensive.toDouble() / it.gamePlayed
                 }.thenByDescending {
                     it.winPercentage
                 }
             )
             StandingSort.REB -> teamStats.sortedWith(
-                compareByDescending<TeamStats> {
+                compareByDescending<Team> {
                     it.reboundsTotal.toDouble() / it.gamePlayed
                 }.thenByDescending {
                     it.winPercentage
                 }
             )
             StandingSort.AST -> teamStats.sortedWith(
-                compareByDescending<TeamStats> {
+                compareByDescending<Team> {
                     it.assists.toDouble() / it.gamePlayed
                 }.thenByDescending {
                     it.winPercentage
                 }
             )
             StandingSort.TOV -> teamStats.sortedWith(
-                compareBy<TeamStats> {
+                compareBy<Team> {
                     it.turnovers.toDouble() / it.gamePlayed
                 }.thenByDescending {
                     it.winPercentage
                 }
             )
             StandingSort.STL -> teamStats.sortedWith(
-                compareByDescending<TeamStats> {
+                compareByDescending<Team> {
                     it.steals.toDouble() / it.gamePlayed
                 }.thenByDescending {
                     it.winPercentage
                 }
             )
             StandingSort.BLK -> teamStats.sortedWith(
-                compareByDescending<TeamStats> {
+                compareByDescending<Team> {
                     it.blocks.toDouble() / it.gamePlayed
                 }.thenByDescending {
                     it.winPercentage
                 }
             )
             StandingSort.PF -> teamStats.sortedWith(
-                compareBy<TeamStats> {
+                compareBy<Team> {
                     it.foulsPersonal.toDouble() / it.gamePlayed
                 }.thenByDescending {
                     it.winPercentage
@@ -270,7 +270,7 @@ class StandingPageViewModel(
         screenStateHelper.openScreen(NbaScreenState.Team(team))
     }
 
-    fun getEvaluationTextByLabel(label: StandingLabel, stats: TeamStats): String {
+    fun getEvaluationTextByLabel(label: StandingLabel, stats: Team): String {
         val labelText = label.text
         val accessor = labelToEvaluationAccessor[labelText] ?: return ""
         return accessor(stats)

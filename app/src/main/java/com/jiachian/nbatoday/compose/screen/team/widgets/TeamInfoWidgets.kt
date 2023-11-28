@@ -26,7 +26,7 @@ import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.Transparency25
 import com.jiachian.nbatoday.compose.screen.team.TeamViewModel
 import com.jiachian.nbatoday.compose.widget.TeamLogoImage
-import com.jiachian.nbatoday.models.local.team.TeamStats
+import com.jiachian.nbatoday.models.local.team.Team
 import com.jiachian.nbatoday.utils.decimalFormat
 import com.jiachian.nbatoday.utils.toRank
 
@@ -58,7 +58,7 @@ fun TeamInformation(
 @Composable
 private fun TeamNameAndStanding(
     modifier: Modifier = Modifier,
-    stats: TeamStats,
+    stats: Team,
     teamRank: Int,
     textColor: Color,
 ) {
@@ -106,7 +106,7 @@ private fun TeamNameAndStanding(
 private fun TeamStatsDetail(
     modifier: Modifier = Modifier,
     viewModel: TeamViewModel,
-    stats: TeamStats,
+    stats: Team,
 ) {
     val pointsRank by viewModel.teamPointsRank.collectAsState()
     val reboundsRank by viewModel.teamReboundsRank.collectAsState()

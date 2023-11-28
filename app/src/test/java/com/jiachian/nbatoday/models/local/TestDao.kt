@@ -11,9 +11,9 @@ import com.jiachian.nbatoday.models.local.player.PlayerCareerInfoUpdate
 import com.jiachian.nbatoday.models.local.player.PlayerCareerStatsUpdate
 import com.jiachian.nbatoday.models.local.score.BoxScore
 import com.jiachian.nbatoday.models.local.team.NBATeam
+import com.jiachian.nbatoday.models.local.team.Team
 import com.jiachian.nbatoday.models.local.team.TeamAndPlayers
-import com.jiachian.nbatoday.models.local.team.TeamPlayerStats
-import com.jiachian.nbatoday.models.local.team.TeamStats
+import com.jiachian.nbatoday.models.local.team.TeamPlayer
 import java.util.Date
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,8 +25,8 @@ class TestDao : NbaDao {
     private val games = MutableStateFlow(emptyList<Game>())
     private val bet = MutableStateFlow(emptyList<Bet>())
     private val boxScores = MutableStateFlow(emptyList<BoxScore>())
-    private val teamStats = MutableStateFlow(emptyList<TeamStats>())
-    private val teamPlayerStats = MutableStateFlow(emptyList<TeamPlayerStats>())
+    private val team = MutableStateFlow(emptyList<Team>())
+    private val teamPlayer = MutableStateFlow(emptyList<TeamPlayer>())
     private val playerCareer = MutableStateFlow(emptyList<PlayerCareer>())
 
     override fun getGames(): Flow<List<Game>> {
@@ -188,17 +188,17 @@ class TestDao : NbaDao {
         }
     }
 
-    override fun getTeamStats(): Flow<List<TeamStats>> {
-        return teamStats
+    override fun getTeamStats(): Flow<List<Team>> {
+        return team
     }
 
     override fun getTeamAndPlayerStats(teamId: Int): Flow<TeamAndPlayers?> {
-        return combine(teamStats, teamPlayerStats) { teams, players ->
+        return combine(team, teamPlayer) { teams, players ->
             teams.firstOrNull {
                 it.teamId == teamId
             }?.let { team ->
                 TeamAndPlayers(
-                    teamStats = team,
+                    team = team,
                     playersStats = players.filter { it.teamId == team.teamId }
                 )
             }
@@ -206,7 +206,7 @@ class TestDao : NbaDao {
     }
 
     override fun getTeamRank(teamId: Int, conference: NBATeam.Conference): Flow<Int> {
-        return teamStats.map {
+        return team.map {
             it.filter { team ->
                 team.teamConference == conference
             }.sortedByDescending { team ->
@@ -218,7 +218,7 @@ class TestDao : NbaDao {
     }
 
     override fun getPointsRank(teamId: Int): Flow<Int> {
-        return teamStats.map {
+        return team.map {
             it.sortedByDescending { team ->
                 team.points
             }.indexOfFirst { team ->
@@ -228,7 +228,7 @@ class TestDao : NbaDao {
     }
 
     override fun getReboundsRank(teamId: Int): Flow<Int> {
-        return teamStats.map {
+        return team.map {
             it.sortedByDescending { team ->
                 team.reboundsTotal
             }.indexOfFirst { team ->
@@ -238,7 +238,7 @@ class TestDao : NbaDao {
     }
 
     override fun getAssistsRank(teamId: Int): Flow<Int> {
-        return teamStats.map {
+        return team.map {
             it.sortedByDescending { team ->
                 team.assists
             }.indexOfFirst { team ->
@@ -248,7 +248,7 @@ class TestDao : NbaDao {
     }
 
     override fun getPlusMinusRank(teamId: Int): Flow<Int> {
-        return teamStats.map {
+        return team.map {
             it.sortedByDescending { team ->
                 team.plusMinus
             }.indexOfFirst { team ->
@@ -257,35 +257,35 @@ class TestDao : NbaDao {
         }
     }
 
-    override suspend fun insertTeamStats(stats: List<TeamStats>) {
-        teamStats.value = teamStats.value.toMutableList().apply {
+    override suspend fun insertTeamStats(stats: List<Team>) {
+        team.value = team.value.toMutableList().apply {
             addAll(stats)
             distinctBy { it.teamId }
         }
     }
 
-    override suspend fun insertTeamStats(stats: TeamStats) {
-        teamStats.value = teamStats.value.toMutableList().apply {
+    override suspend fun insertTeamStats(stats: Team) {
+        team.value = team.value.toMutableList().apply {
             add(stats)
             distinctBy { it.teamId }
         }
     }
 
-    override suspend fun insertPlayerStats(stats: List<TeamPlayerStats>) {
-        teamPlayerStats.value = teamPlayerStats.value.toMutableList().apply {
+    override suspend fun insertPlayerStats(stats: List<TeamPlayer>) {
+        teamPlayer.value = teamPlayer.value.toMutableList().apply {
             addAll(stats)
             distinctBy { it.playerId }
         }
     }
 
     override suspend fun deleteTeamPlayersStats(teamId: Int, playerIds: List<Int>) {
-        teamPlayerStats.value = teamPlayerStats.value.toMutableList().apply {
+        teamPlayer.value = teamPlayer.value.toMutableList().apply {
             removeIf { it.teamId == teamId && it.playerId in playerIds }
         }
     }
 
     override fun exitsPlayer(playerId: Int): Boolean {
-        return teamPlayerStats.value.firstOrNull { it.playerId == playerId } != null
+        return teamPlayer.value.firstOrNull { it.playerId == playerId } != null
     }
 
     override fun getPlayerCareer(playerId: Int): Flow<PlayerCareer?> {

@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 import com.jiachian.nbatoday.utils.decimalFormat
 
 @Entity(tableName = "team")
-data class TeamStats(
+data class Team(
     @ColumnInfo(name = "team_id") @PrimaryKey val teamId: Int,
     @ColumnInfo(name = "team") val team: NBATeam,
     @ColumnInfo(name = "team_conference") val teamConference: NBATeam.Conference,

@@ -6,6 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.jiachian.nbatoday.models.local.game.Game
+import com.jiachian.nbatoday.models.local.game.GameScoreUpdateData
 import com.jiachian.nbatoday.models.local.game.GameUpdateData
 import com.jiachian.nbatoday.models.local.game.NbaGameAndBet
 import kotlinx.coroutines.flow.Flow
@@ -25,11 +26,14 @@ interface GameDao {
     fun getGamesAndBetsDuring(from: Long, to: Long): Flow<List<NbaGameAndBet>>
 
     @Query("SELECT EXISTS (SELECT 1 FROM game)")
-    fun exitsGames(): Boolean
+    fun exitsGame(): Boolean
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertGames(games: List<Game>)
 
     @Update(entity = Game::class, onConflict = OnConflictStrategy.REPLACE)
     suspend fun updateGames(games: List<GameUpdateData>)
+
+    @Update(entity = Game::class, onConflict = OnConflictStrategy.REPLACE)
+    suspend fun updateGameScores(games: List<GameScoreUpdateData>)
 }

@@ -2,7 +2,6 @@ package com.jiachian.nbatoday.repository.schedule
 
 import com.jiachian.nbatoday.NbaLeagueId
 import com.jiachian.nbatoday.ScheduleDateRange
-import com.jiachian.nbatoday.datasource.local.boxscore.BoxScoreLocalSource
 import com.jiachian.nbatoday.datasource.local.game.GameLocalSource
 import com.jiachian.nbatoday.datasource.remote.game.GameRemoteSource
 import com.jiachian.nbatoday.datastore.BaseDataStore
@@ -17,7 +16,6 @@ import kotlinx.coroutines.flow.first
 
 class NbaScheduleRepository(
     private val gameLocalSource: GameLocalSource,
-    private val boxScoreLocalSource: BoxScoreLocalSource,
     private val gameRemoteSource: GameRemoteSource,
     private val dataStore: BaseDataStore,
     private val teamRepository: TeamRepository,
@@ -55,7 +53,7 @@ class NbaScheduleRepository(
                     }
                 }
                 val updateGames = filterGames.map { it.toGameScoreUpdateData() }
-                boxScoreLocalSource.updateGamesScore(updateGames)
+                gameLocalSource.updateGamesScore(updateGames)
             }
 
             val year = cal.get(Calendar.YEAR)

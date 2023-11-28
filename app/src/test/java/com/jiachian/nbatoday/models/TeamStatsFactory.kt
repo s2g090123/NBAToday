@@ -7,12 +7,12 @@ import com.jiachian.nbatoday.BasicPercentage
 import com.jiachian.nbatoday.HomeTeam
 import com.jiachian.nbatoday.HomeTeamId
 import com.jiachian.nbatoday.models.local.team.NBATeam
-import com.jiachian.nbatoday.models.local.team.TeamStats
+import com.jiachian.nbatoday.models.local.team.Team
 
 object TeamStatsFactory {
 
-    fun getHomeTeamStats(): TeamStats {
-        return TeamStats(
+    fun getHomeTeamStats(): Team {
+        return Team(
             teamId = HomeTeamId,
             team = HomeTeam,
             teamConference = NBATeam.Conference.EAST,
@@ -42,8 +42,8 @@ object TeamStatsFactory {
         )
     }
 
-    fun getAwayTeamStats(): TeamStats {
-        return TeamStats(
+    fun getAwayTeamStats(): Team {
+        return Team(
             teamId = AwayTeamId,
             team = AwayTeam,
             teamConference = NBATeam.Conference.WEST,

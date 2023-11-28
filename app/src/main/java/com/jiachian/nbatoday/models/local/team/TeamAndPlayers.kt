@@ -4,10 +4,10 @@ import androidx.room.Embedded
 import androidx.room.Relation
 
 data class TeamAndPlayers(
-    @Embedded val teamStats: TeamStats,
+    @Embedded val team: Team,
     @Relation(
         parentColumn = "team_id",
         entityColumn = "team_id"
     )
-    val playersStats: List<TeamPlayerStats>
+    val playersStats: List<TeamPlayer>
 )
