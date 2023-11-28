@@ -25,24 +25,40 @@ fun RemoteGame.RemoteScoreboard.toGameUpdateData(): List<GameUpdateData> {
         val gameStatusText = game.gameStatusText
         val homeTeam = game.homeTeam?.toGameTeam()
         val awayTeam = game.awayTeam?.toGameTeam()
-        val gameHomeLeaders = game.gameLeaders?.homeLeaders ?: return@mapNotNull null
-        val gameAwayLeaders = game.gameLeaders.awayLeaders
-        val teamHomeLeaders = game.teamLeaders?.homeLeaders ?: return@mapNotNull null
-        val teamAwayLeaders = game.teamLeaders.awayLeaders
+        val gameLeaders = game.gameLeaders?.toGameLeaders()
+        val teamLeaders = game.teamLeaders?.toGameLeaders()
         val isGameNull = gameId.isNull() || gameStatus.isNull() || gameStatusText.isNull()
         val isTeamNull = homeTeam.isNull() || awayTeam.isNull()
-        if (isGameNull || isTeamNull) {
-            null
-        } else {
-            GameUpdateData(
-                gameId = gameId.getOrError(),
-                gameStatus = gameStatus.getOrError(),
-                gameStatusText = gameStatusText.getOrError(),
-                homeTeam = homeTeam.getOrError(),
-                awayTeam = awayTeam.getOrError(),
-                gameLeaders = GameLeaders(gameHomeLeaders, gameAwayLeaders),
-                teamLeaders = GameLeaders(teamHomeLeaders, teamAwayLeaders)
-            )
-        }
+        val isLeadersNull = gameLeaders.isNull() || teamLeaders.isNull()
+        if (isGameNull || isTeamNull || isLeadersNull) return@mapNotNull null
+        GameUpdateData(
+            gameId = gameId.getOrError(),
+            gameStatus = gameStatus.getOrError(),
+            gameStatusText = gameStatusText.getOrError(),
+            homeTeam = homeTeam.getOrError(),
+            awayTeam = awayTeam.getOrError(),
+            gameLeaders = gameLeaders.getOrError(),
+            teamLeaders = teamLeaders.getOrError()
+        )
     }
+}
+
+private fun RemoteGame.RemoteScoreboard.RemoteGameDetail.RemoteGameLeaders.toGameLeaders(): GameLeaders {
+    return GameLeaders(
+        homeLeader = homeLeader.toGameLeader(),
+        awayLeader = awayLeader.toGameLeader(),
+    )
+}
+
+private fun RemoteGame.RemoteScoreboard.RemoteGameDetail.RemoteGameLeaders.RemoteGameLeader.toGameLeader(): GameLeaders.GameLeader {
+    return GameLeaders.GameLeader(
+        playerId = playerId,
+        name = name,
+        jerseyNum = jerseyNum,
+        position = position,
+        teamTricode = teamTricode,
+        points = points,
+        rebounds = rebounds,
+        assists = assists,
+    )
 }

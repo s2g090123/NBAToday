@@ -58,8 +58,8 @@ data class Game(
 
     val homeLeaderPlayerId: Int
         get() {
-            val gameLeader = gameLeaders?.homeLeaders
-            val teamLeader = teamLeaders?.homeLeaders
+            val gameLeader = gameLeaders?.homeLeader
+            val teamLeader = teamLeaders?.homeLeader
             return if (isGamePlayed) {
                 gameLeader?.playerId
             } else {
@@ -71,8 +71,8 @@ data class Game(
 
     val awayLeadersPlayerId: Int
         get() {
-            val gameLeader = gameLeaders?.awayLeaders
-            val teamLeader = teamLeaders?.awayLeaders
+            val gameLeader = gameLeaders?.awayLeader
+            val teamLeader = teamLeaders?.awayLeader
             return if (isGamePlayed) {
                 gameLeader?.playerId
             } else {

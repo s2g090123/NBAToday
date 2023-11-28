@@ -56,7 +56,7 @@ class BoxScoreViewModelTest {
         viewModel.homeLeader.launchAndCollect(coroutineEnvironment)
         val homeTeam = BoxScoreFactory.getFinalGameBoxScore().homeTeam
         val expected = homeTeam?.players?.first {
-            it.playerId == game.gameLeaders?.homeLeaders?.playerId
+            it.playerId == game.gameLeaders?.homeLeader?.playerId
         }
         val homeLeader = viewModel.homeLeader.value
         assertThat(homeLeader, `is`(notNullValue()))
@@ -73,7 +73,7 @@ class BoxScoreViewModelTest {
         viewModel.awayLeader.launchAndCollect(coroutineEnvironment)
         val awayTeam = BoxScoreFactory.getFinalGameBoxScore().awayTeam
         val expected = awayTeam?.players?.first {
-            it.playerId == game.gameLeaders?.awayLeaders?.playerId
+            it.playerId == game.gameLeaders?.awayLeader?.playerId
         }
         val awayLeader = viewModel.awayLeader.value
         assertThat(awayLeader, `is`(notNullValue()))

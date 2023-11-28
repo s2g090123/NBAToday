@@ -45,8 +45,8 @@ class GameStatusCardViewModel(
 
     private val leaders = if (isGamePlayed) gameAndBet.game.gameLeaders else gameAndBet.game.teamLeaders
     val expandContentVisible = leaders != null
-    val homeLeader = leaders?.homeLeaders ?: GameLeaders.GameLeader.default()
-    val awayLeader = leaders?.awayLeaders ?: GameLeaders.GameLeader.default()
+    val homeLeader = leaders?.homeLeader ?: GameLeaders.GameLeader.default()
+    val awayLeader = leaders?.awayLeader ?: GameLeaders.GameLeader.default()
 
     private val betDialogVisibleImp = MutableStateFlow(false)
     val betDialogVisible = betDialogVisibleImp.asStateFlow()

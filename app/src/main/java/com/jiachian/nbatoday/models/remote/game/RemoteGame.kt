@@ -1,7 +1,6 @@
 package com.jiachian.nbatoday.models.remote.game
 
 import com.google.gson.annotations.SerializedName
-import com.jiachian.nbatoday.models.local.game.GameLeaders
 import com.jiachian.nbatoday.models.local.game.GameStatus
 
 data class RemoteGame(
@@ -14,8 +13,8 @@ data class RemoteGame(
             @SerializedName("gameId") val gameId: String?, // e.g. 0022200414
             @SerializedName("gameStatus") val gameStatus: Int?, // e.g. 1 or 3
             @SerializedName("gameStatusText") val gameStatusText: String?, // e.g. 7:00 pm ET or Final
-            @SerializedName("gameLeaders") val gameLeaders: GameLeaders?,
-            @SerializedName("teamLeaders") val teamLeaders: GameLeaders?,
+            @SerializedName("gameLeaders") val gameLeaders: RemoteGameLeaders?,
+            @SerializedName("teamLeaders") val teamLeaders: RemoteGameLeaders?,
             @SerializedName("homeTeam") val homeTeam: RemoteGameTeam?,
             @SerializedName("awayTeam") val awayTeam: RemoteGameTeam?
         ) {
@@ -25,6 +24,22 @@ data class RemoteGame(
                 @SerializedName("losses") val losses: Int?,
                 @SerializedName("score") val score: Int?,
             )
+
+            data class RemoteGameLeaders(
+                @SerializedName("homeLeaders") val homeLeader: RemoteGameLeader,
+                @SerializedName("awayLeaders") val awayLeader: RemoteGameLeader
+            ) {
+                data class RemoteGameLeader(
+                    @SerializedName("personId") val playerId: Int, // e.g. 1626179
+                    val name: String, // e.g. Terry Rozier
+                    val jerseyNum: String, // e.g. 3
+                    val position: String, // e.g. G
+                    val teamTricode: String, // e.g. CHA
+                    val points: Double, // e.g. 如果比賽已經結束： 22，否則：22.2
+                    val rebounds: Double, // e.g. 如果比賽已經結束： 22，否則：22.2
+                    val assists: Double // e.g. 如果比賽已經結束： 22，否則：22.2
+                )
+            }
 
             fun getFormattedGameStatus(): GameStatus? {
                 return when (gameStatus) {

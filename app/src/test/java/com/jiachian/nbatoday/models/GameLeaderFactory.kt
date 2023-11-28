@@ -47,8 +47,8 @@ object GameLeaderFactory {
 
     fun getGameLeaders(): GameLeaders {
         return GameLeaders(
-            homeLeaders = getHomeLeader(),
-            awayLeaders = getAwayLeader()
+            homeLeader = getHomeLeader(),
+            awayLeader = getAwayLeader()
         )
     }
 

@@ -4,10 +4,10 @@ import androidx.room.ColumnInfo
 import com.jiachian.nbatoday.NA
 
 data class GameLeaders(
-    @ColumnInfo(name = "home_leaders")
-    val homeLeaders: GameLeader,
-    @ColumnInfo(name = "away_leaders")
-    val awayLeaders: GameLeader
+    @ColumnInfo(name = "home_leader")
+    val homeLeader: GameLeader,
+    @ColumnInfo(name = "away_leader")
+    val awayLeader: GameLeader
 ) {
     data class GameLeader(
         @ColumnInfo(name = "player_id")
