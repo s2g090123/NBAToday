@@ -42,7 +42,7 @@ import com.jiachian.nbatoday.compose.screen.team.PlayerSort
 import com.jiachian.nbatoday.compose.screen.team.TeamPlayerLabel
 import com.jiachian.nbatoday.compose.screen.team.TeamViewModel
 import com.jiachian.nbatoday.compose.widget.DisableOverscroll
-import com.jiachian.nbatoday.data.local.player.PlayerStats
+import com.jiachian.nbatoday.models.local.team.TeamPlayerStats
 import com.jiachian.nbatoday.utils.px2Dp
 import com.jiachian.nbatoday.utils.rippleClickable
 import kotlin.math.max
@@ -51,7 +51,7 @@ import kotlin.math.max
 fun PlayerStatsColumn(
     viewModel: TeamViewModel,
     lazyListState: LazyListState,
-    players: List<PlayerStats>,
+    players: List<TeamPlayerStats>,
 ) {
     val horizontalScrollState = rememberScrollState()
     PlayerStatsTable(
@@ -72,7 +72,7 @@ private fun PlayerStatsTable(
     modifier: Modifier = Modifier,
     viewModel: TeamViewModel,
     statsState: LazyListState,
-    players: List<PlayerStats>
+    players: List<TeamPlayerStats>
 ) {
     val sort by viewModel.playerSort.collectAsState()
     var dividerWidth by remember { mutableStateOf(0) }
@@ -179,7 +179,7 @@ private fun PlayerStatsLabel(
 private fun PlayerStatsRow(
     modifier: Modifier = Modifier,
     viewModel: TeamViewModel,
-    stats: PlayerStats,
+    stats: TeamPlayerStats,
     sort: PlayerSort,
     divider: Boolean,
     dividerWidth: Dp,

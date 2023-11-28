@@ -4,10 +4,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.compose.screen.player.utils.PlayerInfoHelper
-import com.jiachian.nbatoday.data.local.player.PlayerCareer.PlayerCareerStats.Stats
-import com.jiachian.nbatoday.data.repository.player.PlayerRepository
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
+import com.jiachian.nbatoday.models.local.player.PlayerCareer.PlayerCareerStats.Stats
+import com.jiachian.nbatoday.repository.player.PlayerRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

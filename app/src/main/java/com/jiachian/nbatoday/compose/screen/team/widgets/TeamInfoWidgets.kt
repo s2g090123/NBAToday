@@ -26,7 +26,7 @@ import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.Transparency25
 import com.jiachian.nbatoday.compose.screen.team.TeamViewModel
 import com.jiachian.nbatoday.compose.widget.TeamLogoImage
-import com.jiachian.nbatoday.data.local.team.TeamStats
+import com.jiachian.nbatoday.models.local.team.TeamStats
 import com.jiachian.nbatoday.utils.decimalFormat
 import com.jiachian.nbatoday.utils.toRank
 
@@ -141,7 +141,7 @@ private fun TeamStatsDetail(
             modifier = Modifier.testTag("TeamInformation_Column_PlusMinusRank"),
             label = stringResource(R.string.team_rank_plusMinus_abbr),
             rank = plusMinusRank,
-            average = stats.plusMinusAverage,
+            average = stats.plusMinus,
             textColor = viewModel.colors.extra2,
             divider = false
         )

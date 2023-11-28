@@ -40,10 +40,10 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.Transparency50
-import com.jiachian.nbatoday.compose.screen.score.data.ScoreRowData
 import com.jiachian.nbatoday.compose.screen.score.label.ScoreLabel
 import com.jiachian.nbatoday.compose.screen.score.label.ScoreLabelType
 import com.jiachian.nbatoday.compose.widget.DisableOverscroll
+import com.jiachian.nbatoday.models.local.score.BoxScoreRowData
 import com.jiachian.nbatoday.utils.dividerSecondaryColor
 import com.jiachian.nbatoday.utils.px2Dp
 import com.jiachian.nbatoday.utils.rippleClickable
@@ -53,7 +53,7 @@ import kotlin.math.max
 fun PlayerStatsColumn(
     modifier: Modifier = Modifier,
     state: LazyListState,
-    scoreRowData: List<ScoreRowData>,
+    scoreRowData: List<BoxScoreRowData>,
     labels: Array<ScoreLabel>
 ) {
     var dividerWidth by remember { mutableStateOf(0) }
@@ -164,7 +164,7 @@ private fun LabelAboutPopup(
 private fun PlayerStatsTable(
     modifier: Modifier = Modifier,
     state: LazyListState,
-    scoreRowData: List<ScoreRowData>,
+    scoreRowData: List<BoxScoreRowData>,
     dividerWidth: Dp
 ) {
     DisableOverscroll {
@@ -196,7 +196,7 @@ private fun PlayerStatsTable(
 @Composable
 private fun PlayerStatsRow(
     modifier: Modifier = Modifier,
-    rowData: ScoreRowData
+    rowData: BoxScoreRowData
 ) {
     Row(modifier = modifier) {
         Text(

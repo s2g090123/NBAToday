@@ -4,10 +4,10 @@ import com.jiachian.nbatoday.UserAccount
 import com.jiachian.nbatoday.UserPassword
 import com.jiachian.nbatoday.UserPoints
 import com.jiachian.nbatoday.compose.state.NbaState
-import com.jiachian.nbatoday.data.NbaGameFactory
-import com.jiachian.nbatoday.data.PlayerStatsFactory
-import com.jiachian.nbatoday.data.TeamStatsFactory
-import com.jiachian.nbatoday.data.TestRepository
+import com.jiachian.nbatoday.models.NbaGameFactory
+import com.jiachian.nbatoday.models.PlayerStatsFactory
+import com.jiachian.nbatoday.models.TeamStatsFactory
+import com.jiachian.nbatoday.models.TestRepository
 import com.jiachian.nbatoday.rule.CalendarRule
 import com.jiachian.nbatoday.rule.TestCoroutineEnvironment
 import com.jiachian.nbatoday.utils.launchAndCollect

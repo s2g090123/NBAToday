@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.screen.card.GameStatusCard
 import com.jiachian.nbatoday.compose.screen.team.TeamViewModel
-import com.jiachian.nbatoday.data.local.NbaGameAndBet
+import com.jiachian.nbatoday.models.local.game.NbaGameAndBet
 import com.jiachian.nbatoday.utils.rippleClickable
 
 @Composable

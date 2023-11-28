@@ -60,8 +60,8 @@ import com.jiachian.nbatoday.Transparency25
 import com.jiachian.nbatoday.compose.screen.card.GameStatusCard
 import com.jiachian.nbatoday.compose.widget.DisableOverscroll
 import com.jiachian.nbatoday.compose.widget.RefreshingScreen
-import com.jiachian.nbatoday.data.local.NbaGameAndBet
-import com.jiachian.nbatoday.data.remote.game.GameStatusCode
+import com.jiachian.nbatoday.models.local.game.GameStatus
+import com.jiachian.nbatoday.models.local.game.NbaGameAndBet
 import com.jiachian.nbatoday.utils.NbaUtils
 import com.jiachian.nbatoday.utils.noRippleClickable
 import com.jiachian.nbatoday.utils.rippleClickable
@@ -294,7 +294,7 @@ private fun CalendarGames(
                     .wrapContentHeight()
                     .background(MaterialTheme.colors.secondary)
                     .rippleClickable {
-                        if (game.game.gameStatus == GameStatusCode.COMING_SOON) {
+                        if (game.game.gameStatus == GameStatus.COMING_SOON) {
                             viewModel.openTeamStats(game.game.homeTeam.team)
                         } else {
                             viewModel.openGameBoxScore(game.game)

@@ -2,11 +2,11 @@ package com.jiachian.nbatoday.compose.screen.bet
 
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.compose.state.NbaScreenState
-import com.jiachian.nbatoday.data.local.BetAndNbaGame
-import com.jiachian.nbatoday.data.remote.game.GameStatusCode
-import com.jiachian.nbatoday.data.repository.bet.BetRepository
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
+import com.jiachian.nbatoday.models.local.bet.BetAndNbaGame
+import com.jiachian.nbatoday.models.local.game.GameStatus
+import com.jiachian.nbatoday.repository.bet.BetRepository
 import com.jiachian.nbatoday.utils.ScreenStateHelper
 import java.util.Random
 import kotlin.math.abs
@@ -73,13 +73,13 @@ class BetViewModel(
 
     fun clickBetAndGame(betAndGame: BetAndNbaGame) {
         when (betAndGame.game.gameStatus) {
-            GameStatusCode.COMING_SOON -> {
+            GameStatus.COMING_SOON -> {
                 screenStateHelper.openScreen(NbaScreenState.Team(betAndGame.game.homeTeam.team))
             }
-            GameStatusCode.PLAYING -> {
+            GameStatus.PLAYING -> {
                 screenStateHelper.openScreen(NbaScreenState.BoxScore(betAndGame.game))
             }
-            GameStatusCode.FINAL -> {
+            GameStatus.FINAL -> {
                 settleBets(betAndGame)
             }
         }

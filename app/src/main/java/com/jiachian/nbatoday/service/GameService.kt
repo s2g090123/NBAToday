@@ -1,8 +1,8 @@
 package com.jiachian.nbatoday.service
 
-import com.jiachian.nbatoday.data.remote.game.GameScoreboard
-import com.jiachian.nbatoday.data.remote.game.Schedule
-import com.jiachian.nbatoday.data.remote.score.RemoteGameBoxScore
+import com.jiachian.nbatoday.models.remote.game.RemoteGame
+import com.jiachian.nbatoday.models.remote.game.RemoteSchedule
+import com.jiachian.nbatoday.models.remote.score.RemoteBoxScore
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -13,7 +13,7 @@ interface GameService {
     suspend fun getScoreboard(
         @Query("leagueID") leagueID: String,
         @Query("gameDate") gameDate: String
-    ): Response<GameScoreboard>
+    ): Response<RemoteGame>
 
     @GET("game/scoreboards")
     suspend fun getScoreboards(
@@ -22,13 +22,13 @@ interface GameService {
         @Query("month") month: Int,
         @Query("day") day: Int,
         @Query("total") total: Int
-    ): Response<List<GameScoreboard>>
+    ): Response<List<RemoteGame>>
 
     @GET("game/schedule")
-    suspend fun getSchedule(): Response<Schedule>
+    suspend fun getSchedule(): Response<RemoteSchedule>
 
     @GET("game/{gameId}")
     suspend fun getGameBoxScore(
         @Path("gameId") gameId: String
-    ): Response<RemoteGameBoxScore>
+    ): Response<RemoteBoxScore>
 }

@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.Transparency25
 import com.jiachian.nbatoday.compose.screen.team.TeamViewModel
 import com.jiachian.nbatoday.compose.widget.DisableOverscroll
-import com.jiachian.nbatoday.data.local.player.PlayerStats
+import com.jiachian.nbatoday.models.local.team.TeamPlayerStats
 import com.jiachian.nbatoday.utils.rippleClickable
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -32,7 +32,7 @@ fun PlayerNamesColumn(
     modifier: Modifier = Modifier,
     viewModel: TeamViewModel,
     playerState: LazyListState,
-    players: List<PlayerStats>,
+    players: List<TeamPlayerStats>,
     textColor: Color,
     onClickPlayer: (playerId: Int) -> Unit
 ) {

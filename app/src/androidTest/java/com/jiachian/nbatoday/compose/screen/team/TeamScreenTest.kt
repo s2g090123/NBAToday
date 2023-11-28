@@ -11,8 +11,8 @@ import com.jiachian.nbatoday.UserAccount
 import com.jiachian.nbatoday.UserPassword
 import com.jiachian.nbatoday.UserPoints
 import com.jiachian.nbatoday.compose.state.NbaState
-import com.jiachian.nbatoday.data.TeamStatsFactory
-import com.jiachian.nbatoday.data.TestRepository
+import com.jiachian.nbatoday.models.TeamStatsFactory
+import com.jiachian.nbatoday.models.TestRepository
 import com.jiachian.nbatoday.utils.assertDialogExist
 import com.jiachian.nbatoday.utils.onAllNodesWithMergedTag
 import com.jiachian.nbatoday.utils.onDialog

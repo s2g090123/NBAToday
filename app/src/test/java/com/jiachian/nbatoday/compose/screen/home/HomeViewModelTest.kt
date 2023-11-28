@@ -15,11 +15,11 @@ import com.jiachian.nbatoday.compose.screen.home.standing.StandingLabel
 import com.jiachian.nbatoday.compose.screen.home.standing.StandingSort
 import com.jiachian.nbatoday.compose.state.NbaState
 import com.jiachian.nbatoday.compose.theme.CelticsColors
-import com.jiachian.nbatoday.data.TestDataStore
-import com.jiachian.nbatoday.data.TestRepository
-import com.jiachian.nbatoday.data.local.NbaGameAndBet
-import com.jiachian.nbatoday.data.local.team.NBATeam
-import com.jiachian.nbatoday.data.local.team.teamCeltics
+import com.jiachian.nbatoday.models.TestDataStore
+import com.jiachian.nbatoday.models.TestRepository
+import com.jiachian.nbatoday.models.local.game.NbaGameAndBet
+import com.jiachian.nbatoday.models.local.team.NBATeam
+import com.jiachian.nbatoday.models.local.team.data.teamCeltics
 import com.jiachian.nbatoday.rule.CalendarRule
 import com.jiachian.nbatoday.rule.TestCoroutineEnvironment
 import com.jiachian.nbatoday.utils.NbaUtils

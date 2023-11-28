@@ -4,12 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jiachian.nbatoday.compose.state.NbaState
 import com.jiachian.nbatoday.compose.theme.updateColors
-import com.jiachian.nbatoday.data.datastore.BaseDataStore
-import com.jiachian.nbatoday.data.repository.RepositoryProvider
+import com.jiachian.nbatoday.datastore.BaseDataStore
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.event.EventBroadcaster
 import com.jiachian.nbatoday.event.EventManager
+import com.jiachian.nbatoday.repository.RepositoryProvider
 import com.jiachian.nbatoday.utils.ScreenStateHelper
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow

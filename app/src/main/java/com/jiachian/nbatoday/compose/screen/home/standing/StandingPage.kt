@@ -61,8 +61,8 @@ import com.google.accompanist.pager.rememberPagerState
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.Transparency25
 import com.jiachian.nbatoday.compose.widget.DisableOverscroll
-import com.jiachian.nbatoday.data.local.team.NBATeam
-import com.jiachian.nbatoday.data.local.team.TeamStats
+import com.jiachian.nbatoday.models.local.team.NBATeam
+import com.jiachian.nbatoday.models.local.team.TeamStats
 import com.jiachian.nbatoday.utils.NbaUtils
 import com.jiachian.nbatoday.utils.dividerSecondaryColor
 import com.jiachian.nbatoday.utils.px2Dp

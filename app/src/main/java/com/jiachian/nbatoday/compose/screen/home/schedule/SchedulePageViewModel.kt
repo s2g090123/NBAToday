@@ -6,13 +6,13 @@ import com.jiachian.nbatoday.ScheduleDateRange
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.compose.screen.card.GameStatusCardViewModel
 import com.jiachian.nbatoday.compose.state.NbaScreenState
-import com.jiachian.nbatoday.data.local.NbaGame
-import com.jiachian.nbatoday.data.local.NbaGameAndBet
-import com.jiachian.nbatoday.data.local.team.NBATeam
-import com.jiachian.nbatoday.data.repository.game.GameRepository
-import com.jiachian.nbatoday.data.repository.schedule.ScheduleRepository
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
+import com.jiachian.nbatoday.models.local.game.Game
+import com.jiachian.nbatoday.models.local.game.NbaGameAndBet
+import com.jiachian.nbatoday.models.local.team.NBATeam
+import com.jiachian.nbatoday.repository.game.GameRepository
+import com.jiachian.nbatoday.repository.schedule.ScheduleRepository
 import com.jiachian.nbatoday.utils.ComposeViewModelProvider
 import com.jiachian.nbatoday.utils.NbaUtils
 import com.jiachian.nbatoday.utils.ScreenStateHelper
@@ -105,7 +105,7 @@ class SchedulePageViewModel(
         }
     }
 
-    fun openGameBoxScore(game: NbaGame) {
+    fun openGameBoxScore(game: Game) {
         screenStateHelper.openScreen(NbaScreenState.BoxScore(game))
     }
 

@@ -1,8 +1,8 @@
 package com.jiachian.nbatoday.service
 
-import com.jiachian.nbatoday.data.remote.player.RemotePlayerDetail
-import com.jiachian.nbatoday.data.remote.player.RemotePlayerInfo
-import com.jiachian.nbatoday.data.remote.player.RemotePlayerStats
+import com.jiachian.nbatoday.models.remote.player.RemotePlayerDetail
+import com.jiachian.nbatoday.models.remote.player.RemotePlayerInfo
+import com.jiachian.nbatoday.models.remote.player.RemotePlayerStats
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query

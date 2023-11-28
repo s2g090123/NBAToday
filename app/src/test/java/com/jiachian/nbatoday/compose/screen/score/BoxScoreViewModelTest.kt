@@ -1,9 +1,9 @@
 package com.jiachian.nbatoday.compose.screen.score
 
 import com.jiachian.nbatoday.compose.screen.score.tab.BoxScoreTab
-import com.jiachian.nbatoday.data.BoxScoreFactory
-import com.jiachian.nbatoday.data.NbaGameFactory
-import com.jiachian.nbatoday.data.TestRepository
+import com.jiachian.nbatoday.models.BoxScoreFactory
+import com.jiachian.nbatoday.models.NbaGameFactory
+import com.jiachian.nbatoday.models.TestRepository
 import com.jiachian.nbatoday.rule.TestCoroutineEnvironment
 import com.jiachian.nbatoday.utils.launchAndCollect
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -56,11 +56,11 @@ class BoxScoreViewModelTest {
         viewModel.homeLeader.launchAndCollect(coroutineEnvironment)
         val homeTeam = BoxScoreFactory.getFinalGameBoxScore().homeTeam
         val expected = homeTeam?.players?.first {
-            it.personId == game.gameLeaders?.homeLeaders?.personId
+            it.playerId == game.gameLeaders?.homeLeaders?.playerId
         }
         val homeLeader = viewModel.homeLeader.value
         assertThat(homeLeader, `is`(notNullValue()))
-        assertThat(homeLeader?.personId, `is`(expected?.personId))
+        assertThat(homeLeader?.playerId, `is`(expected?.playerId))
         assertThat(homeLeader?.name, `is`(expected?.name))
         assertThat(homeLeader?.nameAbbr, `is`(expected?.nameAbbr))
         assertThat(homeLeader?.position, `is`(expected?.position))
@@ -73,11 +73,11 @@ class BoxScoreViewModelTest {
         viewModel.awayLeader.launchAndCollect(coroutineEnvironment)
         val awayTeam = BoxScoreFactory.getFinalGameBoxScore().awayTeam
         val expected = awayTeam?.players?.first {
-            it.personId == game.gameLeaders?.awayLeaders?.personId
+            it.playerId == game.gameLeaders?.awayLeaders?.playerId
         }
         val awayLeader = viewModel.awayLeader.value
         assertThat(awayLeader, `is`(notNullValue()))
-        assertThat(awayLeader?.personId, `is`(expected?.personId))
+        assertThat(awayLeader?.playerId, `is`(expected?.playerId))
         assertThat(awayLeader?.name, `is`(expected?.name))
         assertThat(awayLeader?.nameAbbr, `is`(expected?.nameAbbr))
         assertThat(awayLeader?.position, `is`(expected?.position))

@@ -28,7 +28,7 @@ import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.screen.score.BoxScoreViewModel
 import com.jiachian.nbatoday.compose.screen.score.data.ScoreLeaderRowData
 import com.jiachian.nbatoday.compose.widget.PlayerImage
-import com.jiachian.nbatoday.data.local.score.GameBoxScore
+import com.jiachian.nbatoday.models.local.score.BoxScore
 import com.jiachian.nbatoday.utils.dividerSecondaryColor
 import com.jiachian.nbatoday.utils.modifyIf
 
@@ -67,8 +67,8 @@ fun LeaderStatistics(
 @Composable
 private fun LeaderStatisticsTitleRow(
     modifier: Modifier = Modifier,
-    homeLeader: GameBoxScore.BoxScoreTeam.Player?,
-    awayLeader: GameBoxScore.BoxScoreTeam.Player?
+    homeLeader: BoxScore.BoxScoreTeam.Player?,
+    awayLeader: BoxScore.BoxScoreTeam.Player?
 ) {
     Row(
         modifier = modifier,
@@ -77,7 +77,7 @@ private fun LeaderStatisticsTitleRow(
     ) {
         PlayerImage(
             modifier = Modifier.size(56.dp),
-            playerId = homeLeader?.personId
+            playerId = homeLeader?.playerId
         )
         Text(
             text = stringResource(R.string.box_score_leader_statistics_title),
@@ -87,7 +87,7 @@ private fun LeaderStatisticsTitleRow(
         )
         PlayerImage(
             modifier = Modifier.size(56.dp),
-            playerId = awayLeader?.personId
+            playerId = awayLeader?.playerId
         )
     }
 }

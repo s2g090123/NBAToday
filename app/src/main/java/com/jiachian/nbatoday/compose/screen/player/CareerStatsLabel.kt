@@ -2,7 +2,7 @@ package com.jiachian.nbatoday.compose.screen.player
 
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
-import com.jiachian.nbatoday.data.local.player.PlayerCareer
+import com.jiachian.nbatoday.models.local.player.PlayerCareer
 
 data class CareerStatsLabel(
     val textWidth: Dp,

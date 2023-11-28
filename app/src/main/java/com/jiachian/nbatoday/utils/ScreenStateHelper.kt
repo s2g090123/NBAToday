@@ -2,8 +2,8 @@ package com.jiachian.nbatoday.utils
 
 import com.jiachian.nbatoday.compose.state.NbaScreenState
 import com.jiachian.nbatoday.compose.state.NbaState
-import com.jiachian.nbatoday.data.datastore.BaseDataStore
-import com.jiachian.nbatoday.data.repository.RepositoryProvider
+import com.jiachian.nbatoday.datastore.BaseDataStore
+import com.jiachian.nbatoday.repository.RepositoryProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map

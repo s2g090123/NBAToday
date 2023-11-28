@@ -19,13 +19,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.widget.TeamLogoImage
-import com.jiachian.nbatoday.data.local.score.GameBoxScore
-import com.jiachian.nbatoday.data.local.team.NBATeam
+import com.jiachian.nbatoday.models.local.score.BoxScore
+import com.jiachian.nbatoday.models.local.team.NBATeam
 
 @Composable
 fun ScoreTotal(
     modifier: Modifier = Modifier,
-    score: GameBoxScore
+    score: BoxScore
 ) {
     val homeTeam = remember(score) { score.homeTeam }
     val awayTeam = remember(score) { score.awayTeam }

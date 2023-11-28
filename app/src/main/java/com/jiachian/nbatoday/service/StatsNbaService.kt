@@ -1,10 +1,10 @@
 package com.jiachian.nbatoday.service
 
-import com.jiachian.nbatoday.data.remote.game.GameScoreboard
-import com.jiachian.nbatoday.data.remote.player.RemotePlayerInfo
-import com.jiachian.nbatoday.data.remote.player.RemotePlayerStats
-import com.jiachian.nbatoday.data.remote.player.RemoteTeamPlayerStats
-import com.jiachian.nbatoday.data.remote.team.RemoteTeamStats
+import com.jiachian.nbatoday.models.remote.game.RemoteGame
+import com.jiachian.nbatoday.models.remote.player.RemotePlayerInfo
+import com.jiachian.nbatoday.models.remote.player.RemotePlayerStats
+import com.jiachian.nbatoday.models.remote.team.RemoteTeamPlayerStats
+import com.jiachian.nbatoday.models.remote.team.RemoteTeamStats
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -14,7 +14,7 @@ interface StatsNbaService {
     suspend fun getScoreboard(
         @Query("LeagueId") leagueId: String,
         @Query("GameDate") gameDate: String
-    ): GameScoreboard?
+    ): RemoteGame?
 
     @GET("leaguedashteamstats")
     suspend fun getTeamStats(

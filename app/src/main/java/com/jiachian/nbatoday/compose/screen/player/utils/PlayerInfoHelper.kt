@@ -5,7 +5,7 @@ import com.jiachian.nbatoday.MainApplication
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.screen.player.models.PlayerInfoRowData
 import com.jiachian.nbatoday.compose.screen.player.models.PlayerInfoTableData
-import com.jiachian.nbatoday.data.local.player.PlayerCareer
+import com.jiachian.nbatoday.models.local.player.PlayerCareer
 
 object PlayerInfoHelper {
     fun createPlayerInfoTableData(info: PlayerCareer.PlayerCareerInfo): PlayerInfoTableData {
@@ -19,11 +19,11 @@ object PlayerInfoHelper {
             secondRowData = PlayerInfoRowData(
                 firstContent = getString(R.string.player_career_info_height) to getString(
                     R.string.player_career_info_height_value,
-                    info.heightFormat
+                    info.height
                 ),
                 secondContent = getString(R.string.player_career_info_weight) to getString(
                     R.string.player_career_info_weight_value,
-                    info.weightFormat
+                    info.weight
                 ),
                 thirdContent = getString(R.string.player_career_info_country) to info.country,
                 forthContent = getString(R.string.player_career_info_attended) to info.school,

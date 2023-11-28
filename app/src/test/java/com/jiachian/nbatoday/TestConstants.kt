@@ -2,7 +2,7 @@ package com.jiachian.nbatoday
 
 import com.jiachian.nbatoday.compose.theme.NbaColors
 import com.jiachian.nbatoday.compose.theme.OfficialColors
-import com.jiachian.nbatoday.data.local.team.NBATeam
+import com.jiachian.nbatoday.models.local.team.NBATeam
 
 const val FinalGameId = "0"
 const val PlayingGameId = "1"

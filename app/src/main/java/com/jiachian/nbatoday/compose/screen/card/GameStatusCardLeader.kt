@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.widget.PlayerImage
-import com.jiachian.nbatoday.data.remote.leader.GameLeaders
+import com.jiachian.nbatoday.models.local.game.GameLeaders
 import com.jiachian.nbatoday.utils.dividerPrimaryColor
 
 @Composable
@@ -105,7 +105,7 @@ private fun LeaderRow(
     ) {
         PlayerImage(
             modifier = Modifier.size(width = 52.dp, height = 38.dp),
-            playerId = player.personId
+            playerId = player.playerId
         )
         Column(modifier = Modifier.padding(start = 4.dp)) {
             Text(
@@ -115,12 +115,7 @@ private fun LeaderRow(
             )
             Text(
                 modifier = Modifier.testTag("LeaderRow_Text_PlayerInfo"),
-                text = stringResource(
-                    R.string.player_info,
-                    player.teamTricode,
-                    player.jerseyNum,
-                    player.position
-                ),
+                text = player.playerTitle,
                 color = color,
                 fontSize = 12.sp
             )

@@ -49,7 +49,7 @@ import coil.compose.AsyncImage
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.annotation.ExcludeFromJacocoGeneratedReport
 import com.jiachian.nbatoday.compose.coil.SvgRequest
-import com.jiachian.nbatoday.data.local.team.NBATeam
+import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.utils.NbaUtils
 import com.jiachian.nbatoday.utils.color
 import com.jiachian.nbatoday.utils.noRippleClickable

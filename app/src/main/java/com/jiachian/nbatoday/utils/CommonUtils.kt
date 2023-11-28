@@ -5,11 +5,14 @@ import android.widget.Toast
 import androidx.annotation.StringRes
 import com.jiachian.nbatoday.FirstRank
 import com.jiachian.nbatoday.NA
+import com.jiachian.nbatoday.OneHundredPercentage
 import com.jiachian.nbatoday.SecondRank
 import com.jiachian.nbatoday.ThirdRank
-import com.jiachian.nbatoday.data.local.team.NBATeam
-import com.jiachian.nbatoday.data.local.team.teamOfficial
-import com.jiachian.nbatoday.data.remote.game.GameStatusCode
+import com.jiachian.nbatoday.models.local.team.NBATeam
+import com.jiachian.nbatoday.models.local.team.data.teamOfficial
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.Date
 import kotlin.math.pow
 
 inline fun <reified T : Any> T?.getOrNA(): String = this?.toString() ?: NA
@@ -37,18 +40,11 @@ fun Int.toRank(): String {
     }
 }
 
-fun Int.toGameStatusCode(): GameStatusCode? {
-    return when (this) {
-        GameStatusCode.COMING_SOON.status -> GameStatusCode.COMING_SOON
-        GameStatusCode.PLAYING.status -> GameStatusCode.PLAYING
-        GameStatusCode.FINAL.status -> GameStatusCode.FINAL
-        else -> null
-    }
-}
-
 fun Double.decimalFormat(radix: Int = 1): Double {
     return (this * 10.0.pow(radix)).toInt() / 10.0.pow(radix)
 }
+
+fun Double.toPercentage(): Double = this * OneHundredPercentage
 
 fun showToast(
     context: Context,
@@ -60,4 +56,14 @@ fun showToast(
         context.getString(stringRes),
         duration
     ).show()
+}
+
+fun parseDate(dateString: String?, dateFormat: SimpleDateFormat): Date? {
+    return dateString?.let { time ->
+        try {
+            dateFormat.parse(time)
+        } catch (e: ParseException) {
+            null
+        }
+    }
 }

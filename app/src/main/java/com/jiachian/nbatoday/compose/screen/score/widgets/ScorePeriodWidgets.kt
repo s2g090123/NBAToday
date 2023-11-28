@@ -19,13 +19,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.R
-import com.jiachian.nbatoday.data.local.score.GameBoxScore
+import com.jiachian.nbatoday.models.local.score.BoxScore
 import com.jiachian.nbatoday.utils.dividerSecondaryColor
 
 @Composable
 fun ScorePeriod(
     modifier: Modifier = Modifier,
-    score: GameBoxScore,
+    score: BoxScore,
     labels: List<String>
 ) {
     Column(modifier = modifier) {
@@ -94,8 +94,8 @@ private fun ScoreLabelText(
 @Composable
 private fun PeriodScoreTable(
     modifier: Modifier = Modifier,
-    homeTeam: GameBoxScore.BoxScoreTeam,
-    awayTeam: GameBoxScore.BoxScoreTeam
+    homeTeam: BoxScore.BoxScoreTeam,
+    awayTeam: BoxScore.BoxScoreTeam
 ) {
     Column(modifier = modifier) {
         PeriodScoreRow(
@@ -116,7 +116,7 @@ private fun PeriodScoreTable(
 @Composable
 private fun PeriodScoreRow(
     modifier: Modifier = Modifier,
-    team: GameBoxScore.BoxScoreTeam
+    team: BoxScore.BoxScoreTeam
 ) {
     Box(modifier = modifier) {
         Text(

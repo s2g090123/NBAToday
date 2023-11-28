@@ -19,11 +19,11 @@ import com.jiachian.nbatoday.GameCode
 import com.jiachian.nbatoday.GameStatusFinal
 import com.jiachian.nbatoday.GameStatusPrepare
 import com.jiachian.nbatoday.compose.state.NbaState
-import com.jiachian.nbatoday.data.GameLeaderFactory
-import com.jiachian.nbatoday.data.GameTeamFactory
-import com.jiachian.nbatoday.data.TestRepository
-import com.jiachian.nbatoday.data.local.NbaGame
-import com.jiachian.nbatoday.data.remote.game.GameStatusCode
+import com.jiachian.nbatoday.models.GameLeaderFactory
+import com.jiachian.nbatoday.models.GameTeamFactory
+import com.jiachian.nbatoday.models.TestRepository
+import com.jiachian.nbatoday.models.local.game.Game
+import com.jiachian.nbatoday.models.local.game.GameStatus
 import com.jiachian.nbatoday.rule.TestCoroutineEnvironment
 import com.jiachian.nbatoday.utils.getOrError
 import com.jiachian.nbatoday.utils.onNodeWithMergedTag
@@ -369,14 +369,14 @@ class GameCalendarScreenTest {
             .assertDoesNotExist()
     }
 
-    private fun getLastMonthGame(): NbaGame {
-        return NbaGame(
+    private fun getLastMonthGame(): Game {
+        return Game(
             leagueId = "00",
             awayTeam = GameTeamFactory.getDefaultAwayTeam(),
             day = "SUN",
             gameCode = GameCode,
             gameId = FinalGameId,
-            gameStatus = GameStatusCode.FINAL,
+            gameStatus = GameStatus.FINAL,
             gameStatusText = GameStatusFinal,
             gameSequence = 1,
             homeTeam = GameTeamFactory.getDefaultHomeTeam(),
@@ -393,14 +393,14 @@ class GameCalendarScreenTest {
         )
     }
 
-    private fun getNextMonthGame(): NbaGame {
-        return NbaGame(
+    private fun getNextMonthGame(): Game {
+        return Game(
             leagueId = "00",
             awayTeam = GameTeamFactory.getDefaultAwayTeam(),
             day = "SUN",
             gameCode = GameCode,
             gameId = ComingSoonGameId,
-            gameStatus = GameStatusCode.COMING_SOON,
+            gameStatus = GameStatus.COMING_SOON,
             gameStatusText = GameStatusPrepare,
             gameSequence = 1,
             homeTeam = GameTeamFactory.getDefaultHomeTeam(),

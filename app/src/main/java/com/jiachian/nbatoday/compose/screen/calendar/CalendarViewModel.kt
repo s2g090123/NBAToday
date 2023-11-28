@@ -3,12 +3,12 @@ package com.jiachian.nbatoday.compose.screen.calendar
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.compose.screen.card.GameStatusCardViewModel
 import com.jiachian.nbatoday.compose.state.NbaScreenState
-import com.jiachian.nbatoday.data.local.NbaGame
-import com.jiachian.nbatoday.data.local.NbaGameAndBet
-import com.jiachian.nbatoday.data.local.team.NBATeam
-import com.jiachian.nbatoday.data.repository.game.GameRepository
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
+import com.jiachian.nbatoday.models.local.game.Game
+import com.jiachian.nbatoday.models.local.game.NbaGameAndBet
+import com.jiachian.nbatoday.models.local.team.NBATeam
+import com.jiachian.nbatoday.repository.game.GameRepository
 import com.jiachian.nbatoday.utils.ComposeViewModelProvider
 import com.jiachian.nbatoday.utils.NbaUtils
 import com.jiachian.nbatoday.utils.ScreenStateHelper
@@ -236,7 +236,7 @@ class CalendarViewModel(
         screenStateHelper.openScreen(NbaScreenState.Team(team))
     }
 
-    fun openGameBoxScore(game: NbaGame) {
+    fun openGameBoxScore(game: Game) {
         screenStateHelper.openScreen(NbaScreenState.BoxScore(game))
     }
 

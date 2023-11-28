@@ -17,13 +17,13 @@ import com.jiachian.nbatoday.UserPassword
 import com.jiachian.nbatoday.UserPoints
 import com.jiachian.nbatoday.compose.screen.home.schedule.DateData
 import com.jiachian.nbatoday.compose.state.NbaState
-import com.jiachian.nbatoday.data.GameLeaderFactory
-import com.jiachian.nbatoday.data.GameTeamFactory
-import com.jiachian.nbatoday.data.TeamStatsFactory
-import com.jiachian.nbatoday.data.TestDataStore
-import com.jiachian.nbatoday.data.TestRepository
-import com.jiachian.nbatoday.data.local.NbaGame
-import com.jiachian.nbatoday.data.remote.game.GameStatusCode
+import com.jiachian.nbatoday.models.GameLeaderFactory
+import com.jiachian.nbatoday.models.GameTeamFactory
+import com.jiachian.nbatoday.models.TeamStatsFactory
+import com.jiachian.nbatoday.models.TestDataStore
+import com.jiachian.nbatoday.models.TestRepository
+import com.jiachian.nbatoday.models.local.game.Game
+import com.jiachian.nbatoday.models.local.game.GameStatus
 import com.jiachian.nbatoday.utils.assertDialogDoesNotExist
 import com.jiachian.nbatoday.utils.assertDialogExist
 import com.jiachian.nbatoday.utils.getOrAssert
@@ -732,14 +732,14 @@ class HomeScreenTest : BaseAndroidTest() {
             .assertTextEquals(viewModel.nbaTeams[1].teamName)
     }
 
-    private fun getYesterdayGame(): NbaGame {
-        return NbaGame(
+    private fun getYesterdayGame(): Game {
+        return Game(
             leagueId = "00",
             awayTeam = GameTeamFactory.getDefaultAwayTeam(),
             day = "SUN",
             gameCode = GameCode,
             gameId = FinalGameId,
-            gameStatus = GameStatusCode.FINAL,
+            gameStatus = GameStatus.FINAL,
             gameStatusText = GameStatusFinal,
             gameSequence = 1,
             homeTeam = GameTeamFactory.getDefaultHomeTeam(),

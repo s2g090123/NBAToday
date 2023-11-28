@@ -1,9 +1,9 @@
 package com.jiachian.nbatoday.service
 
-import com.jiachian.nbatoday.data.remote.user.LoginBody
-import com.jiachian.nbatoday.data.remote.user.UpdatePasswordBody
-import com.jiachian.nbatoday.data.remote.user.UpdatePointBody
-import com.jiachian.nbatoday.data.remote.user.User
+import com.jiachian.nbatoday.models.remote.user.LoginBody
+import com.jiachian.nbatoday.models.remote.user.RemoteUser
+import com.jiachian.nbatoday.models.remote.user.UpdatePasswordBody
+import com.jiachian.nbatoday.models.remote.user.UpdatePointBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
@@ -12,12 +12,12 @@ interface UserService {
     @POST("user/login")
     suspend fun login(
         @Body loginBody: LoginBody
-    ): Response<User>
+    ): Response<RemoteUser>
 
     @POST("user/register")
     suspend fun register(
         @Body loginBody: LoginBody
-    ): Response<User>
+    ): Response<RemoteUser>
 
     @POST("user/password")
     suspend fun updatePassword(

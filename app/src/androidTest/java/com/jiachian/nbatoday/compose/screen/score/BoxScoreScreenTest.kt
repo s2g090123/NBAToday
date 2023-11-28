@@ -8,11 +8,11 @@ import com.jiachian.nbatoday.BaseAndroidTest
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.screen.label.LabelHelper
 import com.jiachian.nbatoday.compose.screen.score.label.ScoreLabel
-import com.jiachian.nbatoday.data.BoxScoreFactory
-import com.jiachian.nbatoday.data.NbaGameFactory
-import com.jiachian.nbatoday.data.TestRepository
-import com.jiachian.nbatoday.data.local.score.GameBoxScore
-import com.jiachian.nbatoday.data.remote.score.PlayerActiveStatus
+import com.jiachian.nbatoday.models.BoxScoreFactory
+import com.jiachian.nbatoday.models.NbaGameFactory
+import com.jiachian.nbatoday.models.TestRepository
+import com.jiachian.nbatoday.models.local.score.BoxScore
+import com.jiachian.nbatoday.models.local.score.PlayerActiveStatus
 import com.jiachian.nbatoday.utils.assertPopupExist
 import com.jiachian.nbatoday.utils.getOrError
 import com.jiachian.nbatoday.utils.onNodeWithMergedTag
@@ -513,7 +513,7 @@ class BoxScoreScreenTest : BaseAndroidTest() {
 
     private fun getPlayerStats(
         label: ScoreLabel,
-        player: GameBoxScore.BoxScoreTeam.Player
+        player: BoxScore.BoxScoreTeam.Player
     ): String {
         val statistics = player.statistics.getOrError()
         return when (label.textRes) {

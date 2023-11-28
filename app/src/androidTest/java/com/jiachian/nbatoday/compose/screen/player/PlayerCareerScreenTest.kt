@@ -6,8 +6,8 @@ import androidx.compose.ui.test.performClick
 import com.jiachian.nbatoday.BaseAndroidTest
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.state.NbaState
-import com.jiachian.nbatoday.data.PlayerCareerFactory
-import com.jiachian.nbatoday.data.TestRepository
+import com.jiachian.nbatoday.models.PlayerCareerFactory
+import com.jiachian.nbatoday.models.TestRepository
 import com.jiachian.nbatoday.utils.onAllNodesWithMergedTag
 import com.jiachian.nbatoday.utils.onNodeWithMergedTag
 import com.jiachian.nbatoday.utils.onNodeWithTag
@@ -34,7 +34,7 @@ class PlayerCareerScreenTest : BaseAndroidTest() {
     fun setup() = runTest {
         repository = TestRepository()
         viewModel = PlayerViewModel(
-            playerId = playerCareer.personId,
+            playerId = playerCareer.playerId,
             repository = repository,
             dispatcherProvider = coroutineEnvironment.testDispatcherProvider
         )

@@ -8,9 +8,9 @@ import com.jiachian.nbatoday.UserAccount
 import com.jiachian.nbatoday.UserPassword
 import com.jiachian.nbatoday.UserPoints
 import com.jiachian.nbatoday.compose.state.NbaState
-import com.jiachian.nbatoday.data.TestRepository
-import com.jiachian.nbatoday.data.remote.game.GameStatusCode
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
+import com.jiachian.nbatoday.models.TestRepository
+import com.jiachian.nbatoday.models.local.game.GameStatus
 import com.jiachian.nbatoday.rule.TestCoroutineEnvironment
 import com.jiachian.nbatoday.utils.launchAndCollect
 import kotlin.math.abs
@@ -54,7 +54,7 @@ class BetViewModelTest {
     fun bet_clickFinalGame_askTurnTable() = coroutineEnvironment.testScope.runTest {
         viewModel.betAndGame.launchAndCollect(coroutineEnvironment)
         val betAndGames = viewModel.betAndGame.value
-        val finalGame = betAndGames.firstOrNull { it.game.gameStatus == GameStatusCode.FINAL }
+        val finalGame = betAndGames.firstOrNull { it.game.gameStatus == GameStatus.FINAL }
         assertThat(finalGame, notNullValue())
         viewModel.clickBetAndGame(finalGame!!)
         assertThat(viewModel.askTurnTable, notNullValue())
@@ -67,7 +67,7 @@ class BetViewModelTest {
     fun bet_clickPlayingGame_openBoxScore() {
         viewModel.betAndGame.launchAndCollect(coroutineEnvironment)
         val betAndGames = viewModel.betAndGame.value
-        val playingGame = betAndGames.firstOrNull { it.game.gameStatus == GameStatusCode.PLAYING }
+        val playingGame = betAndGames.firstOrNull { it.game.gameStatus == GameStatus.PLAYING }
         assertThat(playingGame, notNullValue())
         viewModel.clickBetAndGame(playingGame!!)
         assertThat(currentState, instanceOf(NbaState.BoxScore::class.java))
@@ -78,7 +78,7 @@ class BetViewModelTest {
         viewModel.betAndGame.launchAndCollect(coroutineEnvironment)
         val betAndGames = viewModel.betAndGame.value
         val comingGame =
-            betAndGames.firstOrNull { it.game.gameStatus == GameStatusCode.COMING_SOON }
+            betAndGames.firstOrNull { it.game.gameStatus == GameStatus.COMING_SOON }
         assertThat(comingGame, notNullValue())
         viewModel.clickBetAndGame(comingGame!!)
         assertThat(currentState, instanceOf(NbaState.Team::class.java))

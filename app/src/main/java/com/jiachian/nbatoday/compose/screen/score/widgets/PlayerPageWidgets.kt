@@ -13,13 +13,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
-import com.jiachian.nbatoday.compose.screen.score.data.ScoreRowData
 import com.jiachian.nbatoday.compose.screen.score.label.ScoreLabel
+import com.jiachian.nbatoday.models.local.score.BoxScoreRowData
 
 @Composable
 fun PlayerStatistics(
     modifier: Modifier = Modifier,
-    scoreRowData: List<ScoreRowData>,
+    scoreRowData: List<BoxScoreRowData>,
     labels: Array<ScoreLabel>,
     showPlayerCareer: (Int) -> Unit
 ) {

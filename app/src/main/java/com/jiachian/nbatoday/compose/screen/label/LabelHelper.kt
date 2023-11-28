@@ -5,7 +5,7 @@ import com.jiachian.nbatoday.compose.screen.score.label.ScoreLabel
 import com.jiachian.nbatoday.compose.screen.score.label.ScoreLeaderLabel
 import com.jiachian.nbatoday.compose.screen.score.label.ScoreTeamLabel
 import com.jiachian.nbatoday.compose.screen.team.TeamPlayerLabel
-import com.jiachian.nbatoday.data.local.score.GameBoxScore
+import com.jiachian.nbatoday.models.local.score.BoxScore
 
 object LabelHelper {
     fun createScoreLabel(): Array<ScoreLabel> {
@@ -26,7 +26,7 @@ object LabelHelper {
 
     fun getValueByLabel(
         label: ScoreLabel,
-        stats: GameBoxScore.BoxScoreTeam.Player.Statistics?
+        stats: BoxScore.BoxScoreTeam.Player.Statistics?
     ): String {
         stats ?: return NA
         return when (label) {
@@ -51,7 +51,7 @@ object LabelHelper {
 
     fun getValueByLabel(
         label: ScoreTeamLabel,
-        stats: GameBoxScore.BoxScoreTeam.Statistics?
+        stats: BoxScore.BoxScoreTeam.Statistics?
     ): String {
         stats ?: return NA
         return when (label) {
@@ -79,7 +79,7 @@ object LabelHelper {
 
     fun getValueByLabel(
         label: ScoreLeaderLabel,
-        player: GameBoxScore.BoxScoreTeam.Player?
+        player: BoxScore.BoxScoreTeam.Player?
     ): String {
         player ?: return NA
         val stats = player.statistics

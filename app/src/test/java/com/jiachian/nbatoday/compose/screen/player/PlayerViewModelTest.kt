@@ -1,8 +1,8 @@
 package com.jiachian.nbatoday.compose.screen.player
 
 import com.jiachian.nbatoday.HomePlayerId
-import com.jiachian.nbatoday.data.PlayerCareerFactory
-import com.jiachian.nbatoday.data.TestRepository
+import com.jiachian.nbatoday.models.PlayerCareerFactory
+import com.jiachian.nbatoday.models.TestRepository
 import com.jiachian.nbatoday.rule.TestCoroutineEnvironment
 import com.jiachian.nbatoday.utils.launchAndCollect
 import org.hamcrest.CoreMatchers.`is`
@@ -37,7 +37,7 @@ class PlayerViewModelTest {
     fun player_homePlayer_checksPlayerCareer() {
         viewModel.playerCareer.launchAndCollect(coroutineEnvironment)
         val playerCareer = viewModel.playerCareer.value
-        assertThat(playerCareer?.personId, `is`(homePlayer.personId))
+        assertThat(playerCareer?.playerId, `is`(homePlayer.playerId))
         assertThat(playerCareer?.info, `is`(notNullValue()))
         assertThat(playerCareer?.info?.playerName, `is`(homePlayer.info.playerName))
         assertThat(playerCareer?.info?.team?.teamName, `is`(homePlayer.info.team.teamName))

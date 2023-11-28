@@ -42,8 +42,8 @@ import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.screen.bet.turntable.AskTurnTableDialog
 import com.jiachian.nbatoday.compose.screen.bet.turntable.BetTurnTable
 import com.jiachian.nbatoday.compose.widget.BackHandle
-import com.jiachian.nbatoday.data.local.BetAndNbaGame
-import com.jiachian.nbatoday.data.remote.team.GameTeam
+import com.jiachian.nbatoday.models.local.bet.BetAndNbaGame
+import com.jiachian.nbatoday.models.local.game.GameTeam
 import com.jiachian.nbatoday.utils.NbaUtils
 import com.jiachian.nbatoday.utils.color
 import com.jiachian.nbatoday.utils.noRippleClickable

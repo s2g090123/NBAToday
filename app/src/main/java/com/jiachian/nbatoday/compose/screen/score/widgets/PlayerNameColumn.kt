@@ -23,8 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.Transparency50
-import com.jiachian.nbatoday.compose.screen.score.data.ScoreRowData
 import com.jiachian.nbatoday.compose.widget.DisableOverscroll
+import com.jiachian.nbatoday.models.local.score.BoxScoreRowData
 import com.jiachian.nbatoday.utils.dividerSecondaryColor
 import com.jiachian.nbatoday.utils.rippleClickable
 
@@ -32,7 +32,7 @@ import com.jiachian.nbatoday.utils.rippleClickable
 fun PlayerNameColumn(
     modifier: Modifier = Modifier,
     state: LazyListState,
-    scoreRowData: List<ScoreRowData>,
+    scoreRowData: List<BoxScoreRowData>,
     onClickPlayer: (playerId: Int) -> Unit
 ) {
     Column(modifier = modifier) {
@@ -63,7 +63,7 @@ fun PlayerNameColumn(
 @Composable
 private fun PlayerColumn(
     playerState: LazyListState,
-    scoreRowData: List<ScoreRowData>,
+    scoreRowData: List<BoxScoreRowData>,
     onClickPlayer: (playerId: Int) -> Unit
 ) {
     DisableOverscroll {

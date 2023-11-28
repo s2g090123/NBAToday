@@ -7,12 +7,12 @@ import com.jiachian.nbatoday.compose.screen.player.PlayerViewModel
 import com.jiachian.nbatoday.compose.screen.score.BoxScoreViewModel
 import com.jiachian.nbatoday.compose.screen.team.TeamViewModel
 import com.jiachian.nbatoday.compose.state.NbaState
-import com.jiachian.nbatoday.data.NbaGameFactory
-import com.jiachian.nbatoday.data.PlayerStatsFactory
-import com.jiachian.nbatoday.data.TeamStatsFactory
-import com.jiachian.nbatoday.data.TestDataStore
-import com.jiachian.nbatoday.data.TestRepository
 import com.jiachian.nbatoday.koin.KoinTestRule
+import com.jiachian.nbatoday.models.NbaGameFactory
+import com.jiachian.nbatoday.models.PlayerStatsFactory
+import com.jiachian.nbatoday.models.TeamStatsFactory
+import com.jiachian.nbatoday.models.TestDataStore
+import com.jiachian.nbatoday.models.TestRepository
 import io.mockk.coEvery
 import io.mockk.mockkObject
 import io.mockk.unmockkObject

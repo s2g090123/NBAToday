@@ -10,13 +10,13 @@ import com.jiachian.nbatoday.compose.screen.home.user.UserPageViewModel
 import com.jiachian.nbatoday.compose.screen.player.PlayerViewModel
 import com.jiachian.nbatoday.compose.screen.score.BoxScoreViewModel
 import com.jiachian.nbatoday.compose.screen.team.TeamViewModel
-import com.jiachian.nbatoday.data.datastore.BaseDataStore
-import com.jiachian.nbatoday.data.local.NbaGame
-import com.jiachian.nbatoday.data.local.NbaGameAndBet
-import com.jiachian.nbatoday.data.local.team.NBATeam
-import com.jiachian.nbatoday.data.repository.RepositoryProvider
+import com.jiachian.nbatoday.datastore.BaseDataStore
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
+import com.jiachian.nbatoday.models.local.game.Game
+import com.jiachian.nbatoday.models.local.game.NbaGameAndBet
+import com.jiachian.nbatoday.models.local.team.NBATeam
+import com.jiachian.nbatoday.repository.RepositoryProvider
 import java.util.Date
 import kotlinx.coroutines.CoroutineScope
 
@@ -37,7 +37,7 @@ class ComposeViewModelProvider(
     }
 
     fun getBoxScoreViewModel(
-        game: NbaGame,
+        game: Game,
         dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
         coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined),
     ): BoxScoreViewModel {

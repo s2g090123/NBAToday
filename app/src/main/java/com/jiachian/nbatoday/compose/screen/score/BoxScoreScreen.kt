@@ -39,7 +39,7 @@ import com.jiachian.nbatoday.compose.widget.BackHandle
 import com.jiachian.nbatoday.compose.widget.IconButton
 import com.jiachian.nbatoday.compose.widget.NullCheckScreen
 import com.jiachian.nbatoday.compose.widget.RefreshScreen
-import com.jiachian.nbatoday.data.local.score.GameBoxScore
+import com.jiachian.nbatoday.models.local.score.BoxScore
 import com.jiachian.nbatoday.utils.noRippleClickable
 
 @Composable
@@ -159,7 +159,7 @@ private fun ScoreTopBar(
 private fun ScoreDetail(
     modifier: Modifier = Modifier,
     viewModel: BoxScoreViewModel,
-    score: GameBoxScore
+    score: BoxScore
 ) {
     val tabs = remember { BoxScoreTab.values() }
     val selectedTabIndex by viewModel.selectedTabIndex.collectAsState()
@@ -191,7 +191,7 @@ private fun StatisticsTabRow(
     modifier: Modifier = Modifier,
     viewModel: BoxScoreViewModel,
     pagerState: PagerState,
-    score: GameBoxScore,
+    score: BoxScore,
 ) {
     val selectedTab by viewModel.selectedTab.collectAsState()
     val selectedTabIndex by viewModel.selectedTabIndex.collectAsState()

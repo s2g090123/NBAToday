@@ -3,19 +3,20 @@ package com.jiachian.nbatoday.compose.screen.score
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.compose.screen.label.LabelHelper
 import com.jiachian.nbatoday.compose.screen.score.data.ScoreLeaderRowData
-import com.jiachian.nbatoday.compose.screen.score.data.ScoreRowData
 import com.jiachian.nbatoday.compose.screen.score.data.ScoreTeamRowData
 import com.jiachian.nbatoday.compose.screen.score.label.ScoreLabel
 import com.jiachian.nbatoday.compose.screen.score.label.ScoreLeaderLabel
 import com.jiachian.nbatoday.compose.screen.score.label.ScoreTeamLabel
 import com.jiachian.nbatoday.compose.screen.score.tab.BoxScoreTab
 import com.jiachian.nbatoday.compose.state.NbaScreenState
-import com.jiachian.nbatoday.data.local.NbaGame
-import com.jiachian.nbatoday.data.local.score.GameBoxScore
-import com.jiachian.nbatoday.data.local.team.teamOfficial
-import com.jiachian.nbatoday.data.repository.game.GameRepository
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
+import com.jiachian.nbatoday.models.local.game.Game
+import com.jiachian.nbatoday.models.local.score.BoxScore
+import com.jiachian.nbatoday.models.local.score.BoxScoreRowData
+import com.jiachian.nbatoday.models.local.score.createRowData
+import com.jiachian.nbatoday.models.local.team.data.teamOfficial
+import com.jiachian.nbatoday.repository.game.GameRepository
 import com.jiachian.nbatoday.utils.ScreenStateHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,7 +29,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class BoxScoreViewModel(
-    game: NbaGame,
+    game: Game,
     private val repository: GameRepository,
     private val screenStateHelper: ScreenStateHelper,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
@@ -72,15 +73,15 @@ class BoxScoreViewModel(
     }.stateIn(coroutineScope, SharingStarted.Eagerly, teamOfficial)
 
     val homeLeader = boxScore.map { score ->
-        val homePersonId = game.homeLeaderPersonId
+        val homePlayerId = game.homeLeaderPlayerId
         score?.homeTeam?.players?.firstOrNull {
-            it.personId == homePersonId
+            it.playerId == homePlayerId
         } ?: score?.homeTeam?.getMostPointsPlayer()
     }.stateIn(coroutineScope, SharingStarted.Lazily, null)
     val awayLeader = boxScore.map { score ->
-        val awayPersonId = game.awayLeadersPersonId
+        val awayPlayerId = game.awayLeadersPlayerId
         score?.awayTeam?.players?.firstOrNull {
-            it.personId == awayPersonId
+            it.playerId == awayPlayerId
         } ?: score?.awayTeam?.getMostPointsPlayer()
     }.stateIn(coroutineScope, SharingStarted.Lazily, null)
 
@@ -142,16 +143,16 @@ class BoxScoreViewModel(
     }
 
     private fun ScoreLabel.transformRowData(
-        stats: GameBoxScore.BoxScoreTeam.Player.Statistics
-    ): ScoreRowData.RowData {
-        return ScoreRowData.RowData(
+        stats: BoxScore.BoxScoreTeam.Player.Statistics
+    ): BoxScoreRowData.RowData {
+        return BoxScoreRowData.RowData(
             value = LabelHelper.getValueByLabel(this, stats),
             textWidth = width,
             textAlign = textAlign
         )
     }
 
-    private fun ScoreTeamLabel.transformRowData(score: GameBoxScore?): ScoreTeamRowData {
+    private fun ScoreTeamLabel.transformRowData(score: BoxScore?): ScoreTeamRowData {
         return ScoreTeamRowData(
             homeValue = LabelHelper.getValueByLabel(this, score?.homeTeam?.statistics),
             awayValue = LabelHelper.getValueByLabel(this, score?.awayTeam?.statistics),
@@ -160,8 +161,8 @@ class BoxScoreViewModel(
     }
 
     private fun ScoreLeaderLabel.transformRowData(
-        homeLeader: GameBoxScore.BoxScoreTeam.Player?,
-        awayLeader: GameBoxScore.BoxScoreTeam.Player?
+        homeLeader: BoxScore.BoxScoreTeam.Player?,
+        awayLeader: BoxScore.BoxScoreTeam.Player?
     ): ScoreLeaderRowData {
         return ScoreLeaderRowData(
             homeValue = LabelHelper.getValueByLabel(this, homeLeader),

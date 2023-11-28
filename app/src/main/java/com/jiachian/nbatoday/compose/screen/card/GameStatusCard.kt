@@ -26,8 +26,8 @@ import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.widget.AnimatedExpand
 import com.jiachian.nbatoday.compose.widget.TeamLogoImage
-import com.jiachian.nbatoday.data.local.NbaGameAndBet
-import com.jiachian.nbatoday.data.remote.team.GameTeam
+import com.jiachian.nbatoday.models.local.game.GameTeam
+import com.jiachian.nbatoday.models.local.game.NbaGameAndBet
 import com.jiachian.nbatoday.utils.rippleClickable
 
 @Composable

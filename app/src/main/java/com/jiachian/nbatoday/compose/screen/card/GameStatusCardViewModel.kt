@@ -1,12 +1,12 @@
 package com.jiachian.nbatoday.compose.screen.card
 
 import com.jiachian.nbatoday.compose.screen.bet.BetDialogViewModel
-import com.jiachian.nbatoday.data.local.NbaGameAndBet
-import com.jiachian.nbatoday.data.remote.leader.GameLeaders
-import com.jiachian.nbatoday.data.repository.bet.BetRepository
-import com.jiachian.nbatoday.data.repository.user.UserRepository
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
+import com.jiachian.nbatoday.models.local.game.GameLeaders
+import com.jiachian.nbatoday.models.local.game.NbaGameAndBet
+import com.jiachian.nbatoday.repository.bet.BetRepository
+import com.jiachian.nbatoday.repository.user.UserRepository
 import com.jiachian.nbatoday.utils.getOrZero
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -6,9 +6,9 @@ import com.jiachian.nbatoday.HomeTeam
 import com.jiachian.nbatoday.UserAccount
 import com.jiachian.nbatoday.UserPassword
 import com.jiachian.nbatoday.compose.state.NbaState
-import com.jiachian.nbatoday.data.TestRepository
-import com.jiachian.nbatoday.data.local.NbaGameAndBet
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
+import com.jiachian.nbatoday.models.TestRepository
+import com.jiachian.nbatoday.models.local.game.NbaGameAndBet
 import com.jiachian.nbatoday.rule.CalendarRule
 import com.jiachian.nbatoday.rule.TestCoroutineEnvironment
 import com.jiachian.nbatoday.utils.NbaUtils
@@ -174,9 +174,9 @@ class CalendarViewModelTest {
         viewModel.bet(game.gameId, BasicNumber.toLong(), BasicNumber.toLong())
         val result = repository.getBetsAndGames(UserAccount).firstOrNull()?.firstOrNull()
         assertThat(result?.game, `is`(game))
-        assertThat(result?.bets?.gameId, `is`(game.gameId))
-        assertThat(result?.bets?.homePoints, `is`(BasicNumber.toLong()))
-        assertThat(result?.bets?.awayPoints, `is`(BasicNumber.toLong()))
+        assertThat(result?.bet?.gameId, `is`(game.gameId))
+        assertThat(result?.bet?.homePoints, `is`(BasicNumber.toLong()))
+        assertThat(result?.bet?.awayPoints, `is`(BasicNumber.toLong()))
     }
 
     @Test

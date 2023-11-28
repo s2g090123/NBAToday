@@ -1,8 +1,8 @@
 package com.jiachian.nbatoday.compose.screen.bet
 
-import com.jiachian.nbatoday.data.local.NbaGameAndBet
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
+import com.jiachian.nbatoday.models.local.game.NbaGameAndBet
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

@@ -28,7 +28,7 @@ import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.screen.score.BoxScoreViewModel
 import com.jiachian.nbatoday.compose.screen.score.data.ScoreTeamRowData
 import com.jiachian.nbatoday.compose.widget.TeamLogoImage
-import com.jiachian.nbatoday.data.local.team.NBATeam
+import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.utils.dividerSecondaryColor
 
 @Composable

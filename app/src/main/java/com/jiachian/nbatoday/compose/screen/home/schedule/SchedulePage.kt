@@ -40,7 +40,7 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.screen.card.GameStatusCard
-import com.jiachian.nbatoday.data.local.NbaGameAndBet
+import com.jiachian.nbatoday.models.local.game.NbaGameAndBet
 import com.jiachian.nbatoday.utils.rippleClickable
 
 @OptIn(ExperimentalPagerApi::class, ExperimentalMaterialApi::class)
