@@ -14,9 +14,9 @@ import com.google.gson.reflect.TypeToken
 import com.jiachian.nbatoday.DataStoreName
 import com.jiachian.nbatoday.annotation.ExcludeFromJacocoGeneratedReport
 import com.jiachian.nbatoday.compose.theme.LakersColors
-import com.jiachian.nbatoday.datastore.NbaDataStore.PreferencesKeys.LAST_ACCESSED_DAY
-import com.jiachian.nbatoday.datastore.NbaDataStore.PreferencesKeys.THEME_COLORS_TEAM_ID
-import com.jiachian.nbatoday.datastore.NbaDataStore.PreferencesKeys.USER
+import com.jiachian.nbatoday.datastore.NBADataStore.PreferencesKeys.LAST_ACCESSED_DAY
+import com.jiachian.nbatoday.datastore.NBADataStore.PreferencesKeys.THEME_COLORS_TEAM_ID
+import com.jiachian.nbatoday.datastore.NBADataStore.PreferencesKeys.USER
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.models.local.user.User
 import com.jiachian.nbatoday.utils.NbaUtils
@@ -24,7 +24,7 @@ import kotlinx.coroutines.flow.map
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = DataStoreName)
 
-class NbaDataStore(private val application: Application) : BaseDataStore {
+class NBADataStore(private val application: Application) : BaseDataStore {
 
     object PreferencesKeys {
         val LAST_ACCESSED_DAY = stringPreferencesKey("last_accessed_day")

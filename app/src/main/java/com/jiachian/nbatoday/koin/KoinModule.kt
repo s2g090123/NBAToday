@@ -21,7 +21,7 @@ import com.jiachian.nbatoday.datasource.remote.team.TeamRemoteSource
 import com.jiachian.nbatoday.datasource.remote.user.NbaUserRemoteSource
 import com.jiachian.nbatoday.datasource.remote.user.UserRemoteSource
 import com.jiachian.nbatoday.datastore.BaseDataStore
-import com.jiachian.nbatoday.datastore.NbaDataStore
+import com.jiachian.nbatoday.datastore.NBADataStore
 import com.jiachian.nbatoday.repository.RepositoryProvider
 import com.jiachian.nbatoday.repository.bet.BetRepository
 import com.jiachian.nbatoday.repository.bet.NbaBetRepository
@@ -62,7 +62,7 @@ val module = module {
     factory { RepositoryProvider(get(), get(), get(), get(), get(), get()) }
 
     single { NBADatabase.getInstance(androidContext()) }
-    single { NbaDataStore(androidApplication()) as BaseDataStore }
+    single { NBADataStore(androidApplication()) as BaseDataStore }
     single { ScreenStateHelper(get(), get()) }
     single { NbaScheduleRepository(get(), get(), get(), get()) as ScheduleRepository }
     single { NbaGameRepository(get(), get(), get()) as GameRepository }

@@ -6,7 +6,7 @@ import com.jiachian.nbatoday.UserName
 import com.jiachian.nbatoday.UserPassword
 import com.jiachian.nbatoday.UserPoints
 import com.jiachian.nbatoday.compose.theme.LakersColors
-import com.jiachian.nbatoday.datastore.NbaDataStore
+import com.jiachian.nbatoday.datastore.NBADataStore
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.models.local.team.data.teamOfficial
 import com.jiachian.nbatoday.models.local.user.User
@@ -24,7 +24,7 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class NbaDataStoreTest {
-    private val dataStore = NbaDataStore(ApplicationProvider.getApplicationContext())
+    private val dataStore = NBADataStore(ApplicationProvider.getApplicationContext())
 
     @Before
     fun setup() = runTest {
@@ -38,13 +38,13 @@ class NbaDataStoreTest {
 
     @Test
     fun preferencesKeys_checksKeyName_isCorrect() {
-        assertThat(NbaDataStore.PreferencesKeys.STATS_COOKIES.name, `is`("stats_cookies"))
+        assertThat(NBADataStore.PreferencesKeys.STATS_COOKIES.name, `is`("stats_cookies"))
         assertThat(
-            NbaDataStore.PreferencesKeys.LAST_ACCESSED_DAY.name,
+            NBADataStore.PreferencesKeys.LAST_ACCESSED_DAY.name,
             `is`("record_schedule_today")
         )
-        assertThat(NbaDataStore.PreferencesKeys.THEME_COLORS_TEAM_ID.name, `is`("theme_colors"))
-        assertThat(NbaDataStore.PreferencesKeys.USER.name, `is`("user_data"))
+        assertThat(NBADataStore.PreferencesKeys.THEME_COLORS_TEAM_ID.name, `is`("theme_colors"))
+        assertThat(NBADataStore.PreferencesKeys.USER.name, `is`("user_data"))
     }
 
     @Test
