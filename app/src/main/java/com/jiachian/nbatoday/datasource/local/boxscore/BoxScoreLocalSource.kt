@@ -4,7 +4,7 @@ import com.jiachian.nbatoday.models.local.score.BoxScore
 import kotlinx.coroutines.flow.Flow
 
 abstract class BoxScoreLocalSource {
-    abstract fun getGameBoxScore(gameId: String): Flow<BoxScore?>
+    abstract fun getBoxScore(gameId: String): Flow<BoxScore?>
 
-    abstract suspend fun insertGameBoxScore(boxScore: BoxScore)
+    abstract suspend fun insertBoxScore(boxScore: BoxScore)
 }

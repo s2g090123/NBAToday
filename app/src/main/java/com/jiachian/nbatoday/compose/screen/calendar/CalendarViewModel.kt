@@ -6,7 +6,7 @@ import com.jiachian.nbatoday.compose.state.NbaScreenState
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.models.local.game.Game
-import com.jiachian.nbatoday.models.local.game.NbaGameAndBet
+import com.jiachian.nbatoday.models.local.game.GameAndBet
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.repository.game.GameRepository
 import com.jiachian.nbatoday.utils.ComposeViewModelProvider
@@ -184,10 +184,10 @@ class CalendarViewModel(
     }
 
     private suspend fun getGames(
-        games: List<NbaGameAndBet>,
+        games: List<GameAndBet>,
         year: Int,
         month: Int
-    ): List<List<NbaGameAndBet>> {
+    ): List<List<GameAndBet>> {
         return withContext(dispatcherProvider.io) {
             isLoadingGamesImp.value = true
             val cal = NbaUtils.getCalendar().apply {
@@ -200,7 +200,7 @@ class CalendarViewModel(
                 set(Calendar.MILLISECOND, 0)
                 add(Calendar.DATE, -(get(Calendar.DAY_OF_WEEK) - 1))
             }
-            val data = mutableListOf<List<NbaGameAndBet>>()
+            val data = mutableListOf<List<GameAndBet>>()
             while (cal.get(Calendar.YEAR) <= year && cal.get(Calendar.MONTH) + 1 <= month) {
                 repeat(DaysPerWeek) {
                     data.add(games.filter { it.game.gameDate.time == cal.timeInMillis })
@@ -240,7 +240,7 @@ class CalendarViewModel(
         screenStateHelper.openScreen(NbaScreenState.BoxScore(game))
     }
 
-    fun createGameStatusCardViewModel(gameAndBet: NbaGameAndBet): GameStatusCardViewModel {
+    fun createGameStatusCardViewModel(gameAndBet: GameAndBet): GameStatusCardViewModel {
         return composeViewModelProvider.getGameStatusCardViewModel(
             gameAndBet = gameAndBet,
             dispatcherProvider = dispatcherProvider,

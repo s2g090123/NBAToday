@@ -3,14 +3,14 @@ package com.jiachian.nbatoday.koin
 import com.jiachian.nbatoday.MainViewModel
 import com.jiachian.nbatoday.database.NBADatabase
 import com.jiachian.nbatoday.datasource.local.bet.BetLocalSource
-import com.jiachian.nbatoday.datasource.local.bet.NbaBetLocalSource
+import com.jiachian.nbatoday.datasource.local.bet.NBABetLocalSource
 import com.jiachian.nbatoday.datasource.local.boxscore.BoxScoreLocalSource
-import com.jiachian.nbatoday.datasource.local.boxscore.NbaBoxScoreLocalSource
+import com.jiachian.nbatoday.datasource.local.boxscore.NBABoxScoreLocalSource
 import com.jiachian.nbatoday.datasource.local.game.GameLocalSource
-import com.jiachian.nbatoday.datasource.local.game.NbaGameLocalSource
-import com.jiachian.nbatoday.datasource.local.player.NbaPlayerLocalSource
+import com.jiachian.nbatoday.datasource.local.game.NBAGameLocalSource
+import com.jiachian.nbatoday.datasource.local.player.NBAPlayerLocalSource
 import com.jiachian.nbatoday.datasource.local.player.PlayerLocalSource
-import com.jiachian.nbatoday.datasource.local.team.NbaTeamLocalSource
+import com.jiachian.nbatoday.datasource.local.team.NBATeamLocalSource
 import com.jiachian.nbatoday.datasource.local.team.TeamLocalSource
 import com.jiachian.nbatoday.datasource.remote.game.GameRemoteSource
 import com.jiachian.nbatoday.datasource.remote.game.NbaGameRemoteSource
@@ -53,11 +53,11 @@ val module = module {
     factory { NbaTeamRemoteSource() as TeamRemoteSource }
     factory { NbaPlayerRemoteSource() as PlayerRemoteSource }
     factory { NbaUserRemoteSource() as UserRemoteSource }
-    factory { NbaGameLocalSource(get()) as GameLocalSource }
-    factory { NbaBoxScoreLocalSource(get()) as BoxScoreLocalSource }
-    factory { NbaTeamLocalSource(get()) as TeamLocalSource }
-    factory { NbaPlayerLocalSource(get()) as PlayerLocalSource }
-    factory { NbaBetLocalSource(get()) as BetLocalSource }
+    factory { NBAGameLocalSource(get()) as GameLocalSource }
+    factory { NBABoxScoreLocalSource(get()) as BoxScoreLocalSource }
+    factory { NBATeamLocalSource(get()) as TeamLocalSource }
+    factory { NBAPlayerLocalSource(get()) as PlayerLocalSource }
+    factory { NBABetLocalSource(get()) as BetLocalSource }
     factory { ComposeViewModelProvider(get(), get(), get()) }
     factory { RepositoryProvider(get(), get(), get(), get(), get(), get()) }
 

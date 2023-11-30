@@ -26,8 +26,8 @@ import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.widget.AnimatedExpand
 import com.jiachian.nbatoday.compose.widget.TeamLogoImage
+import com.jiachian.nbatoday.models.local.game.GameAndBet
 import com.jiachian.nbatoday.models.local.game.GameTeam
-import com.jiachian.nbatoday.models.local.game.NbaGameAndBet
 import com.jiachian.nbatoday.utils.rippleClickable
 
 @Composable
@@ -121,7 +121,7 @@ private fun ExpandContent(
 @Composable
 private fun ScoreBoard(
     modifier: Modifier = Modifier,
-    gameAndBet: NbaGameAndBet,
+    gameAndBet: GameAndBet,
     textColor: Color,
     betVisible: Boolean,
     onBetClick: () -> Unit

@@ -12,9 +12,9 @@ import com.jiachian.nbatoday.UserPassword
 import com.jiachian.nbatoday.UserPoints
 import com.jiachian.nbatoday.UserToken
 import com.jiachian.nbatoday.models.local.bet.Bet
-import com.jiachian.nbatoday.models.local.bet.BetAndNbaGame
+import com.jiachian.nbatoday.models.local.bet.BetAndGame
 import com.jiachian.nbatoday.models.local.game.Game
-import com.jiachian.nbatoday.models.local.game.NbaGameAndBet
+import com.jiachian.nbatoday.models.local.game.GameAndBet
 import com.jiachian.nbatoday.models.local.player.PlayerCareer
 import com.jiachian.nbatoday.models.local.score.BoxScore
 import com.jiachian.nbatoday.models.local.team.NBATeam
@@ -180,7 +180,7 @@ class TestRepository : BaseRepository {
         }
     }
 
-    override fun getGamesAndBetsDuring(from: Long, to: Long): Flow<List<NbaGameAndBet>> {
+    override fun getGamesAndBetsDuring(from: Long, to: Long): Flow<List<GameAndBet>> {
         return games.combine(bet) { games, bets ->
             games.filter { game ->
                 game.gameDate.time in from..to
@@ -188,7 +188,7 @@ class TestRepository : BaseRepository {
                 val bet = bets.filter {
                     it.gameId == game.gameId
                 }
-                NbaGameAndBet(game, bet)
+                GameAndBet(game, bet)
             }
         }
     }
@@ -365,31 +365,31 @@ class TestRepository : BaseRepository {
             }
     }
 
-    override fun getGamesAndBets(): Flow<List<NbaGameAndBet>> {
+    override fun getGamesAndBets(): Flow<List<GameAndBet>> {
         return games.combine(bet) { games, bets ->
             games.map { game ->
                 val betList = bets.filter { it.gameId == game.gameId }
-                NbaGameAndBet(game, betList)
+                GameAndBet(game, betList)
             }
         }
     }
 
-    override fun getBetsAndGames(): Flow<List<BetAndNbaGame>> {
+    override fun getBetsAndGames(): Flow<List<BetAndGame>> {
         return games.combine(bet) { games, bets ->
             bets.mapNotNull { bet ->
                 val game = games.find { it.gameId == bet.gameId } ?: return@mapNotNull null
-                BetAndNbaGame(bet, game)
+                BetAndGame(bet, game)
             }
         }
     }
 
-    override fun getBetsAndGames(account: String): Flow<List<BetAndNbaGame>> {
+    override fun getBetsAndGames(account: String): Flow<List<BetAndGame>> {
         return games.combine(bet) { games, bets ->
             bets.filter {
                 it.account == account
             }.mapNotNull { bet ->
                 val game = games.find { it.gameId == bet.gameId } ?: return@mapNotNull null
-                BetAndNbaGame(bet, game)
+                BetAndGame(bet, game)
             }
         }
     }

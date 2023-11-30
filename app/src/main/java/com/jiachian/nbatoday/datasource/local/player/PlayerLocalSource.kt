@@ -12,5 +12,5 @@ abstract class PlayerLocalSource {
     abstract suspend fun updatePlayerCareerInfo(info: PlayerCareerInfoUpdate)
     abstract suspend fun updatePlayerCareerStats(stats: PlayerCareerStatsUpdate)
 
-    abstract suspend fun existPlayer(playerId: Int): Boolean
+    abstract suspend fun existsPlayer(playerId: Int): Boolean
 }

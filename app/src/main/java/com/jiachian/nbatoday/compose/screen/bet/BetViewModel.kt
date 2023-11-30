@@ -4,7 +4,7 @@ import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.compose.state.NbaScreenState
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
-import com.jiachian.nbatoday.models.local.bet.BetAndNbaGame
+import com.jiachian.nbatoday.models.local.bet.BetAndGame
 import com.jiachian.nbatoday.models.local.game.GameStatus
 import com.jiachian.nbatoday.repository.bet.BetRepository
 import com.jiachian.nbatoday.utils.ScreenStateHelper
@@ -71,7 +71,7 @@ class BetViewModel(
     private val showRewardPointsImp = MutableStateFlow<Long?>(null)
     val showRewardPoints = showRewardPointsImp.asStateFlow()
 
-    fun clickBetAndGame(betAndGame: BetAndNbaGame) {
+    fun clickBetAndGame(betAndGame: BetAndGame) {
         when (betAndGame.game.gameStatus) {
             GameStatus.COMING_SOON -> {
                 screenStateHelper.openScreen(NbaScreenState.Team(betAndGame.game.homeTeam.team))
@@ -89,7 +89,7 @@ class BetViewModel(
         askTurnTableImp.value = null
     }
 
-    private fun settleBets(betAndGame: BetAndNbaGame) {
+    private fun settleBets(betAndGame: BetAndGame) {
         coroutineScope.launch(dispatcherProvider.io) {
             val (winPoint, losePoint) = repository.settleBet(betAndGame)
             askTurnTableImp.value = BetsTurnTableData(

@@ -60,8 +60,8 @@ import com.jiachian.nbatoday.Transparency25
 import com.jiachian.nbatoday.compose.screen.card.GameStatusCard
 import com.jiachian.nbatoday.compose.widget.DisableOverscroll
 import com.jiachian.nbatoday.compose.widget.RefreshingScreen
+import com.jiachian.nbatoday.models.local.game.GameAndBet
 import com.jiachian.nbatoday.models.local.game.GameStatus
-import com.jiachian.nbatoday.models.local.game.NbaGameAndBet
 import com.jiachian.nbatoday.utils.NbaUtils
 import com.jiachian.nbatoday.utils.noRippleClickable
 import com.jiachian.nbatoday.utils.rippleClickable
@@ -271,7 +271,7 @@ private fun CalendarTable(
 private fun CalendarGames(
     modifier: Modifier = Modifier,
     viewModel: CalendarViewModel,
-    games: List<NbaGameAndBet>
+    games: List<GameAndBet>
 ) {
     LazyColumn(
         modifier = modifier
@@ -339,7 +339,7 @@ private fun DayAbbrTextRow(
 @Composable
 private fun DateBox(
     dateData: CalendarData,
-    games: List<NbaGameAndBet>,
+    games: List<GameAndBet>,
     isSelected: Boolean,
     isLoadingGames: Boolean,
     onClick: (Date) -> Unit
@@ -392,7 +392,7 @@ private fun DateBox(
 @Composable
 private fun TeamIconThumbnailsRow(
     modifier: Modifier = Modifier,
-    games: List<NbaGameAndBet>
+    games: List<GameAndBet>
 ) {
     FlowRow(modifier = modifier) {
         games.forEach {

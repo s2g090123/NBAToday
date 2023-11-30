@@ -19,7 +19,7 @@ import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.screen.account.LoginDialog
 import com.jiachian.nbatoday.compose.screen.bet.BetDialog
 import com.jiachian.nbatoday.compose.widget.IconButton
-import com.jiachian.nbatoday.models.local.game.NbaGameAndBet
+import com.jiachian.nbatoday.models.local.game.GameAndBet
 import com.jiachian.nbatoday.utils.showToast
 
 @Composable
@@ -47,7 +47,7 @@ fun GameStatusCardBetScreen(viewModel: GameStatusCardViewModel) {
 @Composable
 fun GameStatusAndBetButton(
     modifier: Modifier = Modifier,
-    gameAndBet: NbaGameAndBet,
+    gameAndBet: GameAndBet,
     textColor: Color,
     betVisible: Boolean,
     onBetClick: () -> Unit

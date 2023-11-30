@@ -1,11 +1,11 @@
 package com.jiachian.nbatoday.models.local
 
 import com.jiachian.nbatoday.models.local.bet.Bet
-import com.jiachian.nbatoday.models.local.bet.BetAndNbaGame
+import com.jiachian.nbatoday.models.local.bet.BetAndGame
 import com.jiachian.nbatoday.models.local.game.Game
+import com.jiachian.nbatoday.models.local.game.GameAndBet
 import com.jiachian.nbatoday.models.local.game.GameScoreUpdateData
 import com.jiachian.nbatoday.models.local.game.GameUpdateData
-import com.jiachian.nbatoday.models.local.game.NbaGameAndBet
 import com.jiachian.nbatoday.models.local.player.PlayerCareer
 import com.jiachian.nbatoday.models.local.player.PlayerCareerInfoUpdate
 import com.jiachian.nbatoday.models.local.player.PlayerCareerStatsUpdate
@@ -33,10 +33,10 @@ class TestDao : NbaDao {
         return games
     }
 
-    override fun getGamesAndBets(): Flow<List<NbaGameAndBet>> {
+    override fun getGamesAndBets(): Flow<List<GameAndBet>> {
         return combine(games, bet) { games, bets ->
             games.map { game ->
-                NbaGameAndBet(
+                GameAndBet(
                     game = game,
                     bets = bets.filter { it.gameId == game.gameId }
                 )
@@ -44,10 +44,10 @@ class TestDao : NbaDao {
         }
     }
 
-    override fun getBetsAndGames(): Flow<List<BetAndNbaGame>> {
+    override fun getBetsAndGames(): Flow<List<BetAndGame>> {
         return combine(games, bet) { games, bets ->
             bets.map { bet ->
-                BetAndNbaGame(
+                BetAndGame(
                     bet = bet,
                     game = games.first { it.gameId == bet.gameId }
                 )
@@ -55,12 +55,12 @@ class TestDao : NbaDao {
         }
     }
 
-    override fun getBetsAndGamesByUser(account: String): Flow<List<BetAndNbaGame>> {
+    override fun getBetsAndGamesByUser(account: String): Flow<List<BetAndGame>> {
         return combine(games, bet) { games, bets ->
             bets.filter {
                 it.account == account
             }.map { bet ->
-                BetAndNbaGame(
+                BetAndGame(
                     bet = bet,
                     game = games.first { it.gameId == bet.gameId }
                 )
@@ -82,12 +82,12 @@ class TestDao : NbaDao {
         }
     }
 
-    override fun getGamesAndBetsDuring(from: Long, to: Long): Flow<List<NbaGameAndBet>> {
+    override fun getGamesAndBetsDuring(from: Long, to: Long): Flow<List<GameAndBet>> {
         return combine(games, bet) { games, bets ->
             games.filter {
                 it.gameDate.time in from..to
             }.map { game ->
-                NbaGameAndBet(
+                GameAndBet(
                     game = game,
                     bets = bets.filter { it.gameId == game.gameId }
                 )

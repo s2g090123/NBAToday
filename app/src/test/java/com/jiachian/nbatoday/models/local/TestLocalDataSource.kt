@@ -1,11 +1,11 @@
 package com.jiachian.nbatoday.models.local
 
 import com.jiachian.nbatoday.models.local.bet.Bet
-import com.jiachian.nbatoday.models.local.bet.BetAndNbaGame
+import com.jiachian.nbatoday.models.local.bet.BetAndGame
 import com.jiachian.nbatoday.models.local.game.Game
+import com.jiachian.nbatoday.models.local.game.GameAndBet
 import com.jiachian.nbatoday.models.local.game.GameScoreUpdateData
 import com.jiachian.nbatoday.models.local.game.GameUpdateData
-import com.jiachian.nbatoday.models.local.game.NbaGameAndBet
 import com.jiachian.nbatoday.models.local.player.PlayerCareer
 import com.jiachian.nbatoday.models.local.player.PlayerCareerInfoUpdate
 import com.jiachian.nbatoday.models.local.player.PlayerCareerStatsUpdate
@@ -23,7 +23,7 @@ import kotlinx.coroutines.flow.map
 class TestLocalDataSource : LocalDataSource() {
     override val dates = MutableStateFlow(emptyList<Date>())
     override val games = MutableStateFlow(emptyList<Game>())
-    override val gamesAndBets = MutableStateFlow(emptyList<NbaGameAndBet>())
+    override val gamesAndBets = MutableStateFlow(emptyList<GameAndBet>())
 
     private val boxScores = MutableStateFlow(emptyList<BoxScore>())
 
@@ -45,7 +45,7 @@ class TestLocalDataSource : LocalDataSource() {
         }
     }
 
-    override fun getGamesAndBetsDuring(from: Long, to: Long): Flow<List<NbaGameAndBet>> {
+    override fun getGamesAndBetsDuring(from: Long, to: Long): Flow<List<GameAndBet>> {
         return gamesAndBets.map {
             it.filter { gameAndBet ->
                 gameAndBet.game.gameDate.time in from..to
@@ -288,7 +288,7 @@ class TestLocalDataSource : LocalDataSource() {
         )
         gamesAndBets.value = gamesAndBets.value.toMutableList().apply {
             add(
-                NbaGameAndBet(
+                GameAndBet(
                     game = game,
                     bets = listOf(bet)
                 )
@@ -296,17 +296,17 @@ class TestLocalDataSource : LocalDataSource() {
         }
     }
 
-    override fun getBetsAndGames(): Flow<List<BetAndNbaGame>> {
+    override fun getBetsAndGames(): Flow<List<BetAndGame>> {
         return gamesAndBets.map {
             it.flatMap { gameAndBet ->
                 gameAndBet.bets.map { bets ->
-                    BetAndNbaGame(bets, gameAndBet.game)
+                    BetAndGame(bets, gameAndBet.game)
                 }
             }
         }
     }
 
-    override fun getBetsAndGamesByUser(account: String): Flow<List<BetAndNbaGame>> {
+    override fun getBetsAndGamesByUser(account: String): Flow<List<BetAndGame>> {
         return getBetsAndGames().map {
             it.filter { betAndGame ->
                 betAndGame.bet.account == account
@@ -317,7 +317,7 @@ class TestLocalDataSource : LocalDataSource() {
     override suspend fun deleteBets(bet: Bet) {
         gamesAndBets.value = gamesAndBets.value.map {
             if (it.bets.contains(bet)) {
-                NbaGameAndBet(
+                GameAndBet(
                     game = it.game,
                     bets = it.bets.toMutableList().apply {
                         remove(bet)

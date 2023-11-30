@@ -42,7 +42,7 @@ import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.screen.bet.turntable.AskTurnTableDialog
 import com.jiachian.nbatoday.compose.screen.bet.turntable.BetTurnTable
 import com.jiachian.nbatoday.compose.widget.BackHandle
-import com.jiachian.nbatoday.models.local.bet.BetAndNbaGame
+import com.jiachian.nbatoday.models.local.bet.BetAndGame
 import com.jiachian.nbatoday.models.local.game.GameTeam
 import com.jiachian.nbatoday.utils.NbaUtils
 import com.jiachian.nbatoday.utils.color
@@ -194,7 +194,7 @@ private fun BetEmptyScreen(
 @Composable
 private fun BetCard(
     modifier: Modifier = Modifier,
-    betAndGame: BetAndNbaGame
+    betAndGame: BetAndGame
 ) {
     val homeTeam = betAndGame.game.homeTeam
     val awayTeam = betAndGame.game.awayTeam

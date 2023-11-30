@@ -6,16 +6,16 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.jiachian.nbatoday.models.local.bet.Bet
-import com.jiachian.nbatoday.models.local.bet.BetAndNbaGame
+import com.jiachian.nbatoday.models.local.bet.BetAndGame
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface BetDao {
     @Query("SELECT * FROM bet")
-    fun getBetsAndGames(): Flow<List<BetAndNbaGame>>
+    fun getBetsAndGames(): Flow<List<BetAndGame>>
 
     @Query("SELECT * FROM bet WHERE bet_account == :account")
-    fun getBetsAndGamesByUser(account: String): Flow<List<BetAndNbaGame>>
+    fun getBetsAndGamesByUser(account: String): Flow<List<BetAndGame>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertBet(bet: Bet)

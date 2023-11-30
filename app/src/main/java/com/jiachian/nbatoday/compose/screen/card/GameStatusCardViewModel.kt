@@ -3,8 +3,8 @@ package com.jiachian.nbatoday.compose.screen.card
 import com.jiachian.nbatoday.compose.screen.bet.BetDialogViewModel
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
+import com.jiachian.nbatoday.models.local.game.GameAndBet
 import com.jiachian.nbatoday.models.local.game.GameLeaders
-import com.jiachian.nbatoday.models.local.game.NbaGameAndBet
 import com.jiachian.nbatoday.repository.bet.BetRepository
 import com.jiachian.nbatoday.repository.user.UserRepository
 import com.jiachian.nbatoday.utils.getOrZero
@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class GameStatusCardViewModel(
-    val gameAndBet: NbaGameAndBet,
+    val gameAndBet: GameAndBet,
     private val betRepository: BetRepository,
     private val userRepository: UserRepository,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,

@@ -2,27 +2,27 @@ package com.jiachian.nbatoday.datasource.local.game
 
 import com.jiachian.nbatoday.database.dao.GameDao
 import com.jiachian.nbatoday.models.local.game.Game
+import com.jiachian.nbatoday.models.local.game.GameAndBet
 import com.jiachian.nbatoday.models.local.game.GameScoreUpdateData
 import com.jiachian.nbatoday.models.local.game.GameUpdateData
-import com.jiachian.nbatoday.models.local.game.NbaGameAndBet
 import kotlinx.coroutines.flow.Flow
 
-class NbaGameLocalSource(
+class NBAGameLocalSource(
     private val gameDao: GameDao
 ) : GameLocalSource() {
-    override fun getGamesAndBets(): Flow<List<NbaGameAndBet>> {
+    override fun getGamesAndBets(): Flow<List<GameAndBet>> {
         return gameDao.getGamesAndBets()
     }
 
-    override fun getGamesAndBetsDuring(from: Long, to: Long): Flow<List<NbaGameAndBet>> {
+    override fun getGamesAndBetsDuring(from: Long, to: Long): Flow<List<GameAndBet>> {
         return gameDao.getGamesAndBetsDuring(from, to)
     }
 
-    override fun getGamesAndBetsBeforeByTeam(teamId: Int, from: Long): Flow<List<NbaGameAndBet>> {
+    override fun getGamesAndBetsBeforeByTeam(teamId: Int, from: Long): Flow<List<GameAndBet>> {
         return gameDao.getGamesAndBetsBeforeByTeam(teamId, from)
     }
 
-    override fun getGamesAndBetsAfterByTeam(teamId: Int, from: Long): Flow<List<NbaGameAndBet>> {
+    override fun getGamesAndBetsAfterByTeam(teamId: Int, from: Long): Flow<List<GameAndBet>> {
         return gameDao.getGamesAndBetsAfterByTeam(teamId, from)
     }
 

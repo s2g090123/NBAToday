@@ -15,7 +15,7 @@ class NbaPlayerRepository(
         val detail = playerRemoteSource.getPlayerDetail(playerId)
         val info = detail?.info
         val stats = detail?.stats
-        if (playerLocalSource.existPlayer(playerId)) {
+        if (playerLocalSource.existsPlayer(playerId)) {
             info?.toPlayerCareerInfoUpdate()?.also {
                 playerLocalSource.updatePlayerCareerInfo(it)
             }

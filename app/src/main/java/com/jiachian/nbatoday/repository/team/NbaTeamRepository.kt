@@ -18,30 +18,30 @@ class NbaTeamRepository(
         val stats = teamRemoteSource.getTeamStats(teamId = teamId)
         stats?.also {
             val teamStats = stats.toTeamStats()
-            teamLocalSource.updateTeamStats(teamStats)
+            teamLocalSource.updateTeams(teamStats)
         }
     }
 
     override suspend fun refreshTeamPlayersStats(teamId: Int) {
         val stats = teamRemoteSource.getTeamPlayersStats(teamId = teamId)
         stats?.also {
-            val localStats = teamLocalSource.getTeamAndPlayersStats(teamId).firstOrNull()
+            val localStats = teamLocalSource.getTeamAndPlayers(teamId).firstOrNull()
             val playersStats = stats.toTeamPlayerStats()
             val oldPlayerIds = localStats?.playersStats?.map { it.playerId }
             val newPlayerIds = playersStats.map { it.playerId }
             oldPlayerIds?.filterNot { it in newPlayerIds }?.also {
-                teamLocalSource.deletePlayerStats(teamId, it)
+                teamLocalSource.deleteTeamPlayers(teamId, it)
             }
-            teamLocalSource.updatePlayerStats(playersStats)
+            teamLocalSource.updateTeamPlayers(playersStats)
         }
     }
 
     override fun getTeamStats(): Flow<List<Team>> {
-        return teamLocalSource.getTeamStats()
+        return teamLocalSource.getTeams()
     }
 
     override fun getTeamAndPlayersStats(teamId: Int): Flow<TeamAndPlayers?> {
-        return teamLocalSource.getTeamAndPlayersStats(teamId)
+        return teamLocalSource.getTeamAndPlayers(teamId)
     }
 
     override fun getTeamRank(teamId: Int, conference: NBATeam.Conference): Flow<Int> {

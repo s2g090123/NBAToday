@@ -7,7 +7,7 @@ import com.jiachian.nbatoday.compose.state.NbaScreenState
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.models.local.game.Game
-import com.jiachian.nbatoday.models.local.game.NbaGameAndBet
+import com.jiachian.nbatoday.models.local.game.GameAndBet
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.models.local.team.TeamPlayer
 import com.jiachian.nbatoday.repository.game.GameRepository
@@ -327,7 +327,7 @@ class TeamViewModel(
         screenStateHelper.openScreen(NbaScreenState.Player(playerId))
     }
 
-    fun createGameStatusCardViewModel(gameAndBet: NbaGameAndBet): GameStatusCardViewModel {
+    fun createGameStatusCardViewModel(gameAndBet: GameAndBet): GameStatusCardViewModel {
         return composeViewModelProvider.getGameStatusCardViewModel(
             gameAndBet = gameAndBet,
             dispatcherProvider = dispatcherProvider,

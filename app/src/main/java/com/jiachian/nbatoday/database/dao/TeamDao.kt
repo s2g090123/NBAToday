@@ -16,7 +16,7 @@ interface TeamDao {
     fun getTeams(): Flow<List<Team>>
 
     @Query("SELECT * FROM team WHERE team_id == :teamId")
-    fun getTeamsAndPlayers(teamId: Int): Flow<TeamAndPlayers?>
+    fun getTeamAndPlayers(teamId: Int): Flow<TeamAndPlayers?>
 
     @Query(
         """
@@ -108,7 +108,7 @@ interface TeamDao {
     suspend fun insertTeams(stats: List<Team>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertTeamsAndPlayers(stats: List<TeamPlayer>)
+    suspend fun insertTeamPlayers(stats: List<TeamPlayer>)
 
     @Query("DELETE FROM team_player WHERE team_id == :teamId AND player_id IN (:playerIds)")
     suspend fun deleteTeamPlayers(teamId: Int, playerIds: List<Int>)

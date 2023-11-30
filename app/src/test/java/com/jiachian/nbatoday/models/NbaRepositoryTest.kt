@@ -9,7 +9,7 @@ import com.jiachian.nbatoday.UserPassword
 import com.jiachian.nbatoday.UserPoints
 import com.jiachian.nbatoday.models.local.TestLocalDataSource
 import com.jiachian.nbatoday.models.local.bet.Bet
-import com.jiachian.nbatoday.models.local.game.NbaGameAndBet
+import com.jiachian.nbatoday.models.local.game.GameAndBet
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.models.remote.RemoteGameFactory
 import com.jiachian.nbatoday.models.remote.RemotePlayerFactory
@@ -372,7 +372,7 @@ class NbaRepositoryTest {
         repository.login(UserAccount, UserPassword)
         val originalPoint = dataStore.user.value?.points.getOrError()
         repository.bet(FinalGameId, UserPoints, 0)
-        val expectedGame = NbaGameAndBet(
+        val expectedGame = GameAndBet(
             game = localDataSource.games.value.firstOrNull { it.gameId == FinalGameId }
                 .getOrError(),
             bets = listOf(

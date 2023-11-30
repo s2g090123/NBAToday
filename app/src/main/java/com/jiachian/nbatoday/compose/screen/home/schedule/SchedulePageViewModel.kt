@@ -9,7 +9,7 @@ import com.jiachian.nbatoday.compose.state.NbaScreenState
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.models.local.game.Game
-import com.jiachian.nbatoday.models.local.game.NbaGameAndBet
+import com.jiachian.nbatoday.models.local.game.GameAndBet
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.repository.game.GameRepository
 import com.jiachian.nbatoday.repository.schedule.ScheduleRepository
@@ -97,7 +97,7 @@ class SchedulePageViewModel(
         }
     }
 
-    fun clickScheduleGame(game: NbaGameAndBet) {
+    fun clickScheduleGame(game: GameAndBet) {
         if (!game.game.isGamePlayed) {
             openTeamStats(game.game.homeTeam.team)
         } else {
@@ -122,7 +122,7 @@ class SchedulePageViewModel(
         screenStateHelper.openScreen(NbaScreenState.Calendar(date))
     }
 
-    fun createGameStatusCardViewModel(gameAndBet: NbaGameAndBet): GameStatusCardViewModel {
+    fun createGameStatusCardViewModel(gameAndBet: GameAndBet): GameStatusCardViewModel {
         return composeViewModelProvider.getGameStatusCardViewModel(
             gameAndBet = gameAndBet,
             dispatcherProvider = dispatcherProvider,

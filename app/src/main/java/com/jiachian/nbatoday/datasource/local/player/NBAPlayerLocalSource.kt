@@ -6,7 +6,7 @@ import com.jiachian.nbatoday.models.local.player.PlayerCareerInfoUpdate
 import com.jiachian.nbatoday.models.local.player.PlayerCareerStatsUpdate
 import kotlinx.coroutines.flow.Flow
 
-class NbaPlayerLocalSource(
+class NBAPlayerLocalSource(
     private val playerDao: PlayerDao,
 ) : PlayerLocalSource() {
     override fun getPlayerCareer(playerId: Int): Flow<PlayerCareer?> {
@@ -25,7 +25,7 @@ class NbaPlayerLocalSource(
         playerDao.updatePlayerStats(stats)
     }
 
-    override suspend fun existPlayer(playerId: Int): Boolean {
+    override suspend fun existsPlayer(playerId: Int): Boolean {
         return playerDao.exitsPlayer(playerId)
     }
 }
