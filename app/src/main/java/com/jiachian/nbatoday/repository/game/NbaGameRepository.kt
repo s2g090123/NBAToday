@@ -6,6 +6,7 @@ import com.jiachian.nbatoday.datasource.remote.game.GameRemoteSource
 import com.jiachian.nbatoday.models.local.game.GameAndBet
 import com.jiachian.nbatoday.models.local.score.BoxScore
 import com.jiachian.nbatoday.models.remote.score.toBoxScore
+import com.jiachian.nbatoday.utils.showErrorToast
 import kotlinx.coroutines.flow.Flow
 
 class NbaGameRepository(
@@ -14,7 +15,12 @@ class NbaGameRepository(
     private val gameRemoteSource: GameRemoteSource,
 ) : GameRepository() {
     override suspend fun refreshGameBoxScore(gameId: String) {
-        val boxScore = gameRemoteSource.getBoxScore(gameId)
+        val response = gameRemoteSource.getBoxScore(gameId)
+        if (!response.isSuccessful) {
+            showErrorToast()
+            return
+        }
+        val boxScore = response.body()
         boxScore?.also {
             val game = boxScore.game?.toBoxScore()
             game?.also {

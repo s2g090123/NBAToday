@@ -7,6 +7,7 @@ import com.jiachian.nbatoday.models.local.team.Team
 import com.jiachian.nbatoday.models.local.team.TeamAndPlayers
 import com.jiachian.nbatoday.models.remote.team.toTeamPlayerStats
 import com.jiachian.nbatoday.models.remote.team.toTeamStats
+import com.jiachian.nbatoday.utils.showErrorToast
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 
@@ -15,7 +16,12 @@ class NbaTeamRepository(
     private val teamRemoteSource: TeamRemoteSource,
 ) : TeamRepository() {
     override suspend fun refreshTeamStats(teamId: Int?) {
-        val stats = teamRemoteSource.getTeamStats(teamId = teamId)
+        val response = teamRemoteSource.getTeamStats(teamId = teamId)
+        if (!response.isSuccessful) {
+            showErrorToast()
+            return
+        }
+        val stats = response.body()
         stats?.also {
             val teamStats = stats.toTeamStats()
             teamLocalSource.updateTeams(teamStats)
@@ -23,7 +29,12 @@ class NbaTeamRepository(
     }
 
     override suspend fun refreshTeamPlayersStats(teamId: Int) {
-        val stats = teamRemoteSource.getTeamPlayerStats(teamId = teamId)
+        val response = teamRemoteSource.getTeamPlayerStats(teamId = teamId)
+        if (!response.isSuccessful) {
+            showErrorToast()
+            return
+        }
+        val stats = response.body()
         stats?.also {
             val localStats = teamLocalSource.getTeamAndPlayers(teamId).firstOrNull()
             val playersStats = stats.toTeamPlayerStats()

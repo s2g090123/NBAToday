@@ -5,6 +5,7 @@ import com.jiachian.nbatoday.datastore.BaseDataStore
 import com.jiachian.nbatoday.models.local.user.User
 import com.jiachian.nbatoday.models.remote.user.toUser
 import com.jiachian.nbatoday.utils.getOrError
+import com.jiachian.nbatoday.utils.showErrorToast
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 
@@ -15,11 +16,19 @@ class NbaUserRepository(
     override val user: Flow<User?> = dataStore.user
 
     override suspend fun login(account: String, password: String) {
-        isProgressingImp.value = true
-        val remoteUser = userRemoteSource.login(account, password) ?: return
-        val user = remoteUser.toUser()
-        dataStore.updateUser(user)
-        isProgressingImp.value = false
+        loading {
+            val response = userRemoteSource.login(account, password)
+            if (response.isError()) {
+                showErrorToast()
+                return@loading
+            }
+            response
+                .body()
+                ?.toUser()
+                ?.also { user ->
+                    dataStore.updateUser(user)
+                }
+        }
     }
 
     override suspend fun logout() {
@@ -29,11 +38,19 @@ class NbaUserRepository(
     }
 
     override suspend fun register(account: String, password: String) {
-        isProgressingImp.value = true
-        val remoteUser = userRemoteSource.register(account, password) ?: return
-        val user = remoteUser.toUser()
-        dataStore.updateUser(user)
-        isProgressingImp.value = false
+        loading {
+            val response = userRemoteSource.register(account, password)
+            if (response.isError()) {
+                showErrorToast()
+                return@loading
+            }
+            response
+                .body()
+                ?.toUser()
+                ?.also { user ->
+                    dataStore.updateUser(user)
+                }
+        }
     }
 
     override suspend fun updatePassword(password: String) {

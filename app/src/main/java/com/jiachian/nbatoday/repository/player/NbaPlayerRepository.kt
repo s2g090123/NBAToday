@@ -5,6 +5,7 @@ import com.jiachian.nbatoday.datasource.remote.player.PlayerRemoteSource
 import com.jiachian.nbatoday.models.local.player.PlayerCareer
 import com.jiachian.nbatoday.models.remote.player.toPlayerCareerInfoUpdate
 import com.jiachian.nbatoday.models.remote.player.toPlayerCareerStatsUpdate
+import com.jiachian.nbatoday.utils.showErrorToast
 import kotlinx.coroutines.flow.Flow
 
 class NbaPlayerRepository(
@@ -12,7 +13,12 @@ class NbaPlayerRepository(
     private val playerRemoteSource: PlayerRemoteSource,
 ) : PlayerRepository() {
     override suspend fun refreshPlayerStats(playerId: Int) {
-        val detail = playerRemoteSource.getPlayerDetail(playerId)
+        val response = playerRemoteSource.getPlayerDetail(playerId)
+        if (!response.isSuccessful) {
+            showErrorToast()
+            return
+        }
+        val detail = response.body()
         val info = detail?.info
         val stats = detail?.stats
         if (playerLocalSource.existsPlayer(playerId)) {

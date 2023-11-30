@@ -10,6 +10,7 @@ import com.jiachian.nbatoday.models.remote.game.toGameUpdateData
 import com.jiachian.nbatoday.models.remote.game.toGames
 import com.jiachian.nbatoday.repository.team.TeamRepository
 import com.jiachian.nbatoday.utils.NbaUtils
+import com.jiachian.nbatoday.utils.showErrorToast
 import java.util.Calendar
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.flow.first
@@ -23,8 +24,13 @@ class NbaScheduleRepository(
     override suspend fun refreshSchedule() {
         try {
             isProgressingImp.value = true
-            val schedule = gameRemoteSource.getSchedule() ?: return
-            val leagueSchedule = schedule.leagueSchedule ?: return
+            val scheduleResponse = gameRemoteSource.getSchedule()
+            if (!scheduleResponse.isSuccessful) {
+                showErrorToast()
+                return
+            }
+            val schedule = scheduleResponse.body()
+            val leagueSchedule = schedule?.leagueSchedule ?: return
             val nbaGames = leagueSchedule.toGames()
 
             val cal = NbaUtils.getCalendar()
@@ -59,13 +65,18 @@ class NbaScheduleRepository(
             val year = cal.get(Calendar.YEAR)
             val month = cal.get(Calendar.MONTH) + 1
             val day = cal.get(Calendar.DAY_OF_MONTH)
-            val scoreboards = gameRemoteSource.getGames(
+            val gamesResponse = gameRemoteSource.getGames(
                 NbaLeagueId,
                 year,
                 month,
                 day,
                 offset + ScheduleDateRange + 1
             )
+            if (!gamesResponse.isSuccessful) {
+                showErrorToast()
+                return
+            }
+            val scoreboards = gamesResponse.body()
             scoreboards?.also {
                 val update = scoreboards.mapNotNull { it.scoreboard?.toGameUpdateData() }
                 update.forEach {
@@ -83,7 +94,12 @@ class NbaScheduleRepository(
         try {
             isProgressingImp.value = true
             val gameDate = NbaUtils.formatScoreboardGameDate(year, month, day)
-            val scoreboard = gameRemoteSource.getGame(NbaLeagueId, gameDate)
+            val response = gameRemoteSource.getGame(NbaLeagueId, gameDate)
+            if (!response.isSuccessful) {
+                showErrorToast()
+                return
+            }
+            val scoreboard = response.body()
             val updateData = scoreboard?.scoreboard?.toGameUpdateData()
             updateData?.also {
                 gameLocalSource.updateGames(updateData)

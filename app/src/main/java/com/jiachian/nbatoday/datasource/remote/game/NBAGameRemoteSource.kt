@@ -4,6 +4,7 @@ import com.jiachian.nbatoday.models.remote.game.RemoteGame
 import com.jiachian.nbatoday.models.remote.game.RemoteSchedule
 import com.jiachian.nbatoday.models.remote.score.RemoteBoxScore
 import com.jiachian.nbatoday.service.GameService
+import retrofit2.Response
 
 class NBAGameRemoteSource : GameRemoteSource() {
 
@@ -11,12 +12,12 @@ class NBAGameRemoteSource : GameRemoteSource() {
         retrofit.create(GameService::class.java)
     }
 
-    override suspend fun getSchedule(): RemoteSchedule? {
-        return gameService.getSchedule().body()
+    override suspend fun getSchedule(): Response<RemoteSchedule> {
+        return gameService.getSchedule()
     }
 
-    override suspend fun getGame(leagueId: String, gameDate: String): RemoteGame? {
-        return gameService.getGame(leagueId, gameDate).body()
+    override suspend fun getGame(leagueId: String, gameDate: String): Response<RemoteGame> {
+        return gameService.getGame(leagueId, gameDate)
     }
 
     override suspend fun getGames(
@@ -25,11 +26,11 @@ class NBAGameRemoteSource : GameRemoteSource() {
         month: Int,
         day: Int,
         offset: Int
-    ): List<RemoteGame>? {
-        return gameService.getGames(leagueId, year, month, day, offset).body()
+    ): Response<List<RemoteGame>> {
+        return gameService.getGames(leagueId, year, month, day, offset)
     }
 
-    override suspend fun getBoxScore(gameId: String): RemoteBoxScore? {
-        return gameService.getBoxScore(gameId).body()
+    override suspend fun getBoxScore(gameId: String): Response<RemoteBoxScore> {
+        return gameService.getBoxScore(gameId)
     }
 }
