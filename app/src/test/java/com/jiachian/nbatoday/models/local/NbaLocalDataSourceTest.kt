@@ -17,8 +17,6 @@ import com.jiachian.nbatoday.models.local.bet.Bet
 import com.jiachian.nbatoday.models.local.game.GameScoreUpdateData
 import com.jiachian.nbatoday.models.local.game.GameStatus
 import com.jiachian.nbatoday.models.local.game.GameUpdateData
-import com.jiachian.nbatoday.models.local.player.PlayerCareerInfoUpdate
-import com.jiachian.nbatoday.models.local.player.PlayerCareerStatsUpdate
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.utils.getOrError
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -264,8 +262,8 @@ class NbaLocalDataSourceTest {
             PlayerCareerStatsUpdate(
                 playerId = playerCareer.playerId,
                 stats = playerCareer.stats.copy(
-                    careerStats = ArrayList(
-                        playerCareer.stats.careerStats.map { stats ->
+                    stats = ArrayList(
+                        playerCareer.stats.stats.map { stats ->
                             stats.copy(
                                 win = 0
                             )

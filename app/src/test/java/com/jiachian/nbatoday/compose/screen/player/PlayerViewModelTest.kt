@@ -43,7 +43,7 @@ class PlayerViewModelTest {
         assertThat(playerCareer?.info?.team?.teamName, `is`(homePlayer.info.team.teamName))
         assertThat(playerCareer?.info?.team?.abbreviation, `is`(homePlayer.info.team.abbreviation))
         assertThat(playerCareer?.info?.team?.teamId, `is`(homePlayer.info.team.teamId))
-        assertThat(playerCareer?.stats?.careerStats, `is`(homePlayer.stats.careerStats))
+        assertThat(playerCareer?.stats?.stats, `is`(homePlayer.stats.stats))
         assertThat(playerCareer?.stats?.careerRank, `is`(homePlayer.stats.careerRank))
     }
 
@@ -52,7 +52,7 @@ class PlayerViewModelTest {
         viewModel.statsRowData.launchAndCollect(coroutineEnvironment)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.careerStats.first(), viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats.first(), viewModel.statsSort.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
@@ -63,7 +63,7 @@ class PlayerViewModelTest {
         viewModel.statsRowData.launchAndCollect(coroutineEnvironment)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.careerStats.first(), viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats.first(), viewModel.statsSort.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
@@ -75,7 +75,7 @@ class PlayerViewModelTest {
         viewModel.updateStatsSort(CareerStatsSort.GP)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.careerStats[1], viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSort.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
@@ -87,7 +87,7 @@ class PlayerViewModelTest {
         viewModel.updateStatsSort(CareerStatsSort.W)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.careerStats[1], viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSort.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
@@ -99,7 +99,7 @@ class PlayerViewModelTest {
         viewModel.updateStatsSort(CareerStatsSort.L)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.careerStats.first(), viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats.first(), viewModel.statsSort.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
@@ -111,7 +111,7 @@ class PlayerViewModelTest {
         viewModel.updateStatsSort(CareerStatsSort.WINP)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.careerStats[1], viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSort.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
@@ -123,7 +123,7 @@ class PlayerViewModelTest {
         viewModel.updateStatsSort(CareerStatsSort.PTS)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.careerStats[1], viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSort.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
@@ -135,7 +135,7 @@ class PlayerViewModelTest {
         viewModel.updateStatsSort(CareerStatsSort.FGM)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.careerStats[1], viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSort.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
@@ -147,7 +147,7 @@ class PlayerViewModelTest {
         viewModel.updateStatsSort(CareerStatsSort.FGA)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.careerStats[1], viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSort.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
@@ -159,7 +159,7 @@ class PlayerViewModelTest {
         viewModel.updateStatsSort(CareerStatsSort.FGP)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.careerStats[1], viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSort.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
@@ -171,7 +171,7 @@ class PlayerViewModelTest {
         viewModel.updateStatsSort(CareerStatsSort.PM3)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.careerStats[1], viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSort.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
@@ -183,7 +183,7 @@ class PlayerViewModelTest {
         viewModel.updateStatsSort(CareerStatsSort.PA3)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.careerStats[1], viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSort.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
@@ -195,7 +195,7 @@ class PlayerViewModelTest {
         viewModel.updateStatsSort(CareerStatsSort.PP3)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.careerStats[1], viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSort.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
@@ -207,7 +207,7 @@ class PlayerViewModelTest {
         viewModel.updateStatsSort(CareerStatsSort.FTM)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.careerStats[1], viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSort.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
@@ -219,7 +219,7 @@ class PlayerViewModelTest {
         viewModel.updateStatsSort(CareerStatsSort.FTA)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.careerStats[1], viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSort.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
@@ -231,7 +231,7 @@ class PlayerViewModelTest {
         viewModel.updateStatsSort(CareerStatsSort.FTP)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.careerStats[1], viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSort.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
@@ -243,7 +243,7 @@ class PlayerViewModelTest {
         viewModel.updateStatsSort(CareerStatsSort.OREB)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.careerStats[1], viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSort.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
@@ -255,7 +255,7 @@ class PlayerViewModelTest {
         viewModel.updateStatsSort(CareerStatsSort.DREB)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.careerStats[1], viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSort.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
@@ -267,7 +267,7 @@ class PlayerViewModelTest {
         viewModel.updateStatsSort(CareerStatsSort.REB)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.careerStats[1], viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSort.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
@@ -279,7 +279,7 @@ class PlayerViewModelTest {
         viewModel.updateStatsSort(CareerStatsSort.AST)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.careerStats[1], viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSort.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
@@ -291,7 +291,7 @@ class PlayerViewModelTest {
         viewModel.updateStatsSort(CareerStatsSort.TOV)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.careerStats[1], viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSort.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
@@ -303,7 +303,7 @@ class PlayerViewModelTest {
         viewModel.updateStatsSort(CareerStatsSort.STL)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.careerStats[1], viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSort.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
@@ -315,7 +315,7 @@ class PlayerViewModelTest {
         viewModel.updateStatsSort(CareerStatsSort.BLK)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.careerStats[1], viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSort.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
@@ -327,7 +327,7 @@ class PlayerViewModelTest {
         viewModel.updateStatsSort(CareerStatsSort.PF)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.careerStats[1], viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSort.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
@@ -339,7 +339,7 @@ class PlayerViewModelTest {
         viewModel.updateStatsSort(CareerStatsSort.PLUSMINUS)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.careerStats[1], viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSort.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))

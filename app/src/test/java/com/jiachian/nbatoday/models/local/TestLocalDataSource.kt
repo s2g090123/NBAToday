@@ -6,9 +6,7 @@ import com.jiachian.nbatoday.models.local.game.Game
 import com.jiachian.nbatoday.models.local.game.GameAndBet
 import com.jiachian.nbatoday.models.local.game.GameScoreUpdateData
 import com.jiachian.nbatoday.models.local.game.GameUpdateData
-import com.jiachian.nbatoday.models.local.player.PlayerCareer
-import com.jiachian.nbatoday.models.local.player.PlayerCareerInfoUpdate
-import com.jiachian.nbatoday.models.local.player.PlayerCareerStatsUpdate
+import com.jiachian.nbatoday.models.local.player.Player
 import com.jiachian.nbatoday.models.local.score.BoxScore
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.models.local.team.Team
@@ -31,7 +29,7 @@ class TestLocalDataSource : LocalDataSource() {
 
     private val teamPlayer = MutableStateFlow(emptyList<TeamPlayer>())
 
-    private val playerCareer = MutableStateFlow(emptyList<PlayerCareer>())
+    private val playerCareer = MutableStateFlow(emptyList<Player>())
 
     override suspend fun getGamesAt(date: Long): List<Game> {
         return games.value
@@ -246,7 +244,7 @@ class TestLocalDataSource : LocalDataSource() {
         return playerCareer.value.firstOrNull { it.playerId == playerId } != null
     }
 
-    override suspend fun insertPlayerCareer(stats: PlayerCareer) {
+    override suspend fun insertPlayerCareer(stats: Player) {
         playerCareer.value = playerCareer.value.toMutableList().apply {
             removeIf { it.playerId == stats.playerId }
             add(stats)
@@ -266,7 +264,7 @@ class TestLocalDataSource : LocalDataSource() {
         }
     }
 
-    override fun getPlayerCareer(playerId: Int): Flow<PlayerCareer?> {
+    override fun getPlayerCareer(playerId: Int): Flow<Player?> {
         return playerCareer.map {
             it.firstOrNull { player -> player.playerId == playerId }
         }

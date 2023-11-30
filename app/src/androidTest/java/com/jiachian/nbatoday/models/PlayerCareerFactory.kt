@@ -19,28 +19,28 @@ import com.jiachian.nbatoday.HomeTeam
 import com.jiachian.nbatoday.HomeTeamAbbr
 import com.jiachian.nbatoday.HomeTeamId
 import com.jiachian.nbatoday.TeamCity
-import com.jiachian.nbatoday.models.local.player.PlayerCareer
+import com.jiachian.nbatoday.models.local.player.Player
 
 object PlayerCareerFactory {
 
-    fun createHomePlayerCareer(): PlayerCareer {
-        return PlayerCareer(
+    fun createHomePlayerCareer(): Player {
+        return Player(
             playerId = HomePlayerId,
             info = createHomePlayerInfo(),
             stats = createHomePlayerStats()
         )
     }
 
-    fun createAwayPlayerCareer(): PlayerCareer {
-        return PlayerCareer(
+    fun createAwayPlayerCareer(): Player {
+        return Player(
             playerId = AwayPlayerId,
             info = createAwayPlayerInfo(),
             stats = createAwayPlayerStats()
         )
     }
 
-    private fun createHomePlayerInfo(): PlayerCareer.PlayerCareerInfo {
-        return PlayerCareer.PlayerCareerInfo(
+    private fun createHomePlayerInfo(): Player.PlayerInfo {
+        return Player.PlayerInfo(
             playerName = HomePlayerFullName,
             playerNameAbbr = HomePlayerLastName,
             playerAge = BasicNumber,
@@ -63,8 +63,8 @@ object PlayerCareerFactory {
         )
     }
 
-    private fun createAwayPlayerInfo(): PlayerCareer.PlayerCareerInfo {
-        return PlayerCareer.PlayerCareerInfo(
+    private fun createAwayPlayerInfo(): Player.PlayerInfo {
+        return Player.PlayerInfo(
             playerName = AwayPlayerFullName,
             playerNameAbbr = AwayPlayerLastName,
             playerAge = BasicNumber,
@@ -87,8 +87,8 @@ object PlayerCareerFactory {
         )
     }
 
-    private fun createHeadlineStats(): PlayerCareer.PlayerCareerInfo.HeadlineStats {
-        return PlayerCareer.PlayerCareerInfo.HeadlineStats(
+    private fun createHeadlineStats(): Player.PlayerInfo.HeadlineStats {
+        return Player.PlayerInfo.HeadlineStats(
             timeFrame = GameSeason,
             points = BasicNumber.toDouble(),
             assists = BasicNumber.toDouble(),
@@ -97,23 +97,23 @@ object PlayerCareerFactory {
         )
     }
 
-    private fun createHomePlayerStats(): PlayerCareer.PlayerCareerStats {
-        return PlayerCareer.PlayerCareerStats(
-            careerStats = createHomeStats(),
+    private fun createHomePlayerStats(): Player.PlayerStats {
+        return Player.PlayerStats(
+            stats = createHomeStats(),
             careerRank = createHomeRanks()
         )
     }
 
-    private fun createAwayPlayerStats(): PlayerCareer.PlayerCareerStats {
-        return PlayerCareer.PlayerCareerStats(
-            careerStats = createAwayStats(),
+    private fun createAwayPlayerStats(): Player.PlayerStats {
+        return Player.PlayerStats(
+            stats = createAwayStats(),
             careerRank = createAwayRanks()
         )
     }
 
-    private fun createHomeStats(): ArrayList<PlayerCareer.PlayerCareerStats.Stats> {
+    private fun createHomeStats(): ArrayList<Player.PlayerStats.Stats> {
         return arrayListOf(
-            PlayerCareer.PlayerCareerStats.Stats(
+            Player.PlayerStats.Stats(
                 timeFrame = GameSeasonNext,
                 teamId = HomeTeamId,
                 teamNameAbbr = HomeTeamAbbr,
@@ -141,7 +141,7 @@ object PlayerCareerFactory {
                 points = BasicNumber - 1,
                 plusMinus = BasicNumber - 1
             ),
-            PlayerCareer.PlayerCareerStats.Stats(
+            Player.PlayerStats.Stats(
                 timeFrame = GameSeason,
                 teamId = HomeTeamId,
                 teamNameAbbr = HomeTeamAbbr,
@@ -172,9 +172,9 @@ object PlayerCareerFactory {
         )
     }
 
-    private fun createAwayStats(): ArrayList<PlayerCareer.PlayerCareerStats.Stats> {
+    private fun createAwayStats(): ArrayList<Player.PlayerStats.Stats> {
         return arrayListOf(
-            PlayerCareer.PlayerCareerStats.Stats(
+            Player.PlayerStats.Stats(
                 timeFrame = GameSeason,
                 teamId = AwayTeamId,
                 teamNameAbbr = AwayTeamAbbr,
@@ -205,9 +205,9 @@ object PlayerCareerFactory {
         )
     }
 
-    private fun createHomeRanks(): ArrayList<PlayerCareer.PlayerCareerStats.Rank> {
+    private fun createHomeRanks(): ArrayList<Player.PlayerStats.Rank> {
         return arrayListOf(
-            PlayerCareer.PlayerCareerStats.Rank(
+            Player.PlayerStats.Rank(
                 timeFrame = GameSeason,
                 teamId = HomeTeamId,
                 teamNameAbbr = HomeTeamAbbr,
@@ -238,9 +238,9 @@ object PlayerCareerFactory {
         )
     }
 
-    private fun createAwayRanks(): ArrayList<PlayerCareer.PlayerCareerStats.Rank> {
+    private fun createAwayRanks(): ArrayList<Player.PlayerStats.Rank> {
         return arrayListOf(
-            PlayerCareer.PlayerCareerStats.Rank(
+            Player.PlayerStats.Rank(
                 timeFrame = GameSeason,
                 teamId = AwayTeamId,
                 teamNameAbbr = AwayTeamAbbr,

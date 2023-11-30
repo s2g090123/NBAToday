@@ -6,7 +6,7 @@ import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.compose.screen.player.utils.PlayerInfoHelper
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
-import com.jiachian.nbatoday.models.local.player.PlayerCareer.PlayerCareerStats.Stats
+import com.jiachian.nbatoday.models.local.player.Player.PlayerStats.Stats
 import com.jiachian.nbatoday.repository.player.PlayerRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,7 +28,7 @@ class PlayerViewModel(
     private val isRefreshingImp = MutableStateFlow(false)
     val isRefreshing = isRefreshingImp.asStateFlow()
 
-    val playerCareer = repository.getPlayerCareer(playerId)
+    val playerCareer = repository.getPlayer(playerId)
         .stateIn(coroutineScope, SharingStarted.Lazily, null)
 
     val notFoundVisible = playerCareer.map {
@@ -73,7 +73,7 @@ class PlayerViewModel(
         playerCareer,
         statsSort
     ) { stats, sort ->
-        val careerStats = stats?.stats?.careerStats ?: emptyList()
+        val careerStats = stats?.stats?.stats ?: emptyList()
         when (sort) {
             CareerStatsSort.TIME_FRAME -> careerStats.sortedWith(
                 compareByDescending {
@@ -269,7 +269,7 @@ class PlayerViewModel(
         coroutineScope.launch {
             isRefreshingImp.value = true
             withContext(dispatcherProvider.io) {
-                repository.refreshPlayer(playerId)
+                repository.updatePlayer(playerId)
             }
             isRefreshingImp.value = false
         }

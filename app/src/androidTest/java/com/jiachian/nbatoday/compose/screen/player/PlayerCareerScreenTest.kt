@@ -139,7 +139,7 @@ class PlayerCareerScreenTest : BaseAndroidTest() {
 
     @Test
     fun player_checkPlayerStats() {
-        val stats = playerCareer.stats.careerStats[0]
+        val stats = playerCareer.stats.stats[0]
         composeTestRule
             .onNodeWithMergedTag("PlayerCareerStats_LC_Year")
             .onNodeWithTag("PlayerCareerStats_Row_Year")

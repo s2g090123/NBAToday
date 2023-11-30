@@ -1,7 +1,7 @@
 package com.jiachian.nbatoday.models.remote.player
 
 import android.annotation.SuppressLint
-import com.jiachian.nbatoday.models.local.player.PlayerCareer
+import com.jiachian.nbatoday.models.local.player.Player
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.utils.NbaUtils
 import com.jiachian.nbatoday.utils.decimalFormat
@@ -13,11 +13,11 @@ import java.util.Calendar
 import java.util.Date
 import java.util.TimeZone
 
-fun RemotePlayerInfo.toPlayerInfo(): PlayerCareer.PlayerCareerInfo? {
+fun RemotePlayerInfo.toPlayerInfo(): Player.PlayerInfo? {
     return createPlayerCareerInfo()
 }
 
-private fun RemotePlayerInfo.createPlayerCareerInfo(): PlayerCareer.PlayerCareerInfo? {
+private fun RemotePlayerInfo.createPlayerCareerInfo(): Player.PlayerInfo? {
     val playerName = getPlayerInfo("DISPLAY_FIRST_LAST")
     val jersey = getPlayerInfo("JERSEY")?.toIntOrNull()
     val stats = createPlayerCareerStats()
@@ -26,7 +26,7 @@ private fun RemotePlayerInfo.createPlayerCareerInfo(): PlayerCareer.PlayerCareer
     val team = getPlayerInfo("TEAM_ID")?.toIntOrNull().let { teamId ->
         NBATeam.getTeamById(teamId)
     }
-    return PlayerCareer.PlayerCareerInfo(
+    return Player.PlayerInfo(
         playerName = playerName,
         playerNameAbbr = getPlayerInfo("DISPLAY_FI_LAST").getOrNA(),
         playerAge = getAge(birthDate),
@@ -47,7 +47,7 @@ private fun RemotePlayerInfo.createPlayerCareerInfo(): PlayerCareer.PlayerCareer
     )
 }
 
-private fun RemotePlayerInfo.createPlayerCareerStats(): PlayerCareer.PlayerCareerInfo.HeadlineStats? {
+private fun RemotePlayerInfo.createPlayerCareerStats(): Player.PlayerInfo.HeadlineStats? {
     val timeFrame = getPlayerStats("TimeFrame")
     val points = getPlayerStats("PTS")?.toDoubleOrNull()
     val assists = getPlayerStats("AST")?.toDoubleOrNull()
@@ -56,7 +56,7 @@ private fun RemotePlayerInfo.createPlayerCareerStats(): PlayerCareer.PlayerCaree
     val isTimeValid = timeFrame != null
     val isStatsValid = points != null && assists != null && rebounds != null && impact != null
     if (!isTimeValid || !isStatsValid) return null
-    return PlayerCareer.PlayerCareerInfo.HeadlineStats(
+    return Player.PlayerInfo.HeadlineStats(
         points.getOrError(),
         assists.getOrError(),
         rebounds.getOrError(),

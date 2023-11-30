@@ -2,7 +2,7 @@ package com.jiachian.nbatoday.compose.screen.player
 
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
-import com.jiachian.nbatoday.models.local.player.PlayerCareer
+import com.jiachian.nbatoday.models.local.player.Player
 
 data class CareerStatsLabel(
     val textWidth: Dp,
@@ -11,7 +11,7 @@ data class CareerStatsLabel(
     val sort: CareerStatsSort
 ) {
     fun getRowData(
-        stats: PlayerCareer.PlayerCareerStats.Stats,
+        stats: Player.PlayerStats.Stats,
         sorting: CareerStatsSort,
     ): CareerStatsRowData {
         val value = when (text) {

@@ -33,7 +33,7 @@ import com.jiachian.nbatoday.compose.screen.player.PlayerViewModel
 import com.jiachian.nbatoday.compose.screen.player.models.PlayerInfoRowData
 import com.jiachian.nbatoday.compose.widget.PlayerImage
 import com.jiachian.nbatoday.compose.widget.TeamLogoImage
-import com.jiachian.nbatoday.models.local.player.PlayerCareer
+import com.jiachian.nbatoday.models.local.player.Player
 import com.jiachian.nbatoday.models.local.team.NBATeam
 
 private const val PlayerImageAspectRatio = 1.36f
@@ -95,7 +95,7 @@ private fun TeamAndPlayerImage(
 @Composable
 private fun PlayerTitle(
     modifier: Modifier = Modifier,
-    playerInfo: PlayerCareer.PlayerCareerInfo
+    playerInfo: Player.PlayerInfo
 ) {
     Row(modifier = modifier) {
         Column(

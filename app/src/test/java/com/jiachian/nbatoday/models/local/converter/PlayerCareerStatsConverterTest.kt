@@ -3,7 +3,7 @@ package com.jiachian.nbatoday.models.local.converter
 import com.google.gson.reflect.TypeToken
 import com.jiachian.nbatoday.database.converter.PlayerCareerStatsConverter
 import com.jiachian.nbatoday.models.PlayerCareerFactory
-import com.jiachian.nbatoday.models.local.player.PlayerCareer
+import com.jiachian.nbatoday.models.local.player.Player
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
@@ -14,7 +14,7 @@ class PlayerCareerStatsConverterTest {
     @Test
     fun from_PlayerCareerStatsToString_isCorrect() {
         val careerStats = PlayerCareerFactory.createHomePlayerCareer().stats
-        val type = object : TypeToken<PlayerCareer.PlayerCareerStats>() {}.type
+        val type = object : TypeToken<Player.PlayerStats>() {}.type
         val expected = testGeneralGson.toJson(careerStats, type)
         val actual = converter.from(careerStats)
         assertThat(actual, `is`(expected))
@@ -23,7 +23,7 @@ class PlayerCareerStatsConverterTest {
     @Test
     fun to_StringToPlayerCareerStats_isCorrect() {
         val careerStats = PlayerCareerFactory.createHomePlayerCareer().stats
-        val type = object : TypeToken<PlayerCareer.PlayerCareerStats>() {}.type
+        val type = object : TypeToken<Player.PlayerStats>() {}.type
         val actual = converter.to(testGeneralGson.toJson(careerStats, type))
         assertThat(actual, `is`(careerStats))
     }

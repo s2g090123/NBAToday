@@ -5,7 +5,7 @@ import com.jiachian.nbatoday.UserPoints
 import com.jiachian.nbatoday.models.local.user.User
 import com.jiachian.nbatoday.models.remote.game.RemoteGame
 import com.jiachian.nbatoday.models.remote.game.RemoteSchedule
-import com.jiachian.nbatoday.models.remote.player.RemotePlayerDetail
+import com.jiachian.nbatoday.models.remote.player.RemotePlayer
 import com.jiachian.nbatoday.models.remote.player.RemotePlayerInfo
 import com.jiachian.nbatoday.models.remote.player.RemotePlayerStats
 import com.jiachian.nbatoday.models.remote.score.RemoteBoxScore
@@ -55,7 +55,7 @@ class TestRemoteDataSource : RemoteDataSource() {
         return RemotePlayerFactory.getRemotePlayerStats()
     }
 
-    override suspend fun getPlayerDetail(playerId: Int): RemotePlayerDetail {
+    override suspend fun getPlayerDetail(playerId: Int): RemotePlayer {
         return RemotePlayerFactory.getRemotePlayerDetail()
     }
 

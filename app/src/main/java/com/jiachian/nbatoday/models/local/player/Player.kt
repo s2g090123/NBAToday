@@ -6,13 +6,13 @@ import androidx.room.PrimaryKey
 import com.jiachian.nbatoday.models.local.team.NBATeam
 
 @Entity(tableName = "player")
-data class PlayerCareer(
+data class Player(
     @PrimaryKey @ColumnInfo(name = "player_id") val playerId: Int,
-    @ColumnInfo(name = "player_info") val info: PlayerCareerInfo,
-    @ColumnInfo(name = "player_stats") val stats: PlayerCareerStats
+    @ColumnInfo(name = "player_info") val info: PlayerInfo,
+    @ColumnInfo(name = "player_stats") val stats: PlayerStats
 ) {
 
-    data class PlayerCareerInfo(
+    data class PlayerInfo(
         @ColumnInfo(name = "player_name") val playerName: String,
         @ColumnInfo(name = "player_name_abbr") val playerNameAbbr: String,
         @ColumnInfo(name = "player_age") val playerAge: Int,
@@ -51,8 +51,8 @@ data class PlayerCareer(
             get() = headlineStats.impact
     }
 
-    data class PlayerCareerStats(
-        @ColumnInfo(name = "career_stats") val careerStats: List<Stats>,
+    data class PlayerStats(
+        @ColumnInfo(name = "career_stats") val stats: List<Stats>,
     ) {
         data class Stats(
             @ColumnInfo(name = "time_frame") val timeFrame: String, // 2022-23

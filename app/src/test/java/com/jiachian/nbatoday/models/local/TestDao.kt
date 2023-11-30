@@ -6,9 +6,7 @@ import com.jiachian.nbatoday.models.local.game.Game
 import com.jiachian.nbatoday.models.local.game.GameAndBet
 import com.jiachian.nbatoday.models.local.game.GameScoreUpdateData
 import com.jiachian.nbatoday.models.local.game.GameUpdateData
-import com.jiachian.nbatoday.models.local.player.PlayerCareer
-import com.jiachian.nbatoday.models.local.player.PlayerCareerInfoUpdate
-import com.jiachian.nbatoday.models.local.player.PlayerCareerStatsUpdate
+import com.jiachian.nbatoday.models.local.player.Player
 import com.jiachian.nbatoday.models.local.score.BoxScore
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.models.local.team.Team
@@ -27,7 +25,7 @@ class TestDao : NbaDao {
     private val boxScores = MutableStateFlow(emptyList<BoxScore>())
     private val team = MutableStateFlow(emptyList<Team>())
     private val teamPlayer = MutableStateFlow(emptyList<TeamPlayer>())
-    private val playerCareer = MutableStateFlow(emptyList<PlayerCareer>())
+    private val playerCareer = MutableStateFlow(emptyList<Player>())
 
     override fun getGames(): Flow<List<Game>> {
         return games
@@ -288,7 +286,7 @@ class TestDao : NbaDao {
         return teamPlayer.value.firstOrNull { it.playerId == playerId } != null
     }
 
-    override fun getPlayerCareer(playerId: Int): Flow<PlayerCareer?> {
+    override fun getPlayerCareer(playerId: Int): Flow<Player?> {
         return playerCareer.map {
             it.firstOrNull { player ->
                 player.playerId == playerId
@@ -296,7 +294,7 @@ class TestDao : NbaDao {
         }
     }
 
-    override suspend fun insertPlayerCareer(stats: PlayerCareer) {
+    override suspend fun insertPlayerCareer(stats: Player) {
         playerCareer.value = playerCareer.value.toMutableList().apply {
             add(stats)
             distinctBy { it.playerId }

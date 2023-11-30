@@ -15,7 +15,7 @@ import com.jiachian.nbatoday.models.local.bet.Bet
 import com.jiachian.nbatoday.models.local.bet.BetAndGame
 import com.jiachian.nbatoday.models.local.game.Game
 import com.jiachian.nbatoday.models.local.game.GameAndBet
-import com.jiachian.nbatoday.models.local.player.PlayerCareer
+import com.jiachian.nbatoday.models.local.player.Player
 import com.jiachian.nbatoday.models.local.score.BoxScore
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.models.local.team.Team
@@ -35,7 +35,7 @@ class TestRepository : BaseRepository {
 
     private val players = MutableStateFlow(emptyList<TeamPlayer>())
 
-    private val playersCareer = MutableStateFlow(emptyList<PlayerCareer>())
+    private val playersCareer = MutableStateFlow(emptyList<Player>())
 
     private val bet = MutableStateFlow(emptyList<Bet>())
 
@@ -280,7 +280,7 @@ class TestRepository : BaseRepository {
         }
     }
 
-    override fun getPlayerCareer(playerId: Int): Flow<PlayerCareer?> {
+    override fun getPlayerCareer(playerId: Int): Flow<Player?> {
         return playersCareer.map { players ->
             players.firstOrNull {
                 it.playerId == playerId

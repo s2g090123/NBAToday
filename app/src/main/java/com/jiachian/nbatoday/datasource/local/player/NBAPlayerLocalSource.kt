@@ -1,17 +1,17 @@
 package com.jiachian.nbatoday.datasource.local.player
 
 import com.jiachian.nbatoday.database.dao.PlayerDao
-import com.jiachian.nbatoday.models.local.player.PlayerCareer
+import com.jiachian.nbatoday.models.local.player.Player
 import kotlinx.coroutines.flow.Flow
 
 class NBAPlayerLocalSource(
     private val playerDao: PlayerDao,
 ) : PlayerLocalSource() {
-    override fun getPlayerCareer(playerId: Int): Flow<PlayerCareer?> {
+    override fun getPlayer(playerId: Int): Flow<Player?> {
         return playerDao.getPlayers(playerId)
     }
 
-    override suspend fun insertPlayerCareer(playerCareer: PlayerCareer) {
-        playerDao.insertPlayers(playerCareer)
+    override suspend fun insertPlayer(player: Player) {
+        playerDao.insertPlayers(player)
     }
 }

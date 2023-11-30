@@ -9,13 +9,13 @@ import com.jiachian.nbatoday.HomeTeamAbbr
 import com.jiachian.nbatoday.HomeTeamId
 import com.jiachian.nbatoday.HomeTeamName
 import com.jiachian.nbatoday.TeamCity
-import com.jiachian.nbatoday.models.remote.player.RemotePlayerDetail
+import com.jiachian.nbatoday.models.remote.player.RemotePlayer
 import com.jiachian.nbatoday.models.remote.player.RemotePlayerInfo
 import com.jiachian.nbatoday.models.remote.player.RemotePlayerStats
 
 object RemotePlayerFactory {
-    fun getRemotePlayerDetail(): RemotePlayerDetail {
-        return RemotePlayerDetail(
+    fun getRemotePlayerDetail(): RemotePlayer {
+        return RemotePlayer(
             info = getRemotePlayerInfo(),
             stats = getRemotePlayerStats()
         )

@@ -22,7 +22,7 @@ import com.jiachian.nbatoday.database.dao.PlayerDao
 import com.jiachian.nbatoday.database.dao.TeamDao
 import com.jiachian.nbatoday.models.local.bet.Bet
 import com.jiachian.nbatoday.models.local.game.Game
-import com.jiachian.nbatoday.models.local.player.PlayerCareer
+import com.jiachian.nbatoday.models.local.player.Player
 import com.jiachian.nbatoday.models.local.score.BoxScore
 import com.jiachian.nbatoday.models.local.team.Team
 import com.jiachian.nbatoday.models.local.team.TeamPlayer
@@ -33,7 +33,7 @@ import com.jiachian.nbatoday.models.local.team.TeamPlayer
         BoxScore::class,
         Team::class,
         TeamPlayer::class,
-        PlayerCareer::class,
+        Player::class,
         Bet::class
     ],
     version = 1
