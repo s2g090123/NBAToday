@@ -269,7 +269,7 @@ class PlayerViewModel(
         coroutineScope.launch {
             isRefreshingImp.value = true
             withContext(dispatcherProvider.io) {
-                repository.refreshPlayerStats(playerId)
+                repository.refreshPlayer(playerId)
             }
             isRefreshingImp.value = false
         }

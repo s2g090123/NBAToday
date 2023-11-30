@@ -41,7 +41,7 @@ class BoxScoreViewModel(
     private val isRefreshingImp = MutableStateFlow(false)
     val isRefreshing = isRefreshingImp.asStateFlow()
 
-    val boxScore = repository.getGameBoxScore(gameId)
+    val boxScore = repository.getBoxScore(gameId)
         .stateIn(coroutineScope, SharingStarted.Lazily, null)
 
     val date = boxScore.map {
@@ -132,7 +132,7 @@ class BoxScoreViewModel(
         coroutineScope.launch {
             isRefreshingImp.value = true
             withContext(dispatcherProvider.io) {
-                repository.refreshGameBoxScore(gameId)
+                repository.refreshBoxScore(gameId)
             }
             isRefreshingImp.value = false
         }

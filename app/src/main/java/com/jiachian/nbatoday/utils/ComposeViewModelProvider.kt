@@ -43,7 +43,7 @@ class ComposeViewModelProvider(
     ): BoxScoreViewModel {
         return BoxScoreViewModel(
             game = game,
-            repository = repositoryProvider.gameRepository,
+            repository = repositoryProvider.game,
             screenStateHelper = screenStateHelper,
             dispatcherProvider = dispatcherProvider,
             coroutineScope = coroutineScope,
@@ -57,8 +57,8 @@ class ComposeViewModelProvider(
     ): TeamViewModel {
         return TeamViewModel(
             team = team,
-            teamRepository = repositoryProvider.teamRepository,
-            gameRepository = repositoryProvider.gameRepository,
+            teamRepository = repositoryProvider.team,
+            gameRepository = repositoryProvider.game,
             screenStateHelper = screenStateHelper,
             composeViewModelProvider = this,
             dispatcherProvider = dispatcherProvider,
@@ -73,7 +73,7 @@ class ComposeViewModelProvider(
     ): PlayerViewModel {
         return PlayerViewModel(
             playerId = playerId,
-            repository = repositoryProvider.playerRepository,
+            repository = repositoryProvider.player,
             dispatcherProvider = dispatcherProvider,
             coroutineScope = coroutineScope,
         )
@@ -86,7 +86,7 @@ class ComposeViewModelProvider(
     ): CalendarViewModel {
         return CalendarViewModel(
             date = date,
-            repository = repositoryProvider.gameRepository,
+            repository = repositoryProvider.game,
             screenStateHelper = screenStateHelper,
             composeViewModelProvider = this,
             dispatcherProvider = dispatcherProvider,
@@ -101,7 +101,7 @@ class ComposeViewModelProvider(
     ): BetViewModel {
         return BetViewModel(
             account = account,
-            repository = repositoryProvider.betRepository,
+            repository = repositoryProvider.bet,
             screenStateHelper = screenStateHelper,
             dispatcherProvider = dispatcherProvider,
             coroutineScope = coroutineScope,
@@ -113,8 +113,8 @@ class ComposeViewModelProvider(
         coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined),
     ): SchedulePageViewModel {
         return SchedulePageViewModel(
-            scheduleRepository = repositoryProvider.scheduleRepository,
-            gameRepository = repositoryProvider.gameRepository,
+            scheduleRepository = repositoryProvider.schedule,
+            gameRepository = repositoryProvider.game,
             screenStateHelper = screenStateHelper,
             composeViewModelProvider = this,
             dispatcherProvider = dispatcherProvider,
@@ -127,7 +127,7 @@ class ComposeViewModelProvider(
         coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined),
     ): StandingPageViewModel {
         return StandingPageViewModel(
-            repository = repositoryProvider.teamRepository,
+            repository = repositoryProvider.team,
             screenStateHelper = screenStateHelper,
             dispatcherProvider = dispatcherProvider,
             coroutineScope = coroutineScope,
@@ -139,7 +139,7 @@ class ComposeViewModelProvider(
         coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined),
     ): UserPageViewModel {
         return UserPageViewModel(
-            repository = repositoryProvider.userRepository,
+            repository = repositoryProvider.user,
             dataStore = dataStore,
             screenStateHelper = screenStateHelper,
             dispatcherProvider = dispatcherProvider,
@@ -154,8 +154,8 @@ class ComposeViewModelProvider(
     ): GameStatusCardViewModel {
         return GameStatusCardViewModel(
             gameAndBet = gameAndBet,
-            betRepository = repositoryProvider.betRepository,
-            userRepository = repositoryProvider.userRepository,
+            betRepository = repositoryProvider.bet,
+            userRepository = repositoryProvider.user,
             dispatcherProvider = dispatcherProvider,
             coroutineScope = coroutineScope,
         )

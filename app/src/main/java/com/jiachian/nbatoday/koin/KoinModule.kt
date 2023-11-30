@@ -24,10 +24,10 @@ import com.jiachian.nbatoday.datastore.BaseDataStore
 import com.jiachian.nbatoday.datastore.NBADataStore
 import com.jiachian.nbatoday.repository.RepositoryProvider
 import com.jiachian.nbatoday.repository.bet.BetRepository
-import com.jiachian.nbatoday.repository.bet.NbaBetRepository
+import com.jiachian.nbatoday.repository.bet.NBABetRepository
 import com.jiachian.nbatoday.repository.game.GameRepository
-import com.jiachian.nbatoday.repository.game.NbaGameRepository
-import com.jiachian.nbatoday.repository.player.NbaPlayerRepository
+import com.jiachian.nbatoday.repository.game.NBAGameRepository
+import com.jiachian.nbatoday.repository.player.NBAPlayerRepository
 import com.jiachian.nbatoday.repository.player.PlayerRepository
 import com.jiachian.nbatoday.repository.schedule.NbaScheduleRepository
 import com.jiachian.nbatoday.repository.schedule.ScheduleRepository
@@ -65,10 +65,10 @@ val module = module {
     single { NBADataStore(androidApplication()) as BaseDataStore }
     single { ScreenStateHelper(get(), get()) }
     single { NbaScheduleRepository(get(), get(), get(), get()) as ScheduleRepository }
-    single { NbaGameRepository(get(), get(), get()) as GameRepository }
+    single { NBAGameRepository(get(), get(), get()) as GameRepository }
     single { NbaTeamRepository(get(), get()) as TeamRepository }
-    single { NbaPlayerRepository(get(), get()) as PlayerRepository }
-    single { NbaBetRepository(get(), get()) as BetRepository }
+    single { NBAPlayerRepository(get(), get()) as PlayerRepository }
+    single { NBABetRepository(get(), get()) as BetRepository }
     single { NbaUserRepository(get(), get()) as UserRepository }
 
     viewModel { MainViewModel(get(), get(), get()) }

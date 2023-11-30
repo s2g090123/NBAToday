@@ -11,11 +11,14 @@ abstract class BaseRepository {
     protected fun Response<*>.isError() = !isSuccessful || body() == null
 
     protected suspend fun <T> loading(runnable: suspend () -> T): T {
+        val isLoadingEarly = isProgressing.value
         return try {
             isProgressingImp.value = true
             runnable()
         } finally {
-            isProgressingImp.value = false
+            if (!isLoadingEarly) {
+                isProgressingImp.value = false
+            }
         }
     }
 }

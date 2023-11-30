@@ -81,4 +81,12 @@ data class BetAndGame(
             GameStatus.FINAL -> game.gameStatusText + "\n1:1"
         }.trim()
     }
+
+    fun getWinnerPoints(): Long {
+        return if (isHomeTeamWin) bet.homePoints else bet.awayPoints
+    }
+
+    fun getLoserPoints(): Long {
+        return if (isHomeTeamWin) bet.awayPoints else bet.homePoints
+    }
 }

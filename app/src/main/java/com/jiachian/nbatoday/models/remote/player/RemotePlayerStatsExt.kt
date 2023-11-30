@@ -1,20 +1,15 @@
 package com.jiachian.nbatoday.models.remote.player
 
 import com.jiachian.nbatoday.models.local.player.PlayerCareer
-import com.jiachian.nbatoday.models.local.player.PlayerCareerStatsUpdate
 import com.jiachian.nbatoday.utils.getOrNA
 import com.jiachian.nbatoday.utils.getOrZero
 import com.jiachian.nbatoday.utils.toPercentage
 
-fun RemotePlayerStats.toPlayerCareerStatsUpdate(): PlayerCareerStatsUpdate? {
-    val playerId = parameters?.playerId ?: return null
+fun RemotePlayerStats.toPlayerStats(): PlayerCareer.PlayerCareerStats? {
     val stats = result?.rowData?.mapNotNull { data ->
         createPlayerCareerStats(data)
     } ?: emptyList()
-    return PlayerCareerStatsUpdate(
-        playerId = playerId,
-        stats = PlayerCareer.PlayerCareerStats(stats)
-    )
+    return PlayerCareer.PlayerCareerStats(stats)
 }
 
 private fun RemotePlayerStats.createPlayerCareerStats(data: List<String>): PlayerCareer.PlayerCareerStats.Stats? {

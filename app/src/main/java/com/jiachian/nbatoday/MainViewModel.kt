@@ -50,7 +50,7 @@ class MainViewModel(
         viewModelScope.launch(dispatcherProvider.io) {
             isLoading.value = true
             val refreshScheduleDeferred = async {
-                repositoryProvider.scheduleRepository.refreshSchedule()
+                repositoryProvider.schedule.refreshSchedule()
             }
             val updateColorsDeferred = async {
                 val colors = dataStore.themeColors.first()
@@ -60,7 +60,7 @@ class MainViewModel(
                 val user = dataStore.user.firstOrNull() ?: return@async
                 val account = user.account ?: return@async
                 val password = user.password ?: return@async
-                repositoryProvider.userRepository.login(account, password)
+                repositoryProvider.user.login(account, password)
             }
             refreshScheduleDeferred.await()
             updateColorsDeferred.await()

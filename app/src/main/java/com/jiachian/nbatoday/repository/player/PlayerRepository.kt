@@ -5,7 +5,7 @@ import com.jiachian.nbatoday.repository.BaseRepository
 import kotlinx.coroutines.flow.Flow
 
 abstract class PlayerRepository : BaseRepository() {
-    abstract suspend fun refreshPlayerStats(playerId: Int)
+    abstract suspend fun refreshPlayer(playerId: Int)
 
     abstract fun getPlayerCareer(playerId: Int): Flow<PlayerCareer?>
 }

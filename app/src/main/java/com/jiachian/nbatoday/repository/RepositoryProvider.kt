@@ -8,10 +8,10 @@ import com.jiachian.nbatoday.repository.team.TeamRepository
 import com.jiachian.nbatoday.repository.user.UserRepository
 
 class RepositoryProvider(
-    val scheduleRepository: ScheduleRepository,
-    val gameRepository: GameRepository,
-    val teamRepository: TeamRepository,
-    val playerRepository: PlayerRepository,
-    val betRepository: BetRepository,
-    val userRepository: UserRepository,
+    val schedule: ScheduleRepository,
+    val game: GameRepository,
+    val team: TeamRepository,
+    val player: PlayerRepository,
+    val bet: BetRepository,
+    val user: UserRepository,
 )

@@ -2,7 +2,6 @@ package com.jiachian.nbatoday.models.remote.player
 
 import android.annotation.SuppressLint
 import com.jiachian.nbatoday.models.local.player.PlayerCareer
-import com.jiachian.nbatoday.models.local.player.PlayerCareerInfoUpdate
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.utils.NbaUtils
 import com.jiachian.nbatoday.utils.decimalFormat
@@ -14,11 +13,8 @@ import java.util.Calendar
 import java.util.Date
 import java.util.TimeZone
 
-fun RemotePlayerInfo.toPlayerCareerInfoUpdate(): PlayerCareerInfoUpdate? {
-    val playerId = getPlayerInfo("PERSON_ID")?.toIntOrNull()
-    val info = createPlayerCareerInfo()
-    if (playerId == null || info == null) return null
-    return PlayerCareerInfoUpdate(playerId, info)
+fun RemotePlayerInfo.toPlayerInfo(): PlayerCareer.PlayerCareerInfo? {
+    return createPlayerCareerInfo()
 }
 
 private fun RemotePlayerInfo.createPlayerCareerInfo(): PlayerCareer.PlayerCareerInfo? {
