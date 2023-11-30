@@ -6,7 +6,7 @@ import com.jiachian.nbatoday.models.remote.user.UpdatePasswordBody
 import com.jiachian.nbatoday.models.remote.user.UpdatePointBody
 import com.jiachian.nbatoday.service.UserService
 
-class NbaUserRemoteSource : UserRemoteSource() {
+class NBAUserRemoteSource : UserRemoteSource() {
 
     private val userService by lazy {
         retrofit.create(UserService::class.java)

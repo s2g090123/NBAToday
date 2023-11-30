@@ -7,6 +7,6 @@ import com.jiachian.nbatoday.models.remote.player.RemotePlayerStats
 
 abstract class PlayerRemoteSource : RemoteSource() {
     abstract suspend fun getPlayerInfo(playerId: Int): RemotePlayerInfo?
-    abstract suspend fun getPlayerCareerStats(playerId: Int): RemotePlayerStats?
+    abstract suspend fun getPlayerStats(playerId: Int): RemotePlayerStats?
     abstract suspend fun getPlayerDetail(playerId: Int): RemotePlayerDetail?
 }

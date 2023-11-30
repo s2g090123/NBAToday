@@ -7,8 +7,8 @@ import com.jiachian.nbatoday.models.remote.score.RemoteBoxScore
 
 abstract class GameRemoteSource : RemoteSource() {
     abstract suspend fun getSchedule(): RemoteSchedule?
-    abstract suspend fun getScoreboard(leagueId: String, gameDate: String): RemoteGame?
-    abstract suspend fun getScoreboard(
+    abstract suspend fun getGame(leagueId: String, gameDate: String): RemoteGame?
+    abstract suspend fun getGames(
         leagueId: String,
         year: Int,
         month: Int,
@@ -16,5 +16,5 @@ abstract class GameRemoteSource : RemoteSource() {
         offset: Int
     ): List<RemoteGame>?
 
-    abstract suspend fun getGameBoxScore(gameId: String): RemoteBoxScore?
+    abstract suspend fun getBoxScore(gameId: String): RemoteBoxScore?
 }

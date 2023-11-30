@@ -59,7 +59,7 @@ class NbaScheduleRepository(
             val year = cal.get(Calendar.YEAR)
             val month = cal.get(Calendar.MONTH) + 1
             val day = cal.get(Calendar.DAY_OF_MONTH)
-            val scoreboards = gameRemoteSource.getScoreboard(
+            val scoreboards = gameRemoteSource.getGames(
                 NbaLeagueId,
                 year,
                 month,
@@ -83,7 +83,7 @@ class NbaScheduleRepository(
         try {
             isProgressingImp.value = true
             val gameDate = NbaUtils.formatScoreboardGameDate(year, month, day)
-            val scoreboard = gameRemoteSource.getScoreboard(NbaLeagueId, gameDate)
+            val scoreboard = gameRemoteSource.getGame(NbaLeagueId, gameDate)
             val updateData = scoreboard?.scoreboard?.toGameUpdateData()
             updateData?.also {
                 gameLocalSource.updateGames(updateData)

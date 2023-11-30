@@ -13,12 +13,12 @@ import com.jiachian.nbatoday.datasource.local.player.PlayerLocalSource
 import com.jiachian.nbatoday.datasource.local.team.NBATeamLocalSource
 import com.jiachian.nbatoday.datasource.local.team.TeamLocalSource
 import com.jiachian.nbatoday.datasource.remote.game.GameRemoteSource
-import com.jiachian.nbatoday.datasource.remote.game.NbaGameRemoteSource
-import com.jiachian.nbatoday.datasource.remote.player.NbaPlayerRemoteSource
+import com.jiachian.nbatoday.datasource.remote.game.NBAGameRemoteSource
+import com.jiachian.nbatoday.datasource.remote.player.NBAPlayerRemoteSource
 import com.jiachian.nbatoday.datasource.remote.player.PlayerRemoteSource
-import com.jiachian.nbatoday.datasource.remote.team.NbaTeamRemoteSource
+import com.jiachian.nbatoday.datasource.remote.team.NBATeamRemoteSource
 import com.jiachian.nbatoday.datasource.remote.team.TeamRemoteSource
-import com.jiachian.nbatoday.datasource.remote.user.NbaUserRemoteSource
+import com.jiachian.nbatoday.datasource.remote.user.NBAUserRemoteSource
 import com.jiachian.nbatoday.datasource.remote.user.UserRemoteSource
 import com.jiachian.nbatoday.datastore.BaseDataStore
 import com.jiachian.nbatoday.datastore.NBADataStore
@@ -49,10 +49,10 @@ val module = module {
     factory { (get() as NBADatabase).getTeamDao() }
     factory { (get() as NBADatabase).getPlayerDao() }
     factory { (get() as NBADatabase).getBetDao() }
-    factory { NbaGameRemoteSource() as GameRemoteSource }
-    factory { NbaTeamRemoteSource() as TeamRemoteSource }
-    factory { NbaPlayerRemoteSource() as PlayerRemoteSource }
-    factory { NbaUserRemoteSource() as UserRemoteSource }
+    factory { NBAGameRemoteSource() as GameRemoteSource }
+    factory { NBATeamRemoteSource() as TeamRemoteSource }
+    factory { NBAPlayerRemoteSource() as PlayerRemoteSource }
+    factory { NBAUserRemoteSource() as UserRemoteSource }
     factory { NBAGameLocalSource(get()) as GameLocalSource }
     factory { NBABoxScoreLocalSource(get()) as BoxScoreLocalSource }
     factory { NBATeamLocalSource(get()) as TeamLocalSource }

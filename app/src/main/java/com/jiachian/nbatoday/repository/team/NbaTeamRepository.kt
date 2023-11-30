@@ -23,7 +23,7 @@ class NbaTeamRepository(
     }
 
     override suspend fun refreshTeamPlayersStats(teamId: Int) {
-        val stats = teamRemoteSource.getTeamPlayersStats(teamId = teamId)
+        val stats = teamRemoteSource.getTeamPlayerStats(teamId = teamId)
         stats?.also {
             val localStats = teamLocalSource.getTeamAndPlayers(teamId).firstOrNull()
             val playersStats = stats.toTeamPlayerStats()

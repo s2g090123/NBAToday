@@ -6,5 +6,5 @@ import com.jiachian.nbatoday.models.remote.team.RemoteTeamStats
 
 abstract class TeamRemoteSource : RemoteSource() {
     abstract suspend fun getTeamStats(teamId: Int?): RemoteTeamStats?
-    abstract suspend fun getTeamPlayersStats(teamId: Int): RemoteTeamPlayerStats?
+    abstract suspend fun getTeamPlayerStats(teamId: Int): RemoteTeamPlayerStats?
 }

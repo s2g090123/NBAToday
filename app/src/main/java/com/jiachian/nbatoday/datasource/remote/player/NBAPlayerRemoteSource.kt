@@ -6,7 +6,7 @@ import com.jiachian.nbatoday.models.remote.player.RemotePlayerInfo
 import com.jiachian.nbatoday.models.remote.player.RemotePlayerStats
 import com.jiachian.nbatoday.service.PlayerService
 
-class NbaPlayerRemoteSource : PlayerRemoteSource() {
+class NBAPlayerRemoteSource : PlayerRemoteSource() {
 
     private val playerService by lazy {
         retrofit.create(PlayerService::class.java)
@@ -16,7 +16,7 @@ class NbaPlayerRemoteSource : PlayerRemoteSource() {
         return playerService.getPlayerInfo(playerId).body()
     }
 
-    override suspend fun getPlayerCareerStats(playerId: Int): RemotePlayerStats? {
+    override suspend fun getPlayerStats(playerId: Int): RemotePlayerStats? {
         return playerService.getPlayerStats(season = CurrentSeason, playerId = playerId).body()
     }
 

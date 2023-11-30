@@ -5,7 +5,7 @@ import com.jiachian.nbatoday.models.remote.team.RemoteTeamPlayerStats
 import com.jiachian.nbatoday.models.remote.team.RemoteTeamStats
 import com.jiachian.nbatoday.service.TeamService
 
-class NbaTeamRemoteSource : TeamRemoteSource() {
+class NBATeamRemoteSource : TeamRemoteSource() {
 
     private val teamService by lazy {
         retrofit.create(TeamService::class.java)
@@ -15,7 +15,7 @@ class NbaTeamRemoteSource : TeamRemoteSource() {
         return teamService.getTeamStats(season = CurrentSeason, teamId = teamId).body()
     }
 
-    override suspend fun getTeamPlayersStats(teamId: Int): RemoteTeamPlayerStats? {
+    override suspend fun getTeamPlayerStats(teamId: Int): RemoteTeamPlayerStats? {
         return teamService.getTeamPlayersStats(season = CurrentSeason, teamId = teamId).body()
     }
 }

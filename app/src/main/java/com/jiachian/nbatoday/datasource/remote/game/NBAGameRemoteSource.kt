@@ -5,7 +5,7 @@ import com.jiachian.nbatoday.models.remote.game.RemoteSchedule
 import com.jiachian.nbatoday.models.remote.score.RemoteBoxScore
 import com.jiachian.nbatoday.service.GameService
 
-class NbaGameRemoteSource : GameRemoteSource() {
+class NBAGameRemoteSource : GameRemoteSource() {
 
     private val gameService by lazy {
         retrofit.create(GameService::class.java)
@@ -15,11 +15,11 @@ class NbaGameRemoteSource : GameRemoteSource() {
         return gameService.getSchedule().body()
     }
 
-    override suspend fun getScoreboard(leagueId: String, gameDate: String): RemoteGame? {
+    override suspend fun getGame(leagueId: String, gameDate: String): RemoteGame? {
         return gameService.getScoreboard(leagueId, gameDate).body()
     }
 
-    override suspend fun getScoreboard(
+    override suspend fun getGames(
         leagueId: String,
         year: Int,
         month: Int,
@@ -29,7 +29,7 @@ class NbaGameRemoteSource : GameRemoteSource() {
         return gameService.getScoreboards(leagueId, year, month, day, offset).body()
     }
 
-    override suspend fun getGameBoxScore(gameId: String): RemoteBoxScore? {
+    override suspend fun getBoxScore(gameId: String): RemoteBoxScore? {
         return gameService.getGameBoxScore(gameId).body()
     }
 }

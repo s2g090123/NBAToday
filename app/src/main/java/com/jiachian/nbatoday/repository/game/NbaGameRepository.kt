@@ -14,7 +14,7 @@ class NbaGameRepository(
     private val gameRemoteSource: GameRemoteSource,
 ) : GameRepository() {
     override suspend fun refreshGameBoxScore(gameId: String) {
-        val boxScore = gameRemoteSource.getGameBoxScore(gameId)
+        val boxScore = gameRemoteSource.getBoxScore(gameId)
         boxScore?.also {
             val game = boxScore.game?.toBoxScore()
             game?.also {
