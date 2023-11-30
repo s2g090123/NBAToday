@@ -1,4 +1,4 @@
-package com.jiachian.nbatoday.converter
+package com.jiachian.nbatoday.database.converter
 
 import androidx.room.TypeConverter
 import com.jiachian.nbatoday.models.local.team.NBATeam

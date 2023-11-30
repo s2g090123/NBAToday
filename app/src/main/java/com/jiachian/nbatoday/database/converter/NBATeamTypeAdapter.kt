@@ -1,4 +1,4 @@
-package com.jiachian.nbatoday.converter
+package com.jiachian.nbatoday.database.converter
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder

@@ -1,7 +1,7 @@
 package com.jiachian.nbatoday.models.local.converter
 
 import com.google.gson.reflect.TypeToken
-import com.jiachian.nbatoday.converter.PlayerCareerStatsConverter
+import com.jiachian.nbatoday.database.converter.PlayerCareerStatsConverter
 import com.jiachian.nbatoday.models.PlayerCareerFactory
 import com.jiachian.nbatoday.models.local.player.PlayerCareer
 import org.hamcrest.CoreMatchers.`is`

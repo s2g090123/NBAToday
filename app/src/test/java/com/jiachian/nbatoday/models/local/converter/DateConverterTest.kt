@@ -1,6 +1,6 @@
 package com.jiachian.nbatoday.models.local.converter
 
-import com.jiachian.nbatoday.converter.DateConverter
+import com.jiachian.nbatoday.database.converter.DateConverter
 import java.util.Date
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat

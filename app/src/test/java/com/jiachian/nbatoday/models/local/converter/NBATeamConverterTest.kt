@@ -1,7 +1,7 @@
 package com.jiachian.nbatoday.models.local.converter
 
 import com.jiachian.nbatoday.HomeTeam
-import com.jiachian.nbatoday.converter.NBATeamConverter
+import com.jiachian.nbatoday.database.converter.NBATeamConverter
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat

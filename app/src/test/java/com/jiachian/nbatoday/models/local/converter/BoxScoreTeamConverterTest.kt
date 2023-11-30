@@ -1,7 +1,7 @@
 package com.jiachian.nbatoday.models.local.converter
 
 import com.google.gson.reflect.TypeToken
-import com.jiachian.nbatoday.converter.BoxScoreTeamConverter
+import com.jiachian.nbatoday.database.converter.BoxScoreTeamConverter
 import com.jiachian.nbatoday.models.BoxScoreFactory
 import com.jiachian.nbatoday.models.local.score.BoxScore
 import com.jiachian.nbatoday.utils.getOrError

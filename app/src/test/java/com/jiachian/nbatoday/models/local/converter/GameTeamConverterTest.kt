@@ -1,7 +1,7 @@
 package com.jiachian.nbatoday.models.local.converter
 
 import com.google.gson.reflect.TypeToken
-import com.jiachian.nbatoday.converter.GameTeamConverter
+import com.jiachian.nbatoday.database.converter.GameTeamConverter
 import com.jiachian.nbatoday.models.GameTeamFactory
 import com.jiachian.nbatoday.models.local.game.GameTeam
 import org.hamcrest.CoreMatchers.`is`
