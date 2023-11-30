@@ -32,7 +32,7 @@ class NbaScheduleRepository(
             val todayMonth = cal.get(Calendar.MONTH) + 1
             val todayDay = cal.get(Calendar.DAY_OF_MONTH)
             val today = NbaUtils.parseDate(todayYear, todayMonth, todayDay)?.time ?: 0L
-            val recordDay = NbaUtils.parseDate(dataStore.recordScheduleToday.first())
+            val recordDay = NbaUtils.parseDate(dataStore.lastAccessedDay.first())
             val record = recordDay?.time ?: 0L
             val betweenDays = TimeUnit.DAYS.convert(today - record, TimeUnit.MILLISECONDS) + 1
             val offset = betweenDays.toInt().coerceAtMost(ScheduleDateRange)
@@ -72,7 +72,7 @@ class NbaScheduleRepository(
                     gameLocalSource.updateGames(it)
                 }
             }
-            dataStore.updateRecordScheduleToday(todayYear, todayMonth, todayDay)
+            dataStore.updateLastAccessedDay(todayYear, todayMonth, todayDay)
             teamRepository.refreshTeamStats(null)
         } finally {
             isProgressingImp.value = false

@@ -5,13 +5,11 @@ import com.jiachian.nbatoday.models.local.user.User
 import kotlinx.coroutines.flow.Flow
 
 interface BaseDataStore {
-    val statsCookies: Flow<Set<String>>
-    val recordScheduleToday: Flow<String>
+    val lastAccessedDay: Flow<String>
     val themeColors: Flow<NbaColors>
-    val userData: Flow<User?>
+    val user: Flow<User?>
 
-    suspend fun updateStatsCookies(cookies: Set<String>)
-    suspend fun updateRecordScheduleToday(year: Int, month: Int, day: Int)
-    suspend fun updateThemeColor(teamId: Int)
+    suspend fun updateLastAccessedDay(year: Int, month: Int, day: Int)
+    suspend fun updateThemeColorsTeamId(teamId: Int)
     suspend fun updateUser(user: User?)
 }

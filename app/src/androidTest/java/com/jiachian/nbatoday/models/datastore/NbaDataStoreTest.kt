@@ -40,11 +40,11 @@ class NbaDataStoreTest {
     fun preferencesKeys_checksKeyName_isCorrect() {
         assertThat(NbaDataStore.PreferencesKeys.STATS_COOKIES.name, `is`("stats_cookies"))
         assertThat(
-            NbaDataStore.PreferencesKeys.RECORD_SCHEDULE_TODAY.name,
+            NbaDataStore.PreferencesKeys.LAST_ACCESSED_DAY.name,
             `is`("record_schedule_today")
         )
-        assertThat(NbaDataStore.PreferencesKeys.THEME_COLORS.name, `is`("theme_colors"))
-        assertThat(NbaDataStore.PreferencesKeys.USER_DATA.name, `is`("user_data"))
+        assertThat(NbaDataStore.PreferencesKeys.THEME_COLORS_TEAM_ID.name, `is`("theme_colors"))
+        assertThat(NbaDataStore.PreferencesKeys.USER.name, `is`("user_data"))
     }
 
     @Test
@@ -59,10 +59,10 @@ class NbaDataStoreTest {
 
     @Test
     fun recordScheduleToday_setValue_valueIsCorrect() = runTest {
-        val emptyData = dataStore.recordScheduleToday.first()
+        val emptyData = dataStore.lastAccessedDay.first()
         assertThat(emptyData, `is`(NbaUtils.formatDate(1990, 1, 1)))
-        dataStore.updateRecordScheduleToday(2023, 1, 1)
-        val actualData = dataStore.recordScheduleToday.first()
+        dataStore.updateLastAccessedDay(2023, 1, 1)
+        val actualData = dataStore.lastAccessedDay.first()
         assertThat(actualData, `is`(NbaUtils.formatDate(2023, 1, 1)))
     }
 
@@ -71,7 +71,7 @@ class NbaDataStoreTest {
         val emptyData = dataStore.themeColors.first()
         assertThat(emptyData, `is`(LakersColors))
         val teamId = 1610612738
-        dataStore.updateThemeColor(teamId)
+        dataStore.updateThemeColorsTeamId(teamId)
         val actualData = dataStore.themeColors.first()
         val team = NBATeam.getTeamById(teamId) ?: teamOfficial
         assertThat(actualData, `is`(team.colors))
@@ -79,18 +79,18 @@ class NbaDataStoreTest {
 
     @Test
     fun userData_setValue_valueIsCorrect() = runTest {
-        val emptyData = dataStore.userData.first()
+        val emptyData = dataStore.user.first()
         assertThat(emptyData, `is`(nullValue()))
         val user = User(UserAccount, UserName, UserPoints, UserPassword, "")
         dataStore.updateUser(user)
-        val actualData = dataStore.userData.first()
+        val actualData = dataStore.user.first()
         assertThat(actualData.account, `is`(user.account))
         assertThat(actualData.name, `is`(user.name))
         assertThat(actualData.points, `is`(user.points))
         assertThat(actualData.password, `is`(user.password))
         assertThat(actualData.token, `is`(user.token))
         dataStore.updateUser(null)
-        val nullData = dataStore.userData.first()
+        val nullData = dataStore.user.first()
         assertThat(nullData, `is`(nullValue()))
     }
 }

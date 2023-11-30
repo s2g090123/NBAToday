@@ -12,7 +12,7 @@ class NbaUserRepository(
     private val userRemoteSource: UserRemoteSource,
     private val dataStore: BaseDataStore,
 ) : UserRepository() {
-    override val user: Flow<User?> = dataStore.userData
+    override val user: Flow<User?> = dataStore.user
 
     override suspend fun login(account: String, password: String) {
         isProgressingImp.value = true

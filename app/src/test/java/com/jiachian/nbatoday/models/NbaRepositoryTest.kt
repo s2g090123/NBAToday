@@ -68,7 +68,7 @@ class NbaRepositoryTest {
             )
         }
         assertThat(actual, `is`(expected))
-        assertThat(dataStore.recordScheduleToday.value, `is`(NbaUtils.formatDate(2023, 1, 1)))
+        assertThat(dataStore.lastAccessedDay.value, `is`(NbaUtils.formatDate(2023, 1, 1)))
     }
 
     @Test
@@ -95,7 +95,7 @@ class NbaRepositoryTest {
             )
         }
         assertThat(actual, `is`(expected))
-        assertThat(dataStore.recordScheduleToday.value, `is`(NbaUtils.formatDate(2023, 1, 1)))
+        assertThat(dataStore.lastAccessedDay.value, `is`(NbaUtils.formatDate(2023, 1, 1)))
     }
 
     @Test
@@ -117,7 +117,7 @@ class NbaRepositoryTest {
             )
         }
         assertThat(actual, `is`(expected))
-        assertThat(dataStore.recordScheduleToday.value, `is`(NbaUtils.formatDate(2023, 1, 1)))
+        assertThat(dataStore.lastAccessedDay.value, `is`(NbaUtils.formatDate(2023, 1, 1)))
     }
 
     @Test
@@ -325,22 +325,22 @@ class NbaRepositoryTest {
     @Test
     fun login_checksDataStoreCorrect() = runTest {
         repository.login(UserAccount, UserPassword)
-        assertThat(dataStore.userData.value?.account, `is`(UserAccount))
-        assertThat(dataStore.userData.value?.password, `is`(UserPassword))
+        assertThat(dataStore.user.value?.account, `is`(UserAccount))
+        assertThat(dataStore.user.value?.password, `is`(UserPassword))
     }
 
     @Test
     fun logout_checksDataStoreCorrect() = runTest {
         repository.login(UserAccount, UserPassword)
         repository.logout()
-        assertThat(dataStore.userData.value, nullValue())
+        assertThat(dataStore.user.value, nullValue())
     }
 
     @Test
     fun register_checksDataStoreCorrect() = runTest {
         repository.register(UserAccount, UserPassword)
-        assertThat(dataStore.userData.value?.account, `is`(UserAccount))
-        assertThat(dataStore.userData.value?.password, `is`(UserPassword))
+        assertThat(dataStore.user.value?.account, `is`(UserAccount))
+        assertThat(dataStore.user.value?.password, `is`(UserPassword))
     }
 
     @Test
@@ -348,29 +348,29 @@ class NbaRepositoryTest {
         repository.login(UserAccount, UserPassword)
         val newPassword = "newPassword"
         repository.updatePassword(newPassword)
-        assertThat(dataStore.userData.value?.password, `is`(newPassword))
+        assertThat(dataStore.user.value?.password, `is`(newPassword))
     }
 
     @Test
     fun updatePoints_checksDataStoreCorrect() = runTest {
         repository.login(UserAccount, UserPassword)
         repository.updatePoints(UserPoints * 2)
-        assertThat(dataStore.userData.value?.points, `is`(UserPoints * 2))
+        assertThat(dataStore.user.value?.points, `is`(UserPoints * 2))
     }
 
     @Test
     fun addPoints_checksDataStoreCorrect() = runTest {
         repository.login(UserAccount, UserPassword)
-        val originalPoint = dataStore.userData.value?.points.getOrError()
+        val originalPoint = dataStore.user.value?.points.getOrError()
         repository.addPoints(UserPoints)
-        assertThat(dataStore.userData.value?.points, `is`(originalPoint + UserPoints))
+        assertThat(dataStore.user.value?.points, `is`(originalPoint + UserPoints))
     }
 
     @Test
     fun bet_checksDataStoreCorrect() = runTest {
         repository.refreshSchedule()
         repository.login(UserAccount, UserPassword)
-        val originalPoint = dataStore.userData.value?.points.getOrError()
+        val originalPoint = dataStore.user.value?.points.getOrError()
         repository.bet(FinalGameId, UserPoints, 0)
         val expectedGame = NbaGameAndBet(
             game = localDataSource.games.value.firstOrNull { it.gameId == FinalGameId }
@@ -386,7 +386,7 @@ class NbaRepositoryTest {
         )
         val actualGame = localDataSource.gamesAndBets.value
         assertThat(actualGame, `is`(listOf(expectedGame)))
-        assertThat(dataStore.userData.value?.points, `is`(originalPoint - UserPoints))
+        assertThat(dataStore.user.value?.points, `is`(originalPoint - UserPoints))
     }
 
     @Test

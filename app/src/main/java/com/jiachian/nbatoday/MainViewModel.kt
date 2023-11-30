@@ -57,7 +57,7 @@ class MainViewModel(
                 updateColors(colors)
             }
             val loginDeferred = async {
-                val user = dataStore.userData.firstOrNull() ?: return@async
+                val user = dataStore.user.firstOrNull() ?: return@async
                 val account = user.account ?: return@async
                 val password = user.password ?: return@async
                 repositoryProvider.userRepository.login(account, password)

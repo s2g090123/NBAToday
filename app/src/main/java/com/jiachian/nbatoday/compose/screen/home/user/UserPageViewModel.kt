@@ -39,7 +39,7 @@ class UserPageViewModel(
     fun updateTheme(team: NBATeam) {
         updateColors(team.colors)
         coroutineScope.launch(dispatcherProvider.io) {
-            dataStore.updateThemeColor(team.teamId)
+            dataStore.updateThemeColorsTeamId(team.teamId)
         }
     }
 
