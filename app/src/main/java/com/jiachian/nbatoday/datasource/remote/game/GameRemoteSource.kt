@@ -10,11 +10,10 @@ abstract class GameRemoteSource : RemoteSource() {
     abstract suspend fun getSchedule(): Response<RemoteSchedule>
     abstract suspend fun getGame(leagueId: String, gameDate: String): Response<RemoteGame>
     abstract suspend fun getGames(
-        leagueId: String,
         year: Int,
         month: Int,
         day: Int,
-        offset: Int
+        total: Int
     ): Response<List<RemoteGame>>
 
     abstract suspend fun getBoxScore(gameId: String): Response<RemoteBoxScore>

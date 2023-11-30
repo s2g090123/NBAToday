@@ -29,7 +29,7 @@ import com.jiachian.nbatoday.repository.game.GameRepository
 import com.jiachian.nbatoday.repository.game.NBAGameRepository
 import com.jiachian.nbatoday.repository.player.NBAPlayerRepository
 import com.jiachian.nbatoday.repository.player.PlayerRepository
-import com.jiachian.nbatoday.repository.schedule.NbaScheduleRepository
+import com.jiachian.nbatoday.repository.schedule.NBAScheduleRepository
 import com.jiachian.nbatoday.repository.schedule.ScheduleRepository
 import com.jiachian.nbatoday.repository.team.NbaTeamRepository
 import com.jiachian.nbatoday.repository.team.TeamRepository
@@ -64,7 +64,7 @@ val module = module {
     single { NBADatabase.getInstance(androidContext()) }
     single { NBADataStore(androidApplication()) as BaseDataStore }
     single { ScreenStateHelper(get(), get()) }
-    single { NbaScheduleRepository(get(), get(), get(), get()) as ScheduleRepository }
+    single { NBAScheduleRepository(get(), get(), get(), get()) as ScheduleRepository }
     single { NBAGameRepository(get(), get(), get()) as GameRepository }
     single { NbaTeamRepository(get(), get()) as TeamRepository }
     single { NBAPlayerRepository(get(), get()) as PlayerRepository }

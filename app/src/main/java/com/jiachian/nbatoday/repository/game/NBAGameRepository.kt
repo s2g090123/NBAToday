@@ -14,7 +14,7 @@ class NBAGameRepository(
     private val boxScoreLocalSource: BoxScoreLocalSource,
     private val gameRemoteSource: GameRemoteSource,
 ) : GameRepository() {
-    override suspend fun refreshBoxScore(gameId: String) {
+    override suspend fun updateBoxScore(gameId: String) {
         loading {
             val response = gameRemoteSource.getBoxScore(gameId)
             if (response.isError()) {

@@ -91,7 +91,7 @@ class SchedulePageViewModel(
         coroutineScope.launch {
             isRefreshingScheduleImp.value = true
             withContext(dispatcherProvider.io) {
-                scheduleRepository.refreshSchedule(dateData.year, dateData.month, dateData.day)
+                scheduleRepository.updateSchedule(dateData.year, dateData.month, dateData.day)
             }
             isRefreshingScheduleImp.value = false
         }

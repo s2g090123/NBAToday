@@ -6,7 +6,7 @@ import com.jiachian.nbatoday.repository.BaseRepository
 import kotlinx.coroutines.flow.Flow
 
 abstract class GameRepository : BaseRepository() {
-    abstract suspend fun refreshBoxScore(gameId: String)
+    abstract suspend fun updateBoxScore(gameId: String)
 
     abstract fun getGamesAndBetsDuring(from: Long, to: Long): Flow<List<GameAndBet>>
     abstract fun getBoxScore(gameId: String): Flow<BoxScore?>

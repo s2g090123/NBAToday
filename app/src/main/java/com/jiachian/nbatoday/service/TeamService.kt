@@ -19,9 +19,4 @@ interface TeamService {
         @Query("season") season: String,
         @Query("id") teamId: Int?
     ): Response<RemoteTeamStats>
-
-    @GET("team/stats")
-    suspend fun getTeamStats(
-        @Query("season") season: String
-    ): Response<RemoteTeamStats>
 }

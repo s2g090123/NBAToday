@@ -132,7 +132,7 @@ class BoxScoreViewModel(
         coroutineScope.launch {
             isRefreshingImp.value = true
             withContext(dispatcherProvider.io) {
-                repository.refreshBoxScore(gameId)
+                repository.updateBoxScore(gameId)
             }
             isRefreshingImp.value = false
         }

@@ -21,13 +21,12 @@ class NBAGameRemoteSource : GameRemoteSource() {
     }
 
     override suspend fun getGames(
-        leagueId: String,
         year: Int,
         month: Int,
         day: Int,
-        offset: Int
+        total: Int
     ): Response<List<RemoteGame>> {
-        return gameService.getGames(leagueId, year, month, day, offset)
+        return gameService.getGames(year, month, day, total)
     }
 
     override suspend fun getBoxScore(gameId: String): Response<RemoteBoxScore> {

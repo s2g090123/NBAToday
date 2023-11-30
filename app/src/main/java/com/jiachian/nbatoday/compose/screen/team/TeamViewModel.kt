@@ -302,7 +302,7 @@ class TeamViewModel(
         coroutineScope.launch {
             isTeamRefreshingImp.value = true
             withContext(dispatcherProvider.io) {
-                val deferred1 = async { teamRepository.refreshTeamStats(null) }
+                val deferred1 = async { teamRepository.refreshTeamStats() }
                 val deferred2 = async { teamRepository.refreshTeamPlayersStats(team.teamId) }
                 deferred1.await()
                 deferred2.await()

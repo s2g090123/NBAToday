@@ -15,7 +15,20 @@ class NbaTeamRepository(
     private val teamLocalSource: TeamLocalSource,
     private val teamRemoteSource: TeamRemoteSource,
 ) : TeamRepository() {
-    override suspend fun refreshTeamStats(teamId: Int?) {
+    override suspend fun refreshTeamStats() {
+        val response = teamRemoteSource.getTeamStats()
+        if (!response.isSuccessful) {
+            showErrorToast()
+            return
+        }
+        val stats = response.body()
+        stats?.also {
+            val teamStats = stats.toTeamStats()
+            teamLocalSource.updateTeams(teamStats)
+        }
+    }
+
+    override suspend fun refreshTeamStats(teamId: Int) {
         val response = teamRemoteSource.getTeamStats(teamId = teamId)
         if (!response.isSuccessful) {
             showErrorToast()

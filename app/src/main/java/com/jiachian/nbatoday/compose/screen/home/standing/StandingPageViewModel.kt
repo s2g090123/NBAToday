@@ -252,7 +252,7 @@ class StandingPageViewModel(
         coroutineScope.launch {
             isRefreshingTeamStatsImp.value = true
             withContext(dispatcherProvider.io) {
-                repository.refreshTeamStats(null)
+                repository.refreshTeamStats()
             }
             isRefreshingTeamStatsImp.value = false
         }

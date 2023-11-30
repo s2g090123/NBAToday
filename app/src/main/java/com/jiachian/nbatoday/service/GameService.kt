@@ -17,7 +17,6 @@ interface GameService {
 
     @GET("game/scoreboards")
     suspend fun getGames(
-        @Query("leagueID") leagueID: String,
         @Query("year") year: Int,
         @Query("month") month: Int,
         @Query("day") day: Int,
