@@ -16,7 +16,7 @@ class NBAGameRemoteSource : GameRemoteSource() {
     }
 
     override suspend fun getGame(leagueId: String, gameDate: String): RemoteGame? {
-        return gameService.getScoreboard(leagueId, gameDate).body()
+        return gameService.getGame(leagueId, gameDate).body()
     }
 
     override suspend fun getGames(
@@ -26,10 +26,10 @@ class NBAGameRemoteSource : GameRemoteSource() {
         day: Int,
         offset: Int
     ): List<RemoteGame>? {
-        return gameService.getScoreboards(leagueId, year, month, day, offset).body()
+        return gameService.getGames(leagueId, year, month, day, offset).body()
     }
 
     override suspend fun getBoxScore(gameId: String): RemoteBoxScore? {
-        return gameService.getGameBoxScore(gameId).body()
+        return gameService.getBoxScore(gameId).body()
     }
 }

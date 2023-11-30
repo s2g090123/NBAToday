@@ -10,13 +10,13 @@ import retrofit2.http.Query
 
 interface GameService {
     @GET("game/scoreboard")
-    suspend fun getScoreboard(
+    suspend fun getGame(
         @Query("leagueID") leagueID: String,
         @Query("gameDate") gameDate: String
     ): Response<RemoteGame>
 
     @GET("game/scoreboards")
-    suspend fun getScoreboards(
+    suspend fun getGames(
         @Query("leagueID") leagueID: String,
         @Query("year") year: Int,
         @Query("month") month: Int,
@@ -28,7 +28,7 @@ interface GameService {
     suspend fun getSchedule(): Response<RemoteSchedule>
 
     @GET("game/{gameId}")
-    suspend fun getGameBoxScore(
+    suspend fun getBoxScore(
         @Path("gameId") gameId: String
     ): Response<RemoteBoxScore>
 }

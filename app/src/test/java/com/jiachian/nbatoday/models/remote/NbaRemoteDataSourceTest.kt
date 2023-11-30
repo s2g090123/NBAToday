@@ -22,8 +22,6 @@ import com.jiachian.nbatoday.models.remote.team.RemoteTeamStats
 import com.jiachian.nbatoday.models.remote.user.LoginBody
 import com.jiachian.nbatoday.models.remote.user.UpdatePasswordBody
 import com.jiachian.nbatoday.models.remote.user.UpdatePointBody
-import com.jiachian.nbatoday.service.CdnNbaService
-import com.jiachian.nbatoday.service.StatsNbaService
 import io.mockk.every
 import io.mockk.mockkConstructor
 import kotlinx.coroutines.ExperimentalCoroutinesApi

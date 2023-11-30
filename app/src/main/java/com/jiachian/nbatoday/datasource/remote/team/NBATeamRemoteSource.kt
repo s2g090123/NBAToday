@@ -16,6 +16,6 @@ class NBATeamRemoteSource : TeamRemoteSource() {
     }
 
     override suspend fun getTeamPlayerStats(teamId: Int): RemoteTeamPlayerStats? {
-        return teamService.getTeamPlayersStats(season = CurrentSeason, teamId = teamId).body()
+        return teamService.getTeamPlayerStats(season = CurrentSeason, teamId = teamId).body()
     }
 }
