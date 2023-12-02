@@ -14,8 +14,10 @@ import com.jiachian.nbatoday.utils.ScreenStateHelper
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class MainViewModel(
@@ -40,8 +42,8 @@ class MainViewModel(
     val isLoaded = isLoadedImp.asStateFlow()
 
     val stateStack = screenStateHelper.stateStack
-    private val currentState: NbaState?
-        get() = stateStack.value.firstOrNull()
+    private val currentState = screenStateHelper.currentState
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     fun loadData() {
         if (isLoading.value || isLoaded.value) return
@@ -75,7 +77,7 @@ class MainViewModel(
     }
 
     fun exitScreen() {
-        if (currentState is NbaState.Home) {
+        if (currentState.value is NbaState.Home) {
             Event.Exit.send()
         } else {
             screenStateHelper.exitScreen()
