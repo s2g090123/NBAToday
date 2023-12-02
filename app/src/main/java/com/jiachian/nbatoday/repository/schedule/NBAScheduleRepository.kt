@@ -24,6 +24,38 @@ class NBAScheduleRepository(
     private val dataStore: BaseDataStore,
     private val teamRepository: TeamRepository,
 ) : ScheduleRepository() {
+    override suspend fun updateSchedule() {
+        loading {
+            getGames()
+                ?.let { games ->
+                    val cal = getCalendarWithScheduleFirstDate()
+                    updateGames(games, cal.time)
+                    getGamesUpdateData(cal)?.let { updatedGames ->
+                        updatedGames.forEach { gameUpdateData ->
+                            gameLocalSource.updateGames(gameUpdateData)
+                        }
+                        updateLastAccessedDay()
+                        teamRepository.updateTeamStats()
+                    }
+                }
+                ?: showErrorToast()
+        }
+    }
+
+    override suspend fun updateSchedule(year: Int, month: Int, day: Int) {
+        loading {
+            val gameDate = NbaUtils.formatScoreboardGameDate(year, month, day)
+            gameRemoteSource.getGame(NbaLeagueId, gameDate)
+                .takeIf { !it.isError() }
+                ?.body()
+                ?.scoreboard
+                ?.toGameUpdateData()
+                ?.let { gamesUpdateData ->
+                    gameLocalSource.updateGames(gamesUpdateData)
+                }
+                ?: showErrorToast()
+        }
+    }
 
     private suspend fun getGames(): List<Game>? {
         return loading {
@@ -70,9 +102,7 @@ class NBAScheduleRepository(
                     todayMs - lastAccessedMs,
                     TimeUnit.MILLISECONDS
                 ) + 1
-                val offset = differenceDays
-                    .toInt()
-                    .coerceAtMost(ScheduleDateRange)
+                val offset = differenceDays.toInt().coerceAtMost(ScheduleDateRange)
                 add(Calendar.DAY_OF_MONTH, -offset)
             }
         }
@@ -105,42 +135,6 @@ class NBAScheduleRepository(
                     get(Calendar.MONTH) + 1,
                     get(Calendar.DAY_OF_MONTH)
                 )
-            }
-        }
-    }
-
-    override suspend fun updateSchedule() {
-        loading {
-            val games = getGames() ?: run {
-                showErrorToast()
-                return@loading
-            }
-            val cal = getCalendarWithScheduleFirstDate()
-            updateGames(games, cal.time)
-            val updatedGames = getGamesUpdateData(cal) ?: run {
-                showErrorToast()
-                return@loading
-            }
-            updatedGames.forEach { gameUpdateData ->
-                gameLocalSource.updateGames(gameUpdateData)
-            }
-            updateLastAccessedDay()
-            teamRepository.refreshTeamStats()
-        }
-    }
-
-    override suspend fun updateSchedule(year: Int, month: Int, day: Int) {
-        loading {
-            val gameDate = NbaUtils.formatScoreboardGameDate(year, month, day)
-            gameRemoteSource.getGame(NbaLeagueId, gameDate)
-                .takeIf { !it.isError() }
-                ?.body()
-                ?.scoreboard
-                ?.toGameUpdateData()
-                ?.also { gamesUpdateData ->
-                    gameLocalSource.updateGames(gamesUpdateData)
-                } ?: run {
-                showErrorToast()
             }
         }
     }

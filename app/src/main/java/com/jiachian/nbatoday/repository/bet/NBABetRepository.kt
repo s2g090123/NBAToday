@@ -6,33 +6,31 @@ import com.jiachian.nbatoday.models.local.bet.BetAndGame
 import com.jiachian.nbatoday.repository.user.UserRepository
 import com.jiachian.nbatoday.utils.showErrorToast
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.singleOrNull
 
 class NBABetRepository(
     private val betLocalSource: BetLocalSource,
     private val userRepository: UserRepository,
 ) : BetRepository() {
-    private val user = userRepository.user
-
     override suspend fun bet(gameId: String, homePoints: Long, awayPoints: Long) {
         loading {
-            val user = user.firstOrNull() ?: run {
-                showErrorToast()
-                return@loading
-            }
-            val remainPoints = user.points - homePoints - awayPoints
-            if (remainPoints < 0) {
-                showErrorToast()
-                return@loading
-            }
-            val bet = Bet(
-                account = user.account,
-                gameId = gameId,
-                homePoints = homePoints,
-                awayPoints = awayPoints
-            )
-            betLocalSource.insertBet(bet)
-            userRepository.updatePoints(remainPoints)
+            val usedPoints = homePoints + awayPoints
+            userRepository
+                .user
+                .singleOrNull()
+                ?.takeIf { user -> user.points - usedPoints >= 0 }
+                ?.let { user ->
+                    betLocalSource.insertBet(
+                        Bet(
+                            account = user.account,
+                            gameId = gameId,
+                            homePoints = homePoints,
+                            awayPoints = awayPoints
+                        )
+                    )
+                    userRepository.updatePoints(user.points - usedPoints)
+                }
+                ?: showErrorToast()
         }
     }
 
@@ -44,11 +42,11 @@ class NBABetRepository(
 
     override suspend fun settleBet(betAndGame: BetAndGame): Pair<Long, Long> {
         return loading {
-            val winPoint = betAndGame.getWinnerPoints() * 2
-            val losePoint = betAndGame.getLoserPoints()
-            userRepository.addPoints(winPoint)
+            val wonPoints = betAndGame.getWonPoints() * 2
+            val lostPoints = betAndGame.getLostPoints()
+            userRepository.addPoints(wonPoints)
             deleteBet(betAndGame.bet)
-            winPoint to losePoint
+            wonPoints to lostPoints
         }
     }
 

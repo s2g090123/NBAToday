@@ -82,11 +82,11 @@ data class BetAndGame(
         }.trim()
     }
 
-    fun getWinnerPoints(): Long {
+    fun getWonPoints(): Long {
         return if (isHomeTeamWin) bet.homePoints else bet.awayPoints
     }
 
-    fun getLoserPoints(): Long {
+    fun getLostPoints(): Long {
         return if (isHomeTeamWin) bet.awayPoints else bet.homePoints
     }
 }

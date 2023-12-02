@@ -167,7 +167,7 @@ class NbaRepositoryTest {
     fun refreshTeamPlayersStats_checksDataStoreCorrect() = runTest {
         repository.refreshTeamPlayersStats(HomeTeamId)
         val expected = RemoteTeamFactory.getRemoteTeamPlayerStats().toLocal()
-        val actual = localDataSource.getTeamAndPlayersStats(HomeTeamId).first()?.playersStats
+        val actual = localDataSource.getTeamAndPlayersStats(HomeTeamId).first()?.teamPlayers
         assertThat(actual, `is`(expected))
     }
 

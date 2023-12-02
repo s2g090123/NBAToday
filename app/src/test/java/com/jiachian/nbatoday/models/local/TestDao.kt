@@ -197,7 +197,7 @@ class TestDao : NbaDao {
             }?.let { team ->
                 TeamAndPlayers(
                     team = team,
-                    playersStats = players.filter { it.teamId == team.teamId }
+                    teamPlayers = players.filter { it.teamId == team.teamId }
                 )
             }
         }

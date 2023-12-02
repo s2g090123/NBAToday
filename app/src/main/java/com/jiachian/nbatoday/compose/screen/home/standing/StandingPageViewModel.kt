@@ -54,7 +54,7 @@ class StandingPageViewModel(
     private val standingSortImp = MutableStateFlow(StandingSort.WINP)
     val standingSort = standingSortImp.asStateFlow()
     val team = combine(
-        repository.getTeamStats(),
+        repository.getTeams(),
         standingSort
     ) { teamStats, sort ->
         when (sort) {
@@ -252,7 +252,7 @@ class StandingPageViewModel(
         coroutineScope.launch {
             isRefreshingTeamStatsImp.value = true
             withContext(dispatcherProvider.io) {
-                repository.refreshTeamStats()
+                repository.updateTeamStats()
             }
             isRefreshingTeamStatsImp.value = false
         }

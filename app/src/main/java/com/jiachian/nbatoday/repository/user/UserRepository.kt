@@ -11,7 +11,6 @@ abstract class UserRepository : BaseRepository() {
     abstract suspend fun logout()
     abstract suspend fun register(account: String, password: String)
 
-    abstract suspend fun updatePassword(password: String)
     abstract suspend fun updatePoints(points: Long)
     abstract suspend fun addPoints(points: Long)
 }

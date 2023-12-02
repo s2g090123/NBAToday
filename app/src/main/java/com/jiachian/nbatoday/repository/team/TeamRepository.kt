@@ -7,12 +7,12 @@ import com.jiachian.nbatoday.repository.BaseRepository
 import kotlinx.coroutines.flow.Flow
 
 abstract class TeamRepository : BaseRepository() {
-    abstract suspend fun refreshTeamStats()
-    abstract suspend fun refreshTeamStats(teamId: Int)
-    abstract suspend fun refreshTeamPlayersStats(teamId: Int)
+    abstract suspend fun updateTeamStats()
+    abstract suspend fun updateTeamStats(teamId: Int)
+    abstract suspend fun updateTeamPlayers(teamId: Int)
 
-    abstract fun getTeamStats(): Flow<List<Team>>
-    abstract fun getTeamAndPlayersStats(teamId: Int): Flow<TeamAndPlayers?>
+    abstract fun getTeams(): Flow<List<Team>>
+    abstract fun getTeamAndPlayers(teamId: Int): Flow<TeamAndPlayers?>
     abstract fun getTeamRank(teamId: Int, conference: NBATeam.Conference): Flow<Int>
     abstract fun getTeamPointsRank(teamId: Int): Flow<Int>
     abstract fun getTeamReboundsRank(teamId: Int): Flow<Int>

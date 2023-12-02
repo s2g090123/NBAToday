@@ -16,18 +16,16 @@ class NBAGameRepository(
 ) : GameRepository() {
     override suspend fun updateBoxScore(gameId: String) {
         loading {
-            val response = gameRemoteSource.getBoxScore(gameId)
-            if (response.isError()) {
-                showErrorToast()
-                return@loading
-            }
-            response
-                .body()
+            gameRemoteSource
+                .getBoxScore(gameId)
+                .takeIf { !it.isError() }
+                ?.body()
                 ?.game
                 ?.toBoxScore()
-                ?.also { boxScore ->
+                ?.let { boxScore ->
                     boxScoreLocalSource.insertBoxScore(boxScore)
                 }
+                ?: showErrorToast()
         }
     }
 

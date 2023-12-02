@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import retrofit2.Response
 
 abstract class BaseRepository {
-    protected val isProgressingImp = MutableStateFlow(false)
+    private val isProgressingImp = MutableStateFlow(false)
     val isProgressing = isProgressingImp.asStateFlow()
 
     protected fun Response<*>.isError() = !isSuccessful || body() == null

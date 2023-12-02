@@ -31,9 +31,9 @@ import com.jiachian.nbatoday.repository.player.NBAPlayerRepository
 import com.jiachian.nbatoday.repository.player.PlayerRepository
 import com.jiachian.nbatoday.repository.schedule.NBAScheduleRepository
 import com.jiachian.nbatoday.repository.schedule.ScheduleRepository
-import com.jiachian.nbatoday.repository.team.NbaTeamRepository
+import com.jiachian.nbatoday.repository.team.NBATeamRepository
 import com.jiachian.nbatoday.repository.team.TeamRepository
-import com.jiachian.nbatoday.repository.user.NbaUserRepository
+import com.jiachian.nbatoday.repository.user.NBAUserRepository
 import com.jiachian.nbatoday.repository.user.UserRepository
 import com.jiachian.nbatoday.utils.ComposeViewModelProvider
 import com.jiachian.nbatoday.utils.ScreenStateHelper
@@ -66,10 +66,10 @@ val module = module {
     single { ScreenStateHelper(get(), get()) }
     single { NBAScheduleRepository(get(), get(), get(), get()) as ScheduleRepository }
     single { NBAGameRepository(get(), get(), get()) as GameRepository }
-    single { NbaTeamRepository(get(), get()) as TeamRepository }
+    single { NBATeamRepository(get(), get()) as TeamRepository }
     single { NBAPlayerRepository(get(), get()) as PlayerRepository }
     single { NBABetRepository(get(), get()) as BetRepository }
-    single { NbaUserRepository(get(), get()) as UserRepository }
+    single { NBAUserRepository(get(), get()) as UserRepository }
 
     viewModel { MainViewModel(get(), get(), get()) }
 }

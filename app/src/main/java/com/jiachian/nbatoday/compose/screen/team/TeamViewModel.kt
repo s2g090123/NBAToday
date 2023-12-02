@@ -44,7 +44,7 @@ class TeamViewModel(
         .stateIn(coroutineScope, SharingStarted.Lazily, emptyList())
     val gamesAfter = gameRepository.getGamesAndBetsAfterByTeam(team.teamId, NbaUtils.getCalendar().timeInMillis)
         .stateIn(coroutineScope, SharingStarted.Lazily, emptyList())
-    private val teamAndPlayersStats = teamRepository.getTeamAndPlayersStats(team.teamId)
+    private val teamAndPlayersStats = teamRepository.getTeamAndPlayers(team.teamId)
 
     val teamStats = teamAndPlayersStats.map {
         it?.team
@@ -74,7 +74,7 @@ class TeamViewModel(
         teamAndPlayersStats,
         playerSort
     ) { stats, sort ->
-        val playerStats = stats?.playersStats ?: emptyList()
+        val playerStats = stats?.teamPlayers ?: emptyList()
         when (sort) {
             PlayerSort.GP -> playerStats.sortedWith(
                 compareByDescending<TeamPlayer> {
@@ -302,8 +302,8 @@ class TeamViewModel(
         coroutineScope.launch {
             isTeamRefreshingImp.value = true
             withContext(dispatcherProvider.io) {
-                val deferred1 = async { teamRepository.refreshTeamStats() }
-                val deferred2 = async { teamRepository.refreshTeamPlayersStats(team.teamId) }
+                val deferred1 = async { teamRepository.updateTeamStats() }
+                val deferred2 = async { teamRepository.updateTeamPlayers(team.teamId) }
                 deferred1.await()
                 deferred2.await()
             }

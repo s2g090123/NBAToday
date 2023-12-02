@@ -13,20 +13,18 @@ class NBAPlayerRepository(
 ) : PlayerRepository() {
     override suspend fun updatePlayer(playerId: Int) {
         loading {
-            val response = playerRemoteSource.getPlayer(playerId)
-            if (response.isError()) {
-                showErrorToast()
-                return@loading
-            }
-            response
-                .body()
-                ?.also { remotePlayer ->
-                    val player = remotePlayer.toPlayer() ?: run {
-                        showErrorToast()
-                        return@also
-                    }
-                    playerLocalSource.insertPlayer(player)
+            playerRemoteSource
+                .getPlayer(playerId)
+                .takeIf { !it.isError() }
+                ?.body()
+                ?.let { remotePlayer ->
+                    remotePlayer
+                        .toPlayer()
+                        ?.let { player ->
+                            playerLocalSource.insertPlayer(player)
+                        }
                 }
+                ?: showErrorToast()
         }
     }
 
