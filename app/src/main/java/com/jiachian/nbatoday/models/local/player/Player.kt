@@ -11,7 +11,6 @@ data class Player(
     @ColumnInfo(name = "player_info") val info: PlayerInfo,
     @ColumnInfo(name = "player_stats") val stats: PlayerStats
 ) {
-
     data class PlayerInfo(
         @ColumnInfo(name = "player_name") val playerName: String,
         @ColumnInfo(name = "player_name_abbr") val playerNameAbbr: String,

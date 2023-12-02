@@ -23,11 +23,12 @@ data class BoxScore(
 ) {
 
     val statusText: String
-        get() = if (gameStatus != GameStatus.COMING_SOON) {
-            gameStatusText
-        } else {
-            gameStatusText.replace(" ", "\n")
-        }.trim()
+        get() {
+            return when {
+                gameStatus != GameStatus.COMING_SOON -> gameStatusText
+                else -> gameStatusText.replace(" ", "\n")
+            }.trim()
+        }
 
     data class BoxScoreTeam(
         @ColumnInfo(name = "team")

@@ -16,15 +16,11 @@ fun RemoteSchedule.RemoteLeagueSchedule.toGames(): List<Game> {
     val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").apply {
         timeZone = TimeZone.getTimeZone("EST")
     }
-    val games = mutableListOf<Game>()
-    gameDates?.forEach { gameDate ->
+    return gameDates?.mapNotNull { gameDate ->
         gameDate.games?.mapNotNull { game ->
             createNbaGame(game, dateFormat)
-        }?.also { nbaGames ->
-            games.addAll(nbaGames)
         }
-    }
-    return games
+    }?.flatten() ?: emptyList()
 }
 
 private fun RemoteSchedule.RemoteLeagueSchedule.RemoteGameDate.RemoteGame.RemoteTeam.toGameTeam(): GameTeam {
@@ -72,7 +68,6 @@ private fun createNbaGame(
         }
 
     val gameStatusText = game.gameStatusText.getOrNA()
-    val gameSequence = game.gameSequence.getOrZero()
 
     return Game(
         homeTeamId = homeTeam.getOrError().team.teamId,

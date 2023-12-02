@@ -61,10 +61,9 @@ data class RemotePlayerInfo(
         val cal = DateUtils.getCalendar()
         val currentDate = cal.time
         return getPlayerInfo("BIRTHDATE")?.let {
-            val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").apply {
+            SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").apply {
                 timeZone = TimeZone.getTimeZone("EST")
-            }
-            sdf.parse(it)
+            }.parse(it)
         } ?: currentDate
     }
 

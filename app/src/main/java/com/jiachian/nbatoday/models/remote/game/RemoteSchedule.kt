@@ -10,7 +10,6 @@ data class RemoteSchedule(
     data class RemoteLeagueSchedule(
         @SerializedName("gameDates") val gameDates: List<RemoteGameDate>?,
     ) {
-
         data class RemoteGameDate(
             @SerializedName("games") val games: List<RemoteGame>?
         ) {

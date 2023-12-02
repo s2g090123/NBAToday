@@ -7,10 +7,9 @@ import com.jiachian.nbatoday.utils.getOrZero
 import com.jiachian.nbatoday.utils.toPercentage
 
 fun RemoteTeamStats.toTeamStats(): List<Team> {
-    val rowData = result?.rowData ?: return emptyList()
-    return rowData.mapNotNull { data ->
-        createTeamStats(data) ?: return@mapNotNull null
-    }
+    return result?.rowData?.mapNotNull { data ->
+        createTeamStats(data)
+    } ?: emptyList()
 }
 
 private fun RemoteTeamStats.createTeamStats(data: List<String>): Team? {

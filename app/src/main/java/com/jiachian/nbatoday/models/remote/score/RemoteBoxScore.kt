@@ -80,7 +80,10 @@ data class RemoteBoxScore(
                 }
 
                 fun isStarter(): Boolean {
-                    return starter?.takeIf { it == "1" }?.let { true } ?: false
+                    return starter
+                        ?.takeIf { it == "1" }
+                        ?.let { true }
+                        ?: false
                 }
 
                 fun getFormattedNotPlayingReason(): String {
@@ -130,22 +133,26 @@ data class RemoteBoxScore(
 
         @SuppressLint("SimpleDateFormat")
         fun getFormattedGameDate(): String {
-            val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
-            return gameEt?.substringBeforeLast("-")?.let {
-                try {
-                    dateFormat.parse(it)?.let { date ->
-                        val cal = DateUtils.getCalendar()
-                        cal.time = date
-                        DateUtils.formatScoreboardGameDate(
-                            cal.get(Calendar.YEAR),
-                            cal.get(Calendar.MONTH) + 1,
-                            cal.get(Calendar.DAY_OF_MONTH)
-                        )
+            return gameEt
+                ?.substringBeforeLast("-")
+                ?.let {
+                    try {
+                        SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+                            .parse(it)
+                            ?.let { date ->
+                                DateUtils.getCalendar().run {
+                                    time = date
+                                    DateUtils.formatScoreboardGameDate(
+                                        get(Calendar.YEAR),
+                                        get(Calendar.MONTH) + 1,
+                                        get(Calendar.DAY_OF_MONTH)
+                                    )
+                                }
+                            }
+                    } catch (e: ParseException) {
+                        null
                     }
-                } catch (e: ParseException) {
-                    null
-                }
-            }.getOrNA()
+                }.getOrNA()
         }
     }
 }

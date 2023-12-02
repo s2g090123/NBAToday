@@ -5,7 +5,7 @@ import com.jiachian.nbatoday.utils.getOrNA
 import com.jiachian.nbatoday.utils.getOrZero
 import com.jiachian.nbatoday.utils.toPercentage
 
-fun RemotePlayerStats.toPlayerStats(): Player.PlayerStats? {
+fun RemotePlayerStats.toPlayerStats(): Player.PlayerStats {
     val stats = result?.rowData?.mapNotNull { data ->
         createPlayerCareerStats(data)
     } ?: emptyList()

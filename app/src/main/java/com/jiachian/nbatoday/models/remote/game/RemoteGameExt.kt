@@ -18,8 +18,7 @@ fun RemoteGame.RemoteScoreboard.RemoteGameDetail.RemoteGameTeam.toGameTeam(): Ga
 }
 
 fun RemoteGame.RemoteScoreboard.toGameUpdateData(): List<GameUpdateData> {
-    val games = games ?: return emptyList()
-    return games.mapNotNull { game ->
+    return games?.mapNotNull { game ->
         val gameId = game.gameId
         val gameStatus = game.getFormattedGameStatus()
         val gameStatusText = game.gameStatusText
@@ -40,7 +39,7 @@ fun RemoteGame.RemoteScoreboard.toGameUpdateData(): List<GameUpdateData> {
             gameLeaders = gameLeaders.getOrError(),
             teamLeaders = teamLeaders.getOrError()
         )
-    }
+    } ?: emptyList()
 }
 
 private fun RemoteGame.RemoteScoreboard.RemoteGameDetail.RemoteGameLeaders.toGameLeaders(): GameLeaders {
