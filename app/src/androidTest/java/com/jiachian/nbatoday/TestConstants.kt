@@ -1,6 +1,6 @@
 package com.jiachian.nbatoday
 
-import com.jiachian.nbatoday.compose.theme.NbaColors
+import com.jiachian.nbatoday.compose.theme.NBAColors
 import com.jiachian.nbatoday.compose.theme.OfficialColors
 import com.jiachian.nbatoday.models.local.team.NBATeam
 
@@ -36,7 +36,7 @@ val HomeTeam = object : NBATeam {
     override val logoRes: Int = R.drawable.ic_logo_nba
     override val conference: NBATeam.Conference = NBATeam.Conference.EAST
     override val division: NBATeam.Division = NBATeam.Division.SOUTHEAST
-    override val colors: NbaColors = OfficialColors
+    override val colors: NBAColors = OfficialColors
 }
 val AwayTeam = object : NBATeam {
     override val teamId: Int = AwayTeamId
@@ -46,7 +46,7 @@ val AwayTeam = object : NBATeam {
     override val logoRes: Int = R.drawable.ic_logo_nba
     override val conference: NBATeam.Conference = NBATeam.Conference.WEST
     override val division: NBATeam.Division = NBATeam.Division.SOUTHWEST
-    override val colors: NbaColors = OfficialColors
+    override val colors: NBAColors = OfficialColors
 }
 
 const val HomePlayerId = 123456

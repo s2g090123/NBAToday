@@ -1,7 +1,7 @@
 package com.jiachian.nbatoday.models.local.team.data
 
 import com.jiachian.nbatoday.R
-import com.jiachian.nbatoday.compose.theme.NbaColors
+import com.jiachian.nbatoday.compose.theme.NBAColors
 import com.jiachian.nbatoday.compose.theme.PacersColors
 import com.jiachian.nbatoday.models.local.team.NBATeam
 
@@ -12,5 +12,5 @@ val teamPacers = object : NBATeam {
     override val location: String = "Indiana"
     override val logoRes: Int = R.drawable.ic_team_logo_pacers
     override val conference: NBATeam.Conference = NBATeam.Conference.EAST
-    override val colors: NbaColors = PacersColors
+    override val colors: NBAColors = PacersColors
 }

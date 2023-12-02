@@ -44,7 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.screen.account.LoginDialog
-import com.jiachian.nbatoday.compose.theme.NbaColors
+import com.jiachian.nbatoday.compose.theme.NBAColors
 import com.jiachian.nbatoday.compose.widget.IconButton
 import com.jiachian.nbatoday.compose.widget.TeamLogoImage
 import com.jiachian.nbatoday.models.local.team.NBATeam
@@ -199,7 +199,7 @@ private fun RequireLoginScreen(
 private fun ThemeCard(
     modifier: Modifier = Modifier,
     team: NBATeam,
-    colors: NbaColors,
+    colors: NBAColors,
 ) {
     Row(modifier = modifier) {
         TeamLogoImage(
@@ -236,7 +236,7 @@ private fun ThemeCard(
 @Composable
 private fun ThemeColorPreviewRow(
     modifier: Modifier = Modifier,
-    colors: NbaColors,
+    colors: NBAColors,
 ) {
     Row(
         modifier = modifier,

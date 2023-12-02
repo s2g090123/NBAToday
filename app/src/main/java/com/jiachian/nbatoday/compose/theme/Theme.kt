@@ -53,9 +53,9 @@ fun NBATodayTheme(content: @Composable () -> Unit) {
 }
 
 fun updateColors(primary: Color, secondary: Color, extra1: Color, extra2: Color) {
-    ColorPalette = NbaColors(primary, secondary, extra1, extra2)
+    ColorPalette = NBAColors(primary, secondary, extra1, extra2)
 }
 
-fun updateColors(color: NbaColors) {
+fun updateColors(color: NBAColors) {
     ColorPalette = color
 }
