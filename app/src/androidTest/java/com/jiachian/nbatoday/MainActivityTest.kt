@@ -131,7 +131,7 @@ class MainActivityTest {
     @Test
     fun mainActivity_exitApp_checksEverythingOK() {
         val scenario = ActivityScenario.launch(MainActivity::class.java)
-        viewModel.backState()
+        viewModel.exitScreen()
         scenario.close()
     }
 }

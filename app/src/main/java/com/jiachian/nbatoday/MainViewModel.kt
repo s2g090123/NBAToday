@@ -12,12 +12,10 @@ import com.jiachian.nbatoday.event.EventManager
 import com.jiachian.nbatoday.repository.RepositoryProvider
 import com.jiachian.nbatoday.utils.ScreenStateHelper
 import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class MainViewModel(
@@ -42,36 +40,42 @@ class MainViewModel(
     val isLoaded = isLoadedImp.asStateFlow()
 
     val stateStack = screenStateHelper.stateStack
-    val currentState = screenStateHelper.currentState
-        .stateIn(viewModelScope, SharingStarted.Eagerly, stateStack.value.first())
+    private val currentState: NbaState?
+        get() = stateStack.value.firstOrNull()
 
     fun loadData() {
         if (isLoading.value || isLoaded.value) return
         viewModelScope.launch(dispatcherProvider.io) {
             isLoading.value = true
-            val refreshScheduleDeferred = async {
+            val updateScheduleDeferred = async {
                 repositoryProvider.schedule.updateSchedule()
             }
             val updateColorsDeferred = async {
-                val colors = dataStore.themeColors.first()
-                updateColors(colors)
+                dataStore
+                    .themeColors
+                    .firstOrNull()
+                    ?.also { updateColors(it) }
             }
-            val loginDeferred = async {
-                val user = dataStore.user.firstOrNull() ?: return@async
-                val account = user.account ?: return@async
-                val password = user.password ?: return@async
-                repositoryProvider.user.login(account, password)
+            val loginUserDeferred = async {
+                dataStore
+                    .user
+                    .firstOrNull()
+                    ?.also { user ->
+                        repositoryProvider.user.login(user.account, user.password)
+                    }
             }
-            refreshScheduleDeferred.await()
-            updateColorsDeferred.await()
-            loginDeferred.await()
+            awaitAll(
+                updateScheduleDeferred,
+                updateColorsDeferred,
+                loginUserDeferred
+            )
             isLoading.value = false
             isLoadedImp.value = true
         }
     }
 
-    fun backState() {
-        if (currentState.value is NbaState.Home) {
+    fun exitScreen() {
+        if (currentState is NbaState.Home) {
             Event.Exit.send()
         } else {
             screenStateHelper.exitScreen()

@@ -185,7 +185,7 @@ class MainViewModelTest {
             viewModel.currentState.value,
             CoreMatchers.instanceOf(NbaState.BoxScore::class.java)
         )
-        viewModel.backState()
+        viewModel.exitScreen()
         assertThat(viewModel.stateStack.value.size, `is`(1))
         assertThat(
             viewModel.currentState.value,
@@ -240,7 +240,7 @@ class MainViewModelTest {
     @Test
     fun backState_currentHomeState_checksEventSent() {
         assertThat(viewModel.eventFlow.value, nullValue())
-        viewModel.backState()
+        viewModel.exitScreen()
         assertThat(viewModel.eventFlow.value, instanceOf(MainViewModel.Event.Exit::class.java))
     }
 }
