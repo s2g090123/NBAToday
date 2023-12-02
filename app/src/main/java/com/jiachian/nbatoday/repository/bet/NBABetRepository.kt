@@ -6,7 +6,7 @@ import com.jiachian.nbatoday.models.local.bet.BetAndGame
 import com.jiachian.nbatoday.repository.user.UserRepository
 import com.jiachian.nbatoday.utils.showErrorToast
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.singleOrNull
+import kotlinx.coroutines.flow.firstOrNull
 
 class NBABetRepository(
     private val betLocalSource: BetLocalSource,
@@ -17,7 +17,7 @@ class NBABetRepository(
             val usedPoints = homePoints + awayPoints
             userRepository
                 .user
-                .singleOrNull()
+                .firstOrNull()
                 ?.takeIf { user -> user.points - usedPoints >= 0 }
                 ?.let { user ->
                     betLocalSource.insertBet(

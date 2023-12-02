@@ -10,7 +10,7 @@ import com.jiachian.nbatoday.models.remote.team.toTeamPlayerStats
 import com.jiachian.nbatoday.models.remote.team.toTeamStats
 import com.jiachian.nbatoday.utils.showErrorToast
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.singleOrNull
+import kotlinx.coroutines.flow.firstOrNull
 
 class NBATeamRepository(
     private val teamLocalSource: TeamLocalSource,
@@ -93,7 +93,7 @@ class NBATeamRepository(
             // delete players who were traded to another team
             teamLocalSource
                 .getTeamAndPlayers(teamId)
-                .singleOrNull()
+                .firstOrNull()
                 ?.teamPlayers
                 ?.map { teamPlayer -> teamPlayer.playerId }
                 ?.filterNot { playerId -> playerId in remoteTeamPlayerIds }
