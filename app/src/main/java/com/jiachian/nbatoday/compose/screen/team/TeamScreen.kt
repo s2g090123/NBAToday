@@ -22,7 +22,7 @@ import com.jiachian.nbatoday.compose.screen.team.widgets.TeamInformation
 import com.jiachian.nbatoday.compose.screen.team.widgets.TeamStatsScreen
 import com.jiachian.nbatoday.compose.widget.BackHandle
 import com.jiachian.nbatoday.compose.widget.IconButton
-import com.jiachian.nbatoday.compose.widget.RefreshingScreen
+import com.jiachian.nbatoday.compose.widget.LoadingScreen
 import com.jiachian.nbatoday.utils.noRippleClickable
 
 @Composable
@@ -59,7 +59,7 @@ fun TeamScreen(
             }
         }
         if (isRefreshing) {
-            RefreshingScreen(
+            LoadingScreen(
                 modifier = Modifier.fillMaxSize(),
                 color = MaterialTheme.colors.secondary
             )

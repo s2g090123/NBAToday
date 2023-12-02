@@ -55,12 +55,17 @@ import com.jiachian.nbatoday.utils.color
 import com.jiachian.nbatoday.utils.noRippleClickable
 
 @Composable
-fun RefreshingScreen(
+fun LoadingScreen(
     modifier: Modifier = Modifier,
     color: Color,
-    interceptBack: Boolean = true
+    interceptBack: Boolean = true,
+    backButton: @Composable BoxScope.() -> Unit = {},
 ) {
     FocusableBox(modifier = modifier) {
+        Box(
+            modifier = Modifier.align(Alignment.TopStart),
+            content = backButton
+        )
         CircularProgressIndicator(
             modifier = Modifier.align(Alignment.Center),
             color = color

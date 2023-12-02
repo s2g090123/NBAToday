@@ -25,7 +25,7 @@ import com.jiachian.nbatoday.compose.screen.player.info.PlayerCareerInfo
 import com.jiachian.nbatoday.compose.screen.player.stats.PlayerCareerStats
 import com.jiachian.nbatoday.compose.widget.FocusableColumn
 import com.jiachian.nbatoday.compose.widget.IconButton
-import com.jiachian.nbatoday.compose.widget.RefreshingScreen
+import com.jiachian.nbatoday.compose.widget.LoadingScreen
 
 @Composable
 fun PlayerCareerScreen(
@@ -49,7 +49,7 @@ fun PlayerCareerScreen(
         )
         when {
             isRefreshing -> {
-                RefreshingScreen(
+                LoadingScreen(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.secondary,
                     interceptBack = false
