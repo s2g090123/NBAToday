@@ -11,7 +11,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.Color
 
 private var ColorPalette by mutableStateOf(LakersColors)
 
@@ -19,19 +18,23 @@ private var ColorPalette by mutableStateOf(LakersColors)
 fun NBATodayTheme(content: @Composable () -> Unit) {
     val primaryColor by animateColorAsState(
         targetValue = ColorPalette.primary,
-        animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
+        animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing),
+        label = ""
     )
     val secondaryColor by animateColorAsState(
         targetValue = ColorPalette.secondary,
-        animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
+        animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing),
+        label = ""
     )
     val extraColor1 by animateColorAsState(
         targetValue = ColorPalette.extra1,
-        animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
+        animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing),
+        label = ""
     )
     val extraColor2 by animateColorAsState(
         targetValue = ColorPalette.extra2,
-        animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
+        animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing),
+        label = ""
     )
     val colors by remember(primaryColor, secondaryColor) {
         derivedStateOf {
@@ -43,17 +46,12 @@ fun NBATodayTheme(content: @Composable () -> Unit) {
             )
         }
     }
-
     MaterialTheme(
         colors = colors,
         typography = Typography,
         shapes = Shapes,
         content = content
     )
-}
-
-fun updateColors(primary: Color, secondary: Color, extra1: Color, extra2: Color) {
-    ColorPalette = NBAColors(primary, secondary, extra1, extra2)
 }
 
 fun updateColors(color: NBAColors) {
