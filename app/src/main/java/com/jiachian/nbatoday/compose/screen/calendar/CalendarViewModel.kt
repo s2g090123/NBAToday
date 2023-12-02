@@ -10,7 +10,7 @@ import com.jiachian.nbatoday.models.local.game.GameAndBet
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.repository.game.GameRepository
 import com.jiachian.nbatoday.utils.ComposeViewModelProvider
-import com.jiachian.nbatoday.utils.NbaUtils
+import com.jiachian.nbatoday.utils.DateUtils
 import com.jiachian.nbatoday.utils.ScreenStateHelper
 import java.util.Calendar
 import java.util.Date
@@ -41,7 +41,7 @@ class CalendarViewModel(
     private val currentDay: MutableStateFlow<Int>
 
     init {
-        NbaUtils.getCalendar().apply {
+        DateUtils.getCalendar().apply {
             time = date
             currentYear = MutableStateFlow(get(Calendar.YEAR))
             currentMonth = MutableStateFlow(get(Calendar.MONTH) + 1)
@@ -55,13 +55,13 @@ class CalendarViewModel(
     val isLoadingGames = isLoadingGamesImp.asStateFlow()
 
     private val lastDate = games.map {
-        val cal = NbaUtils.getCalendar()
+        val cal = DateUtils.getCalendar()
         it.lastOrNull()?.game?.gameDateTime ?: cal.time
-    }.stateIn(coroutineScope, SharingStarted.Lazily, NbaUtils.getCalendar().time)
+    }.stateIn(coroutineScope, SharingStarted.Lazily, DateUtils.getCalendar().time)
     private val firstDate = games.map {
-        val cal = NbaUtils.getCalendar()
+        val cal = DateUtils.getCalendar()
         it.firstOrNull()?.game?.gameDate ?: cal.time
-    }.stateIn(coroutineScope, SharingStarted.Lazily, NbaUtils.getCalendar().time)
+    }.stateIn(coroutineScope, SharingStarted.Lazily, DateUtils.getCalendar().time)
 
     val currentDateString = combine(
         currentYear, currentMonth
@@ -128,7 +128,7 @@ class CalendarViewModel(
 
     fun nextMonth() {
         if (hasNextMonth()) {
-            val cal = NbaUtils.getCalendar()
+            val cal = DateUtils.getCalendar()
             cal.set(Calendar.YEAR, currentYear.value)
             cal.set(Calendar.MONTH, currentMonth.value - 1)
             cal.add(Calendar.MONTH, 1)
@@ -139,7 +139,7 @@ class CalendarViewModel(
 
     fun previousMonth() {
         if (hasPreviousMonth()) {
-            val cal = NbaUtils.getCalendar()
+            val cal = DateUtils.getCalendar()
             cal.set(Calendar.YEAR, currentYear.value)
             cal.set(Calendar.MONTH, currentMonth.value - 1)
             cal.add(Calendar.MONTH, -1)
@@ -152,7 +152,7 @@ class CalendarViewModel(
         return withContext(dispatcherProvider.default) {
             val key = "$year-$month"
             if (calendarMap.containsKey(key)) return@withContext calendarMap[key] ?: emptyList()
-            val cal = NbaUtils.getCalendar().apply {
+            val cal = DateUtils.getCalendar().apply {
                 set(Calendar.YEAR, year)
                 set(Calendar.MONTH, month - 1)
                 set(Calendar.DAY_OF_MONTH, 1)
@@ -190,7 +190,7 @@ class CalendarViewModel(
     ): List<List<GameAndBet>> {
         return withContext(dispatcherProvider.io) {
             isLoadingGamesImp.value = true
-            val cal = NbaUtils.getCalendar().apply {
+            val cal = DateUtils.getCalendar().apply {
                 set(Calendar.YEAR, year)
                 set(Calendar.MONTH, month - 1)
                 set(Calendar.DAY_OF_MONTH, 1)
@@ -215,7 +215,7 @@ class CalendarViewModel(
     private fun hasNextMonth(): Boolean {
         val year = currentYear.value
         val month = currentMonth.value
-        val cal = NbaUtils.getCalendar()
+        val cal = DateUtils.getCalendar()
         cal.time = lastDate.value
         val lastYear = cal.get(Calendar.YEAR)
         val lastMonth = cal.get(Calendar.MONTH) + 1
@@ -225,7 +225,7 @@ class CalendarViewModel(
     private fun hasPreviousMonth(): Boolean {
         val year = currentYear.value
         val month = currentMonth.value
-        val cal = NbaUtils.getCalendar()
+        val cal = DateUtils.getCalendar()
         cal.time = firstDate.value
         val firstYear = cal.get(Calendar.YEAR)
         val firstMonth = cal.get(Calendar.MONTH) + 1

@@ -10,7 +10,7 @@ import com.jiachian.nbatoday.datastore.NBADataStore
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.models.local.team.data.teamOfficial
 import com.jiachian.nbatoday.models.local.user.User
-import com.jiachian.nbatoday.utils.NbaUtils
+import com.jiachian.nbatoday.utils.DateUtils
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -60,10 +60,10 @@ class NbaDataStoreTest {
     @Test
     fun recordScheduleToday_setValue_valueIsCorrect() = runTest {
         val emptyData = dataStore.lastAccessedDay.first()
-        assertThat(emptyData, `is`(NbaUtils.formatDate(1990, 1, 1)))
+        assertThat(emptyData, `is`(DateUtils.formatDate(1990, 1, 1)))
         dataStore.updateLastAccessedDay(2023, 1, 1)
         val actualData = dataStore.lastAccessedDay.first()
-        assertThat(actualData, `is`(NbaUtils.formatDate(2023, 1, 1)))
+        assertThat(actualData, `is`(DateUtils.formatDate(2023, 1, 1)))
     }
 
     @Test

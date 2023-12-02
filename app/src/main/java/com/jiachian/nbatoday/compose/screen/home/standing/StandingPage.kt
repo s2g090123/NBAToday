@@ -63,7 +63,7 @@ import com.jiachian.nbatoday.Transparency25
 import com.jiachian.nbatoday.compose.widget.DisableOverscroll
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.models.local.team.Team
-import com.jiachian.nbatoday.utils.NbaUtils
+import com.jiachian.nbatoday.utils.NBAUtils
 import com.jiachian.nbatoday.utils.dividerSecondaryColor
 import com.jiachian.nbatoday.utils.px2Dp
 import com.jiachian.nbatoday.utils.rippleClickable
@@ -441,7 +441,7 @@ private fun TeamNameText(
                 .fillMaxHeight()
                 .aspectRatio(1f),
             model = ImageRequest.Builder(LocalContext.current)
-                .data(NbaUtils.getTeamLogoUrlById(team.teamId))
+                .data(NBAUtils.getTeamLogoUrlById(team.teamId))
                 .decoderFactory(SvgDecoder.Factory())
                 .build(),
             error = painterResource(team.logoRes),

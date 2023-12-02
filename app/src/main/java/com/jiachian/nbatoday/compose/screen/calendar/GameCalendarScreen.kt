@@ -62,7 +62,7 @@ import com.jiachian.nbatoday.compose.widget.DisableOverscroll
 import com.jiachian.nbatoday.compose.widget.RefreshingScreen
 import com.jiachian.nbatoday.models.local.game.GameAndBet
 import com.jiachian.nbatoday.models.local.game.GameStatus
-import com.jiachian.nbatoday.utils.NbaUtils
+import com.jiachian.nbatoday.utils.NBAUtils
 import com.jiachian.nbatoday.utils.noRippleClickable
 import com.jiachian.nbatoday.utils.rippleClickable
 import java.util.Date
@@ -401,7 +401,7 @@ private fun TeamIconThumbnailsRow(
                     .testTag("CalendarContent_Image_Team")
                     .size(12.dp),
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data(NbaUtils.getTeamSmallLogoUrlById(it.game.homeTeam.team.teamId))
+                    .data(NBAUtils.getTeamSmallLogoUrlById(it.game.homeTeam.team.teamId))
                     .decoderFactory(SvgDecoder.Factory())
                     .build(),
                 error = painterResource(it.game.homeTeam.team.logoRes),

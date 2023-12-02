@@ -16,7 +16,7 @@ import com.jiachian.nbatoday.models.remote.RemotePlayerFactory
 import com.jiachian.nbatoday.models.remote.RemoteTeamFactory
 import com.jiachian.nbatoday.models.remote.TestRemoteDataSource
 import com.jiachian.nbatoday.rule.CalendarRule
-import com.jiachian.nbatoday.utils.NbaUtils
+import com.jiachian.nbatoday.utils.DateUtils
 import com.jiachian.nbatoday.utils.getOrError
 import io.mockk.every
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -68,13 +68,13 @@ class NbaRepositoryTest {
             )
         }
         assertThat(actual, `is`(expected))
-        assertThat(dataStore.lastAccessedDay.value, `is`(NbaUtils.formatDate(2023, 1, 1)))
+        assertThat(dataStore.lastAccessedDay.value, `is`(DateUtils.formatDate(2023, 1, 1)))
     }
 
     @Test
     fun refreshSchedule_recordDayError_checksDataStoreCorrect() = runTest {
         every {
-            NbaUtils.parseDate(any())
+            DateUtils.parseDate(any())
         } answers {
             null
         }
@@ -95,7 +95,7 @@ class NbaRepositoryTest {
             )
         }
         assertThat(actual, `is`(expected))
-        assertThat(dataStore.lastAccessedDay.value, `is`(NbaUtils.formatDate(2023, 1, 1)))
+        assertThat(dataStore.lastAccessedDay.value, `is`(DateUtils.formatDate(2023, 1, 1)))
     }
 
     @Test
@@ -117,7 +117,7 @@ class NbaRepositoryTest {
             )
         }
         assertThat(actual, `is`(expected))
-        assertThat(dataStore.lastAccessedDay.value, `is`(NbaUtils.formatDate(2023, 1, 1)))
+        assertThat(dataStore.lastAccessedDay.value, `is`(DateUtils.formatDate(2023, 1, 1)))
     }
 
     @Test

@@ -19,7 +19,7 @@ import com.jiachian.nbatoday.datastore.NBADataStore.PreferencesKeys.THEME_COLORS
 import com.jiachian.nbatoday.datastore.NBADataStore.PreferencesKeys.USER
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.models.local.user.User
-import com.jiachian.nbatoday.utils.NbaUtils
+import com.jiachian.nbatoday.utils.DateUtils
 import kotlinx.coroutines.flow.map
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = DataStoreName)
@@ -38,7 +38,7 @@ class NBADataStore(private val application: Application) : BaseDataStore {
 
     override val lastAccessedDay by lazy {
         dataStore.data.map { pref ->
-            pref[LAST_ACCESSED_DAY] ?: NbaUtils.formatDate(1990, 1, 1)
+            pref[LAST_ACCESSED_DAY] ?: DateUtils.formatDate(1990, 1, 1)
         }
     }
 
@@ -63,7 +63,7 @@ class NBADataStore(private val application: Application) : BaseDataStore {
 
     override suspend fun updateLastAccessedDay(year: Int, month: Int, day: Int) {
         dataStore.edit { pref ->
-            pref[LAST_ACCESSED_DAY] = NbaUtils.formatDate(year, month, day)
+            pref[LAST_ACCESSED_DAY] = DateUtils.formatDate(year, month, day)
         }
     }
 

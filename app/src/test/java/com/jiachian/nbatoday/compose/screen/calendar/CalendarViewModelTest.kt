@@ -11,7 +11,7 @@ import com.jiachian.nbatoday.models.TestRepository
 import com.jiachian.nbatoday.models.local.game.GameAndBet
 import com.jiachian.nbatoday.rule.CalendarRule
 import com.jiachian.nbatoday.rule.TestCoroutineEnvironment
-import com.jiachian.nbatoday.utils.NbaUtils
+import com.jiachian.nbatoday.utils.DateUtils
 import com.jiachian.nbatoday.utils.launchAndCollect
 import java.util.Calendar
 import java.util.Date
@@ -54,7 +54,7 @@ class CalendarViewModelTest {
     @Test
     fun calendar_getCurrentDateString() {
         viewModel.currentDateString.launchAndCollect(coroutineEnvironment)
-        val calendar = NbaUtils.getCalendar()
+        val calendar = DateUtils.getCalendar()
         val year = calendar.get(Calendar.YEAR)
         val month = calendar.get(Calendar.MONTH) + 1
         val expectedKey = year * 100 + month
@@ -197,7 +197,7 @@ class CalendarViewModelTest {
 
     private fun generateCalendarData(): List<CalendarData> {
         val data = mutableListOf<CalendarData>()
-        val cal = NbaUtils.getCalendar()
+        val cal = DateUtils.getCalendar()
         val year = cal.get(Calendar.YEAR)
         val month = cal.get(Calendar.MONTH) + 1
         while (cal.get(Calendar.YEAR) <= year && cal.get(Calendar.MONTH) + 1 <= month) {
@@ -220,7 +220,7 @@ class CalendarViewModelTest {
 
     private suspend fun generateGamesAndBets(): List<List<GameAndBet>> {
         val games = repository.getGamesAndBets().first()
-        val cal = NbaUtils.getCalendar()
+        val cal = DateUtils.getCalendar()
         val year = cal.get(Calendar.YEAR)
         val month = cal.get(Calendar.MONTH) + 1
         cal.apply {

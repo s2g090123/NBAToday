@@ -1,7 +1,8 @@
 package com.jiachian.nbatoday.rule
 
 import com.jiachian.nbatoday.BasicTime
-import com.jiachian.nbatoday.utils.NbaUtils
+import com.jiachian.nbatoday.utils.DateUtils
+import com.jiachian.nbatoday.utils.NBAUtils
 import io.mockk.every
 import io.mockk.mockkObject
 import io.mockk.unmockkObject
@@ -15,9 +16,9 @@ class CalendarRule : TestWatcher() {
 
     override fun starting(description: Description) {
         super.starting(description)
-        mockkObject(NbaUtils)
+        mockkObject(NBAUtils)
         every {
-            NbaUtils.getCalendar()
+            DateUtils.getCalendar()
         } answers {
             Calendar.getInstance().apply {
                 timeZone = TimeZone.getTimeZone("EST")
@@ -28,6 +29,6 @@ class CalendarRule : TestWatcher() {
 
     override fun finished(description: Description) {
         super.finished(description)
-        unmockkObject(NbaUtils)
+        unmockkObject(NBAUtils)
     }
 }

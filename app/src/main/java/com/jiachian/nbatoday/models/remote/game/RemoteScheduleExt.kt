@@ -4,10 +4,10 @@ import android.annotation.SuppressLint
 import com.jiachian.nbatoday.models.local.game.Game
 import com.jiachian.nbatoday.models.local.game.GameTeam
 import com.jiachian.nbatoday.models.local.team.NBATeam
+import com.jiachian.nbatoday.utils.DateUtils
 import com.jiachian.nbatoday.utils.getOrError
 import com.jiachian.nbatoday.utils.getOrNA
 import com.jiachian.nbatoday.utils.getOrZero
-import com.jiachian.nbatoday.utils.parseDate
 import java.text.SimpleDateFormat
 import java.util.TimeZone
 
@@ -50,8 +50,8 @@ private fun createNbaGame(
     game: RemoteSchedule.RemoteLeagueSchedule.RemoteGameDate.RemoteGame,
     dateFormat: SimpleDateFormat
 ): Game? {
-    val gameDate = parseDate(game.gameDateEst, dateFormat)
-    val gameDateTime = parseDate(game.gameDateTimeEst, dateFormat)
+    val gameDate = DateUtils.parseDate(game.gameDateEst, dateFormat)
+    val gameDateTime = DateUtils.parseDate(game.gameDateTimeEst, dateFormat)
     val isDateValid = gameDate != null && gameDateTime != null
 
     val awayTeam = game.awayTeam?.toGameTeam()

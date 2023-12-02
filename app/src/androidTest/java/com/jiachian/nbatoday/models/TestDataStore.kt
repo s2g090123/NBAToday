@@ -5,7 +5,7 @@ import com.jiachian.nbatoday.datastore.BaseDataStore
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.models.local.team.data.teamOfficial
 import com.jiachian.nbatoday.models.local.user.User
-import com.jiachian.nbatoday.utils.NbaUtils
+import com.jiachian.nbatoday.utils.DateUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class TestDataStore : BaseDataStore {
@@ -20,7 +20,7 @@ class TestDataStore : BaseDataStore {
     }
 
     override suspend fun updateLastAccessedDay(year: Int, month: Int, day: Int) {
-        lastAccessedDay.value = NbaUtils.formatDate(year, month, day)
+        lastAccessedDay.value = DateUtils.formatDate(year, month, day)
     }
 
     override suspend fun updateThemeColorsTeamId(teamId: Int) {

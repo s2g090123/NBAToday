@@ -22,7 +22,6 @@ import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.models.local.team.data.teamCeltics
 import com.jiachian.nbatoday.rule.CalendarRule
 import com.jiachian.nbatoday.rule.TestCoroutineEnvironment
-import com.jiachian.nbatoday.utils.NbaUtils
 import com.jiachian.nbatoday.utils.launchAndCollect
 import java.util.Calendar
 import java.util.Date
@@ -287,7 +286,7 @@ class HomeViewModelTest {
     }
 
     private fun generateDateData(): List<DateData> {
-        val cal = NbaUtils.getCalendar()
+        val cal = com.jiachian.nbatoday.utils.DateUtils.getCalendar()
         cal.add(Calendar.DAY_OF_MONTH, -ScheduleDateRange)
         val data = mutableListOf<DateData>()
         repeat(ScheduleDateRange * 2 + 1) {
@@ -304,7 +303,7 @@ class HomeViewModelTest {
     }
 
     private suspend fun generateScheduleGames(): Map<DateData, List<GameAndBet>> {
-        val cal = NbaUtils.getCalendar()
+        val cal = com.jiachian.nbatoday.utils.DateUtils.getCalendar()
         val games = repository.getGamesAndBetsDuring(
             cal.timeInMillis - DateUtils.DAY_IN_MILLIS * (ScheduleDateRange + 1),
             cal.timeInMillis + DateUtils.DAY_IN_MILLIS * (ScheduleDateRange)

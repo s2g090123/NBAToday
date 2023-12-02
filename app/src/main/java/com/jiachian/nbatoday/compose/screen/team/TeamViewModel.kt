@@ -13,7 +13,7 @@ import com.jiachian.nbatoday.models.local.team.TeamPlayer
 import com.jiachian.nbatoday.repository.game.GameRepository
 import com.jiachian.nbatoday.repository.team.TeamRepository
 import com.jiachian.nbatoday.utils.ComposeViewModelProvider
-import com.jiachian.nbatoday.utils.NbaUtils
+import com.jiachian.nbatoday.utils.DateUtils
 import com.jiachian.nbatoday.utils.ScreenStateHelper
 import com.jiachian.nbatoday.utils.decimalFormat
 import kotlinx.coroutines.CoroutineScope
@@ -40,9 +40,9 @@ class TeamViewModel(
 
     val labels = LabelHelper.createTeamPlayerLabel()
 
-    val gamesBefore = gameRepository.getGamesAndBetsBeforeByTeam(team.teamId, NbaUtils.getCalendar().timeInMillis)
+    val gamesBefore = gameRepository.getGamesAndBetsBeforeByTeam(team.teamId, DateUtils.getCalendar().timeInMillis)
         .stateIn(coroutineScope, SharingStarted.Lazily, emptyList())
-    val gamesAfter = gameRepository.getGamesAndBetsAfterByTeam(team.teamId, NbaUtils.getCalendar().timeInMillis)
+    val gamesAfter = gameRepository.getGamesAndBetsAfterByTeam(team.teamId, DateUtils.getCalendar().timeInMillis)
         .stateIn(coroutineScope, SharingStarted.Lazily, emptyList())
     private val teamAndPlayersStats = teamRepository.getTeamAndPlayers(team.teamId)
 

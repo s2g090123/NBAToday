@@ -50,7 +50,7 @@ import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.annotation.ExcludeFromJacocoGeneratedReport
 import com.jiachian.nbatoday.compose.coil.SvgRequest
 import com.jiachian.nbatoday.models.local.team.NBATeam
-import com.jiachian.nbatoday.utils.NbaUtils
+import com.jiachian.nbatoday.utils.NBAUtils
 import com.jiachian.nbatoday.utils.color
 import com.jiachian.nbatoday.utils.noRippleClickable
 
@@ -224,7 +224,7 @@ fun TeamLogoImage(
     AsyncImage(
         modifier = modifier,
         model = SvgRequest.Builder(LocalContext.current)
-            .data(NbaUtils.getTeamLogoUrlById(team.teamId))
+            .data(NBAUtils.getTeamLogoUrlById(team.teamId))
             .build(),
         error = painterResource(team.logoRes),
         placeholder = painterResource(team.logoRes),
@@ -238,7 +238,7 @@ fun PlayerImage(
     playerId: Int?
 ) {
     val imageUrl by remember(playerId) {
-        val url = playerId?.let { NbaUtils.getPlayerImageUrlById(it) }
+        val url = playerId?.let { NBAUtils.getPlayerImageUrlById(it) }
         mutableStateOf(url)
     }
     AsyncImage(

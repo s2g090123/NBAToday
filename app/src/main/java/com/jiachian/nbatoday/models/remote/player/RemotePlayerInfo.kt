@@ -2,7 +2,7 @@ package com.jiachian.nbatoday.models.remote.player
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
-import com.jiachian.nbatoday.utils.NbaUtils
+import com.jiachian.nbatoday.utils.DateUtils
 import com.jiachian.nbatoday.utils.decimalFormat
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -58,7 +58,7 @@ data class RemotePlayerInfo(
 
     @SuppressLint("SimpleDateFormat")
     fun getFormattedBirthDate(): Date {
-        val cal = NbaUtils.getCalendar()
+        val cal = DateUtils.getCalendar()
         val currentDate = cal.time
         return getPlayerInfo("BIRTHDATE")?.let {
             val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").apply {

@@ -44,7 +44,7 @@ import com.jiachian.nbatoday.compose.screen.bet.turntable.BetTurnTable
 import com.jiachian.nbatoday.compose.widget.BackHandle
 import com.jiachian.nbatoday.models.local.bet.BetAndGame
 import com.jiachian.nbatoday.models.local.game.GameTeam
-import com.jiachian.nbatoday.utils.NbaUtils
+import com.jiachian.nbatoday.utils.NBAUtils
 import com.jiachian.nbatoday.utils.color
 import com.jiachian.nbatoday.utils.noRippleClickable
 import com.jiachian.nbatoday.utils.rippleClickable
@@ -263,7 +263,7 @@ private fun BetCardTeamInfo(
                     .padding(top = 8.dp)
                     .size(100.dp),
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data(NbaUtils.getTeamLogoUrlById(team.team.teamId))
+                    .data(NBAUtils.getTeamLogoUrlById(team.team.teamId))
                     .decoderFactory(SvgDecoder.Factory())
                     .build(),
                 error = painterResource(team.team.logoRes),

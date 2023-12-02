@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.jiachian.nbatoday.models.local.game.GameStatus
 import com.jiachian.nbatoday.models.local.score.PlayerActiveStatus
-import com.jiachian.nbatoday.utils.NbaUtils
+import com.jiachian.nbatoday.utils.DateUtils
 import com.jiachian.nbatoday.utils.getOrNA
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -134,9 +134,9 @@ data class RemoteBoxScore(
             return gameEt?.substringBeforeLast("-")?.let {
                 try {
                     dateFormat.parse(it)?.let { date ->
-                        val cal = NbaUtils.getCalendar()
+                        val cal = DateUtils.getCalendar()
                         cal.time = date
-                        NbaUtils.formatScoreboardGameDate(
+                        DateUtils.formatScoreboardGameDate(
                             cal.get(Calendar.YEAR),
                             cal.get(Calendar.MONTH) + 1,
                             cal.get(Calendar.DAY_OF_MONTH)

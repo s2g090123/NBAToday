@@ -1,33 +1,19 @@
 package com.jiachian.nbatoday.utils
 
 import android.annotation.SuppressLint
-import com.jiachian.nbatoday.CdnBaseUrl
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 
-object NbaUtils {
+object DateUtils {
     fun getCalendar(): Calendar {
         val cal = Calendar.getInstance()
         cal.timeZone = TimeZone.getTimeZone("EST")
         cal.time = Date()
         return cal
-    }
-
-    // returns svg
-    fun getTeamLogoUrlById(teamId: Int): String {
-        return "${CdnBaseUrl}logos/nba/$teamId/global/L/logo.svg"
-    }
-
-    fun getTeamSmallLogoUrlById(teamId: Int): String {
-        return "${CdnBaseUrl}logos/nba/$teamId/primary/L/logo.svg"
-    }
-
-    // returns svg
-    fun getPlayerImageUrlById(playerId: Int): String {
-        return "${CdnBaseUrl}headshots/nba/latest/260x190/$playerId.png"
     }
 
     fun formatScoreboardGameDate(year: Int, month: Int, day: Int): String {
@@ -43,7 +29,7 @@ object NbaUtils {
         val sdf = SimpleDateFormat("yyyy-MM-dd").apply {
             timeZone = TimeZone.getTimeZone("EST")
         }
-        return sdf.parse(formatDate(year, month, day))
+        return sdf.parse(DateUtils.formatDate(year, month, day))
     }
 
     @SuppressLint("SimpleDateFormat")
@@ -52,5 +38,15 @@ object NbaUtils {
             timeZone = TimeZone.getTimeZone("EST")
         }
         return sdf.parse(dateInFormat)
+    }
+
+    fun parseDate(dateString: String?, dateFormat: SimpleDateFormat): Date? {
+        return dateString?.let { time ->
+            try {
+                dateFormat.parse(time)
+            } catch (e: ParseException) {
+                null
+            }
+        }
     }
 }

@@ -1,7 +1,6 @@
 package com.jiachian.nbatoday.compose.screen.home.schedule
 
 import android.annotation.SuppressLint
-import android.text.format.DateUtils
 import com.jiachian.nbatoday.ScheduleDateRange
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.compose.screen.card.GameStatusCardViewModel
@@ -14,7 +13,7 @@ import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.repository.game.GameRepository
 import com.jiachian.nbatoday.repository.schedule.ScheduleRepository
 import com.jiachian.nbatoday.utils.ComposeViewModelProvider
-import com.jiachian.nbatoday.utils.NbaUtils
+import com.jiachian.nbatoday.utils.DateUtils
 import com.jiachian.nbatoday.utils.ScreenStateHelper
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -40,17 +39,17 @@ class SchedulePageViewModel(
     val scheduleDates: List<DateData> = getDateData()
     private val scheduleIndexImp = MutableStateFlow(scheduleDates.size / 2)
     val scheduleIndex = scheduleIndexImp.asStateFlow()
-    private val scheduleGamesImp = NbaUtils.getCalendar().let {
+    private val scheduleGamesImp = DateUtils.getCalendar().let {
         it.set(Calendar.HOUR, 0)
         it.set(Calendar.MINUTE, 0)
         it.set(Calendar.SECOND, 0)
         gameRepository.getGamesAndBetsDuring(
-            it.timeInMillis - DateUtils.DAY_IN_MILLIS * (ScheduleDateRange + 1),
-            it.timeInMillis + DateUtils.DAY_IN_MILLIS * (ScheduleDateRange)
+            it.timeInMillis - android.text.format.DateUtils.DAY_IN_MILLIS * (ScheduleDateRange + 1),
+            it.timeInMillis + android.text.format.DateUtils.DAY_IN_MILLIS * (ScheduleDateRange)
         )
     }
     val scheduleGames = scheduleGamesImp.map {
-        val calendar = NbaUtils.getCalendar()
+        val calendar = DateUtils.getCalendar()
         it.groupBy { game ->
             calendar.time = game.game.gameDateTime
             DateData(
@@ -70,7 +69,7 @@ class SchedulePageViewModel(
 
     private fun getDateData(): List<DateData> {
         val output = mutableListOf<DateData>()
-        val calendar = NbaUtils.getCalendar()
+        val calendar = DateUtils.getCalendar()
         calendar.add(Calendar.DAY_OF_MONTH, -ScheduleDateRange)
         repeat(ScheduleDateRange * 2 + 1) {
             output.add(

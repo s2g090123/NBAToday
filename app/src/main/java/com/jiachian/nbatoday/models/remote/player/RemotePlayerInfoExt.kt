@@ -3,7 +3,7 @@ package com.jiachian.nbatoday.models.remote.player
 import android.annotation.SuppressLint
 import com.jiachian.nbatoday.models.local.player.Player
 import com.jiachian.nbatoday.models.local.team.NBATeam
-import com.jiachian.nbatoday.utils.NbaUtils
+import com.jiachian.nbatoday.utils.DateUtils
 import com.jiachian.nbatoday.utils.decimalFormat
 import com.jiachian.nbatoday.utils.getOrError
 import com.jiachian.nbatoday.utils.getOrNA
@@ -73,7 +73,7 @@ private fun formatBirthDate(birthdate: Date): String {
 }
 
 private fun getAge(birthdate: Date): Int {
-    val cal = NbaUtils.getCalendar()
+    val cal = DateUtils.getCalendar()
     val year = cal.get(Calendar.YEAR)
     val month = cal.get(Calendar.MONTH)
     val day = cal.get(Calendar.DAY_OF_MONTH)

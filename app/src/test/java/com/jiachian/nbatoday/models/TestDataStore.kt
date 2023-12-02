@@ -5,13 +5,13 @@ import com.jiachian.nbatoday.datastore.BaseDataStore
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.models.local.team.data.teamOfficial
 import com.jiachian.nbatoday.models.local.user.User
-import com.jiachian.nbatoday.utils.NbaUtils
+import com.jiachian.nbatoday.utils.DateUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class TestDataStore : BaseDataStore {
 
     override val statsCookies = MutableStateFlow<Set<String>>(emptySet())
-    override val lastAccessedDay = MutableStateFlow(NbaUtils.formatDate(1990, 1, 1))
+    override val lastAccessedDay = MutableStateFlow(DateUtils.formatDate(1990, 1, 1))
     override val themeColors = MutableStateFlow(LakersColors)
     override val user = MutableStateFlow<User?>(null)
 
@@ -20,7 +20,7 @@ class TestDataStore : BaseDataStore {
     }
 
     override suspend fun updateLastAccessedDay(year: Int, month: Int, day: Int) {
-        lastAccessedDay.value = NbaUtils.formatDate(year, month, day)
+        lastAccessedDay.value = DateUtils.formatDate(year, month, day)
     }
 
     override suspend fun updateThemeColorsTeamId(teamId: Int) {
