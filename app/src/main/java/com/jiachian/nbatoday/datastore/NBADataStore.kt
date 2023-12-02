@@ -44,20 +44,17 @@ class NBADataStore(private val application: Application) : BaseDataStore {
 
     override val themeColors by lazy {
         dataStore.data.map { pref ->
-            val themeColorsTeamId = pref[THEME_COLORS_TEAM_ID]
-            themeColorsTeamId?.let { teamId ->
-                val team = NBATeam.getTeamById(teamId)
-                team.colors
+            pref[THEME_COLORS_TEAM_ID]?.let { teamId ->
+                NBATeam.getTeamById(teamId).colors
             } ?: LakersColors
         }
     }
 
     override val user by lazy {
         dataStore.data.map { pref ->
-            val user = pref[USER]
-            val gson = Gson()
-            val type = object : TypeToken<User?>() {}.type
-            gson.fromJson<User?>(user, type)
+            pref[USER].let { user ->
+                Gson().fromJson<User?>(user, object : TypeToken<User?>() {}.type)
+            }
         }
     }
 
@@ -75,12 +72,9 @@ class NBADataStore(private val application: Application) : BaseDataStore {
 
     override suspend fun updateUser(user: User?) {
         dataStore.edit { pref ->
-            pref[USER] = if (user != null) {
-                val gson = Gson()
-                gson.toJson(user)
-            } else {
-                ""
-            }
+            pref[USER] = user?.let { user ->
+                Gson().toJson(user)
+            } ?: ""
         }
     }
 
