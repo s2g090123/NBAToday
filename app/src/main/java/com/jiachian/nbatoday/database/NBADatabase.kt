@@ -12,8 +12,8 @@ import com.jiachian.nbatoday.database.converter.DateConverter
 import com.jiachian.nbatoday.database.converter.GameLeadersConverter
 import com.jiachian.nbatoday.database.converter.GameTeamConverter
 import com.jiachian.nbatoday.database.converter.NBATeamConverter
-import com.jiachian.nbatoday.database.converter.PlayerCareerInfoConverter
-import com.jiachian.nbatoday.database.converter.PlayerCareerStatsConverter
+import com.jiachian.nbatoday.database.converter.PlayerInfoConverter
+import com.jiachian.nbatoday.database.converter.PlayerStatsConverter
 import com.jiachian.nbatoday.database.converter.PointsLeaderConverter
 import com.jiachian.nbatoday.database.dao.BetDao
 import com.jiachian.nbatoday.database.dao.BoxScoreDao
@@ -44,8 +44,8 @@ import com.jiachian.nbatoday.models.local.team.TeamPlayer
     GameLeadersConverter::class,
     BoxScoreTeamConverter::class,
     ConferenceConverter::class,
-    PlayerCareerInfoConverter::class,
-    PlayerCareerStatsConverter::class,
+    PlayerInfoConverter::class,
+    PlayerStatsConverter::class,
     NBATeamConverter::class,
     DateConverter::class
 )

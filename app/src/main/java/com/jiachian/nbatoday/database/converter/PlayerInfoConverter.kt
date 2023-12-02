@@ -5,7 +5,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.jiachian.nbatoday.models.local.player.Player
 
-class PlayerCareerInfoConverter(private val gson: Gson = typeAdapterGson) {
+class PlayerInfoConverter(private val gson: Gson = typeAdapterGson) {
 
     private val type = object : TypeToken<Player.PlayerInfo>() {}.type
 

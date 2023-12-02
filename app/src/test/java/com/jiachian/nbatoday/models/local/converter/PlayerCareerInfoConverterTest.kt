@@ -1,7 +1,7 @@
 package com.jiachian.nbatoday.models.local.converter
 
 import com.google.gson.reflect.TypeToken
-import com.jiachian.nbatoday.database.converter.PlayerCareerInfoConverter
+import com.jiachian.nbatoday.database.converter.PlayerInfoConverter
 import com.jiachian.nbatoday.models.PlayerCareerFactory
 import com.jiachian.nbatoday.models.local.player.Player
 import org.hamcrest.CoreMatchers.`is`
@@ -9,7 +9,7 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
 
 class PlayerCareerInfoConverterTest {
-    private val converter = PlayerCareerInfoConverter(testGeneralGson)
+    private val converter = PlayerInfoConverter(testGeneralGson)
 
     @Test
     fun from_PlayerCareerInfoToString_isCorrect() {
