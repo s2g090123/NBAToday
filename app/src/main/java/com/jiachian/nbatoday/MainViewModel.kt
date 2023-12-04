@@ -45,7 +45,11 @@ class MainViewModel(
     private val currentState = screenStateHelper.currentState
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    fun loadData() {
+    init {
+        loadData()
+    }
+
+    private fun loadData() {
         if (isLoading.value || isLoaded.value) return
         viewModelScope.launch(dispatcherProvider.io) {
             isLoading.value = true

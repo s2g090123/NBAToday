@@ -4,7 +4,6 @@ import com.jiachian.nbatoday.datasource.local.bet.BetLocalSource
 import com.jiachian.nbatoday.models.local.bet.Bet
 import com.jiachian.nbatoday.models.local.bet.BetAndGame
 import com.jiachian.nbatoday.repository.user.UserRepository
-import com.jiachian.nbatoday.utils.showErrorToast
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 
@@ -30,7 +29,7 @@ class NBABetRepository(
                     )
                     userRepository.updatePoints(user.points - usedPoints)
                 }
-                ?: showErrorToast()
+                ?: showError()
         }
     }
 

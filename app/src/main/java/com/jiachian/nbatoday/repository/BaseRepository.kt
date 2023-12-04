@@ -1,7 +1,10 @@
 package com.jiachian.nbatoday.repository
 
+import com.jiachian.nbatoday.utils.showErrorToast
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.withContext
 import retrofit2.Response
 
 abstract class BaseRepository {
@@ -19,6 +22,12 @@ abstract class BaseRepository {
             if (!isLoadingEarly) {
                 isProgressingImp.value = false
             }
+        }
+    }
+
+    protected suspend fun showError() {
+        withContext(Dispatchers.Main) {
+            showErrorToast()
         }
     }
 }

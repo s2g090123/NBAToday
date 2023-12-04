@@ -12,7 +12,6 @@ import com.jiachian.nbatoday.models.remote.game.toGameUpdateData
 import com.jiachian.nbatoday.models.remote.game.toGames
 import com.jiachian.nbatoday.repository.team.TeamRepository
 import com.jiachian.nbatoday.utils.DateUtils
-import com.jiachian.nbatoday.utils.showErrorToast
 import java.util.Calendar
 import java.util.Date
 import java.util.concurrent.TimeUnit
@@ -38,7 +37,7 @@ class NBAScheduleRepository(
                         teamRepository.updateTeamStats()
                     }
                 }
-                ?: showErrorToast()
+                ?: showError()
         }
     }
 
@@ -53,7 +52,7 @@ class NBAScheduleRepository(
                 ?.let { gamesUpdateData ->
                     gameLocalSource.updateGames(gamesUpdateData)
                 }
-                ?: showErrorToast()
+                ?: showError()
         }
     }
 

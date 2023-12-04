@@ -4,7 +4,6 @@ import com.jiachian.nbatoday.datasource.remote.user.UserRemoteSource
 import com.jiachian.nbatoday.datastore.BaseDataStore
 import com.jiachian.nbatoday.models.local.user.User
 import com.jiachian.nbatoday.models.remote.user.toUser
-import com.jiachian.nbatoday.utils.showErrorToast
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 
@@ -25,7 +24,7 @@ class NBAUserRepository(
                 ?.let { user ->
                     dataStore.updateUser(user)
                 }
-                ?: showErrorToast()
+                ?: showError()
         }
     }
 
@@ -45,7 +44,7 @@ class NBAUserRepository(
                 ?.let { user ->
                     dataStore.updateUser(user)
                 }
-                ?: showErrorToast()
+                ?: showError()
         }
     }
 
@@ -62,7 +61,7 @@ class NBAUserRepository(
                             dataStore.updateUser(user.copy(points = points))
                         }
                 }
-                ?: showErrorToast()
+                ?: showError()
         }
     }
 
@@ -80,7 +79,7 @@ class NBAUserRepository(
                             dataStore.updateUser(user.copy(points = updatedPoints))
                         }
                 }
-                ?: showErrorToast()
+                ?: showError()
         }
     }
 }

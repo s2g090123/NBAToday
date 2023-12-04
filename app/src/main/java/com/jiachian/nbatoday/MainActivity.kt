@@ -42,7 +42,6 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-        viewModel.loadData()
 
         lifecycleScope.launch {
             viewModel.eventFlow
