@@ -1,18 +1,28 @@
 package com.jiachian.nbatoday.utils
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.widget.Toast
 import androidx.annotation.StringRes
 import com.jiachian.nbatoday.MainApplication
 import com.jiachian.nbatoday.R
 
 fun showErrorToast() {
-    val context = MainApplication.context
-    Toast.makeText(
-        context,
-        R.string.error,
-        Toast.LENGTH_SHORT
-    ).show()
+    val showToast = {
+        val context = MainApplication.context
+        showToast(
+            context,
+            R.string.error
+        )
+    }
+    if (Looper.myLooper() != Looper.getMainLooper()) {
+        Handler(Looper.getMainLooper()).post {
+            showToast()
+        }
+    } else {
+        showToast()
+    }
 }
 
 fun showToast(

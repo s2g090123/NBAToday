@@ -10,10 +10,10 @@ import java.util.TimeZone
 
 object DateUtils {
     fun getCalendar(): Calendar {
-        val cal = Calendar.getInstance()
-        cal.timeZone = TimeZone.getTimeZone("EST")
-        cal.time = Date()
-        return cal
+        return Calendar.getInstance().apply {
+            timeZone = TimeZone.getTimeZone("EST")
+            time = Date()
+        }
     }
 
     fun formatScoreboardGameDate(year: Int, month: Int, day: Int): String {
@@ -26,18 +26,18 @@ object DateUtils {
 
     @SuppressLint("SimpleDateFormat")
     fun parseDate(year: Int, month: Int, day: Int): Date? {
-        val sdf = SimpleDateFormat("yyyy-MM-dd").apply {
-            timeZone = TimeZone.getTimeZone("EST")
+        return SimpleDateFormat("yyyy-MM-dd").let {
+            it.timeZone = TimeZone.getTimeZone("EST")
+            it.parse(formatDate(year, month, day))
         }
-        return sdf.parse(DateUtils.formatDate(year, month, day))
     }
 
     @SuppressLint("SimpleDateFormat")
     fun parseDate(dateInFormat: String): Date? {
-        val sdf = SimpleDateFormat("yyyy-MM-dd").apply {
-            timeZone = TimeZone.getTimeZone("EST")
+        return SimpleDateFormat("yyyy-MM-dd").let {
+            it.timeZone = TimeZone.getTimeZone("EST")
+            it.parse(dateInFormat)
         }
-        return sdf.parse(dateInFormat)
     }
 
     fun parseDate(dateString: String?, dateFormat: SimpleDateFormat): Date? {
