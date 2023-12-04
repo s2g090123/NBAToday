@@ -1,33 +1,24 @@
 package com.jiachian.nbatoday.repository
 
-import com.jiachian.nbatoday.utils.showErrorToast
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.withContext
 import retrofit2.Response
 
 abstract class BaseRepository {
-    private val isProgressingImp = MutableStateFlow(false)
-    val isProgressing = isProgressingImp.asStateFlow()
+    private val isLoadingImp = MutableStateFlow(false)
+    val isLoading = isLoadingImp.asStateFlow()
 
     protected fun Response<*>.isError() = !isSuccessful || body() == null
 
     protected suspend fun <T> loading(runnable: suspend () -> T): T {
-        val isLoadingEarly = isProgressing.value
+        val isLoadingEarly = isLoading.value
         return try {
-            isProgressingImp.value = true
+            isLoadingImp.value = true
             runnable()
         } finally {
             if (!isLoadingEarly) {
-                isProgressingImp.value = false
+                isLoadingImp.value = false
             }
-        }
-    }
-
-    protected suspend fun showError() {
-        withContext(Dispatchers.Main) {
-            showErrorToast()
         }
     }
 }

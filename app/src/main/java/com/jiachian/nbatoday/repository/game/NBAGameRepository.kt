@@ -6,6 +6,7 @@ import com.jiachian.nbatoday.datasource.remote.game.GameRemoteSource
 import com.jiachian.nbatoday.models.local.game.GameAndBet
 import com.jiachian.nbatoday.models.local.score.BoxScoreAndGame
 import com.jiachian.nbatoday.models.remote.score.toBoxScore
+import com.jiachian.nbatoday.utils.showErrorToast
 import kotlinx.coroutines.flow.Flow
 
 class NBAGameRepository(
@@ -24,7 +25,7 @@ class NBAGameRepository(
                 ?.let { boxScore ->
                     boxScoreLocalSource.insertBoxScore(boxScore)
                 }
-                ?: showError()
+                ?: showErrorToast()
         }
     }
 

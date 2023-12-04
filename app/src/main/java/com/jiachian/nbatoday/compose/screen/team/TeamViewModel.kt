@@ -63,7 +63,7 @@ class TeamViewModel(
     val teamPlusMinusRank = teamRepository.getTeamPlusMinusRank(team.teamId)
         .stateIn(coroutineScope, SharingStarted.Eagerly, 0)
 
-    val isProgressing = teamRepository.isProgressing
+    val isProgressing = teamRepository.isLoading
     private val isTeamRefreshingImp = MutableStateFlow(false)
     val isTeamRefreshing = isTeamRefreshingImp.asStateFlow()
     private val selectPageImp = MutableStateFlow(TeamPageTab.PLAYERS)

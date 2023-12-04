@@ -52,7 +52,7 @@ class CalendarViewModel(
         }
     }
 
-    val isProgressing = repository.isProgressing
+    val isProgressing = repository.isLoading
 
     private val isLoadingGamesImp = MutableStateFlow(false)
     val isLoadingGames = isLoadingGamesImp.asStateFlow()
