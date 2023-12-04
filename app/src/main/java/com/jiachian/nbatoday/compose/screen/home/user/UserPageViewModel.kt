@@ -1,16 +1,16 @@
 package com.jiachian.nbatoday.compose.screen.home.user
 
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
-import com.jiachian.nbatoday.compose.state.NbaScreenState
 import com.jiachian.nbatoday.compose.theme.updateColors
 import com.jiachian.nbatoday.datastore.BaseDataStore
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.models.local.team.data.teamOfficial
+import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.repository.user.UserRepository
-import com.jiachian.nbatoday.utils.ScreenStateHelper
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -18,10 +18,10 @@ import kotlinx.coroutines.launch
 class UserPageViewModel(
     private val repository: UserRepository,
     private val dataStore: BaseDataStore,
-    private val screenStateHelper: ScreenStateHelper,
+    private val navigationController: NavigationController,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
-    coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
-) : ComposeViewModel(coroutineScope) {
+    private val coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
+) : ComposeViewModel() {
 
     val user = repository.user
         .stateIn(coroutineScope, SharingStarted.WhileSubscribed(5000), null)
@@ -33,7 +33,7 @@ class UserPageViewModel(
 
     fun openBetScreen() {
         val account = user.value?.account ?: return
-        screenStateHelper.openScreen(NbaScreenState.Bet(account))
+        navigationController.navigateToBet(account)
     }
 
     fun updateTheme(team: NBATeam) {
@@ -59,5 +59,9 @@ class UserPageViewModel(
         coroutineScope.launch(dispatcherProvider.io) {
             repository.register(account, password)
         }
+    }
+
+    override fun close() {
+        coroutineScope.cancel()
     }
 }

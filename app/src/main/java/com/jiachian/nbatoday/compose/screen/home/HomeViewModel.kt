@@ -5,14 +5,15 @@ import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.utils.ComposeViewModelProvider
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 class HomeViewModel(
     private val composeViewModelProvider: ComposeViewModelProvider,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
-    coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
-) : ComposeViewModel(coroutineScope) {
+    private val coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
+) : ComposeViewModel() {
     private val homePageImp = MutableStateFlow(HomePage.SCHEDULE)
     val homePage = homePageImp.asStateFlow()
 
@@ -39,5 +40,9 @@ class HomeViewModel(
 
     fun updateHomePage(page: HomePage) {
         homePageImp.value = page
+    }
+
+    override fun close() {
+        coroutineScope.cancel()
     }
 }

@@ -2,19 +2,20 @@ package com.jiachian.nbatoday.compose.screen.calendar
 
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.compose.screen.card.GameStatusCardViewModel
-import com.jiachian.nbatoday.compose.state.NbaScreenState
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.models.local.game.Game
 import com.jiachian.nbatoday.models.local.game.GameAndBet
 import com.jiachian.nbatoday.models.local.team.NBATeam
+import com.jiachian.nbatoday.navigation.NavigationController
+import com.jiachian.nbatoday.navigation.Route
 import com.jiachian.nbatoday.repository.game.GameRepository
 import com.jiachian.nbatoday.utils.ComposeViewModelProvider
 import com.jiachian.nbatoday.utils.DateUtils
-import com.jiachian.nbatoday.utils.ScreenStateHelper
 import java.util.Calendar
 import java.util.Date
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -28,11 +29,11 @@ private const val DaysPerWeek = 7
 class CalendarViewModel(
     dateTime: Long,
     repository: GameRepository,
-    private val screenStateHelper: ScreenStateHelper,
+    private val navigationController: NavigationController,
     private val composeViewModelProvider: ComposeViewModelProvider,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
-    coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
-) : ComposeViewModel(coroutineScope) {
+    private val coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
+) : ComposeViewModel() {
 
     private val date = Date(dateTime)
 
@@ -235,11 +236,11 @@ class CalendarViewModel(
     }
 
     fun openTeamStats(team: NBATeam) {
-        screenStateHelper.openScreen(NbaScreenState.Team(team))
+        navigationController.navigateToTeam(team.teamId)
     }
 
     fun openGameBoxScore(game: Game) {
-        screenStateHelper.openScreen(NbaScreenState.BoxScore(game))
+        navigationController.navigateToBoxScore(game.gameId)
     }
 
     fun createGameStatusCardViewModel(gameAndBet: GameAndBet): GameStatusCardViewModel {
@@ -248,5 +249,10 @@ class CalendarViewModel(
             dispatcherProvider = dispatcherProvider,
             coroutineScope = coroutineScope,
         )
+    }
+
+    override fun close() {
+        coroutineScope.cancel()
+        navigationController.backScreen(Route.CALENDAR)
     }
 }

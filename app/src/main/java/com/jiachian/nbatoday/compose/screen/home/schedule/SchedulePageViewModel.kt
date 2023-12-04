@@ -4,21 +4,21 @@ import android.annotation.SuppressLint
 import com.jiachian.nbatoday.ScheduleDateRange
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.compose.screen.card.GameStatusCardViewModel
-import com.jiachian.nbatoday.compose.state.NbaScreenState
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.models.local.game.Game
 import com.jiachian.nbatoday.models.local.game.GameAndBet
 import com.jiachian.nbatoday.models.local.team.NBATeam
+import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.repository.game.GameRepository
 import com.jiachian.nbatoday.repository.schedule.ScheduleRepository
 import com.jiachian.nbatoday.utils.ComposeViewModelProvider
 import com.jiachian.nbatoday.utils.DateUtils
-import com.jiachian.nbatoday.utils.ScreenStateHelper
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.TimeZone
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -30,11 +30,11 @@ import kotlinx.coroutines.withContext
 class SchedulePageViewModel(
     private val scheduleRepository: ScheduleRepository,
     private val gameRepository: GameRepository,
-    private val screenStateHelper: ScreenStateHelper,
+    private val navigationController: NavigationController,
     private val composeViewModelProvider: ComposeViewModelProvider,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
-    coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
-) : ComposeViewModel(coroutineScope) {
+    private val coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
+) : ComposeViewModel() {
 
     val scheduleDates: List<DateData> = getDateData()
     private val scheduleIndexImp = MutableStateFlow(scheduleDates.size / 2)
@@ -105,11 +105,11 @@ class SchedulePageViewModel(
     }
 
     fun openGameBoxScore(game: Game) {
-        screenStateHelper.openScreen(NbaScreenState.BoxScore(game))
+        navigationController.navigateToBoxScore(game.gameId)
     }
 
     fun openTeamStats(team: NBATeam) {
-        screenStateHelper.openScreen(NbaScreenState.Team(team))
+        navigationController.navigateToTeam(team.teamId)
     }
 
     @SuppressLint("SimpleDateFormat")
@@ -118,7 +118,7 @@ class SchedulePageViewModel(
             timeZone = TimeZone.getTimeZone("EST")
         }
         val date = format.parse(dateData.dateString) ?: return
-        screenStateHelper.openScreen(NbaScreenState.Calendar(date))
+        navigationController.navigateToCalendar(date.time)
     }
 
     fun createGameStatusCardViewModel(gameAndBet: GameAndBet): GameStatusCardViewModel {
@@ -127,5 +127,9 @@ class SchedulePageViewModel(
             dispatcherProvider = dispatcherProvider,
             coroutineScope = coroutineScope
         )
+    }
+
+    override fun close() {
+        coroutineScope.cancel()
     }
 }

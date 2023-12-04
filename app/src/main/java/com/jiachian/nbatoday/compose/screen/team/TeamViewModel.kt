@@ -3,21 +3,22 @@ package com.jiachian.nbatoday.compose.screen.team
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.compose.screen.card.GameStatusCardViewModel
 import com.jiachian.nbatoday.compose.screen.label.LabelHelper
-import com.jiachian.nbatoday.compose.state.NbaScreenState
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.models.local.game.Game
 import com.jiachian.nbatoday.models.local.game.GameAndBet
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.models.local.team.TeamPlayer
+import com.jiachian.nbatoday.navigation.NavigationController
+import com.jiachian.nbatoday.navigation.Route
 import com.jiachian.nbatoday.repository.game.GameRepository
 import com.jiachian.nbatoday.repository.team.TeamRepository
 import com.jiachian.nbatoday.utils.ComposeViewModelProvider
 import com.jiachian.nbatoday.utils.DateUtils
-import com.jiachian.nbatoday.utils.ScreenStateHelper
 import com.jiachian.nbatoday.utils.decimalFormat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -31,11 +32,11 @@ class TeamViewModel(
     teamId: Int,
     private val teamRepository: TeamRepository,
     gameRepository: GameRepository,
-    private val screenStateHelper: ScreenStateHelper,
+    private val navigationController: NavigationController,
     private val composeViewModelProvider: ComposeViewModelProvider,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
-    coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
-) : ComposeViewModel(coroutineScope) {
+    private val coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
+) : ComposeViewModel() {
     private val team = NBATeam.getTeamById(teamId)
     val colors = team.colors
 
@@ -321,11 +322,11 @@ class TeamViewModel(
     }
 
     fun openGameBoxScore(game: Game) {
-        screenStateHelper.openScreen(NbaScreenState.BoxScore(game))
+        navigationController.navigateToBoxScore(game.gameId)
     }
 
     fun openPlayerInfo(playerId: Int) {
-        screenStateHelper.openScreen(NbaScreenState.Player(playerId))
+        navigationController.navigateToPlayer(playerId)
     }
 
     fun createGameStatusCardViewModel(gameAndBet: GameAndBet): GameStatusCardViewModel {
@@ -334,5 +335,10 @@ class TeamViewModel(
             dispatcherProvider = dispatcherProvider,
             coroutineScope = coroutineScope
         )
+    }
+
+    override fun close() {
+        coroutineScope.cancel()
+        navigationController.backScreen(Route.TEAM)
     }
 }

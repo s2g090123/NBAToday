@@ -1,16 +1,17 @@
 package com.jiachian.nbatoday.compose.screen.bet
 
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
-import com.jiachian.nbatoday.compose.state.NbaScreenState
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.models.local.bet.BetAndGame
 import com.jiachian.nbatoday.models.local.game.GameStatus
+import com.jiachian.nbatoday.navigation.NavigationController
+import com.jiachian.nbatoday.navigation.Route
 import com.jiachian.nbatoday.repository.bet.BetRepository
-import com.jiachian.nbatoday.utils.ScreenStateHelper
 import java.util.Random
 import kotlin.math.abs
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -42,10 +43,10 @@ private const val MaxMagnification = 4
 class BetViewModel(
     account: String,
     private val repository: BetRepository,
-    private val screenStateHelper: ScreenStateHelper,
+    private val navigationController: NavigationController,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
-    coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
-) : ComposeViewModel(coroutineScope) {
+    private val coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
+) : ComposeViewModel() {
 
     private val isRefreshingImp = MutableStateFlow(false)
     val isRefreshing = isRefreshingImp.asStateFlow()
@@ -74,10 +75,10 @@ class BetViewModel(
     fun clickBetAndGame(betAndGame: BetAndGame) {
         when (betAndGame.game.gameStatus) {
             GameStatus.COMING_SOON -> {
-                screenStateHelper.openScreen(NbaScreenState.Team(betAndGame.game.homeTeam.team))
+                navigationController.navigateToTeam(betAndGame.game.homeTeamId)
             }
             GameStatus.PLAYING -> {
-                screenStateHelper.openScreen(NbaScreenState.BoxScore(betAndGame.game))
+                navigationController.navigateToBoxScore(betAndGame.game.gameId)
             }
             GameStatus.FINAL -> {
                 settleBets(betAndGame)
@@ -175,5 +176,10 @@ class BetViewModel(
                 abs(turnTableData.winPoints) + abs(turnTableData.losePoints)
             }
         }
+    }
+
+    override fun close() {
+        coroutineScope.cancel()
+        navigationController.backScreen(Route.BET)
     }
 }

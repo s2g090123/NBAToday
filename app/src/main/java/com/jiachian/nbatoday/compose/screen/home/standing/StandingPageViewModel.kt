@@ -4,14 +4,14 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
-import com.jiachian.nbatoday.compose.state.NbaScreenState
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.models.local.team.Team
+import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.repository.team.TeamRepository
-import com.jiachian.nbatoday.utils.ScreenStateHelper
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,10 +22,10 @@ import kotlinx.coroutines.withContext
 
 class StandingPageViewModel(
     private val repository: TeamRepository,
-    private val screenStateHelper: ScreenStateHelper,
+    private val navigationController: NavigationController,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
-    coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
-) : ComposeViewModel(coroutineScope) {
+    private val coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
+) : ComposeViewModel() {
 
     private val labelToEvaluationAccessor = mapOf(
         "GP" to { stats: Team -> stats.gamePlayed.toString() },
@@ -267,12 +267,16 @@ class StandingPageViewModel(
     }
 
     fun openTeamStats(team: NBATeam) {
-        screenStateHelper.openScreen(NbaScreenState.Team(team))
+        navigationController.navigateToTeam(team.teamId)
     }
 
     fun getEvaluationTextByLabel(label: StandingLabel, stats: Team): String {
         val labelText = label.text
         val accessor = labelToEvaluationAccessor[labelText] ?: return ""
         return accessor(stats)
+    }
+
+    override fun close() {
+        coroutineScope.cancel()
     }
 }

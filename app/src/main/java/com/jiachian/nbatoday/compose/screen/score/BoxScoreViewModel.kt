@@ -8,16 +8,17 @@ import com.jiachian.nbatoday.compose.screen.score.label.ScoreLabel
 import com.jiachian.nbatoday.compose.screen.score.label.ScoreLeaderLabel
 import com.jiachian.nbatoday.compose.screen.score.label.ScoreTeamLabel
 import com.jiachian.nbatoday.compose.screen.score.tab.BoxScoreTab
-import com.jiachian.nbatoday.compose.state.NbaScreenState
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.models.local.score.BoxScore
 import com.jiachian.nbatoday.models.local.score.BoxScoreRowData
 import com.jiachian.nbatoday.models.local.score.createRowData
 import com.jiachian.nbatoday.models.local.team.data.teamOfficial
+import com.jiachian.nbatoday.navigation.NavigationController
+import com.jiachian.nbatoday.navigation.Route
 import com.jiachian.nbatoday.repository.game.GameRepository
-import com.jiachian.nbatoday.utils.ScreenStateHelper
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -30,10 +31,10 @@ import kotlinx.coroutines.withContext
 class BoxScoreViewModel(
     private val gameId: String,
     private val repository: GameRepository,
-    private val screenStateHelper: ScreenStateHelper,
+    private val navigationController: NavigationController,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
-    coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
-) : ComposeViewModel(coroutineScope) {
+    private val coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
+) : ComposeViewModel() {
     private val isRefreshingImp = MutableStateFlow(false)
     val isRefreshing = isRefreshingImp.asStateFlow()
 
@@ -175,6 +176,11 @@ class BoxScoreViewModel(
     }
 
     fun openPlayerCareer(playerId: Int) {
-        screenStateHelper.openScreen(NbaScreenState.Player(playerId))
+        navigationController.navigateToPlayer(playerId)
+    }
+
+    override fun close() {
+        coroutineScope.cancel()
+        navigationController.backScreen(Route.BOX_SCORE)
     }
 }

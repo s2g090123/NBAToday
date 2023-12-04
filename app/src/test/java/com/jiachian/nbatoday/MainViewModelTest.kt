@@ -156,7 +156,7 @@ class MainViewModelTest {
             NbaState.Bet(
                 BetViewModel(
                     account = UserAccount,
-                    repository = repository,
+                    betRepository = repository,
                     openScreen = {}
                 )
             )
@@ -225,7 +225,7 @@ class MainViewModelTest {
         val state = NbaState.Bet(
             BetViewModel(
                 account = UserAccount,
-                repository = repository,
+                betRepository = repository,
                 openScreen = {}
             )
         )

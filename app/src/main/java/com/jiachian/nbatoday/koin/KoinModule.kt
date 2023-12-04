@@ -37,7 +37,6 @@ import com.jiachian.nbatoday.repository.team.TeamRepository
 import com.jiachian.nbatoday.repository.user.NBAUserRepository
 import com.jiachian.nbatoday.repository.user.UserRepository
 import com.jiachian.nbatoday.utils.ComposeViewModelProvider
-import com.jiachian.nbatoday.utils.ScreenStateHelper
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -61,17 +60,16 @@ val module = module {
     factory { NBABetLocalSource(get()) as BetLocalSource }
     factory { ComposeViewModelProvider(get(), get(), get()) }
     factory { RepositoryProvider(get(), get(), get(), get(), get(), get()) }
-    factory { NavigationController(get()) }
 
     single { NBADatabase.getInstance(androidContext()) }
     single { NBADataStore(androidApplication()) as BaseDataStore }
-    single { ScreenStateHelper(get(), get()) }
     single { NBAScheduleRepository(get(), get(), get(), get()) as ScheduleRepository }
     single { NBAGameRepository(get(), get(), get()) as GameRepository }
     single { NBATeamRepository(get(), get()) as TeamRepository }
     single { NBAPlayerRepository(get(), get()) as PlayerRepository }
     single { NBABetRepository(get(), get()) as BetRepository }
     single { NBAUserRepository(get(), get()) as UserRepository }
+    single { NavigationController() }
 
     viewModel { MainViewModel(get(), get(), get(), get()) }
 }

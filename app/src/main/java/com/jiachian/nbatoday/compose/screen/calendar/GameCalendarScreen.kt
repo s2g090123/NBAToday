@@ -70,10 +70,7 @@ import java.util.Date
 private const val DaysPerWeek = 7
 
 @Composable
-fun GameCalendarScreen(
-    viewModel: CalendarViewModel,
-    onClose: () -> Unit
-) {
+fun GameCalendarScreen(viewModel: CalendarViewModel) {
     val isRefreshing by viewModel.isProgressing.collectAsState()
 
     Column(
@@ -86,7 +83,7 @@ fun GameCalendarScreen(
         CalendarTopBar(
             modifier = Modifier.fillMaxWidth(),
             viewModel = viewModel,
-            onClose = onClose
+            onClose = viewModel::close
         )
         CalendarContent(
             modifier = Modifier

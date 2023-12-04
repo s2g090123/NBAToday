@@ -133,7 +133,7 @@ class BetViewModelTest {
     ): BetViewModel {
         return BetViewModel(
             account = UserAccount,
-            repository = repository,
+            betRepository = repository,
             openScreen = {
                 currentState = it
             },

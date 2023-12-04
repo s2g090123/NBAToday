@@ -26,14 +26,11 @@ import com.jiachian.nbatoday.compose.widget.LoadingScreen
 import com.jiachian.nbatoday.utils.noRippleClickable
 
 @Composable
-fun TeamScreen(
-    viewModel: TeamViewModel,
-    onBack: () -> Unit
-) {
+fun TeamScreen(viewModel: TeamViewModel) {
     val isRefreshing by viewModel.isProgressing.collectAsState()
     val isTeamRefreshing by viewModel.isTeamRefreshing.collectAsState()
     val isDataLoaded by viewModel.isDataLoaded.collectAsState()
-    BackHandle(onBack = onBack) {
+    BackHandle(onBack = viewModel::close) {
         when {
             isTeamRefreshing || !isDataLoaded -> {
                 RefreshScreen(
@@ -41,8 +38,7 @@ fun TeamScreen(
                         .fillMaxSize()
                         .background(viewModel.colors.primary)
                         .noRippleClickable { },
-                    viewModel = viewModel,
-                    onBack = onBack
+                    viewModel = viewModel
                 )
             }
 
@@ -54,7 +50,7 @@ fun TeamScreen(
                         .noRippleClickable { }
                         .verticalScroll(rememberScrollState()),
                     viewModel = viewModel,
-                    onBack = onBack
+                    onBack = viewModel::close
                 )
             }
         }
@@ -98,8 +94,7 @@ private fun TeamDetailScreen(
 @Composable
 private fun RefreshScreen(
     modifier: Modifier = Modifier,
-    viewModel: TeamViewModel,
-    onBack: () -> Unit
+    viewModel: TeamViewModel
 ) {
     Box(modifier = modifier) {
         IconButton(
@@ -108,7 +103,7 @@ private fun RefreshScreen(
                 .padding(top = 8.dp, start = 8.dp),
             drawableRes = R.drawable.ic_black_back,
             tint = viewModel.colors.extra2,
-            onClick = onBack,
+            onClick = viewModel::close,
         )
         CircularProgressIndicator(
             modifier = Modifier.align(Alignment.Center),

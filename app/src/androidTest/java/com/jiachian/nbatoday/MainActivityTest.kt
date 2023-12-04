@@ -120,7 +120,7 @@ class MainActivityTest {
             NbaState.Bet(
                 BetViewModel(
                     account = UserAccount,
-                    repository = repository,
+                    betRepository = repository,
                     openScreen = {}
                 )
             )

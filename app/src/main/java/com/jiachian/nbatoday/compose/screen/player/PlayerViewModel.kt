@@ -7,8 +7,11 @@ import com.jiachian.nbatoday.compose.screen.player.utils.PlayerInfoHelper
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.models.local.player.Player.PlayerStats.Stats
+import com.jiachian.nbatoday.navigation.NavigationController
+import com.jiachian.nbatoday.navigation.Route
 import com.jiachian.nbatoday.repository.player.PlayerRepository
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,9 +24,10 @@ import kotlinx.coroutines.withContext
 class PlayerViewModel(
     private val playerId: Int,
     private val repository: PlayerRepository,
+    private val navigationController: NavigationController,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
-    coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
-) : ComposeViewModel(coroutineScope) {
+    private val coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
+) : ComposeViewModel() {
 
     private val isRefreshingImp = MutableStateFlow(false)
     val isRefreshing = isRefreshingImp.asStateFlow()
@@ -277,5 +281,10 @@ class PlayerViewModel(
 
     fun updateStatsSort(sort: CareerStatsSort) {
         statsSortImp.value = sort
+    }
+
+    override fun close() {
+        coroutineScope.cancel()
+        navigationController.backScreen(Route.PLAYER)
     }
 }

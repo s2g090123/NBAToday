@@ -43,14 +43,11 @@ import com.jiachian.nbatoday.models.local.score.BoxScore
 import com.jiachian.nbatoday.utils.noRippleClickable
 
 @Composable
-fun BoxScoreScreen(
-    viewModel: BoxScoreViewModel,
-    onBack: () -> Unit
-) {
+fun BoxScoreScreen(viewModel: BoxScoreViewModel) {
     val isRefreshing by viewModel.isRefreshing.collectAsState()
     val date by viewModel.date.collectAsState()
     val isNotFound by viewModel.isNotFound.collectAsState()
-    BackHandle(onBack = onBack) {
+    BackHandle(onBack = viewModel::close) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -62,7 +59,7 @@ fun BoxScoreScreen(
                     .padding(top = 8.dp)
                     .fillMaxWidth(),
                 date = date,
-                onBack = onBack
+                onBack = viewModel::close
             )
             when {
                 isRefreshing -> {

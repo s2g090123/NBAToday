@@ -55,7 +55,7 @@ class BetScreenTest {
         repository = TestRepository()
         viewModel = BetViewModel(
             account = UserAccount,
-            repository = repository,
+            betRepository = repository,
             openScreen = { currentState = it },
             dispatcherProvider = coroutineEnvironment.testDispatcherProvider
         )

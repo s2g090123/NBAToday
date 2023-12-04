@@ -28,10 +28,7 @@ import com.jiachian.nbatoday.compose.widget.IconButton
 import com.jiachian.nbatoday.compose.widget.LoadingScreen
 
 @Composable
-fun PlayerCareerScreen(
-    viewModel: PlayerViewModel,
-    onBack: () -> Unit,
-) {
+fun PlayerCareerScreen(viewModel: PlayerViewModel) {
     val isRefreshing by viewModel.isRefreshing.collectAsState()
     val notFoundVisible by viewModel.notFoundVisible.collectAsState()
     FocusableColumn(
@@ -45,7 +42,7 @@ fun PlayerCareerScreen(
                 .padding(top = 8.dp, start = 8.dp),
             drawableRes = R.drawable.ic_black_back,
             tint = MaterialTheme.colors.secondary,
-            onClick = onBack
+            onClick = viewModel::close
         )
         when {
             isRefreshing -> {

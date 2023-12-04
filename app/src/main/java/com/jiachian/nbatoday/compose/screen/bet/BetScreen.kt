@@ -53,18 +53,15 @@ import kotlin.math.abs
 private const val CrownIconRotationZ = -45f
 
 @Composable
-fun BetScreen(
-    viewModel: BetViewModel,
-    onBackClick: () -> Unit
-) {
-    BackHandle(onBack = onBackClick) {
+fun BetScreen(viewModel: BetViewModel) {
+    BackHandle(onBack = viewModel::close) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colors.primary)
                 .noRippleClickable { }
         ) {
-            BetTop(onBackClick = onBackClick)
+            BetTop(onBackClick = viewModel::close)
             BetBody(
                 modifier = Modifier
                     .testTag("bet_lc_cards")

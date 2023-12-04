@@ -1,5 +1,6 @@
 package com.jiachian.nbatoday.compose.screen.main
 
+import android.os.Bundle
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.InfiniteRepeatableSpec
@@ -10,17 +11,13 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -39,9 +36,9 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import com.jiachian.nbatoday.MainViewModel
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.Transparency25
@@ -51,24 +48,22 @@ import com.jiachian.nbatoday.compose.screen.home.HomeScreen
 import com.jiachian.nbatoday.compose.screen.player.PlayerCareerScreen
 import com.jiachian.nbatoday.compose.screen.score.BoxScoreScreen
 import com.jiachian.nbatoday.compose.screen.team.TeamScreen
-import com.jiachian.nbatoday.compose.state.NbaState
-import com.jiachian.nbatoday.compose.widget.BackHandle
-
-private const val RouteSplash = "splash"
-private const val RouteContent = "content"
+import com.jiachian.nbatoday.navigation.Route
+import com.jiachian.nbatoday.utils.getOrError
 
 private const val SplashOffsetAnimationDurationMs = 2000
 
 @Composable
-fun MainScreen(viewModel: MainViewModel) {
-    val navController = rememberNavController()
-    val isLoaded by viewModel.isLoaded.collectAsState()
+fun MainScreen(
+    viewModel: MainViewModel,
+    navController: NavHostController,
+) {
     NavHost(
         modifier = Modifier.fillMaxSize(),
         navController = navController,
-        startDestination = RouteSplash
+        startDestination = Route.SPLASH,
     ) {
-        composable(RouteSplash) {
+        composable(Route.SPLASH) {
             SplashScreen(
                 colors = listOf(
                     MaterialTheme.colors.secondary.copy(Transparency25),
@@ -76,22 +71,64 @@ fun MainScreen(viewModel: MainViewModel) {
                 )
             )
         }
-        composable(RouteContent) {
-            ContentScreen(viewModel)
+        composable(Route.HOME) {
+            remember {
+                viewModel.viewModelProvider.getHomeViewModel()
+            }.let { viewModel ->
+                HomeScreen(viewModel = viewModel)
+            }
         }
-    }
-    LaunchedEffect(isLoaded) {
-        if (isLoaded) {
-            navController.navigate(RouteContent)
+        composable("${Route.BOX_SCORE}/{gameId}") {
+            remember {
+                viewModel.viewModelProvider.getBoxScoreViewModel(
+                    gameId = it.arguments?.getString("gameId").getOrError()
+                )
+            }.let { viewModel ->
+                BoxScoreScreen(viewModel = viewModel)
+            }
+        }
+        composable("${Route.TEAM}/{teamId}") {
+            remember {
+                viewModel.viewModelProvider.getTeamViewModel(
+                    teamId = it.arguments?.getStringToInt("teamId").getOrError()
+                )
+            }.let { viewModel ->
+                TeamScreen(viewModel = viewModel)
+            }
+        }
+        composable("${Route.PLAYER}/{playerId}") {
+            remember {
+                viewModel.viewModelProvider.getPlayerViewModel(
+                    playerId = it.arguments?.getStringToInt("playerId").getOrError()
+                )
+            }.let { viewModel ->
+                PlayerCareerScreen(viewModel = viewModel)
+            }
+        }
+        composable("${Route.CALENDAR}/{dateTime}") {
+            remember {
+                viewModel.viewModelProvider.getCalendarViewModel(
+                    dateTime = it.arguments?.getStringToLong("dateTime").getOrError()
+                )
+            }.let { viewModel ->
+                GameCalendarScreen(viewModel = viewModel)
+            }
+        }
+        composable("${Route.BET}/{account}") {
+            remember {
+                viewModel.viewModelProvider.getBetViewModel(
+                    account = it.arguments?.getString("account").getOrError()
+                )
+            }.let { viewModel ->
+                BetScreen(viewModel = viewModel)
+            }
         }
     }
 }
 
 @OptIn(ExperimentalTextApi::class)
 @Composable
-private fun SplashScreen(
-    colors: List<Color>
-) {
+private fun SplashScreen(colors: List<Color>) {
     val infiniteAnimation = rememberInfiniteTransition()
     val colorAnimation by infiniteAnimation.animateColor(
         initialValue = MaterialTheme.colors.secondary.copy(Transparency25),
@@ -146,50 +183,5 @@ private fun SplashScreen(
     }
 }
 
-@Composable
-private fun ContentScreen(
-    viewModel: MainViewModel
-) {
-    val stateStack by viewModel.stateStack.collectAsState()
-    Scaffold { padding ->
-        BackHandle(onBack = viewModel::exitScreen) {
-            Box(modifier = Modifier.padding(padding)) {
-                stateStack.forEach { state ->
-                    when (state) {
-                        is NbaState.Home -> HomeScreen(state.viewModel)
-                        is NbaState.BoxScore -> {
-                            BoxScoreScreen(
-                                viewModel = state.viewModel,
-                                onBack = viewModel::exitScreen,
-                            )
-                        }
-                        is NbaState.Team -> {
-                            TeamScreen(
-                                viewModel = state.viewModel,
-                                onBack = viewModel::exitScreen,
-                            )
-                        }
-                        is NbaState.Player -> {
-                            PlayerCareerScreen(
-                                viewModel = state.viewModel,
-                                onBack = viewModel::exitScreen,
-                            )
-                        }
-                        is NbaState.Calendar -> {
-                            GameCalendarScreen(
-                                viewModel = state.viewModel,
-                                onClose = viewModel::exitScreen,
-                            )
-                        }
-                        is NbaState.Bet -> {
-                            BetScreen(
-                                viewModel = state.viewModel,
-                                onBackClick = viewModel::exitScreen,
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
+private fun Bundle.getStringToInt(key: String) = this.getString(key)?.toIntOrNull()
+private fun Bundle.getStringToLong(key: String) = this.getString(key)?.toLongOrNull()
