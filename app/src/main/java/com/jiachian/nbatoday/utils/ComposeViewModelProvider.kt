@@ -13,7 +13,6 @@ import com.jiachian.nbatoday.compose.screen.team.TeamViewModel
 import com.jiachian.nbatoday.datastore.BaseDataStore
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
-import com.jiachian.nbatoday.models.local.game.Game
 import com.jiachian.nbatoday.models.local.game.GameAndBet
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.repository.RepositoryProvider
@@ -37,12 +36,12 @@ class ComposeViewModelProvider(
     }
 
     fun getBoxScoreViewModel(
-        game: Game,
+        gameId: String,
         dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
         coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined),
     ): BoxScoreViewModel {
         return BoxScoreViewModel(
-            game = game,
+            gameId = gameId,
             repository = repositoryProvider.game,
             screenStateHelper = screenStateHelper,
             dispatcherProvider = dispatcherProvider,

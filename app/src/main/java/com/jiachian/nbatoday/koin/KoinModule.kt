@@ -22,6 +22,7 @@ import com.jiachian.nbatoday.datasource.remote.user.NBAUserRemoteSource
 import com.jiachian.nbatoday.datasource.remote.user.UserRemoteSource
 import com.jiachian.nbatoday.datastore.BaseDataStore
 import com.jiachian.nbatoday.datastore.NBADataStore
+import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.repository.RepositoryProvider
 import com.jiachian.nbatoday.repository.bet.BetRepository
 import com.jiachian.nbatoday.repository.bet.NBABetRepository
@@ -60,6 +61,7 @@ val module = module {
     factory { NBABetLocalSource(get()) as BetLocalSource }
     factory { ComposeViewModelProvider(get(), get(), get()) }
     factory { RepositoryProvider(get(), get(), get(), get(), get(), get()) }
+    factory { NavigationController(get()) }
 
     single { NBADatabase.getInstance(androidContext()) }
     single { NBADataStore(androidApplication()) as BaseDataStore }
@@ -71,5 +73,5 @@ val module = module {
     single { NBABetRepository(get(), get()) as BetRepository }
     single { NBAUserRepository(get(), get()) as UserRepository }
 
-    viewModel { MainViewModel(get(), get(), get()) }
+    viewModel { MainViewModel(get(), get(), get(), get()) }
 }

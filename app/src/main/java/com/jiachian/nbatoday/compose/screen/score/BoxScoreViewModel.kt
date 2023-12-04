@@ -11,7 +11,6 @@ import com.jiachian.nbatoday.compose.screen.score.tab.BoxScoreTab
 import com.jiachian.nbatoday.compose.state.NbaScreenState
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
-import com.jiachian.nbatoday.models.local.game.Game
 import com.jiachian.nbatoday.models.local.score.BoxScore
 import com.jiachian.nbatoday.models.local.score.BoxScoreRowData
 import com.jiachian.nbatoday.models.local.score.createRowData
@@ -29,20 +28,20 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class BoxScoreViewModel(
-    game: Game,
+    private val gameId: String,
     private val repository: GameRepository,
     private val screenStateHelper: ScreenStateHelper,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
     coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
 ) : ComposeViewModel(coroutineScope) {
-
-    private val gameId = game.gameId
-
     private val isRefreshingImp = MutableStateFlow(false)
     val isRefreshing = isRefreshingImp.asStateFlow()
 
-    val boxScore = repository.getBoxScore(gameId)
-        .stateIn(coroutineScope, SharingStarted.Lazily, null)
+    private val boxScoreAndGame = repository.getBoxScoreAndGame(gameId)
+
+    val boxScore = boxScoreAndGame.map {
+        it?.boxScore
+    }.stateIn(coroutineScope, SharingStarted.Eagerly, null)
 
     val date = boxScore.map {
         it?.gameDate ?: ""
@@ -72,14 +71,18 @@ class BoxScoreViewModel(
         score?.awayTeam?.team ?: teamOfficial
     }.stateIn(coroutineScope, SharingStarted.Eagerly, teamOfficial)
 
-    val homeLeader = boxScore.map { score ->
-        val homePlayerId = game.homeLeaderPlayerId
+    val homeLeader = boxScoreAndGame.map { boxScoreAndGame ->
+        val score = boxScoreAndGame?.boxScore
+        val game = boxScoreAndGame?.game
+        val homePlayerId = game?.homeLeaderPlayerId
         score?.homeTeam?.players?.firstOrNull {
             it.playerId == homePlayerId
         } ?: score?.homeTeam?.getMostPointsPlayer()
     }.stateIn(coroutineScope, SharingStarted.Lazily, null)
-    val awayLeader = boxScore.map { score ->
-        val awayPlayerId = game.awayLeadersPlayerId
+    val awayLeader = boxScoreAndGame.map { boxScoreAndGame ->
+        val score = boxScoreAndGame?.boxScore
+        val game = boxScoreAndGame?.game
+        val awayPlayerId = game?.awayLeadersPlayerId
         score?.awayTeam?.players?.firstOrNull {
             it.playerId == awayPlayerId
         } ?: score?.awayTeam?.getMostPointsPlayer()

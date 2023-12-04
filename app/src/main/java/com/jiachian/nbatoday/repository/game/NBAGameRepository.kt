@@ -4,7 +4,7 @@ import com.jiachian.nbatoday.datasource.local.boxscore.BoxScoreLocalSource
 import com.jiachian.nbatoday.datasource.local.game.GameLocalSource
 import com.jiachian.nbatoday.datasource.remote.game.GameRemoteSource
 import com.jiachian.nbatoday.models.local.game.GameAndBet
-import com.jiachian.nbatoday.models.local.score.BoxScore
+import com.jiachian.nbatoday.models.local.score.BoxScoreAndGame
 import com.jiachian.nbatoday.models.remote.score.toBoxScore
 import kotlinx.coroutines.flow.Flow
 
@@ -32,8 +32,8 @@ class NBAGameRepository(
         return gameLocalSource.getGamesAndBetsDuring(from, to)
     }
 
-    override fun getBoxScore(gameId: String): Flow<BoxScore?> {
-        return boxScoreLocalSource.getBoxScore(gameId)
+    override fun getBoxScoreAndGame(gameId: String): Flow<BoxScoreAndGame?> {
+        return boxScoreLocalSource.getBoxScoreAndGame(gameId)
     }
 
     override fun getGamesAndBets(): Flow<List<GameAndBet>> {
