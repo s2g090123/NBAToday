@@ -26,13 +26,15 @@ import kotlinx.coroutines.withContext
 private const val DaysPerWeek = 7
 
 class CalendarViewModel(
-    val date: Date,
+    dateTime: Long,
     repository: GameRepository,
     private val screenStateHelper: ScreenStateHelper,
     private val composeViewModelProvider: ComposeViewModelProvider,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
     coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
 ) : ComposeViewModel(coroutineScope) {
+
+    private val date = Date(dateTime)
 
     private val games = repository.getGamesAndBets()
 

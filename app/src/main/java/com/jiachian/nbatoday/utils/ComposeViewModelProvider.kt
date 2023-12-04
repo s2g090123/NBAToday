@@ -16,7 +16,6 @@ import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.models.local.game.GameAndBet
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.repository.RepositoryProvider
-import java.util.Date
 import kotlinx.coroutines.CoroutineScope
 
 class ComposeViewModelProvider(
@@ -79,12 +78,12 @@ class ComposeViewModelProvider(
     }
 
     fun getCalendarViewModel(
-        date: Date,
+        dateTime: Long,
         dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
         coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined),
     ): CalendarViewModel {
         return CalendarViewModel(
-            date = date,
+            dateTime = dateTime,
             repository = repositoryProvider.game,
             screenStateHelper = screenStateHelper,
             composeViewModelProvider = this,

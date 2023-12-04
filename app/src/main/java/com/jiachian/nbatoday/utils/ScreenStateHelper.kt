@@ -37,7 +37,7 @@ class ScreenStateHelper(
                 NbaState.Player(viewModelProvider.getPlayerViewModel(screenState.playerId))
             }
             is NbaScreenState.Calendar -> {
-                NbaState.Calendar(viewModelProvider.getCalendarViewModel(screenState.date))
+                NbaState.Calendar(viewModelProvider.getCalendarViewModel(screenState.date.time))
             }
             is NbaScreenState.Bet -> {
                 NbaState.Bet(viewModelProvider.getBetViewModel(screenState.account))
