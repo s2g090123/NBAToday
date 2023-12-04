@@ -4,17 +4,17 @@ import com.jiachian.nbatoday.BasicNumber
 import com.jiachian.nbatoday.HomePlayerFullName
 import com.jiachian.nbatoday.HomePlayerId
 import com.jiachian.nbatoday.HomeTeamId
-import com.jiachian.nbatoday.models.remote.team.RemoteTeamPlayerStats
-import com.jiachian.nbatoday.models.remote.team.RemoteTeamStats
+import com.jiachian.nbatoday.models.remote.team.RemoteTeam
+import com.jiachian.nbatoday.models.remote.team.RemoteTeamPlayer
 
 object RemoteTeamFactory {
-    fun getRemoteTeamPlayerStats(): RemoteTeamPlayerStats {
-        return RemoteTeamPlayerStats(
-            parameters = RemoteTeamPlayerStats.RemoteParameters(
+    fun getRemoteTeamPlayerStats(): RemoteTeamPlayer {
+        return RemoteTeamPlayer(
+            parameters = RemoteTeamPlayer.RemoteParameters(
                 teamId = HomeTeamId
             ),
             data = listOf(
-                RemoteTeamPlayerStats.RemoteResult(
+                RemoteTeamPlayer.RemoteResult(
                     name = "PlayersSeasonTotals",
                     headers = listOf(
                         "PLAYER_ID",
@@ -79,10 +79,10 @@ object RemoteTeamFactory {
         )
     }
 
-    fun getRemoteTeamStats(): RemoteTeamStats {
-        return RemoteTeamStats(
+    fun getRemoteTeamStats(): RemoteTeam {
+        return RemoteTeam(
             data = listOf(
-                RemoteTeamStats.RemoteResult(
+                RemoteTeam.RemoteResult(
                     name = "LeagueDashTeamStats",
                     headers = listOf(
                         "TEAM_ID",

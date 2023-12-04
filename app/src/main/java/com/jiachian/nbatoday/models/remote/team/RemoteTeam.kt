@@ -2,7 +2,7 @@ package com.jiachian.nbatoday.models.remote.team
 
 import com.google.gson.annotations.SerializedName
 
-data class RemoteTeamStats(
+data class RemoteTeam(
     @SerializedName("resultSets") val data: List<RemoteResult>?
 ) {
     data class RemoteResult(

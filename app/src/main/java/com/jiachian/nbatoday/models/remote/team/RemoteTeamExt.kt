@@ -6,13 +6,13 @@ import com.jiachian.nbatoday.utils.decimalFormat
 import com.jiachian.nbatoday.utils.getOrZero
 import com.jiachian.nbatoday.utils.toPercentage
 
-fun RemoteTeamStats.toTeamStats(): List<Team> {
+fun RemoteTeam.toTeamStats(): List<Team> {
     return result?.rowData?.mapNotNull { data ->
         createTeamStats(data)
     } ?: emptyList()
 }
 
-private fun RemoteTeamStats.createTeamStats(data: List<String>): Team? {
+private fun RemoteTeam.createTeamStats(data: List<String>): Team? {
     val teamId = getStatsResult(data, "TEAM_ID")?.toIntOrNull() ?: return null
     val team = NBATeam.getTeamById(teamId)
     return Team(

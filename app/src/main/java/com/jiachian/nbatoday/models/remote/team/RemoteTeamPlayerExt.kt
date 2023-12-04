@@ -5,14 +5,14 @@ import com.jiachian.nbatoday.utils.getOrNA
 import com.jiachian.nbatoday.utils.getOrZero
 import com.jiachian.nbatoday.utils.toPercentage
 
-fun RemoteTeamPlayerStats.toTeamPlayerStats(): List<TeamPlayer> {
+fun RemoteTeamPlayer.toTeamPlayerStats(): List<TeamPlayer> {
     val teamId = parameters?.teamId ?: return emptyList()
     return result?.rowData?.mapNotNull { data ->
         createPlayerStats(data, teamId)
     } ?: emptyList()
 }
 
-private fun RemoteTeamPlayerStats.createPlayerStats(data: List<String>, teamId: Int): TeamPlayer? {
+private fun RemoteTeamPlayer.createPlayerStats(data: List<String>, teamId: Int): TeamPlayer? {
     return TeamPlayer(
         playerId = getPlayerResult(data, "PLAYER_ID")?.toIntOrNull() ?: return null,
         teamId = teamId,

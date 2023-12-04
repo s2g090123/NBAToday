@@ -17,8 +17,8 @@ import com.jiachian.nbatoday.models.remote.player.RemotePlayer
 import com.jiachian.nbatoday.models.remote.player.RemotePlayerInfo
 import com.jiachian.nbatoday.models.remote.player.RemotePlayerStats
 import com.jiachian.nbatoday.models.remote.score.RemoteBoxScore
-import com.jiachian.nbatoday.models.remote.team.RemoteTeamPlayerStats
-import com.jiachian.nbatoday.models.remote.team.RemoteTeamStats
+import com.jiachian.nbatoday.models.remote.team.RemoteTeam
+import com.jiachian.nbatoday.models.remote.team.RemoteTeamPlayer
 import com.jiachian.nbatoday.models.remote.user.LoginBody
 import com.jiachian.nbatoday.models.remote.user.UpdatePasswordBody
 import com.jiachian.nbatoday.models.remote.user.UpdatePointBody
@@ -60,15 +60,15 @@ class NbaRemoteDataSourceTest {
         override suspend fun getTeamPlayersStats(
             teamId: Int,
             season: String
-        ): Response<RemoteTeamPlayerStats> {
+        ): Response<RemoteTeamPlayer> {
             return Response.success(RemoteTeamFactory.getRemoteTeamPlayerStats())
         }
 
-        override suspend fun getTeamStats(season: String, teamId: Int): Response<RemoteTeamStats> {
+        override suspend fun getTeamStats(season: String, teamId: Int): Response<RemoteTeam> {
             return Response.success(RemoteTeamFactory.getRemoteTeamStats())
         }
 
-        override suspend fun getTeamStats(season: String): Response<RemoteTeamStats> {
+        override suspend fun getTeamStats(season: String): Response<RemoteTeam> {
             return Response.success(RemoteTeamFactory.getRemoteTeamStats())
         }
 

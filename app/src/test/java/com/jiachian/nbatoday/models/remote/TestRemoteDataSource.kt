@@ -9,8 +9,8 @@ import com.jiachian.nbatoday.models.remote.player.RemotePlayer
 import com.jiachian.nbatoday.models.remote.player.RemotePlayerInfo
 import com.jiachian.nbatoday.models.remote.player.RemotePlayerStats
 import com.jiachian.nbatoday.models.remote.score.RemoteBoxScore
-import com.jiachian.nbatoday.models.remote.team.RemoteTeamPlayerStats
-import com.jiachian.nbatoday.models.remote.team.RemoteTeamStats
+import com.jiachian.nbatoday.models.remote.team.RemoteTeam
+import com.jiachian.nbatoday.models.remote.team.RemoteTeamPlayer
 
 class TestRemoteDataSource : RemoteDataSource() {
     override suspend fun getSchedule(): RemoteSchedule {
@@ -35,15 +35,15 @@ class TestRemoteDataSource : RemoteDataSource() {
         return RemoteGameFactory.getRemoteGameBoxScore()
     }
 
-    override suspend fun getTeamStats(): RemoteTeamStats {
+    override suspend fun getTeamStats(): RemoteTeam {
         return RemoteTeamFactory.getRemoteTeamStats()
     }
 
-    override suspend fun getTeamStats(teamId: Int): RemoteTeamStats {
+    override suspend fun getTeamStats(teamId: Int): RemoteTeam {
         return RemoteTeamFactory.getRemoteTeamStats()
     }
 
-    override suspend fun getTeamPlayersStats(teamId: Int): RemoteTeamPlayerStats {
+    override suspend fun getTeamPlayersStats(teamId: Int): RemoteTeamPlayer {
         return RemoteTeamFactory.getRemoteTeamPlayerStats()
     }
 
