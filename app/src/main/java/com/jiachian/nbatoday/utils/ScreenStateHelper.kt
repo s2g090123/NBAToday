@@ -31,7 +31,7 @@ class ScreenStateHelper(
                 NbaState.BoxScore(viewModelProvider.getBoxScoreViewModel(screenState.game.gameId))
             }
             is NbaScreenState.Team -> {
-                NbaState.Team(viewModelProvider.getTeamViewModel(screenState.team))
+                NbaState.Team(viewModelProvider.getTeamViewModel(screenState.team.teamId))
             }
             is NbaScreenState.Player -> {
                 NbaState.Player(viewModelProvider.getPlayerViewModel(screenState.playerId))

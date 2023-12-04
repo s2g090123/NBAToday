@@ -28,7 +28,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class TeamViewModel(
-    val team: NBATeam,
+    teamId: Int,
     private val teamRepository: TeamRepository,
     gameRepository: GameRepository,
     private val screenStateHelper: ScreenStateHelper,
@@ -36,6 +36,7 @@ class TeamViewModel(
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
     coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
 ) : ComposeViewModel(coroutineScope) {
+    private val team = NBATeam.getTeamById(teamId)
     val colors = team.colors
 
     val labels = LabelHelper.createTeamPlayerLabel()

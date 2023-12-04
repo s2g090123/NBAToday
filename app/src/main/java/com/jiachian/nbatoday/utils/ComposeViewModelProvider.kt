@@ -14,7 +14,6 @@ import com.jiachian.nbatoday.datastore.BaseDataStore
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.models.local.game.GameAndBet
-import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.repository.RepositoryProvider
 import kotlinx.coroutines.CoroutineScope
 
@@ -49,12 +48,12 @@ class ComposeViewModelProvider(
     }
 
     fun getTeamViewModel(
-        team: NBATeam,
+        teamId: Int,
         dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
         coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined),
     ): TeamViewModel {
         return TeamViewModel(
-            team = team,
+            teamId = teamId,
             teamRepository = repositoryProvider.team,
             gameRepository = repositoryProvider.game,
             screenStateHelper = screenStateHelper,
