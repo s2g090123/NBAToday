@@ -13,7 +13,7 @@ class NavigationController(
         class NavigateToPlayer(val playerId: Int) : Event()
         class NavigateToCalendar(val dateTime: Long) : Event()
         class NavigateToBet(val account: String) : Event()
-        class BackScreen(val from: String) : Event()
+        class BackScreen(val from: Route) : Event()
     }
 
     private fun Event.send() {
@@ -44,7 +44,7 @@ class NavigationController(
         Event.NavigateToBet(account).send()
     }
 
-    fun backScreen(route: String) {
+    fun backScreen(route: Route) {
         Event.BackScreen(route).send()
     }
 }

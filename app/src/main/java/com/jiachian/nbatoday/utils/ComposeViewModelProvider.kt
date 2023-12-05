@@ -25,7 +25,7 @@ class ComposeViewModelProvider(
     private val dataStore: BaseDataStore,
     private val navigationController: NavigationController,
 ) {
-    private val viewModelMap = mutableMapOf<String, ComposeViewModel>()
+    private val viewModelMap = mutableMapOf<Route, ComposeViewModel>()
 
     fun getHomeViewModel(
         dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
@@ -33,6 +33,7 @@ class ComposeViewModelProvider(
     ): HomeViewModel {
         return viewModelMap[Route.HOME] as? HomeViewModel ?: HomeViewModel(
             composeViewModelProvider = this,
+            navigationController = navigationController,
             dispatcherProvider = dispatcherProvider,
             coroutineScope = coroutineScope
         ).apply {
@@ -176,7 +177,7 @@ class ComposeViewModelProvider(
         )
     }
 
-    fun removeViewModel(route: String) {
+    fun removeViewModel(route: Route) {
         viewModelMap.remove(route)
     }
 }

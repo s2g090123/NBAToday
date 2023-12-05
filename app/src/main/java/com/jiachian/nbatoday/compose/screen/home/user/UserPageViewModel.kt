@@ -1,6 +1,5 @@
 package com.jiachian.nbatoday.compose.screen.home.user
 
-import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.compose.theme.updateColors
 import com.jiachian.nbatoday.datastore.BaseDataStore
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
@@ -10,7 +9,6 @@ import com.jiachian.nbatoday.models.local.team.data.teamOfficial
 import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.repository.user.UserRepository
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -21,7 +19,7 @@ class UserPageViewModel(
     private val navigationController: NavigationController,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
     private val coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
-) : ComposeViewModel() {
+) {
 
     val user = repository.user
         .stateIn(coroutineScope, SharingStarted.WhileSubscribed(5000), null)
@@ -59,9 +57,5 @@ class UserPageViewModel(
         coroutineScope.launch(dispatcherProvider.io) {
             repository.register(account, password)
         }
-    }
-
-    override fun close() {
-        coroutineScope.cancel()
     }
 }

@@ -19,7 +19,6 @@ import com.jiachian.nbatoday.utils.DateUtils
 import com.jiachian.nbatoday.utils.decimalFormat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -33,11 +32,15 @@ class TeamViewModel(
     teamId: Int,
     private val teamRepository: TeamRepository,
     gameRepository: GameRepository,
-    private val navigationController: NavigationController,
+    navigationController: NavigationController,
     private val composeViewModelProvider: ComposeViewModelProvider,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
-    private val coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
-) : ComposeViewModel() {
+    coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
+) : ComposeViewModel(
+    coroutineScope = coroutineScope,
+    navigationController = navigationController,
+    route = Route.TEAM
+) {
     private val team = NBATeam.getTeamById(teamId)
     val colors = team.colors
 
@@ -343,10 +346,5 @@ class TeamViewModel(
             dispatcherProvider = dispatcherProvider,
             coroutineScope = coroutineScope
         )
-    }
-
-    override fun close() {
-        coroutineScope.cancel()
-        navigationController.backScreen(Route.TEAM)
     }
 }

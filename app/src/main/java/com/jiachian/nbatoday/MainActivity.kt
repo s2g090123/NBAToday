@@ -62,12 +62,15 @@ class MainActivity : ComponentActivity() {
     private fun onNavigationEvent(event: NavigationController.Event?) {
         when (event) {
             is NavigationController.Event.BackScreen -> {
+                if (event.from == Route.HOME) {
+                    finish()
+                }
                 viewModel.viewModelProvider.removeViewModel(event.from)
                 navController?.popBackStack()
             }
             is NavigationController.Event.NavigateToHome -> {
-                navController?.navigate(Route.HOME) {
-                    popUpTo(Route.SPLASH) {
+                navController?.navigate(Route.HOME.route) {
+                    popUpTo(Route.SPLASH.route) {
                         inclusive = true
                     }
                 }

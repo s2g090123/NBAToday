@@ -11,7 +11,6 @@ import com.jiachian.nbatoday.repository.bet.BetRepository
 import java.util.Random
 import kotlin.math.abs
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -43,10 +42,14 @@ private const val MaxMagnification = 4
 class BetViewModel(
     account: String,
     private val repository: BetRepository,
-    private val navigationController: NavigationController,
+    navigationController: NavigationController,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
-    private val coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
-) : ComposeViewModel() {
+    coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
+) : ComposeViewModel(
+    coroutineScope = coroutineScope,
+    navigationController = navigationController,
+    route = Route.BET
+) {
 
     private val isRefreshingImp = MutableStateFlow(false)
     val isRefreshing = isRefreshingImp.asStateFlow()
@@ -176,10 +179,5 @@ class BetViewModel(
                 abs(turnTableData.winPoints) + abs(turnTableData.losePoints)
             }
         }
-    }
-
-    override fun close() {
-        coroutineScope.cancel()
-        navigationController.backScreen(Route.BET)
     }
 }

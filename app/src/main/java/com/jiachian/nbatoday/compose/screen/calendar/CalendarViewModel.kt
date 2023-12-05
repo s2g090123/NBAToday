@@ -15,7 +15,6 @@ import com.jiachian.nbatoday.utils.DateUtils
 import java.util.Calendar
 import java.util.Date
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -29,11 +28,15 @@ private const val DaysPerWeek = 7
 class CalendarViewModel(
     dateTime: Long,
     repository: GameRepository,
-    private val navigationController: NavigationController,
+    navigationController: NavigationController,
     private val composeViewModelProvider: ComposeViewModelProvider,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
-    private val coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
-) : ComposeViewModel() {
+    coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
+) : ComposeViewModel(
+    coroutineScope = coroutineScope,
+    navigationController = navigationController,
+    route = Route.CALENDAR
+) {
 
     private val date = Date(dateTime)
 
@@ -249,10 +252,5 @@ class CalendarViewModel(
             dispatcherProvider = dispatcherProvider,
             coroutineScope = coroutineScope,
         )
-    }
-
-    override fun close() {
-        coroutineScope.cancel()
-        navigationController.backScreen(Route.CALENDAR)
     }
 }

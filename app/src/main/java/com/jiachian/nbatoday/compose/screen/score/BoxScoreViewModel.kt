@@ -18,7 +18,6 @@ import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.navigation.Route
 import com.jiachian.nbatoday.repository.game.GameRepository
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -31,10 +30,14 @@ import kotlinx.coroutines.withContext
 class BoxScoreViewModel(
     private val gameId: String,
     private val repository: GameRepository,
-    private val navigationController: NavigationController,
+    navigationController: NavigationController,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
-    private val coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
-) : ComposeViewModel() {
+    coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
+) : ComposeViewModel(
+    coroutineScope = coroutineScope,
+    navigationController = navigationController,
+    route = Route.BOX_SCORE
+) {
     private val isRefreshingImp = MutableStateFlow(false)
     val isRefreshing = isRefreshingImp.asStateFlow()
 
@@ -177,10 +180,5 @@ class BoxScoreViewModel(
 
     fun openPlayerCareer(playerId: Int) {
         navigationController.navigateToPlayer(playerId)
-    }
-
-    override fun close() {
-        coroutineScope.cancel()
-        navigationController.backScreen(Route.BOX_SCORE)
     }
 }

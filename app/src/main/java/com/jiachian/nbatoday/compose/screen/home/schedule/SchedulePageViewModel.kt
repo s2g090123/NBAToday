@@ -2,7 +2,6 @@ package com.jiachian.nbatoday.compose.screen.home.schedule
 
 import android.annotation.SuppressLint
 import com.jiachian.nbatoday.ScheduleDateRange
-import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.compose.screen.card.GameStatusCardViewModel
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
@@ -18,7 +17,6 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.TimeZone
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -34,7 +32,7 @@ class SchedulePageViewModel(
     private val composeViewModelProvider: ComposeViewModelProvider,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
     private val coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
-) : ComposeViewModel() {
+) {
 
     val scheduleDates: List<DateData> = getDateData()
     private val scheduleIndexImp = MutableStateFlow(scheduleDates.size / 2)
@@ -127,9 +125,5 @@ class SchedulePageViewModel(
             dispatcherProvider = dispatcherProvider,
             coroutineScope = coroutineScope
         )
-    }
-
-    override fun close() {
-        coroutineScope.cancel()
     }
 }

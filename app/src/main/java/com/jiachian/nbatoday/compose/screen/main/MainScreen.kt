@@ -61,9 +61,9 @@ fun MainScreen(
     NavHost(
         modifier = Modifier.fillMaxSize(),
         navController = navController,
-        startDestination = Route.SPLASH,
+        startDestination = Route.SPLASH.route,
     ) {
-        composable(Route.SPLASH) {
+        composable(Route.SPLASH.route) {
             SplashScreen(
                 colors = listOf(
                     MaterialTheme.colors.secondary.copy(Transparency25),
@@ -71,40 +71,40 @@ fun MainScreen(
                 )
             )
         }
-        composable(Route.HOME) {
+        composable(Route.HOME.route) {
             remember {
                 viewModel.viewModelProvider.getHomeViewModel()
             }.let { viewModel -> HomeScreen(viewModel = viewModel) }
         }
-        composable("${Route.BOX_SCORE}/{gameId}") {
+        composable("${Route.BOX_SCORE.route}/{gameId}") {
             remember {
                 viewModel.viewModelProvider.getBoxScoreViewModel(
                     gameId = it.arguments?.getString("gameId").getOrError()
                 )
             }.let { viewModel -> BoxScoreScreen(viewModel = viewModel) }
         }
-        composable("${Route.TEAM}/{teamId}") {
+        composable("${Route.TEAM.route}/{teamId}") {
             remember {
                 viewModel.viewModelProvider.getTeamViewModel(
                     teamId = it.arguments?.getStringToInt("teamId").getOrError()
                 )
             }.let { viewModel -> TeamScreen(viewModel = viewModel) }
         }
-        composable("${Route.PLAYER}/{playerId}") {
+        composable("${Route.PLAYER.route}/{playerId}") {
             remember {
                 viewModel.viewModelProvider.getPlayerViewModel(
                     playerId = it.arguments?.getStringToInt("playerId").getOrError()
                 )
             }.let { viewModel -> PlayerCareerScreen(viewModel = viewModel) }
         }
-        composable("${Route.CALENDAR}/{dateTime}") {
+        composable("${Route.CALENDAR.route}/{dateTime}") {
             remember {
                 viewModel.viewModelProvider.getCalendarViewModel(
                     dateTime = it.arguments?.getStringToLong("dateTime").getOrError()
                 )
             }.let { viewModel -> GameCalendarScreen(viewModel = viewModel) }
         }
-        composable("${Route.BET}/{account}") {
+        composable("${Route.BET.route}/{account}") {
             remember {
                 viewModel.viewModelProvider.getBetViewModel(
                     account = it.arguments?.getString("account").getOrError()
