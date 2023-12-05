@@ -3,6 +3,7 @@ package com.jiachian.nbatoday.compose.screen.bet
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.models.local.game.GameAndBet
+import kotlin.math.min
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -43,10 +44,10 @@ class BetDialogViewModel(
     }
 
     fun updateHomePoints(points: Long) {
-        homePointsImp.value = points
+        homePointsImp.value = min(points, userPoints - awayPoints.value)
     }
 
     fun updateAwayPoints(points: Long) {
-        awayPointsImp.value = points
+        awayPointsImp.value = min(points, userPoints - homePoints.value)
     }
 }

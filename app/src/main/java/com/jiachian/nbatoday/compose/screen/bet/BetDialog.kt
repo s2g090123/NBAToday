@@ -57,21 +57,21 @@ fun BetDialog(
                 .background(MaterialTheme.colors.secondary),
             horizontalAlignment = Alignment.End
         ) {
-            BetDialogContent(
+            Detail(
                 viewModel = viewModel,
                 homePoints = homePoints,
                 awayPoints = awayPoints,
             )
-            BetDialogBottomButtons(
+            ConfirmButton(
                 modifier = Modifier
                     .padding(top = 8.dp, end = 8.dp),
-                isConfirmEnable = confirmedEnabled,
-                onClickConfirm = viewModel::showWarning
+                enabled = confirmedEnabled,
+                onConfirm = viewModel::showWarning
             )
         }
     }
     if (showWarning) {
-        BetWarningDialog(
+        WarningDialog(
             onConfirm = {
                 onConfirm(homePoints, awayPoints)
                 onDismiss()
@@ -82,10 +82,10 @@ fun BetDialog(
 }
 
 @Composable
-private fun BetDialogBottomButtons(
+private fun ConfirmButton(
     modifier: Modifier = Modifier,
-    isConfirmEnable: Boolean,
-    onClickConfirm: () -> Unit
+    enabled: Boolean,
+    onConfirm: () -> Unit
 ) {
     Row(
         modifier = modifier,
@@ -93,11 +93,11 @@ private fun BetDialogBottomButtons(
     ) {
         Text(
             modifier = Modifier
-                .testTag("BetDialog_Btn_Confirm")
-                .rippleClickable(isConfirmEnable) { onClickConfirm() }
+                .testTag("ConfirmButton_Btn")
+                .rippleClickable(enabled) { onConfirm() }
                 .padding(10.dp),
             text = stringResource(R.string.bet_confirm),
-            color = MaterialTheme.colors.primary.copy(if (isConfirmEnable) 1f else Transparency25),
+            color = MaterialTheme.colors.primary.copy(if (enabled) 1f else Transparency25),
             fontSize = 16.sp,
             fontWeight = FontWeight.Medium
         )
@@ -105,7 +105,7 @@ private fun BetDialogBottomButtons(
 }
 
 @Composable
-private fun BetDialogContent(
+private fun Detail(
     modifier: Modifier = Modifier,
     viewModel: BetDialogViewModel,
     homePoints: Long,
@@ -120,23 +120,19 @@ private fun BetDialogContent(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceAround
         ) {
-            BetDialogTeamEdit(
+            TeamInfo(
                 modifier = Modifier
-                    .testTag("BetDialogContent_BetDialogTeamEdit_Home")
+                    .testTag("Detail_TeamInfo_Home")
                     .padding(start = 16.dp)
                     .width(IntrinsicSize.Min),
                 team = viewModel.gameAndBet.game.homeTeam,
                 value = homePoints,
                 onValueChanged = viewModel::updateHomePoints
             )
-            OddsText(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                homeOdds = 1,
-                awayOdds = 1
-            )
-            BetDialogTeamEdit(
+            OddsText(modifier = Modifier.padding(horizontal = 16.dp))
+            TeamInfo(
                 modifier = Modifier
-                    .testTag("BetDialogContent_BetDialogTeamEdit_Away")
+                    .testTag("Detail_TeamInfo_Away")
                     .padding(end = 16.dp)
                     .width(IntrinsicSize.Min),
                 team = viewModel.gameAndBet.game.awayTeam,
@@ -146,8 +142,8 @@ private fun BetDialogContent(
         }
         Text(
             modifier = Modifier
-                .testTag("BetDialog_Text_Remainder")
-                .padding(top = 8.dp, start = 16.dp, end = 16.dp),
+                .testTag("Detail_Text_Remainder")
+                .padding(top = 16.dp, start = 16.dp, end = 16.dp),
             text = stringResource(R.string.bet_remain, remainedPoints),
             color = MaterialTheme.colors.primary,
             fontSize = 12.sp,
@@ -158,8 +154,8 @@ private fun BetDialogContent(
 @Composable
 private fun OddsText(
     modifier: Modifier = Modifier,
-    homeOdds: Int,
-    awayOdds: Int
+    homeOdds: Int = 1,
+    awayOdds: Int = 1
 ) {
     Column(
         modifier = modifier,
@@ -167,14 +163,12 @@ private fun OddsText(
     ) {
         Text(
             text = stringResource(R.string.bet_vs),
-            textAlign = TextAlign.Center,
             color = MaterialTheme.colors.primary,
             fontSize = 16.sp,
             fontStyle = FontStyle.Italic
         )
         Text(
             text = stringResource(R.string.bet_odds, homeOdds, awayOdds),
-            textAlign = TextAlign.Center,
             color = MaterialTheme.colors.primary,
             fontSize = 16.sp
         )
@@ -182,7 +176,7 @@ private fun OddsText(
 }
 
 @Composable
-private fun BetDialogTeamEdit(
+private fun TeamInfo(
     modifier: Modifier = Modifier,
     team: GameTeam,
     value: Long,
@@ -194,13 +188,9 @@ private fun BetDialogTeamEdit(
     ) {
         Text(
             modifier = Modifier
-                .testTag("BetDialogTeamEdit_Text_Record")
+                .testTag("TeamInfo_Text_Record")
                 .padding(top = 16.dp),
-            text = stringResource(
-                R.string.bet_win_lose_record,
-                team.wins,
-                team.losses
-            ),
+            text = stringResource(R.string.bet_win_lose_record, team.wins, team.losses),
             color = MaterialTheme.colors.primary,
             fontSize = 20.sp
         )
@@ -212,7 +202,7 @@ private fun BetDialogTeamEdit(
         )
         CustomOutlinedTextField(
             modifier = Modifier
-                .testTag("BetDialogTeamEdit_TextField_Bet")
+                .testTag("TeamInfo_TextField_Bet")
                 .padding(top = 8.dp)
                 .width(100.dp)
                 .height(32.dp),
@@ -230,12 +220,12 @@ private fun BetDialogTeamEdit(
 }
 
 @Composable
-private fun BetWarningDialog(
+private fun WarningDialog(
     onConfirm: () -> Unit,
     onDismiss: () -> Unit
 ) {
     AlertDialog(
-        modifier = Modifier.testTag("BetDialog_Alert_Warning"),
+        modifier = Modifier.testTag("WarningDialog"),
         onDismissRequest = onDismiss,
         title = {
             Text(
@@ -253,7 +243,7 @@ private fun BetWarningDialog(
             )
         },
         buttons = {
-            BetWarningBottomButtons(
+            WarningDialogButton(
                 modifier = Modifier
                     .padding(horizontal = 8.dp)
                     .fillMaxWidth(),
@@ -272,7 +262,7 @@ private fun BetWarningDialog(
 }
 
 @Composable
-private fun BetWarningBottomButtons(
+private fun WarningDialogButton(
     modifier: Modifier = Modifier,
     onConfirm: () -> Unit,
     onCancel: () -> Unit
@@ -293,7 +283,7 @@ private fun BetWarningBottomButtons(
         )
         Text(
             modifier = Modifier
-                .testTag("BetDialog_Alert_Confirm")
+                .testTag("WarningDialogButton_Text_Confirm")
                 .padding(bottom = 8.dp)
                 .rippleClickable { onConfirm() }
                 .padding(10.dp),
