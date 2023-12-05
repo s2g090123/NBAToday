@@ -32,9 +32,8 @@ private fun RemoteSchedule.RemoteLeagueSchedule.RemoteGameDate.RemoteGame.Remote
     )
 }
 
-private fun RemoteSchedule.RemoteLeagueSchedule.RemoteGameDate.RemoteGame.RemotePointsLeader.toPointsLeader(
-
-): Game.PointsLeader? {
+private fun RemoteSchedule.RemoteLeagueSchedule.RemoteGameDate.RemoteGame.RemotePointsLeader.toPointsLeader():
+    Game.PointsLeader? {
     if (playerId == null || teamId == null) return null
     val points = points.getOrZero()
     return Game.PointsLeader(
