@@ -258,19 +258,6 @@ fun PlayerImage(
 }
 
 @Composable
-fun RefreshScreen(
-    modifier: Modifier = Modifier,
-    color: Color = MaterialTheme.colors.secondary
-) {
-    Box(modifier = modifier) {
-        CircularProgressIndicator(
-            modifier = Modifier.align(Alignment.Center),
-            color = color
-        )
-    }
-}
-
-@Composable
 fun <T> NullCheckScreen(
     data: T?,
     ifNull: @Composable () -> Unit,

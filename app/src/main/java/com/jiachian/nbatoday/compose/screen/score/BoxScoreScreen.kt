@@ -37,8 +37,8 @@ import com.jiachian.nbatoday.compose.screen.score.widgets.ScorePeriod
 import com.jiachian.nbatoday.compose.screen.score.widgets.ScoreTotal
 import com.jiachian.nbatoday.compose.widget.BackHandle
 import com.jiachian.nbatoday.compose.widget.IconButton
+import com.jiachian.nbatoday.compose.widget.LoadingScreen
 import com.jiachian.nbatoday.compose.widget.NullCheckScreen
-import com.jiachian.nbatoday.compose.widget.RefreshScreen
 import com.jiachian.nbatoday.models.local.score.BoxScore
 import com.jiachian.nbatoday.utils.noRippleClickable
 
@@ -63,7 +63,11 @@ fun BoxScoreScreen(viewModel: BoxScoreViewModel) {
             )
             when {
                 isRefreshing -> {
-                    RefreshScreen(modifier = Modifier.fillMaxSize())
+                    LoadingScreen(
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.colors.primary,
+                        interceptBack = false
+                    )
                 }
 
                 isNotFound -> {
