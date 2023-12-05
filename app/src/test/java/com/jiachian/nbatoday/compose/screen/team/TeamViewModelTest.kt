@@ -3,7 +3,6 @@ package com.jiachian.nbatoday.compose.screen.team
 import com.jiachian.nbatoday.UserAccount
 import com.jiachian.nbatoday.UserPassword
 import com.jiachian.nbatoday.UserPoints
-import com.jiachian.nbatoday.compose.state.NbaState
 import com.jiachian.nbatoday.models.NbaGameFactory
 import com.jiachian.nbatoday.models.PlayerStatsFactory
 import com.jiachian.nbatoday.models.TeamStatsFactory

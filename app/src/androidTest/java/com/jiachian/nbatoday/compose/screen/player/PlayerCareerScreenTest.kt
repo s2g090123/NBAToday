@@ -5,7 +5,6 @@ import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.performClick
 import com.jiachian.nbatoday.BaseAndroidTest
 import com.jiachian.nbatoday.R
-import com.jiachian.nbatoday.compose.state.NbaState
 import com.jiachian.nbatoday.models.PlayerCareerFactory
 import com.jiachian.nbatoday.models.TestRepository
 import com.jiachian.nbatoday.utils.onAllNodesWithMergedTag
