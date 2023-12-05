@@ -72,11 +72,21 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
-            is NavigationController.Event.NavigateToBoxScore -> navController?.navigate("${Route.BOX_SCORE}/${event.gameId}")
-            is NavigationController.Event.NavigateToTeam -> navController?.navigate("${Route.TEAM}/${event.teamId}")
-            is NavigationController.Event.NavigateToPlayer -> navController?.navigate("${Route.PLAYER}/${event.playerId}")
-            is NavigationController.Event.NavigateToCalendar -> navController?.navigate("${Route.CALENDAR}/${event.dateTime}")
-            is NavigationController.Event.NavigateToBet -> navController?.navigate("${Route.BET}/${event.account}")
+            is NavigationController.Event.NavigateToBoxScore -> {
+                navController?.navigate("${Route.BOX_SCORE}/${event.gameId}")
+            }
+            is NavigationController.Event.NavigateToTeam -> {
+                navController?.navigate("${Route.TEAM}/${event.teamId}")
+            }
+            is NavigationController.Event.NavigateToPlayer -> {
+                navController?.navigate("${Route.PLAYER}/${event.playerId}")
+            }
+            is NavigationController.Event.NavigateToCalendar -> {
+                navController?.navigate("${Route.CALENDAR}/${event.dateTime}")
+            }
+            is NavigationController.Event.NavigateToBet -> {
+                navController?.navigate("${Route.BET}/${event.account}")
+            }
             else -> {}
         }
         viewModel.consumeNavigationEvent(event)

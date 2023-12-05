@@ -45,7 +45,9 @@ private fun RemoteBoxScore.RemoteGame.RemoteTeam.RemotePeriod.toPeriod(): BoxSco
     )
 }
 
-private fun RemoteBoxScore.RemoteGame.RemoteTeam.RemotePlayer.RemoteStatistics.toStatistics(): BoxScore.BoxScoreTeam.Player.Statistics {
+private fun RemoteBoxScore.RemoteGame.RemoteTeam.RemotePlayer.RemoteStatistics.toStatistics(
+
+): BoxScore.BoxScoreTeam.Player.Statistics {
     return BoxScore.BoxScoreTeam.Player.Statistics(
         assists = assists.getOrZero(),
         blocks = blocks.getOrZero(),

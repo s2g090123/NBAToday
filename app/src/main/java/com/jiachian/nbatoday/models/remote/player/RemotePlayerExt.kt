@@ -3,10 +3,10 @@ package com.jiachian.nbatoday.models.remote.player
 import com.jiachian.nbatoday.models.local.player.Player
 
 fun RemotePlayer.toPlayer(): Player? {
-    val playerId = getPlayerId() ?: return null
+    val playerId = getPlayerId()
     val playerInfo = info?.toPlayerInfo()
     val playerStats = stats?.toPlayerStats()
-    if (playerInfo == null || playerStats == null) return null
+    if (playerId == null || playerInfo == null || playerStats == null) return null
     return Player(
         playerId = playerId,
         info = playerInfo,

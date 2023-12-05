@@ -17,10 +17,10 @@ data class RemoteSchedule(
                 @SerializedName("awayTeam") val awayTeam: RemoteTeam?,
                 @SerializedName("gameId") val gameId: String?, // 比賽id, e.g. 0022200089
                 @SerializedName("gameStatus") val gameStatus: GameStatus?,
-                @SerializedName("gameStatusText") val gameStatusText: String?, // 比賽狀態(Final或開始時間), e.g. Final or 3:00 pm ET
+                @SerializedName("gameStatusText") val gameStatusText: String?,
                 @SerializedName("gameSequence") val gameSequence: Int?, // 今天的第幾場比賽(起始為1), e.g. 1
                 @SerializedName("homeTeam") val homeTeam: RemoteTeam?,
-                @ColumnInfo(name = "gameDateEst") val gameDateEst: String?, // 比賽開始日期(固定為00:00), e.g. 2022-11-20T00:00:00Z
+                @ColumnInfo(name = "gameDateEst") val gameDateEst: String?,
                 @SerializedName("gameDateTimeEst") val gameDateTimeEst: String?, // 比賽開始時間, e.g. 2022-10-30T12:00:00Z
                 @SerializedName("pointsLeaders") val pointsLeaders: List<RemotePointsLeader?>?,
             ) {

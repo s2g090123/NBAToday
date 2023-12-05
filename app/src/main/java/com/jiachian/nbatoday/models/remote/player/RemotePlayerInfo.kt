@@ -11,6 +11,7 @@ import java.util.TimeZone
 private const val InchPerFoot = 12
 private const val CentiMetersPerInch = 2.54
 private const val KilogramPerPound = 0.45
+private const val CentiMeterPerMeter = 100
 
 data class RemotePlayerInfo(
     @SerializedName("resultSets") val resultSets: List<RemoteResult>?
@@ -71,7 +72,7 @@ data class RemotePlayerInfo(
         return getPlayerInfo("HEIGHT")?.split("-")?.let {
             val foot = it.getOrNull(0)?.toIntOrNull() ?: 0
             val inches = it.getOrNull(1)?.toIntOrNull() ?: 0
-            ((foot * InchPerFoot + inches) * CentiMetersPerInch) / 100
+            ((foot * InchPerFoot + inches) * CentiMetersPerInch) / CentiMeterPerMeter
         }?.decimalFormat(2) ?: return 0.0
     }
 

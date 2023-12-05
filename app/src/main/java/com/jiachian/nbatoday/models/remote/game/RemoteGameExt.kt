@@ -41,14 +41,18 @@ fun RemoteGame.RemoteScoreboard.toGameUpdateData(): List<GameUpdateData> {
     } ?: emptyList()
 }
 
-private fun RemoteGame.RemoteScoreboard.RemoteGameDetail.RemoteGameLeaders.toGameLeaders(): GameLeaders {
+private fun RemoteGame.RemoteScoreboard.RemoteGameDetail.RemoteGameLeaders.toGameLeaders(
+
+): GameLeaders {
     return GameLeaders(
         homeLeader = homeLeader.toGameLeader(),
         awayLeader = awayLeader.toGameLeader(),
     )
 }
 
-private fun RemoteGame.RemoteScoreboard.RemoteGameDetail.RemoteGameLeaders.RemoteGameLeader.toGameLeader(): GameLeaders.GameLeader {
+private fun RemoteGame.RemoteScoreboard.RemoteGameDetail.RemoteGameLeaders.RemoteGameLeader.toGameLeader(
+
+): GameLeaders.GameLeader {
     return GameLeaders.GameLeader(
         playerId = playerId,
         name = name,
