@@ -9,6 +9,7 @@ import com.jiachian.nbatoday.utils.getOrNA
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 
 data class RemoteBoxScore(
     val game: RemoteGame?
@@ -140,19 +141,23 @@ data class RemoteBoxScore(
                         SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
                             .parse(it)
                             ?.let { date ->
-                                DateUtils.getCalendar().run {
-                                    time = date
-                                    DateUtils.formatScoreboardGameDate(
-                                        get(Calendar.YEAR),
-                                        get(Calendar.MONTH) + 1,
-                                        get(Calendar.DAY_OF_MONTH)
-                                    )
-                                }
+                                getFormattedGameDate(date)
                             }
                     } catch (e: ParseException) {
                         null
                     }
                 }.getOrNA()
+        }
+
+        private fun getFormattedGameDate(date: Date): String {
+            return DateUtils.getCalendar().run {
+                time = date
+                DateUtils.formatScoreboardGameDate(
+                    get(Calendar.YEAR),
+                    get(Calendar.MONTH) + 1,
+                    get(Calendar.DAY_OF_MONTH)
+                )
+            }
         }
     }
 }

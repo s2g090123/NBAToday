@@ -74,54 +74,42 @@ fun MainScreen(
         composable(Route.HOME) {
             remember {
                 viewModel.viewModelProvider.getHomeViewModel()
-            }.let { viewModel ->
-                HomeScreen(viewModel = viewModel)
-            }
+            }.let { viewModel -> HomeScreen(viewModel = viewModel) }
         }
         composable("${Route.BOX_SCORE}/{gameId}") {
             remember {
                 viewModel.viewModelProvider.getBoxScoreViewModel(
                     gameId = it.arguments?.getString("gameId").getOrError()
                 )
-            }.let { viewModel ->
-                BoxScoreScreen(viewModel = viewModel)
-            }
+            }.let { viewModel -> BoxScoreScreen(viewModel = viewModel) }
         }
         composable("${Route.TEAM}/{teamId}") {
             remember {
                 viewModel.viewModelProvider.getTeamViewModel(
                     teamId = it.arguments?.getStringToInt("teamId").getOrError()
                 )
-            }.let { viewModel ->
-                TeamScreen(viewModel = viewModel)
-            }
+            }.let { viewModel -> TeamScreen(viewModel = viewModel) }
         }
         composable("${Route.PLAYER}/{playerId}") {
             remember {
                 viewModel.viewModelProvider.getPlayerViewModel(
                     playerId = it.arguments?.getStringToInt("playerId").getOrError()
                 )
-            }.let { viewModel ->
-                PlayerCareerScreen(viewModel = viewModel)
-            }
+            }.let { viewModel -> PlayerCareerScreen(viewModel = viewModel) }
         }
         composable("${Route.CALENDAR}/{dateTime}") {
             remember {
                 viewModel.viewModelProvider.getCalendarViewModel(
                     dateTime = it.arguments?.getStringToLong("dateTime").getOrError()
                 )
-            }.let { viewModel ->
-                GameCalendarScreen(viewModel = viewModel)
-            }
+            }.let { viewModel -> GameCalendarScreen(viewModel = viewModel) }
         }
         composable("${Route.BET}/{account}") {
             remember {
                 viewModel.viewModelProvider.getBetViewModel(
                     account = it.arguments?.getString("account").getOrError()
                 )
-            }.let { viewModel ->
-                BetScreen(viewModel = viewModel)
-            }
+            }.let { viewModel -> BetScreen(viewModel = viewModel) }
         }
     }
 }
