@@ -9,6 +9,7 @@ import com.jiachian.nbatoday.models.local.game.Game
 import com.jiachian.nbatoday.models.local.game.GameAndBet
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.models.local.team.TeamPlayer
+import com.jiachian.nbatoday.models.local.team.TeamRank
 import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.navigation.Route
 import com.jiachian.nbatoday.repository.game.GameRepository
@@ -52,16 +53,23 @@ class TeamViewModel(
         it?.team
     }.stateIn(coroutineScope, SharingStarted.Lazily, null)
 
-    val teamRank = teamRepository.getTeamRank(team.teamId, team.conference)
-        .stateIn(coroutineScope, SharingStarted.Eagerly, 0)
-    val teamPointsRank = teamRepository.getTeamPointsRank(team.teamId)
-        .stateIn(coroutineScope, SharingStarted.Eagerly, 0)
-    val teamReboundsRank = teamRepository.getTeamReboundsRank(team.teamId)
-        .stateIn(coroutineScope, SharingStarted.Eagerly, 0)
-    val teamAssistsRank = teamRepository.getTeamAssistsRank(team.teamId)
-        .stateIn(coroutineScope, SharingStarted.Eagerly, 0)
-    val teamPlusMinusRank = teamRepository.getTeamPlusMinusRank(team.teamId)
-        .stateIn(coroutineScope, SharingStarted.Eagerly, 0)
+    private val teamRank = teamRepository.getTeamRank(team.teamId, team.conference)
+        .stateIn(coroutineScope, SharingStarted.Eagerly, TeamRank.default())
+    val teamStanding = teamRank.map {
+        it.standing
+    }.stateIn(coroutineScope, SharingStarted.Eagerly, 0)
+    val teamPointsRank = teamRank.map {
+        it.pointsRank
+    }.stateIn(coroutineScope, SharingStarted.Eagerly, 0)
+    val teamReboundsRank = teamRank.map {
+        it.reboundsRank
+    }.stateIn(coroutineScope, SharingStarted.Eagerly, 0)
+    val teamAssistsRank = teamRank.map {
+        it.assistsRank
+    }.stateIn(coroutineScope, SharingStarted.Eagerly, 0)
+    val teamPlusMinusRank = teamRank.map {
+        it.plusMinusRank
+    }.stateIn(coroutineScope, SharingStarted.Eagerly, 0)
 
     val isProgressing = teamRepository.isLoading
     private val isTeamRefreshingImp = MutableStateFlow(false)

@@ -5,7 +5,9 @@ import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.models.local.team.Team
 import com.jiachian.nbatoday.models.local.team.TeamAndPlayers
 import com.jiachian.nbatoday.models.local.team.TeamPlayer
+import com.jiachian.nbatoday.models.local.team.TeamRank
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 
 class NBATeamLocalSource(
     private val teamDao: TeamDao,
@@ -18,24 +20,22 @@ class NBATeamLocalSource(
         return teamDao.getTeamAndPlayers(teamId)
     }
 
-    override fun getTeamRank(teamId: Int, conference: NBATeam.Conference): Flow<Int> {
-        return teamDao.getTeamRank(teamId, conference)
-    }
-
-    override fun getTeamPointsRank(teamId: Int): Flow<Int> {
-        return teamDao.getPointsRank(teamId)
-    }
-
-    override fun getTeamReboundsRank(teamId: Int): Flow<Int> {
-        return teamDao.getReboundsRank(teamId)
-    }
-
-    override fun getTeamAssistsRank(teamId: Int): Flow<Int> {
-        return teamDao.getAssistsRank(teamId)
-    }
-
-    override fun getTeamPlusMinusRank(teamId: Int): Flow<Int> {
-        return teamDao.getPlusMinusRank(teamId)
+    override fun getTeamRank(teamId: Int, conference: NBATeam.Conference): Flow<TeamRank> {
+        return combine(
+            teamDao.getTeamRank(teamId, conference),
+            teamDao.getPointsRank(teamId),
+            teamDao.getReboundsRank(teamId),
+            teamDao.getAssistsRank(teamId),
+            teamDao.getPlusMinusRank(teamId)
+        ) { standing, points, reboudns, assists, plusminus ->
+            TeamRank(
+                standing = standing,
+                pointsRank = points,
+                reboundsRank = reboudns,
+                assistsRank = assists,
+                plusMinusRank = plusminus
+            )
+        }
     }
 
     override suspend fun updateTeams(stats: List<Team>) {

@@ -36,12 +36,12 @@ fun TeamInformation(
     viewModel: TeamViewModel
 ) {
     val stats by viewModel.teamStats.collectAsState()
-    val teamRank by viewModel.teamRank.collectAsState()
+    val teamStanding by viewModel.teamStanding.collectAsState()
     stats?.let {
         Column(modifier = modifier) {
             TeamNameAndStanding(
                 stats = it,
-                teamRank = teamRank,
+                teamStanding = teamStanding,
                 textColor = viewModel.colors.extra2,
             )
             TeamStatsDetail(
@@ -59,7 +59,7 @@ fun TeamInformation(
 private fun TeamNameAndStanding(
     modifier: Modifier = Modifier,
     stats: Team,
-    teamRank: Int,
+    teamStanding: Int,
     textColor: Color,
 ) {
     Row(
@@ -91,7 +91,7 @@ private fun TeamNameAndStanding(
                     R.string.team_rank_record,
                     stats.win,
                     stats.lose,
-                    teamRank.toRank(),
+                    teamStanding.toRank(),
                     stats.teamConference.toString()
                 ),
                 fontWeight = FontWeight.Medium,

@@ -6,6 +6,7 @@ import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.models.local.team.Team
 import com.jiachian.nbatoday.models.local.team.TeamAndPlayers
 import com.jiachian.nbatoday.models.local.team.TeamPlayer
+import com.jiachian.nbatoday.models.local.team.TeamRank
 import com.jiachian.nbatoday.models.remote.team.toTeamPlayerStats
 import com.jiachian.nbatoday.models.remote.team.toTeamStats
 import com.jiachian.nbatoday.utils.showErrorToast
@@ -67,24 +68,8 @@ class NBATeamRepository(
         return teamLocalSource.getTeamAndPlayers(teamId)
     }
 
-    override fun getTeamRank(teamId: Int, conference: NBATeam.Conference): Flow<Int> {
+    override fun getTeamRank(teamId: Int, conference: NBATeam.Conference): Flow<TeamRank> {
         return teamLocalSource.getTeamRank(teamId, conference)
-    }
-
-    override fun getTeamPointsRank(teamId: Int): Flow<Int> {
-        return teamLocalSource.getTeamPointsRank(teamId)
-    }
-
-    override fun getTeamReboundsRank(teamId: Int): Flow<Int> {
-        return teamLocalSource.getTeamReboundsRank(teamId)
-    }
-
-    override fun getTeamAssistsRank(teamId: Int): Flow<Int> {
-        return teamLocalSource.getTeamAssistsRank(teamId)
-    }
-
-    override fun getTeamPlusMinusRank(teamId: Int): Flow<Int> {
-        return teamLocalSource.getTeamPlusMinusRank(teamId)
     }
 
     private suspend fun deleteTradedPlayers(teamId: Int, remoteTeamPlayers: List<TeamPlayer>) {
