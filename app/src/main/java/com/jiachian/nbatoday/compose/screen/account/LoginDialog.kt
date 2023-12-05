@@ -26,7 +26,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -39,18 +38,16 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.utils.color
-import com.jiachian.nbatoday.utils.showToast
 
 @Composable
 fun LoginDialog(
-    onLoginClicked: (account: String, password: String) -> Unit,
-    onRegisterClicked: (account: String, password: String) -> Unit,
+    onLogin: (account: String, password: String) -> Unit,
+    onRegister: (account: String, password: String) -> Unit,
     onDismiss: () -> Unit
 ) {
-    val context = LocalContext.current
     var account by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    val isInputValid by remember(account, password) {
+    val isInputValid by remember {
         derivedStateOf { account.isNotBlank() && password.isNotBlank() }
     }
     Dialog(onDismissRequest = onDismiss) {
@@ -79,20 +76,9 @@ fun LoginDialog(
                 onValueChanged = { password = it }
             )
             BottomButtons(
-                onClickRegister = {
-                    if (isInputValid) {
-                        onRegisterClicked(account, password)
-                    } else {
-                        showToast(context, R.string.user_login_warning)
-                    }
-                },
-                onClickLogin = {
-                    if (isInputValid) {
-                        onLoginClicked(account, password)
-                    } else {
-                        showToast(context, R.string.user_login_warning)
-                    }
-                }
+                enabled = isInputValid,
+                onRegister = { onRegister(account, password) },
+                onLogin = { onLogin(account, password) }
             )
         }
     }
@@ -182,8 +168,9 @@ private fun PasswordTextField(
 
 @Composable
 private fun BottomButtons(
-    onClickRegister: () -> Unit,
-    onClickLogin: () -> Unit
+    enabled: Boolean,
+    onRegister: () -> Unit,
+    onLogin: () -> Unit
 ) {
     Row {
         Button(
@@ -191,7 +178,8 @@ private fun BottomButtons(
                 .testTag("LoginDialog_Btn_Register")
                 .padding(top = 16.dp, bottom = 16.dp, start = 16.dp)
                 .width(120.dp),
-            onClick = onClickRegister,
+            onClick = onRegister,
+            enabled = enabled,
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = MaterialTheme.colors.primary
             )
@@ -206,7 +194,8 @@ private fun BottomButtons(
                 .testTag("LoginDialog_Btn_Login")
                 .padding(top = 16.dp, bottom = 16.dp, start = 16.dp, end = 16.dp)
                 .width(120.dp),
-            onClick = onClickLogin,
+            enabled = enabled,
+            onClick = onLogin,
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = MaterialTheme.colors.secondary
             )

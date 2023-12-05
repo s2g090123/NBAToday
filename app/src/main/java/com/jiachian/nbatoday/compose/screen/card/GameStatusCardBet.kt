@@ -29,8 +29,8 @@ fun GameStatusCardBetScreen(viewModel: GameStatusCardViewModel) {
     val hasBet by viewModel.hasBet.collectAsState()
     if (!isLogin) {
         LoginDialog(
-            onLoginClicked = viewModel::login,
-            onRegisterClicked = viewModel::register,
+            onLogin = viewModel::login,
+            onRegister = viewModel::register,
             onDismiss = {}
         )
     } else if (hasBet) {
