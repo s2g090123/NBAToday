@@ -36,6 +36,7 @@ import com.jiachian.nbatoday.Transparency25
 import com.jiachian.nbatoday.compose.widget.CustomOutlinedTextField
 import com.jiachian.nbatoday.compose.widget.TeamLogoImage
 import com.jiachian.nbatoday.models.local.game.GameTeam
+import com.jiachian.nbatoday.testing.testtag.BetTestTag
 import com.jiachian.nbatoday.utils.getOrZero
 import com.jiachian.nbatoday.utils.rippleClickable
 
@@ -52,7 +53,7 @@ fun BetDialog(
     Dialog(onDismissRequest = onDismiss) {
         Column(
             modifier = Modifier
-                .testTag("BetDialog_Dialog")
+                .testTag(BetTestTag.BetDialog)
                 .clip(RoundedCornerShape(8.dp))
                 .background(MaterialTheme.colors.secondary),
             horizontalAlignment = Alignment.End
@@ -93,7 +94,7 @@ private fun ConfirmButton(
     ) {
         Text(
             modifier = Modifier
-                .testTag("ConfirmButton_Btn")
+                .testTag(BetTestTag.BetDialog_ConfirmButton_Text)
                 .rippleClickable(enabled) { onConfirm() }
                 .padding(10.dp),
             text = stringResource(R.string.bet_confirm),
@@ -122,7 +123,7 @@ private fun Detail(
         ) {
             TeamInfo(
                 modifier = Modifier
-                    .testTag("Detail_TeamInfo_Home")
+                    .testTag(BetTestTag.BetDialog_Detail_TeamInfo_Home)
                     .padding(start = 16.dp)
                     .width(IntrinsicSize.Min),
                 team = viewModel.gameAndBet.game.homeTeam,
@@ -132,7 +133,7 @@ private fun Detail(
             OddsText(modifier = Modifier.padding(horizontal = 16.dp))
             TeamInfo(
                 modifier = Modifier
-                    .testTag("Detail_TeamInfo_Away")
+                    .testTag(BetTestTag.BetDialog_Detail_TeamInfo_Away)
                     .padding(end = 16.dp)
                     .width(IntrinsicSize.Min),
                 team = viewModel.gameAndBet.game.awayTeam,
@@ -142,7 +143,7 @@ private fun Detail(
         }
         Text(
             modifier = Modifier
-                .testTag("Detail_Text_Remainder")
+                .testTag(BetTestTag.BetDialog_Detail_Text_Remainder)
                 .padding(top = 16.dp, start = 16.dp, end = 16.dp),
             text = stringResource(R.string.bet_remain, remainedPoints),
             color = MaterialTheme.colors.primary,
@@ -188,7 +189,7 @@ private fun TeamInfo(
     ) {
         Text(
             modifier = Modifier
-                .testTag("TeamInfo_Text_Record")
+                .testTag(BetTestTag.BetDialog_TeamInfo_Text_Record)
                 .padding(top = 16.dp),
             text = stringResource(R.string.bet_win_lose_record, team.wins, team.losses),
             color = MaterialTheme.colors.primary,
@@ -202,7 +203,7 @@ private fun TeamInfo(
         )
         CustomOutlinedTextField(
             modifier = Modifier
-                .testTag("TeamInfo_TextField_Bet")
+                .testTag(BetTestTag.BetDialog_TeamInfo_TextField_Bet)
                 .padding(top = 8.dp)
                 .width(100.dp)
                 .height(32.dp),
@@ -225,7 +226,7 @@ private fun WarningDialog(
     onDismiss: () -> Unit
 ) {
     AlertDialog(
-        modifier = Modifier.testTag("WarningDialog"),
+        modifier = Modifier.testTag(BetTestTag.BetDialog_WarningDialog),
         onDismissRequest = onDismiss,
         title = {
             Text(
@@ -283,7 +284,7 @@ private fun WarningDialogButton(
         )
         Text(
             modifier = Modifier
-                .testTag("WarningDialogButton_Text_Confirm")
+                .testTag(BetTestTag.BetDialog_WarningDialog_Text_Confirm)
                 .padding(bottom = 8.dp)
                 .rippleClickable { onConfirm() }
                 .padding(10.dp),
