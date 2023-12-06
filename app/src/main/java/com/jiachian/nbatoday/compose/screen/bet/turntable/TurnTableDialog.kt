@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.models.local.bet.TurnTablePoints
+import com.jiachian.nbatoday.testing.testtag.BetTestTag
 import com.jiachian.nbatoday.utils.rippleClickable
 
 @Composable
@@ -26,13 +27,13 @@ fun AskTurnTableDialog(
     onCancel: () -> Unit
 ) {
     AlertDialog(
-        modifier = Modifier.testTag("AskTurnTableDialog_Dialog"),
+        modifier = Modifier.testTag(BetTestTag.AskTurnTableDialog),
         shape = RoundedCornerShape(8.dp),
         backgroundColor = MaterialTheme.colors.secondary,
         onDismissRequest = onCancel,
         title = {
             Text(
-                modifier = Modifier.testTag("AskTurnTableDialog_Text_Title"),
+                modifier = Modifier.testTag(BetTestTag.AskTurnTableDialog_Text_Title),
                 text = stringResource(R.string.bet_ask_turn_table_title),
                 color = MaterialTheme.colors.primary,
                 fontSize = 24.sp,
@@ -41,7 +42,7 @@ fun AskTurnTableDialog(
         },
         text = {
             Text(
-                modifier = Modifier.testTag("AskTurnTableDialog_Text_Description"),
+                modifier = Modifier.testTag(BetTestTag.AskTurnTableDialog_Text_Body),
                 text = stringResource(
                     R.string.bet_ask_turn_table_text,
                     turnTablePoints.winPoints,
@@ -83,7 +84,7 @@ private fun AskTurnTableButtons(
         )
         Text(
             modifier = Modifier
-                .testTag("AskTurnTableDialog_Btn_Continue")
+                .testTag(BetTestTag.AskTurnTableButtons_Text_Continue)
                 .padding(bottom = 8.dp, start = 8.dp, end = 8.dp)
                 .rippleClickable { onContinue() }
                 .padding(10.dp),

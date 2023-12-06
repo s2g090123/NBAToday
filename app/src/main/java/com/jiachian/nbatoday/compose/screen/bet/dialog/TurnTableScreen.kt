@@ -10,6 +10,7 @@ import com.jiachian.nbatoday.compose.screen.bet.BetViewModel
 import com.jiachian.nbatoday.compose.screen.bet.turntable.AskTurnTableDialog
 import com.jiachian.nbatoday.compose.screen.bet.turntable.BetTurnTable
 import com.jiachian.nbatoday.compose.widget.NullCheckScreen
+import com.jiachian.nbatoday.testing.testtag.BetTestTag
 
 @Composable
 fun TurnTableScreen(viewModel: BetViewModel) {
@@ -34,7 +35,7 @@ fun TurnTableScreen(viewModel: BetViewModel) {
     ) { points ->
         BetTurnTable(
             modifier = Modifier
-                .testTag("BetScreen_BetTurnTable")
+                .testTag(BetTestTag.TurnTableScreen)
                 .fillMaxSize(),
             viewModel = viewModel,
             onStart = { viewModel.startTurnTable(points) },

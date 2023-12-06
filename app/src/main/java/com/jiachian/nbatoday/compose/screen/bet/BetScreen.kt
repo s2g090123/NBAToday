@@ -2,7 +2,6 @@ package com.jiachian.nbatoday.compose.screen.bet
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -27,25 +26,25 @@ import com.jiachian.nbatoday.compose.screen.bet.dialog.RewardedPointsScreen
 import com.jiachian.nbatoday.compose.screen.bet.dialog.TurnTableScreen
 import com.jiachian.nbatoday.compose.screen.bet.widgets.BetCard
 import com.jiachian.nbatoday.compose.widget.BackHandle
+import com.jiachian.nbatoday.compose.widget.FocusableColumn
 import com.jiachian.nbatoday.compose.widget.IconButton
 import com.jiachian.nbatoday.compose.widget.LoadingScreen
 import com.jiachian.nbatoday.compose.widget.NullCheckScreen
-import com.jiachian.nbatoday.utils.noRippleClickable
+import com.jiachian.nbatoday.testing.testtag.BetTestTag
 import com.jiachian.nbatoday.utils.rippleClickable
 
 @Composable
 fun BetScreen(viewModel: BetViewModel) {
     BackHandle(onBack = viewModel::close) {
-        Column(
+        FocusableColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colors.primary)
-                .noRippleClickable { }
         ) {
             BetTop(onBack = viewModel::close)
             BetBody(
                 modifier = Modifier
-                    .testTag("bet_lc_cards")
+                    .testTag(BetTestTag.BetScreen_BetBody)
                     .fillMaxSize(),
                 viewModel = viewModel,
             )
@@ -59,7 +58,7 @@ fun BetScreen(viewModel: BetViewModel) {
 private fun BetTop(onBack: () -> Unit) {
     IconButton(
         modifier = Modifier
-            .testTag("bet_btn_back")
+            .testTag(BetTestTag.BetScreen_BetTop_Button_Back)
             .padding(top = 8.dp, start = 8.dp),
         drawableRes = R.drawable.ic_black_back,
         tint = MaterialTheme.colors.secondary,

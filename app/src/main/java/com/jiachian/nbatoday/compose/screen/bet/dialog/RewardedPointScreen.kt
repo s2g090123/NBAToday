@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.screen.bet.BetViewModel
 import com.jiachian.nbatoday.compose.widget.NullCheckScreen
+import com.jiachian.nbatoday.testing.testtag.BetTestTag
 import com.jiachian.nbatoday.utils.rippleClickable
 import kotlin.math.abs
 
@@ -43,13 +44,13 @@ private fun RewardedPointsDialog(
     onDismiss: () -> Unit
 ) {
     AlertDialog(
-        modifier = Modifier.testTag("RewardPointDialog_dialog"),
+        modifier = Modifier.testTag(BetTestTag.RewardedPointsDialog),
         shape = RoundedCornerShape(8.dp),
         backgroundColor = MaterialTheme.colors.secondary,
         onDismissRequest = onDismiss,
         title = {
             Text(
-                modifier = Modifier.testTag("RewardPointDialog_text_title"),
+                modifier = Modifier.testTag(BetTestTag.RewardedPointsDialog_Text_Title),
                 text = stringResource(
                     if (rewardedPoints >= 0) R.string.bet_reward_win_title
                     else R.string.bet_reward_lose_title
@@ -61,7 +62,7 @@ private fun RewardedPointsDialog(
         },
         text = {
             Text(
-                modifier = Modifier.testTag("RewardPointDialog_text_body"),
+                modifier = Modifier.testTag(BetTestTag.RewardedPointsDialog_Text_Body),
                 text = stringResource(
                     if (rewardedPoints >= 0) R.string.bet_reward_win_text else R.string.bet_reward_lose_text,
                     abs(rewardedPoints)
@@ -77,7 +78,7 @@ private fun RewardedPointsDialog(
             ) {
                 Text(
                     modifier = Modifier
-                        .testTag("RewardPointDialog_text_ok")
+                        .testTag(BetTestTag.RewardPointDialog_Text_OK)
                         .padding(bottom = 8.dp, end = 8.dp)
                         .rippleClickable { onDismiss() }
                         .padding(10.dp),

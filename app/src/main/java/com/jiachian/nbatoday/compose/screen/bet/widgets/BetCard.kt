@@ -28,6 +28,7 @@ import coil.request.ImageRequest
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.models.local.bet.BetAndGame
 import com.jiachian.nbatoday.models.local.game.GameTeam
+import com.jiachian.nbatoday.testing.testtag.BetTestTag
 import com.jiachian.nbatoday.utils.NBAUtils
 
 private const val CrownIconRotationZ = -45f
@@ -46,7 +47,7 @@ fun BetCard(
     ) {
         BetCardTeamInfo(
             modifier = Modifier
-                .testTag("BetCard_BetCardTeamInfo_Home")
+                .testTag(BetTestTag.BetCard_BetCardTeamInfo_Home)
                 .padding(start = 16.dp),
             team = homeTeam,
             pointsText = betAndGame.getHomePointsText(),
@@ -55,7 +56,7 @@ fun BetCard(
             isWin = betAndGame.isHomeTeamWin
         )
         Text(
-            modifier = Modifier.testTag("betCard_text_gameStatus"),
+            modifier = Modifier.testTag(BetTestTag.BetCard_Text_GameStatus),
             text = betAndGame.getBetStatusText(),
             textAlign = TextAlign.Center,
             color = MaterialTheme.colors.primary,
@@ -64,7 +65,7 @@ fun BetCard(
         )
         BetCardTeamInfo(
             modifier = Modifier
-                .testTag("BetCard_BetCardTeamInfo_Away")
+                .testTag(BetTestTag.BetCard_BetCardTeamInfo_Away)
                 .padding(end = 16.dp),
             team = awayTeam,
             pointsText = betAndGame.getAwayPointsText(),
@@ -90,7 +91,7 @@ private fun BetCardTeamInfo(
     ) {
         Text(
             modifier = Modifier
-                .testTag("BetCardTeamInfo_Text_Points")
+                .testTag(BetTestTag.BetCardTeamInfo_Text_Points)
                 .padding(top = 8.dp),
             text = pointsText,
             color = pointsTextColor,
@@ -113,7 +114,7 @@ private fun BetCardTeamInfo(
             if (isWin) {
                 Icon(
                     modifier = Modifier
-                        .testTag("BetCardTeamInfo_Icon_Win")
+                        .testTag(BetTestTag.BetCardTeamInfo_Icon_Crown)
                         .size(32.dp)
                         .graphicsLayer {
                             translationX = -6.dp.toPx()
@@ -129,7 +130,7 @@ private fun BetCardTeamInfo(
         if (isGamePlayed) {
             Text(
                 modifier = Modifier
-                    .testTag("BetCardTeamInfo_Text_Scores")
+                    .testTag(BetTestTag.BetCardTeamInfo_Text_Scores)
                     .padding(top = 8.dp),
                 text = team.score.toString(),
                 color = MaterialTheme.colors.primary,

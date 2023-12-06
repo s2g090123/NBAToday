@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.widget.IconButton
+import com.jiachian.nbatoday.testing.testtag.BetTestTag
 import com.jiachian.nbatoday.utils.rippleClickable
 
 @Composable
@@ -41,7 +42,7 @@ fun TurnTableStartButton(
     Box(modifier = modifier) {
         Text(
             modifier = Modifier
-                .testTag("BetTurnTable_Text_Start")
+                .testTag(BetTestTag.TurnTableStartButton_Text_Start)
                 .clip(CircleShape)
                 .shadow(8.dp)
                 .background(Color.Red)
