@@ -40,7 +40,7 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.screen.card.GameStatusCard
-import com.jiachian.nbatoday.models.local.game.GameAndBet
+import com.jiachian.nbatoday.models.local.game.GameAndBets
 import com.jiachian.nbatoday.utils.rippleClickable
 
 @OptIn(ExperimentalPagerApi::class, ExperimentalMaterialApi::class)
@@ -96,9 +96,9 @@ fun SchedulePage(
 private fun ScheduleContent(
     viewModel: SchedulePageViewModel,
     refreshState: PullRefreshState,
-    games: List<GameAndBet>,
+    games: List<GameAndBets>,
     onClickCalendar: () -> Unit,
-    onClickGame: (GameAndBet) -> Unit
+    onClickGame: (GameAndBets) -> Unit
 ) {
     val isRefreshing by viewModel.isRefreshingSchedule.collectAsState()
     Box(

@@ -5,7 +5,7 @@ import com.jiachian.nbatoday.compose.screen.card.GameStatusCardViewModel
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.models.local.game.Game
-import com.jiachian.nbatoday.models.local.game.GameAndBet
+import com.jiachian.nbatoday.models.local.game.GameAndBets
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.navigation.Route
@@ -190,10 +190,10 @@ class CalendarViewModel(
     }
 
     private suspend fun getGames(
-        games: List<GameAndBet>,
+        games: List<GameAndBets>,
         year: Int,
         month: Int
-    ): List<List<GameAndBet>> {
+    ): List<List<GameAndBets>> {
         return withContext(dispatcherProvider.io) {
             isLoadingGamesImp.value = true
             val cal = DateUtils.getCalendar().apply {
@@ -206,7 +206,7 @@ class CalendarViewModel(
                 set(Calendar.MILLISECOND, 0)
                 add(Calendar.DATE, -(get(Calendar.DAY_OF_WEEK) - 1))
             }
-            val data = mutableListOf<List<GameAndBet>>()
+            val data = mutableListOf<List<GameAndBets>>()
             while (cal.get(Calendar.YEAR) <= year && cal.get(Calendar.MONTH) + 1 <= month) {
                 repeat(DaysPerWeek) {
                     data.add(games.filter { it.game.gameDate.time == cal.timeInMillis })
@@ -246,9 +246,9 @@ class CalendarViewModel(
         navigationController.navigateToBoxScore(game.gameId)
     }
 
-    fun createGameStatusCardViewModel(gameAndBet: GameAndBet): GameStatusCardViewModel {
+    fun createGameStatusCardViewModel(gameAndBets: GameAndBets): GameStatusCardViewModel {
         return composeViewModelProvider.getGameStatusCardViewModel(
-            gameAndBet = gameAndBet,
+            gameAndBets = gameAndBets,
             dispatcherProvider = dispatcherProvider,
             coroutineScope = coroutineScope,
         )

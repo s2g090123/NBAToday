@@ -4,7 +4,7 @@ import androidx.room.Embedded
 import androidx.room.Relation
 import com.jiachian.nbatoday.models.local.bet.Bet
 
-data class GameAndBet(
+data class GameAndBets(
     @Embedded val game: Game,
     @Relation(
         parentColumn = "game_id",

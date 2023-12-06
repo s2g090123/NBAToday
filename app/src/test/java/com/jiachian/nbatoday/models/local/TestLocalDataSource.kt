@@ -3,7 +3,7 @@ package com.jiachian.nbatoday.models.local
 import com.jiachian.nbatoday.models.local.bet.Bet
 import com.jiachian.nbatoday.models.local.bet.BetAndGame
 import com.jiachian.nbatoday.models.local.game.Game
-import com.jiachian.nbatoday.models.local.game.GameAndBet
+import com.jiachian.nbatoday.models.local.game.GameAndBets
 import com.jiachian.nbatoday.models.local.game.GameScoreUpdateData
 import com.jiachian.nbatoday.models.local.game.GameUpdateData
 import com.jiachian.nbatoday.models.local.player.Player
@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.map
 class TestLocalDataSource : LocalDataSource() {
     override val dates = MutableStateFlow(emptyList<Date>())
     override val games = MutableStateFlow(emptyList<Game>())
-    override val gamesAndBets = MutableStateFlow(emptyList<GameAndBet>())
+    override val gamesAndBets = MutableStateFlow(emptyList<GameAndBets>())
 
     private val boxScores = MutableStateFlow(emptyList<BoxScore>())
 
@@ -43,7 +43,7 @@ class TestLocalDataSource : LocalDataSource() {
         }
     }
 
-    override fun getGamesAndBetsDuring(from: Long, to: Long): Flow<List<GameAndBet>> {
+    override fun getGamesAndBetsDuring(from: Long, to: Long): Flow<List<GameAndBets>> {
         return gamesAndBets.map {
             it.filter { gameAndBet ->
                 gameAndBet.game.gameDate.time in from..to
@@ -286,7 +286,7 @@ class TestLocalDataSource : LocalDataSource() {
         )
         gamesAndBets.value = gamesAndBets.value.toMutableList().apply {
             add(
-                GameAndBet(
+                GameAndBets(
                     game = game,
                     bets = listOf(bet)
                 )
@@ -315,7 +315,7 @@ class TestLocalDataSource : LocalDataSource() {
     override suspend fun deleteBets(bet: Bet) {
         gamesAndBets.value = gamesAndBets.value.map {
             if (it.bets.contains(bet)) {
-                GameAndBet(
+                GameAndBets(
                     game = it.game,
                     bets = it.bets.toMutableList().apply {
                         remove(bet)

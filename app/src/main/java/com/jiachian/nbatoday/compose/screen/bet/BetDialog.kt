@@ -126,7 +126,7 @@ private fun Detail(
                     .testTag(BetTestTag.BetDialog_Detail_TeamInfo_Home)
                     .padding(start = 16.dp)
                     .width(IntrinsicSize.Min),
-                team = viewModel.gameAndBet.game.homeTeam,
+                team = viewModel.gameAndBets.game.homeTeam,
                 value = homePoints,
                 onValueChanged = viewModel::updateHomePoints
             )
@@ -136,7 +136,7 @@ private fun Detail(
                     .testTag(BetTestTag.BetDialog_Detail_TeamInfo_Away)
                     .padding(end = 16.dp)
                     .width(IntrinsicSize.Min),
-                team = viewModel.gameAndBet.game.awayTeam,
+                team = viewModel.gameAndBets.game.awayTeam,
                 value = awayPoints,
                 onValueChanged = viewModel::updateAwayPoints
             )

@@ -6,7 +6,7 @@ import com.jiachian.nbatoday.compose.screen.card.GameStatusCardViewModel
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.models.local.game.Game
-import com.jiachian.nbatoday.models.local.game.GameAndBet
+import com.jiachian.nbatoday.models.local.game.GameAndBets
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.repository.game.GameRepository
@@ -94,7 +94,7 @@ class SchedulePageViewModel(
         }
     }
 
-    fun clickScheduleGame(game: GameAndBet) {
+    fun clickScheduleGame(game: GameAndBets) {
         if (!game.game.isGamePlayed) {
             openTeamStats(game.game.homeTeam.team)
         } else {
@@ -119,9 +119,9 @@ class SchedulePageViewModel(
         navigationController.navigateToCalendar(date.time)
     }
 
-    fun createGameStatusCardViewModel(gameAndBet: GameAndBet): GameStatusCardViewModel {
+    fun createGameStatusCardViewModel(gameAndBets: GameAndBets): GameStatusCardViewModel {
         return composeViewModelProvider.getGameStatusCardViewModel(
-            gameAndBet = gameAndBet,
+            gameAndBets = gameAndBets,
             dispatcherProvider = dispatcherProvider,
             coroutineScope = coroutineScope
         )

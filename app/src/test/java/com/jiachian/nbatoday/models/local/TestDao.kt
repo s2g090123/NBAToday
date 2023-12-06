@@ -3,7 +3,7 @@ package com.jiachian.nbatoday.models.local
 import com.jiachian.nbatoday.models.local.bet.Bet
 import com.jiachian.nbatoday.models.local.bet.BetAndGame
 import com.jiachian.nbatoday.models.local.game.Game
-import com.jiachian.nbatoday.models.local.game.GameAndBet
+import com.jiachian.nbatoday.models.local.game.GameAndBets
 import com.jiachian.nbatoday.models.local.game.GameScoreUpdateData
 import com.jiachian.nbatoday.models.local.game.GameUpdateData
 import com.jiachian.nbatoday.models.local.player.Player
@@ -31,10 +31,10 @@ class TestDao : NbaDao {
         return games
     }
 
-    override fun getGamesAndBets(): Flow<List<GameAndBet>> {
+    override fun getGamesAndBets(): Flow<List<GameAndBets>> {
         return combine(games, bet) { games, bets ->
             games.map { game ->
-                GameAndBet(
+                GameAndBets(
                     game = game,
                     bets = bets.filter { it.gameId == game.gameId }
                 )
@@ -80,12 +80,12 @@ class TestDao : NbaDao {
         }
     }
 
-    override fun getGamesAndBetsDuring(from: Long, to: Long): Flow<List<GameAndBet>> {
+    override fun getGamesAndBetsDuring(from: Long, to: Long): Flow<List<GameAndBets>> {
         return combine(games, bet) { games, bets ->
             games.filter {
                 it.gameDate.time in from..to
             }.map { game ->
-                GameAndBet(
+                GameAndBets(
                     game = game,
                     bets = bets.filter { it.gameId == game.gameId }
                 )

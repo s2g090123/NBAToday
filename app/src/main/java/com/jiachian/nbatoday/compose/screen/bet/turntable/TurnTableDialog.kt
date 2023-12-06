@@ -22,7 +22,7 @@ import com.jiachian.nbatoday.utils.rippleClickable
 @Composable
 fun AskTurnTableDialog(
     turnTablePoints: TurnTablePoints,
-    onContinue: (data: TurnTablePoints) -> Unit,
+    onContinue: (TurnTablePoints) -> Unit,
     onCancel: () -> Unit
 ) {
     AlertDialog(
@@ -52,32 +52,45 @@ fun AskTurnTableDialog(
             )
         },
         buttons = {
-            Row(
+            AskTurnTableButtons(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
-            ) {
-                Text(
-                    modifier = Modifier
-                        .padding(bottom = 8.dp)
-                        .rippleClickable { onCancel() }
-                        .padding(10.dp),
-                    text = stringResource(R.string.bet_ask_turn_table_cancel),
-                    color = MaterialTheme.colors.primary,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium
-                )
-                Text(
-                    modifier = Modifier
-                        .testTag("AskTurnTableDialog_Btn_Continue")
-                        .padding(bottom = 8.dp, start = 8.dp, end = 8.dp)
-                        .rippleClickable { onContinue(turnTablePoints) }
-                        .padding(10.dp),
-                    text = stringResource(R.string.bet_ask_turn_table_continue),
-                    color = MaterialTheme.colors.primary,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium
-                )
-            }
+                onContinue = { onContinue(turnTablePoints) },
+                onCancel = onCancel
+            )
         }
     )
+}
+
+@Composable
+private fun AskTurnTableButtons(
+    modifier: Modifier = Modifier,
+    onContinue: () -> Unit,
+    onCancel: () -> Unit,
+) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.End
+    ) {
+        Text(
+            modifier = Modifier
+                .padding(bottom = 8.dp)
+                .rippleClickable { onCancel() }
+                .padding(10.dp),
+            text = stringResource(R.string.bet_ask_turn_table_cancel),
+            color = MaterialTheme.colors.primary,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Medium
+        )
+        Text(
+            modifier = Modifier
+                .testTag("AskTurnTableDialog_Btn_Continue")
+                .padding(bottom = 8.dp, start = 8.dp, end = 8.dp)
+                .rippleClickable { onContinue() }
+                .padding(10.dp),
+            text = stringResource(R.string.bet_ask_turn_table_continue),
+            color = MaterialTheme.colors.primary,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Medium
+        )
+    }
 }

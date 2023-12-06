@@ -14,7 +14,7 @@ import com.jiachian.nbatoday.compose.screen.team.TeamViewModel
 import com.jiachian.nbatoday.datastore.BaseDataStore
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
-import com.jiachian.nbatoday.models.local.game.GameAndBet
+import com.jiachian.nbatoday.models.local.game.GameAndBets
 import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.navigation.Route
 import com.jiachian.nbatoday.repository.RepositoryProvider
@@ -164,12 +164,12 @@ class ComposeViewModelProvider(
     }
 
     fun getGameStatusCardViewModel(
-        gameAndBet: GameAndBet,
+        gameAndBets: GameAndBets,
         dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
         coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined),
     ): GameStatusCardViewModel {
         return GameStatusCardViewModel(
-            gameAndBet = gameAndBet,
+            gameAndBets = gameAndBets,
             betRepository = repositoryProvider.bet,
             userRepository = repositoryProvider.user,
             dispatcherProvider = dispatcherProvider,

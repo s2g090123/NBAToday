@@ -14,7 +14,7 @@ import com.jiachian.nbatoday.UserToken
 import com.jiachian.nbatoday.models.local.bet.Bet
 import com.jiachian.nbatoday.models.local.bet.BetAndGame
 import com.jiachian.nbatoday.models.local.game.Game
-import com.jiachian.nbatoday.models.local.game.GameAndBet
+import com.jiachian.nbatoday.models.local.game.GameAndBets
 import com.jiachian.nbatoday.models.local.player.Player
 import com.jiachian.nbatoday.models.local.score.BoxScore
 import com.jiachian.nbatoday.models.local.team.NBATeam
@@ -180,7 +180,7 @@ class TestRepository : BaseRepository {
         }
     }
 
-    override fun getGamesAndBetsDuring(from: Long, to: Long): Flow<List<GameAndBet>> {
+    override fun getGamesAndBetsDuring(from: Long, to: Long): Flow<List<GameAndBets>> {
         return games.combine(bet) { games, bets ->
             games.filter { game ->
                 game.gameDate.time in from..to
@@ -188,7 +188,7 @@ class TestRepository : BaseRepository {
                 val bet = bets.filter {
                     it.gameId == game.gameId
                 }
-                GameAndBet(game, bet)
+                GameAndBets(game, bet)
             }
         }
     }
@@ -365,11 +365,11 @@ class TestRepository : BaseRepository {
             }
     }
 
-    override fun getGamesAndBets(): Flow<List<GameAndBet>> {
+    override fun getGamesAndBets(): Flow<List<GameAndBets>> {
         return games.combine(bet) { games, bets ->
             games.map { game ->
                 val betList = bets.filter { it.gameId == game.gameId }
-                GameAndBet(game, betList)
+                GameAndBets(game, betList)
             }
         }
     }

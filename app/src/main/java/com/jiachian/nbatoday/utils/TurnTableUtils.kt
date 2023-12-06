@@ -5,6 +5,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextMeasurer
@@ -89,26 +90,29 @@ fun DrawScope.drawTurnTableLine(
 @OptIn(ExperimentalTextApi::class)
 fun DrawScope.drawText(
     textMeasurer: TextMeasurer,
+    rotation: Float,
     text: String,
     textColor: Color,
     textSize: IntSize,
     tableSize: Float,
     borderWidth: Float
 ) {
-    drawText(
-        textMeasurer = textMeasurer,
-        text = text,
-        style = TextStyle(
-            color = textColor,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Medium,
-            textAlign = TextAlign.Center
-        ),
-        topLeft = Offset(
-            center.x - textSize.width / 2f,
-            borderWidth * TableBorderWidthScale / 2 + tableSize / TableQuarter - textSize.height / 2f - 12.dp.toPx()
+    rotate(rotation) {
+        drawText(
+            textMeasurer = textMeasurer,
+            text = text,
+            style = TextStyle(
+                color = textColor,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Medium,
+                textAlign = TextAlign.Center
+            ),
+            topLeft = Offset(
+                center.x - textSize.width / 2f,
+                borderWidth * TableBorderWidthScale / 2 + tableSize / TableQuarter - textSize.height / 2f - 12.dp.toPx()
+            )
         )
-    )
+    }
 }
 
 @OptIn(ExperimentalTextApi::class)

@@ -16,7 +16,7 @@ import com.jiachian.nbatoday.compose.screen.home.standing.StandingSort
 import com.jiachian.nbatoday.compose.theme.CelticsColors
 import com.jiachian.nbatoday.models.TestDataStore
 import com.jiachian.nbatoday.models.TestRepository
-import com.jiachian.nbatoday.models.local.game.GameAndBet
+import com.jiachian.nbatoday.models.local.game.GameAndBets
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.models.local.team.data.teamCeltics
 import com.jiachian.nbatoday.rule.CalendarRule
@@ -301,7 +301,7 @@ class HomeViewModelTest {
         return data
     }
 
-    private suspend fun generateScheduleGames(): Map<DateData, List<GameAndBet>> {
+    private suspend fun generateScheduleGames(): Map<DateData, List<GameAndBets>> {
         val cal = com.jiachian.nbatoday.utils.DateUtils.getCalendar()
         val games = repository.getGamesAndBetsDuring(
             cal.timeInMillis - DateUtils.DAY_IN_MILLIS * (ScheduleDateRange + 1),

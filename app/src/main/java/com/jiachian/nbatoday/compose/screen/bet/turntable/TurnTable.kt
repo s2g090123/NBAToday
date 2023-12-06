@@ -15,7 +15,6 @@ import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextMeasurer
@@ -45,6 +44,12 @@ fun BetTurnTable(
     onClose: () -> Unit
 ) {
     val isStarting by viewModel.turnTableRunning.collectAsState()
+    val currentAngle by viewModel.turnTableAngle.collectAsState()
+    val textMeasure = rememberTextMeasurer()
+    val plus1TextSize = remember { textMeasure.measureSize("X2\n-0") }
+    val minus1TextSize = remember { textMeasure.measureSize("+0") }
+    val plus2TextSize = remember { textMeasure.measureSize("X5") }
+    val minus2TextSize = remember { textMeasure.measureSize("+0\n-0") }
     BackHandle(
         onBack = {
             if (!isStarting) {
@@ -52,15 +57,7 @@ fun BetTurnTable(
             }
         }
     ) {
-        val currentAngle by viewModel.turnTableAngle.collectAsState()
-        val textMeasure = rememberTextMeasurer()
-        val plus1TextSize = remember { textMeasure.measureSize("X2\n-0") }
-        val minus1TextSize = remember { textMeasure.measureSize("+0") }
-        val plus2TextSize = remember { textMeasure.measureSize("X5") }
-        val minus2TextSize = remember { textMeasure.measureSize("+0\n-0") }
-        Box(
-            modifier = modifier
-        ) {
+        Box(modifier = modifier) {
             if (!isStarting) {
                 TurnTableCancelButton(
                     modifier = Modifier
@@ -83,7 +80,7 @@ fun BetTurnTable(
                 minus1TextSize = minus1TextSize,
                 minus2TextSize = minus2TextSize
             )
-            BetTriangleCursor(
+            TriangleCursor(
                 modifier = Modifier
                     .align(Alignment.Center)
                     .graphicsLayer {
@@ -121,59 +118,56 @@ private fun TurnTableContent(
             turnTableSize = turnTableSize
         )
         drawTurnTableLine(borderWidth = borderWidth)
-        rotate(FirstSectorRotation) {
-            drawText(
-                textMeasurer = textMeasurer,
-                text = "X2\n-0",
-                textColor = Color.Black,
-                textSize = plus1TextSize,
-                tableSize = turnTableSize,
-                borderWidth = borderWidth
-            )
-        }
-        rotate(SecondSectorRotation) {
-            drawText(
-                textMeasurer = textMeasurer,
-                text = "+0",
-                textColor = Color.White,
-                textSize = minus1TextSize,
-                tableSize = turnTableSize,
-                borderWidth = borderWidth
-            )
-        }
-        rotate(ThirdSectorRotation) {
-            drawText(
-                textMeasurer = textMeasurer,
-                text = "X5",
-                textColor = Color.Black,
-                textSize = plus2TextSize,
-                tableSize = turnTableSize,
-                borderWidth = borderWidth
-            )
-        }
-        rotate(ForthSectorRotation) {
-            drawText(
-                textMeasurer = textMeasurer,
-                text = "+0\n-0",
-                textColor = Color.White,
-                textSize = minus2TextSize,
-                tableSize = turnTableSize,
-                borderWidth = borderWidth
-            )
-        }
+        drawText(
+            textMeasurer = textMeasurer,
+            rotation = FirstSectorRotation,
+            text = "X2\n-0",
+            textColor = Color.Black,
+            textSize = plus1TextSize,
+            tableSize = turnTableSize,
+            borderWidth = borderWidth
+        )
+        drawText(
+            textMeasurer = textMeasurer,
+            rotation = SecondSectorRotation,
+            text = "+0",
+            textColor = Color.White,
+            textSize = minus1TextSize,
+            tableSize = turnTableSize,
+            borderWidth = borderWidth
+        )
+        drawText(
+            textMeasurer = textMeasurer,
+            rotation = ThirdSectorRotation,
+            text = "X5",
+            textColor = Color.Black,
+            textSize = plus2TextSize,
+            tableSize = turnTableSize,
+            borderWidth = borderWidth
+        )
+        drawText(
+            textMeasurer = textMeasurer,
+            rotation = ForthSectorRotation,
+            text = "+0\n-0",
+            textColor = Color.White,
+            textSize = minus2TextSize,
+            tableSize = turnTableSize,
+            borderWidth = borderWidth
+        )
     }
 }
 
 @Composable
-private fun BetTriangleCursor(
+private fun TriangleCursor(
     modifier: Modifier = Modifier,
     color: Color,
     borderColor: Color = Color.Black
 ) {
+    val path = remember { Path() }
     Spacer(
         modifier = modifier.then(
             Modifier.drawWithCache {
-                val path = Path()
+                path.reset()
                 path.moveTo(0f, 0f)
                 path.lineTo(size.width, 0f)
                 path.lineTo(size.width / 2f, size.height)

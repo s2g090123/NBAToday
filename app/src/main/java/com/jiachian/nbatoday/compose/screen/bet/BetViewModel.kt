@@ -52,7 +52,7 @@ class BetViewModel(
     route = Route.BET
 ) {
     val betAndGame = repository.getBetsAndGames(account)
-        .stateIn(coroutineScope, SharingStarted.Lazily, emptyList())
+        .stateIn(coroutineScope, SharingStarted.Lazily, null)
 
     private val askTurnTableVisibleImp = MutableStateFlow<TurnTablePoints?>(null)
     val askTurnTableVisible = askTurnTableVisibleImp.asStateFlow()
@@ -115,8 +115,8 @@ class BetViewModel(
                 val rewardedPoints = getRewardedPoints(turnTablePoints, rewardedAngle)
                 repository.addPoints(rewardedPoints)
                 var remainingTime = TurnTableDuration
-                val currentAngle = turnTableAngle.value
-                while (remainingTime > 0 || currentAngle != rewardedAngle) {
+                while (remainingTime > 0 || turnTableAngle.value != rewardedAngle) {
+                    val currentAngle = turnTableAngle.value
                     val step = getTurnTableStep(remainingTime, currentAngle, rewardedAngle)
                     val delay = if (remainingTime <= 0) MaxDelay else MinDelay
                     delay(delay.toLong())

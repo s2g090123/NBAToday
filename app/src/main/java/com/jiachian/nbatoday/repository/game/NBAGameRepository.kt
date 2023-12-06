@@ -3,7 +3,7 @@ package com.jiachian.nbatoday.repository.game
 import com.jiachian.nbatoday.datasource.local.boxscore.BoxScoreLocalSource
 import com.jiachian.nbatoday.datasource.local.game.GameLocalSource
 import com.jiachian.nbatoday.datasource.remote.game.GameRemoteSource
-import com.jiachian.nbatoday.models.local.game.GameAndBet
+import com.jiachian.nbatoday.models.local.game.GameAndBets
 import com.jiachian.nbatoday.models.local.score.BoxScoreAndGame
 import com.jiachian.nbatoday.models.remote.score.toBoxScore
 import com.jiachian.nbatoday.utils.showErrorToast
@@ -29,7 +29,7 @@ class NBAGameRepository(
         }
     }
 
-    override fun getGamesAndBetsDuring(from: Long, to: Long): Flow<List<GameAndBet>> {
+    override fun getGamesAndBetsDuring(from: Long, to: Long): Flow<List<GameAndBets>> {
         return gameLocalSource.getGamesAndBetsDuring(from, to)
     }
 
@@ -37,15 +37,15 @@ class NBAGameRepository(
         return boxScoreLocalSource.getBoxScoreAndGame(gameId)
     }
 
-    override fun getGamesAndBets(): Flow<List<GameAndBet>> {
+    override fun getGamesAndBets(): Flow<List<GameAndBets>> {
         return gameLocalSource.getGamesAndBets()
     }
 
-    override fun getGamesAndBetsBeforeByTeam(teamId: Int, from: Long): Flow<List<GameAndBet>> {
+    override fun getGamesAndBetsBeforeByTeam(teamId: Int, from: Long): Flow<List<GameAndBets>> {
         return gameLocalSource.getGamesAndBetsBeforeByTeam(teamId, from)
     }
 
-    override fun getGamesAndBetsAfterByTeam(teamId: Int, from: Long): Flow<List<GameAndBet>> {
+    override fun getGamesAndBetsAfterByTeam(teamId: Int, from: Long): Flow<List<GameAndBets>> {
         return gameLocalSource.getGamesAndBetsAfterByTeam(teamId, from)
     }
 }

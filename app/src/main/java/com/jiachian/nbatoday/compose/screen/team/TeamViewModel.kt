@@ -6,7 +6,7 @@ import com.jiachian.nbatoday.compose.screen.label.LabelHelper
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.models.local.game.Game
-import com.jiachian.nbatoday.models.local.game.GameAndBet
+import com.jiachian.nbatoday.models.local.game.GameAndBets
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.models.local.team.TeamPlayer
 import com.jiachian.nbatoday.models.local.team.TeamRank
@@ -340,9 +340,9 @@ class TeamViewModel(
         navigationController.navigateToPlayer(playerId)
     }
 
-    fun createGameStatusCardViewModel(gameAndBet: GameAndBet): GameStatusCardViewModel {
+    fun createGameStatusCardViewModel(gameAndBets: GameAndBets): GameStatusCardViewModel {
         return composeViewModelProvider.getGameStatusCardViewModel(
-            gameAndBet = gameAndBet,
+            gameAndBets = gameAndBets,
             dispatcherProvider = dispatcherProvider,
             coroutineScope = coroutineScope
         )

@@ -6,7 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.jiachian.nbatoday.models.local.game.Game
-import com.jiachian.nbatoday.models.local.game.GameAndBet
+import com.jiachian.nbatoday.models.local.game.GameAndBets
 import com.jiachian.nbatoday.models.local.game.GameScoreUpdateData
 import com.jiachian.nbatoday.models.local.game.GameUpdateData
 import kotlinx.coroutines.flow.Flow
@@ -14,16 +14,16 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface GameDao {
     @Query("SELECT * FROM game")
-    fun getGamesAndBets(): Flow<List<GameAndBet>>
+    fun getGamesAndBets(): Flow<List<GameAndBets>>
 
     @Query("SELECT * FROM game WHERE game_date <= :from AND (home_team_id == :teamId OR away_team_id == :teamId)")
-    fun getGamesAndBetsBeforeByTeam(teamId: Int, from: Long): Flow<List<GameAndBet>>
+    fun getGamesAndBetsBeforeByTeam(teamId: Int, from: Long): Flow<List<GameAndBets>>
 
     @Query("SELECT * FROM game WHERE game_date > :from AND (home_team_id == :teamId OR away_team_id == :teamId)")
-    fun getGamesAndBetsAfterByTeam(teamId: Int, from: Long): Flow<List<GameAndBet>>
+    fun getGamesAndBetsAfterByTeam(teamId: Int, from: Long): Flow<List<GameAndBets>>
 
     @Query("SELECT * FROM game WHERE game_date >= :from AND game_date <= :to")
-    fun getGamesAndBetsDuring(from: Long, to: Long): Flow<List<GameAndBet>>
+    fun getGamesAndBetsDuring(from: Long, to: Long): Flow<List<GameAndBets>>
 
     @Query("SELECT EXISTS (SELECT 1 FROM game)")
     fun exitsGame(): Boolean

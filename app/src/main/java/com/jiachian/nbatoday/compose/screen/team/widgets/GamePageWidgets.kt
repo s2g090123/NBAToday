@@ -20,14 +20,14 @@ import androidx.compose.ui.unit.dp
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.screen.card.GameStatusCard
 import com.jiachian.nbatoday.compose.screen.team.TeamViewModel
-import com.jiachian.nbatoday.models.local.game.GameAndBet
+import com.jiachian.nbatoday.models.local.game.GameAndBets
 import com.jiachian.nbatoday.utils.rippleClickable
 
 @Composable
 fun GamesPage(
     modifier: Modifier = Modifier,
     viewModel: TeamViewModel,
-    games: List<GameAndBet>
+    games: List<GameAndBets>
 ) {
     val context = LocalContext.current
     LazyColumn(

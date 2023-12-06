@@ -7,7 +7,7 @@ import com.jiachian.nbatoday.UserAccount
 import com.jiachian.nbatoday.UserPassword
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.models.TestRepository
-import com.jiachian.nbatoday.models.local.game.GameAndBet
+import com.jiachian.nbatoday.models.local.game.GameAndBets
 import com.jiachian.nbatoday.rule.CalendarRule
 import com.jiachian.nbatoday.rule.TestCoroutineEnvironment
 import com.jiachian.nbatoday.utils.DateUtils
@@ -217,7 +217,7 @@ class CalendarViewModelTest {
         return data
     }
 
-    private suspend fun generateGamesAndBets(): List<List<GameAndBet>> {
+    private suspend fun generateGamesAndBets(): List<List<GameAndBets>> {
         val games = repository.getGamesAndBets().first()
         val cal = DateUtils.getCalendar()
         val year = cal.get(Calendar.YEAR)
@@ -232,7 +232,7 @@ class CalendarViewModelTest {
             set(Calendar.MILLISECOND, 0)
             add(Calendar.DATE, -(get(Calendar.DAY_OF_WEEK) - 1))
         }
-        val data = mutableListOf<List<GameAndBet>>()
+        val data = mutableListOf<List<GameAndBets>>()
         while (cal.get(Calendar.YEAR) <= year && cal.get(Calendar.MONTH) + 1 <= month) {
             repeat(7) {
                 data.add(games.filter { it.game.gameDate.time == cal.timeInMillis })

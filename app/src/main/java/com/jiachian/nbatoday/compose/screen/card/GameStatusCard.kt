@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.widget.AnimatedExpand
 import com.jiachian.nbatoday.compose.widget.TeamLogoImage
-import com.jiachian.nbatoday.models.local.game.GameAndBet
+import com.jiachian.nbatoday.models.local.game.GameAndBets
 import com.jiachian.nbatoday.models.local.game.GameTeam
 import com.jiachian.nbatoday.utils.rippleClickable
 
@@ -45,7 +45,7 @@ fun GameStatusCard(
     ) {
         ScoreBoard(
             modifier = Modifier.fillMaxWidth(),
-            gameAndBet = viewModel.gameAndBet,
+            gameAndBets = viewModel.gameAndBets,
             textColor = color,
             betVisible = canBet,
             onBetClick = viewModel::showBetDialog
@@ -121,7 +121,7 @@ private fun ExpandContent(
 @Composable
 private fun ScoreBoard(
     modifier: Modifier = Modifier,
-    gameAndBet: GameAndBet,
+    gameAndBets: GameAndBets,
     textColor: Color,
     betVisible: Boolean,
     onBetClick: () -> Unit
@@ -135,11 +135,11 @@ private fun ScoreBoard(
             modifier = Modifier
                 .testTag("ScoreBoard_TeamInfo_Home")
                 .padding(start = 16.dp),
-            gameTeam = gameAndBet.game.homeTeam,
+            gameTeam = gameAndBets.game.homeTeam,
             textColor = textColor
         )
         GameStatusAndBetButton(
-            gameAndBet = gameAndBet,
+            gameAndBets = gameAndBets,
             textColor = textColor,
             betVisible = betVisible,
             onBetClick = onBetClick
@@ -148,7 +148,7 @@ private fun ScoreBoard(
             modifier = Modifier
                 .testTag("ScoreBoard_TeamInfo_Away")
                 .padding(end = 16.dp),
-            gameTeam = gameAndBet.game.awayTeam,
+            gameTeam = gameAndBets.game.awayTeam,
             textColor = textColor
         )
     }

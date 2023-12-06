@@ -3,7 +3,7 @@ package com.jiachian.nbatoday.compose.screen.card
 import com.jiachian.nbatoday.compose.screen.bet.BetDialogViewModel
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
-import com.jiachian.nbatoday.models.local.game.GameAndBet
+import com.jiachian.nbatoday.models.local.game.GameAndBets
 import com.jiachian.nbatoday.models.local.game.GameLeaders
 import com.jiachian.nbatoday.repository.bet.BetRepository
 import com.jiachian.nbatoday.repository.user.UserRepository
@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class GameStatusCardViewModel(
-    val gameAndBet: GameAndBet,
+    val gameAndBets: GameAndBets,
     private val betRepository: BetRepository,
     private val userRepository: UserRepository,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
@@ -32,18 +32,18 @@ class GameStatusCardViewModel(
     private val isCardExpandedImp = MutableStateFlow(false)
     val isCardExpanded = isCardExpandedImp.asStateFlow()
 
-    val isGamePlayed = gameAndBet.game.isGamePlayed
+    val isGamePlayed = gameAndBets.game.isGamePlayed
 
     val hasBet = user.map { user ->
         user ?: return@map false
-        gameAndBet.bets.any { it.account == user.account }
+        gameAndBets.bets.any { it.account == user.account }
     }.stateIn(coroutineScope, SharingStarted.Eagerly, false)
 
     val canBet = hasBet.map {
         !isGamePlayed && !it
     }.stateIn(coroutineScope, SharingStarted.Eagerly, false)
 
-    private val leaders = if (isGamePlayed) gameAndBet.game.gameLeaders else gameAndBet.game.teamLeaders
+    private val leaders = if (isGamePlayed) gameAndBets.game.gameLeaders else gameAndBets.game.teamLeaders
     val expandContentVisible = leaders != null
     val homeLeader = leaders?.homeLeader ?: GameLeaders.GameLeader.default()
     val awayLeader = leaders?.awayLeader ?: GameLeaders.GameLeader.default()
@@ -65,7 +65,7 @@ class GameStatusCardViewModel(
 
     fun bet(homePoints: Long, awayPoints: Long) {
         coroutineScope.launch(dispatcherProvider.io) {
-            betRepository.bet(gameAndBet.game.gameId, homePoints, awayPoints)
+            betRepository.bet(gameAndBets.game.gameId, homePoints, awayPoints)
         }
     }
 
@@ -79,7 +79,7 @@ class GameStatusCardViewModel(
 
     fun createBetDialogViewModel(): BetDialogViewModel {
         return BetDialogViewModel(
-            gameAndBet = gameAndBet,
+            gameAndBets = gameAndBets,
             userPoints = user.value?.points.getOrZero(),
             dispatcherProvider = dispatcherProvider,
             coroutineScope = coroutineScope

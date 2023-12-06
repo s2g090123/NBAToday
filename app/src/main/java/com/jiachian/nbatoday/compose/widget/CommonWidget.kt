@@ -22,6 +22,8 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
+import androidx.compose.material.LocalContentAlpha
+import androidx.compose.material.LocalContentColor
 import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -179,11 +181,12 @@ inline fun FocusableBox(
 
 @Composable
 fun BackHandle(
+    enabled: Boolean = true,
     onBack: () -> Unit,
     content: @Composable () -> Unit
 ) {
     content()
-    BackHandler {
+    BackHandler(enabled) {
         onBack()
     }
 }
@@ -204,13 +207,14 @@ fun DisableOverscroll(
 fun IconButton(
     modifier: Modifier = Modifier,
     @DrawableRes drawableRes: Int,
-    tint: Color = MaterialTheme.colors.primaryVariant,
+    padding: Dp = 12.dp,
+    tint: Color = LocalContentColor.current.copy(alpha = LocalContentAlpha.current),
     onClick: () -> Unit
 ) {
     androidx.compose.material.IconButton(
         modifier = modifier
             .size(48.dp)
-            .padding(12.dp),
+            .padding(padding),
         onClick = onClick
     ) {
         Icon(
