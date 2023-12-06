@@ -9,7 +9,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
@@ -23,24 +22,25 @@ import com.jiachian.nbatoday.models.local.game.GameAndBets
 import com.jiachian.nbatoday.utils.showToast
 
 @Composable
-fun GameStatusCardBetScreen(viewModel: GameStatusCardViewModel) {
-    val context = LocalContext.current
+fun GameCardBetScreen(viewModel: GameCardViewModel) {
     val isLogin by viewModel.isLogin.collectAsState()
     val hasBet by viewModel.hasBet.collectAsState()
-    if (!isLogin) {
-        LoginDialog(
-            onLogin = viewModel::login,
-            onRegister = viewModel::register,
-            onDismiss = {}
-        )
-    } else if (hasBet) {
-        showToast(context, R.string.bet_toast_already_bet_before)
-    } else {
-        BetDialog(
-            viewModel = viewModel.createBetDialogViewModel(),
-            onConfirm = viewModel::bet,
-            onDismiss = viewModel::hideBetDialog
-        )
+    when {
+        !isLogin -> {
+            LoginDialog(
+                onLogin = viewModel::login,
+                onRegister = viewModel::register,
+                onDismiss = { viewModel.setBetDialogVisible(false) }
+            )
+        }
+        hasBet -> showToast(R.string.bet_toast_already_bet_before)
+        else -> {
+            BetDialog(
+                viewModel = viewModel.createBetDialogViewModel(),
+                onConfirm = viewModel::bet,
+                onDismiss = { viewModel.setBetDialogVisible(false) }
+            )
+        }
     }
 }
 
@@ -49,7 +49,7 @@ fun GameStatusAndBetButton(
     modifier: Modifier = Modifier,
     gameAndBets: GameAndBets,
     textColor: Color,
-    betVisible: Boolean,
+    betAvailable: Boolean,
     onBetClick: () -> Unit
 ) {
     Column(
@@ -64,7 +64,7 @@ fun GameStatusAndBetButton(
             fontSize = 16.sp,
             fontStyle = FontStyle.Italic
         )
-        if (betVisible) {
+        if (betAvailable) {
             IconButton(
                 modifier = Modifier
                     .testTag("GameStatusCard2_Btn_Bet")

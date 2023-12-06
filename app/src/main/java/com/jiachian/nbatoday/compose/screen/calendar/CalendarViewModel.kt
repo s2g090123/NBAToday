@@ -1,7 +1,7 @@
 package com.jiachian.nbatoday.compose.screen.calendar
 
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
-import com.jiachian.nbatoday.compose.screen.card.GameStatusCardViewModel
+import com.jiachian.nbatoday.compose.screen.card.GameCardViewModel
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.models.local.game.Game
@@ -246,7 +246,7 @@ class CalendarViewModel(
         navigationController.navigateToBoxScore(game.gameId)
     }
 
-    fun createGameStatusCardViewModel(gameAndBets: GameAndBets): GameStatusCardViewModel {
+    fun createGameStatusCardViewModel(gameAndBets: GameAndBets): GameCardViewModel {
         return composeViewModelProvider.getGameStatusCardViewModel(
             gameAndBets = gameAndBets,
             dispatcherProvider = dispatcherProvider,

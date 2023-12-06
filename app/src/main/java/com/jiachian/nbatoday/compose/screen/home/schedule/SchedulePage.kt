@@ -39,7 +39,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.jiachian.nbatoday.R
-import com.jiachian.nbatoday.compose.screen.card.GameStatusCard
+import com.jiachian.nbatoday.compose.screen.card.GameCard
 import com.jiachian.nbatoday.models.local.game.GameAndBets
 import com.jiachian.nbatoday.utils.rippleClickable
 
@@ -124,7 +124,7 @@ private fun ScheduleContent(
                 val cardViewModel = remember(game) {
                     viewModel.createGameStatusCardViewModel(game)
                 }
-                GameStatusCard(
+                GameCard(
                     modifier = Modifier
                         .testTag("SchedulePage_GameStatusCard2")
                         .padding(

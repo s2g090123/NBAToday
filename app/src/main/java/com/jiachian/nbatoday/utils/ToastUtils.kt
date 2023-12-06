@@ -26,6 +26,18 @@ fun showErrorToast() {
 }
 
 fun showToast(
+    @StringRes stringRes: Int,
+    duration: Int = Toast.LENGTH_SHORT
+) {
+    val context = MainApplication.context
+    Toast.makeText(
+        context,
+        context.getString(stringRes),
+        duration
+    ).show()
+}
+
+fun showToast(
     context: Context,
     @StringRes stringRes: Int,
     duration: Int = Toast.LENGTH_SHORT

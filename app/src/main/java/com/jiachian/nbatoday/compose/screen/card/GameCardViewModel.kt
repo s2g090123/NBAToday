@@ -16,14 +16,14 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class GameStatusCardViewModel(
+class GameCardViewModel(
     val gameAndBets: GameAndBets,
     private val betRepository: BetRepository,
     private val userRepository: UserRepository,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
     private val coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined),
 ) {
-    val user = userRepository.user
+    private val user = userRepository.user
         .stateIn(coroutineScope, SharingStarted.Eagerly, null)
 
     val isLogin = user.map { it != null }
@@ -39,12 +39,12 @@ class GameStatusCardViewModel(
         gameAndBets.bets.any { it.account == user.account }
     }.stateIn(coroutineScope, SharingStarted.Eagerly, false)
 
-    val canBet = hasBet.map {
+    val betAvailable = hasBet.map {
         !isGamePlayed && !it
     }.stateIn(coroutineScope, SharingStarted.Eagerly, false)
 
     private val leaders = if (isGamePlayed) gameAndBets.game.gameLeaders else gameAndBets.game.teamLeaders
-    val expandContentVisible = leaders != null
+    val expandedContentVisible = leaders != null
     val homeLeader = leaders?.homeLeader ?: GameLeaders.GameLeader.default()
     val awayLeader = leaders?.awayLeader ?: GameLeaders.GameLeader.default()
 
@@ -69,12 +69,8 @@ class GameStatusCardViewModel(
         }
     }
 
-    fun showBetDialog() {
-        betDialogVisibleImp.value = true
-    }
-
-    fun hideBetDialog() {
-        betDialogVisibleImp.value = false
+    fun setBetDialogVisible(visible: Boolean) {
+        betDialogVisibleImp.value = visible
     }
 
     fun createBetDialogViewModel(): BetDialogViewModel {

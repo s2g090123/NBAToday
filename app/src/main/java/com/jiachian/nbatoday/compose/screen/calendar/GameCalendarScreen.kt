@@ -57,7 +57,7 @@ import coil.request.ImageRequest
 import com.google.accompanist.flowlayout.FlowRow
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.Transparency25
-import com.jiachian.nbatoday.compose.screen.card.GameStatusCard
+import com.jiachian.nbatoday.compose.screen.card.GameCard
 import com.jiachian.nbatoday.compose.widget.DisableOverscroll
 import com.jiachian.nbatoday.compose.widget.LoadingScreen
 import com.jiachian.nbatoday.models.local.game.GameAndBets
@@ -277,7 +277,7 @@ private fun CalendarGames(
             val cardViewModel = remember(game) {
                 viewModel.createGameStatusCardViewModel(game)
             }
-            GameStatusCard(
+            GameCard(
                 modifier = Modifier
                     .padding(
                         start = 16.dp,

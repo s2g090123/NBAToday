@@ -26,17 +26,17 @@ import com.jiachian.nbatoday.models.local.game.GameLeaders
 import com.jiachian.nbatoday.utils.dividerPrimaryColor
 
 @Composable
-fun GameStatusCardLeaderInfo(
+fun GameCardLeadersInfo(
     modifier: Modifier = Modifier,
-    viewModel: GameStatusCardViewModel,
+    viewModel: GameCardViewModel,
     color: Color,
 ) {
     Column(modifier = modifier) {
-        LeaderLabel(
+        StatsLabelRow(
             modifier = Modifier.fillMaxWidth(),
             color = color
         )
-        LeaderRow(
+        LeaderInfoRow(
             modifier = Modifier
                 .testTag("LeaderInfo_LeaderRow_Home")
                 .padding(top = 8.dp)
@@ -45,7 +45,7 @@ fun GameStatusCardLeaderInfo(
             isGamePlayed = viewModel.isGamePlayed,
             color = color
         )
-        LeaderRow(
+        LeaderInfoRow(
             modifier = Modifier
                 .testTag("LeaderInfo_LeaderRow_Away")
                 .padding(top = 8.dp)
@@ -58,7 +58,7 @@ fun GameStatusCardLeaderInfo(
 }
 
 @Composable
-private fun LeaderLabel(
+private fun StatsLabelRow(
     modifier: Modifier = Modifier,
     color: Color
 ) {
@@ -93,7 +93,23 @@ private fun LeaderLabel(
 }
 
 @Composable
-private fun LeaderRow(
+private fun LeaderLabelText(
+    modifier: Modifier = Modifier,
+    text: String,
+    color: Color
+) {
+    Text(
+        modifier = modifier,
+        text = text,
+        textAlign = TextAlign.Center,
+        color = color,
+        fontSize = 16.sp,
+        fontWeight = FontWeight.Bold
+    )
+}
+
+@Composable
+private fun LeaderInfoRow(
     modifier: Modifier = Modifier,
     player: GameLeaders.GameLeader,
     isGamePlayed: Boolean,
@@ -147,22 +163,6 @@ private fun LeaderRow(
 
 @Composable
 private fun LeaderStatsText(
-    modifier: Modifier = Modifier,
-    text: String,
-    color: Color
-) {
-    Text(
-        modifier = modifier,
-        text = text,
-        textAlign = TextAlign.Center,
-        color = color,
-        fontSize = 16.sp,
-        fontWeight = FontWeight.Bold
-    )
-}
-
-@Composable
-private fun LeaderLabelText(
     modifier: Modifier = Modifier,
     text: String,
     color: Color

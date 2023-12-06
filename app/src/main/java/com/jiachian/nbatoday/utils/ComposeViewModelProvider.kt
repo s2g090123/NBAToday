@@ -3,7 +3,7 @@ package com.jiachian.nbatoday.utils
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.compose.screen.bet.BetViewModel
 import com.jiachian.nbatoday.compose.screen.calendar.CalendarViewModel
-import com.jiachian.nbatoday.compose.screen.card.GameStatusCardViewModel
+import com.jiachian.nbatoday.compose.screen.card.GameCardViewModel
 import com.jiachian.nbatoday.compose.screen.home.HomeViewModel
 import com.jiachian.nbatoday.compose.screen.home.schedule.SchedulePageViewModel
 import com.jiachian.nbatoday.compose.screen.home.standing.StandingPageViewModel
@@ -167,8 +167,8 @@ class ComposeViewModelProvider(
         gameAndBets: GameAndBets,
         dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
         coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined),
-    ): GameStatusCardViewModel {
-        return GameStatusCardViewModel(
+    ): GameCardViewModel {
+        return GameCardViewModel(
             gameAndBets = gameAndBets,
             betRepository = repositoryProvider.bet,
             userRepository = repositoryProvider.user,

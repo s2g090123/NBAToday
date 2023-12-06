@@ -18,7 +18,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.jiachian.nbatoday.R
-import com.jiachian.nbatoday.compose.screen.card.GameStatusCard
+import com.jiachian.nbatoday.compose.screen.card.GameCard
 import com.jiachian.nbatoday.compose.screen.team.TeamViewModel
 import com.jiachian.nbatoday.models.local.game.GameAndBets
 import com.jiachian.nbatoday.utils.rippleClickable
@@ -38,7 +38,7 @@ fun GamesPage(
             val cardViewModel = remember(game) {
                 viewModel.createGameStatusCardViewModel(game)
             }
-            GameStatusCard(
+            GameCard(
                 modifier = Modifier
                     .testTag("GamesPage_GameStatusCard2")
                     .padding(

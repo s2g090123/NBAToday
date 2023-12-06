@@ -1,7 +1,7 @@
 package com.jiachian.nbatoday.compose.screen.team
 
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
-import com.jiachian.nbatoday.compose.screen.card.GameStatusCardViewModel
+import com.jiachian.nbatoday.compose.screen.card.GameCardViewModel
 import com.jiachian.nbatoday.compose.screen.label.LabelHelper
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
@@ -340,7 +340,7 @@ class TeamViewModel(
         navigationController.navigateToPlayer(playerId)
     }
 
-    fun createGameStatusCardViewModel(gameAndBets: GameAndBets): GameStatusCardViewModel {
+    fun createGameStatusCardViewModel(gameAndBets: GameAndBets): GameCardViewModel {
         return composeViewModelProvider.getGameStatusCardViewModel(
             gameAndBets = gameAndBets,
             dispatcherProvider = dispatcherProvider,

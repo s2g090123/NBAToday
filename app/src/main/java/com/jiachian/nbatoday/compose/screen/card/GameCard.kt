@@ -31,99 +31,43 @@ import com.jiachian.nbatoday.models.local.game.GameTeam
 import com.jiachian.nbatoday.utils.rippleClickable
 
 @Composable
-fun GameStatusCard(
+fun GameCard(
     modifier: Modifier = Modifier,
-    viewModel: GameStatusCardViewModel,
+    viewModel: GameCardViewModel,
     color: Color,
     expandable: Boolean,
 ) {
-    val canBet by viewModel.canBet.collectAsState()
+    val canBet by viewModel.betAvailable.collectAsState()
     val betDialogVisible by viewModel.betDialogVisible.collectAsState()
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        ScoreBoard(
+        GameDetail(
             modifier = Modifier.fillMaxWidth(),
             gameAndBets = viewModel.gameAndBets,
             textColor = color,
-            betVisible = canBet,
-            onBetClick = viewModel::showBetDialog
+            betAvailable = canBet,
+            onBetClick = { viewModel.setBetDialogVisible(true) }
         )
-        if (expandable && viewModel.expandContentVisible) {
-            ExpandContent(
+        if (expandable && viewModel.expandedContentVisible) {
+            GameExpandedContent(
                 viewModel = viewModel,
                 color = color,
             )
         }
         if (betDialogVisible) {
-            GameStatusCardBetScreen(viewModel = viewModel)
+            GameCardBetScreen(viewModel = viewModel)
         }
     }
 }
 
 @Composable
-private fun ExpandContent(
-    viewModel: GameStatusCardViewModel,
-    color: Color
-) {
-    val isExpanded by viewModel.isCardExpanded.collectAsState()
-    Box {
-        AnimatedExpand(
-            modifier = Modifier
-                .testTag("ExpandContent_Btn_Expand")
-                .fillMaxWidth()
-                .height(24.dp)
-                .rippleClickable { viewModel.setCardExpanded(true) }
-                .padding(vertical = 2.dp),
-            visible = !isExpanded,
-        ) {
-            Image(
-                painter = painterResource(R.drawable.ic_black_expand_more),
-                alpha = 0.6f,
-                colorFilter = ColorFilter.tint(color),
-                contentDescription = null
-            )
-        }
-        AnimatedExpand(
-            modifier = Modifier
-                .testTag("ExpandContent_Btn_Collapse")
-                .padding(horizontal = 24.dp)
-                .fillMaxWidth(),
-            visible = isExpanded,
-        ) {
-            Column(modifier = Modifier.fillMaxWidth()) {
-                GameStatusCardLeaderInfo(
-                    modifier = Modifier
-                        .testTag("ExpandContent_LeaderInfo")
-                        .padding(top = 8.dp)
-                        .fillMaxWidth()
-                        .wrapContentHeight(),
-                    viewModel = viewModel,
-                    color = color
-                )
-                Image(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(24.dp)
-                        .rippleClickable { viewModel.setCardExpanded(false) }
-                        .padding(vertical = 2.dp),
-                    painter = painterResource(R.drawable.ic_black_collpase_more),
-                    alpha = 0.6f,
-                    colorFilter = ColorFilter.tint(color),
-                    contentDescription = null
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun ScoreBoard(
+private fun GameDetail(
     modifier: Modifier = Modifier,
     gameAndBets: GameAndBets,
     textColor: Color,
-    betVisible: Boolean,
+    betAvailable: Boolean,
     onBetClick: () -> Unit
 ) {
     Row(
@@ -131,7 +75,7 @@ private fun ScoreBoard(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        TeamInfo(
+        GameTeamInfo(
             modifier = Modifier
                 .testTag("ScoreBoard_TeamInfo_Home")
                 .padding(start = 16.dp),
@@ -141,10 +85,10 @@ private fun ScoreBoard(
         GameStatusAndBetButton(
             gameAndBets = gameAndBets,
             textColor = textColor,
-            betVisible = betVisible,
+            betAvailable = betAvailable,
             onBetClick = onBetClick
         )
-        TeamInfo(
+        GameTeamInfo(
             modifier = Modifier
                 .testTag("ScoreBoard_TeamInfo_Away")
                 .padding(end = 16.dp),
@@ -155,7 +99,7 @@ private fun ScoreBoard(
 }
 
 @Composable
-private fun TeamInfo(
+private fun GameTeamInfo(
     modifier: Modifier = Modifier,
     gameTeam: GameTeam,
     textColor: Color
@@ -188,5 +132,61 @@ private fun TeamInfo(
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold
         )
+    }
+}
+
+@Composable
+private fun GameExpandedContent(
+    viewModel: GameCardViewModel,
+    color: Color
+) {
+    val isExpanded by viewModel.isCardExpanded.collectAsState()
+    Box {
+        AnimatedExpand(
+            modifier = Modifier
+                .testTag("ExpandContent_Btn_Expand")
+                .fillMaxWidth()
+                .height(24.dp)
+                .rippleClickable { viewModel.setCardExpanded(true) }
+                .padding(vertical = 2.dp),
+            visible = !isExpanded,
+        ) {
+            Image(
+                painter = painterResource(R.drawable.ic_black_expand_more),
+                alpha = 0.6f,
+                colorFilter = ColorFilter.tint(color),
+                contentDescription = null
+            )
+        }
+        AnimatedExpand(
+            modifier = Modifier
+                .testTag("ExpandContent_Btn_Collapse")
+                .padding(horizontal = 24.dp)
+                .fillMaxWidth(),
+            visible = isExpanded,
+        ) {
+            Column(modifier = Modifier.fillMaxWidth()) {
+                GameCardLeadersInfo(
+                    modifier = Modifier
+                        .testTag("ExpandContent_LeaderInfo")
+                        .padding(top = 8.dp)
+                        .fillMaxWidth()
+                        .wrapContentHeight(),
+                    viewModel = viewModel,
+                    color = color
+                )
+                Image(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(24.dp)
+                        .rippleClickable { viewModel.setCardExpanded(false) }
+                        .padding(vertical = 2.dp),
+                    painter = painterResource(R.drawable.ic_black_collpase_more),
+                    alpha = 0.6f,
+                    colorFilter = ColorFilter.tint(color),
+                    contentDescription = null
+                )
+            }
+        }
     }
 }
