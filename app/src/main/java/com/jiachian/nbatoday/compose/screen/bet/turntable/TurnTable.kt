@@ -24,6 +24,11 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.jiachian.nbatoday.compose.screen.bet.BetViewModel
 import com.jiachian.nbatoday.compose.widget.BackHandle
+import com.jiachian.nbatoday.utils.drawText
+import com.jiachian.nbatoday.utils.drawTurnTableArc
+import com.jiachian.nbatoday.utils.drawTurnTableBottom
+import com.jiachian.nbatoday.utils.drawTurnTableLine
+import com.jiachian.nbatoday.utils.measureSize
 
 private const val TurnTableBorderWidthScale = 3
 private const val FirstSectorRotation = 45f
@@ -39,7 +44,7 @@ fun BetTurnTable(
     onStart: () -> Unit,
     onClose: () -> Unit
 ) {
-    val isStarting by viewModel.isTurnTableStarting.collectAsState()
+    val isStarting by viewModel.turnTableRunning.collectAsState()
     BackHandle(
         onBack = {
             if (!isStarting) {
@@ -47,7 +52,7 @@ fun BetTurnTable(
             }
         }
     ) {
-        val currentAngle by viewModel.currentAngle.collectAsState()
+        val currentAngle by viewModel.turnTableAngle.collectAsState()
         val textMeasure = rememberTextMeasurer()
         val plus1TextSize = remember { textMeasure.measureSize("X2\n-0") }
         val minus1TextSize = remember { textMeasure.measureSize("+0") }

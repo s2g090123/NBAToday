@@ -301,7 +301,7 @@ class BetScreenTest {
         val rewardPoints = getRewardPoints(
             BasicNumber * 2,
             0,
-            viewModel.rewardAngle.value
+            viewModel.rewardedAngle.value
         )
         advanceUntilIdle()
         composeTestRule

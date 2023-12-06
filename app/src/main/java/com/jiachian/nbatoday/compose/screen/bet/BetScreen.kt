@@ -78,11 +78,11 @@ fun BetScreen(viewModel: BetViewModel) {
 private fun TurnTableScreen(
     viewModel: BetViewModel
 ) {
-    val askTurnTable by viewModel.askTurnTable.collectAsState()
-    val showTurnTable by viewModel.showTryTurnTable.collectAsState()
+    val askTurnTable by viewModel.askTurnTableVisible.collectAsState()
+    val showTurnTable by viewModel.tryTurnTableVisible.collectAsState()
     askTurnTable?.let { betData ->
         AskTurnTableDialog(
-            turnTableData = betData,
+            turnTablePoints = betData,
             onContinue = {
                 viewModel.showTurnTable(it)
                 viewModel.closeAskTurnTable()
@@ -110,11 +110,11 @@ private fun TurnTableScreen(
 private fun RewardPointsScreen(
     viewModel: BetViewModel
 ) {
-    val showRewardPoints by viewModel.showRewardPoints.collectAsState()
+    val showRewardPoints by viewModel.rewardedPointsVisible.collectAsState()
     showRewardPoints?.let { reward ->
         RewardPointDialog(
             rewardPoints = reward,
-            onDismiss = { viewModel.closeRewardPointsDialog() }
+            onDismiss = { viewModel.closeRewardedPoints() }
         )
     }
 }

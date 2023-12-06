@@ -1,4 +1,4 @@
-package com.jiachian.nbatoday.compose.screen.bet.turntable
+package com.jiachian.nbatoday.utils
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
