@@ -45,7 +45,7 @@ class NBABetRepository(
             val wonPoints = betAndGame.getWonPoints() * 2
             val lostPoints = betAndGame.getLostPoints()
             userRepository.addPoints(wonPoints)
-            // deleteBet(betAndGame.bet)
+            deleteBet(betAndGame.bet)
             wonPoints to lostPoints
         }
     }

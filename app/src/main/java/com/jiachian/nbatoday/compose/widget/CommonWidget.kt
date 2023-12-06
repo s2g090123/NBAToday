@@ -218,6 +218,7 @@ fun IconButton(
         onClick = onClick
     ) {
         Icon(
+            modifier = Modifier.fillMaxSize(),
             painter = painterResource(drawableRes),
             contentDescription = null,
             tint = tint

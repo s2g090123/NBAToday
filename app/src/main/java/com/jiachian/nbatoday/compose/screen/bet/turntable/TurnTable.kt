@@ -10,6 +10,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.Color
@@ -21,8 +22,9 @@ import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.jiachian.nbatoday.compose.screen.bet.BetViewModel
-import com.jiachian.nbatoday.compose.widget.BackHandle
 import com.jiachian.nbatoday.utils.drawText
 import com.jiachian.nbatoday.utils.drawTurnTableArc
 import com.jiachian.nbatoday.utils.drawTurnTableBottom
@@ -35,7 +37,7 @@ private const val SecondSectorRotation = 135f
 private const val ThirdSectorRotation = 225f
 private const val ForthSectorRotation = 315f
 
-@OptIn(ExperimentalTextApi::class)
+@OptIn(ExperimentalTextApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun BetTurnTable(
     modifier: Modifier = Modifier,
@@ -50,12 +52,13 @@ fun BetTurnTable(
     val minus1TextSize = remember { textMeasure.measureSize("+0") }
     val plus2TextSize = remember { textMeasure.measureSize("X5") }
     val minus2TextSize = remember { textMeasure.measureSize("+0\n-0") }
-    BackHandle(
-        onBack = {
-            if (!isStarting) {
-                onClose()
-            }
-        }
+    Dialog(
+        onDismissRequest = onClose,
+        properties = DialogProperties(
+            dismissOnBackPress = !isStarting,
+            dismissOnClickOutside = false,
+            usePlatformDefaultWidth = false,
+        )
     ) {
         Box(modifier = modifier) {
             if (!isStarting) {

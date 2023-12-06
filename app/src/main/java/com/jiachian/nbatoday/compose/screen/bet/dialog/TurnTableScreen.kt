@@ -1,6 +1,5 @@
 package com.jiachian.nbatoday.compose.screen.bet.dialog
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -11,8 +10,6 @@ import com.jiachian.nbatoday.compose.screen.bet.BetViewModel
 import com.jiachian.nbatoday.compose.screen.bet.turntable.AskTurnTableDialog
 import com.jiachian.nbatoday.compose.screen.bet.turntable.BetTurnTable
 import com.jiachian.nbatoday.compose.widget.NullCheckScreen
-import com.jiachian.nbatoday.utils.color
-import com.jiachian.nbatoday.utils.noRippleClickable
 
 @Composable
 fun TurnTableScreen(viewModel: BetViewModel) {
@@ -38,13 +35,9 @@ fun TurnTableScreen(viewModel: BetViewModel) {
         BetTurnTable(
             modifier = Modifier
                 .testTag("BetScreen_BetTurnTable")
-                .fillMaxSize()
-                .background("#66000000".color)
-                .noRippleClickable { },
+                .fillMaxSize(),
             viewModel = viewModel,
-            onStart = {
-                viewModel.startTurnTable(points)
-            },
+            onStart = { viewModel.startTurnTable(points) },
             onClose = { viewModel.closeTurnTable() }
         )
     }

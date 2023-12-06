@@ -27,6 +27,7 @@ fun TurnTableCancelButton(
     IconButton(
         modifier = modifier,
         drawableRes = R.drawable.ic_black_cancel,
+        tint = Color.White,
         padding = 0.dp,
         onClick = onClick,
     )
