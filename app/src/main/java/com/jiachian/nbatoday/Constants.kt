@@ -28,4 +28,6 @@ const val FirstRank = 1
 const val SecondRank = 2
 const val ThirdRank = 3
 
+const val DaysPerWeek = 7
+
 const val NA = "N/A"

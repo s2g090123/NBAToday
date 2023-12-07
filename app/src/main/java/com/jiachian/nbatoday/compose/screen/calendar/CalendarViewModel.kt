@@ -1,5 +1,6 @@
 package com.jiachian.nbatoday.compose.screen.calendar
 
+import com.jiachian.nbatoday.DaysPerWeek
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.compose.screen.card.GameCardViewModel
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
@@ -15,16 +16,17 @@ import com.jiachian.nbatoday.utils.DateUtils
 import java.util.Calendar
 import java.util.Date
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-
-private const val DaysPerWeek = 7
 
 class CalendarViewModel(
     dateTime: Long,
@@ -43,18 +45,16 @@ class CalendarViewModel(
     private val selectedDateImp = MutableStateFlow(Date(dateTime))
     val selectedDate = selectedDateImp.asStateFlow()
 
+    private val selectedGamesImp = MutableStateFlow(emptyList<GameAndBets>())
+    val selectedGames = selectedGamesImp.asStateFlow()
+
     init {
         DateUtils.getCalendar().apply {
             timeInMillis = dateTime
             currentCalendar = MutableStateFlow(this)
         }
+        collectSelectedGames()
     }
-
-    val selectedGames = selectedDate.map { date ->
-        getSelectedGames(date)
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, emptyList())
-
-    val isProgressing = repository.isLoading
 
     private val isLoadingGamesImp = MutableStateFlow(false)
     val isLoadingGames = isLoadingGamesImp.asStateFlow()
@@ -74,7 +74,7 @@ class CalendarViewModel(
         isInCalendar(cal, selectedDate)
     }.stateIn(coroutineScope, SharingStarted.Eagerly, false)
 
-    val numberAndDateStringPair = currentCalendar.map { cal ->
+    val numberAndDateString = currentCalendar.map { cal ->
         val year = cal.get(Calendar.YEAR)
         val month = cal.get(Calendar.MONTH)
         year * 100 + month to DateUtils.getDateString(year, month)
@@ -105,27 +105,30 @@ class CalendarViewModel(
         getCalendarDates(cal)
     }.stateIn(coroutineScope, SharingStarted.Eagerly, emptyList())
 
-    private suspend fun getSelectedGames(date: Date): List<GameAndBets> {
-        return withContext(dispatcherProvider.io) {
-            isLoadingGamesImp.value = true
-            DateUtils
-                .getCalendar()
-                .run {
-                    time = date
-                    val after = timeInMillis
-                    add(Calendar.DAY_OF_MONTH, 1)
-                    add(Calendar.MILLISECOND, -1)
-                    val before = timeInMillis
-                    after to before
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private fun collectSelectedGames() {
+        coroutineScope.launch(dispatcherProvider.io) {
+            selectedDate
+                .onEach { isLoadingGamesImp.value = true }
+                .flatMapLatest { selectedDate ->
+                    DateUtils
+                        .getCalendar()
+                        .run {
+                            time = selectedDate
+                            val after = timeInMillis
+                            add(Calendar.DAY_OF_MONTH, 1)
+                            add(Calendar.MILLISECOND, -1)
+                            val before = timeInMillis
+                            after to before
+                        }
+                        .let { (after, before) ->
+                            repository.getGamesAndBetsDuring(after, before)
+                        }
                 }
-                .let { (after, before) ->
-                    repository.getGamesAndBetsDuring(after, before)
-                }
-                .firstOrNull()
-                .also {
+                .collect { games ->
+                    selectedGamesImp.value = games
                     isLoadingGamesImp.value = false
                 }
-                ?: emptyList()
         }
     }
 

@@ -43,7 +43,7 @@ import com.jiachian.nbatoday.MainViewModel
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.Transparency25
 import com.jiachian.nbatoday.compose.screen.bet.BetScreen
-import com.jiachian.nbatoday.compose.screen.calendar.GameCalendarScreen
+import com.jiachian.nbatoday.compose.screen.calendar.CalendarScreen
 import com.jiachian.nbatoday.compose.screen.home.HomeScreen
 import com.jiachian.nbatoday.compose.screen.player.PlayerCareerScreen
 import com.jiachian.nbatoday.compose.screen.score.BoxScoreScreen
@@ -102,7 +102,7 @@ fun MainScreen(
                 viewModel.viewModelProvider.getCalendarViewModel(
                     dateTime = it.arguments?.getStringToLong("dateTime").getOrError()
                 )
-            }.let { viewModel -> GameCalendarScreen(viewModel = viewModel) }
+            }.let { viewModel -> CalendarScreen(viewModel = viewModel) }
         }
         composable("${Route.BET.route}/{account}") {
             remember {

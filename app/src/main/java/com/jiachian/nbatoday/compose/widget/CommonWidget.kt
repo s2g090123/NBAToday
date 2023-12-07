@@ -60,23 +60,15 @@ import com.jiachian.nbatoday.utils.noRippleClickable
 fun LoadingScreen(
     modifier: Modifier = Modifier,
     color: Color,
-    interceptBack: Boolean = true,
-    backButton: @Composable BoxScope.() -> Unit = {},
+    interceptBack: Boolean = false,
 ) {
     FocusableBox(modifier = modifier) {
-        Box(
-            modifier = Modifier.align(Alignment.TopStart),
-            content = backButton
-        )
         CircularProgressIndicator(
             modifier = Modifier.align(Alignment.Center),
             color = color
         )
     }
-    if (interceptBack) {
-        BackHandler {
-        }
-    }
+    BackHandler(interceptBack) {}
 }
 
 @Composable
@@ -208,6 +200,7 @@ fun IconButton(
     modifier: Modifier = Modifier,
     @DrawableRes drawableRes: Int,
     padding: Dp = 12.dp,
+    enabled: Boolean = true,
     tint: Color = LocalContentColor.current.copy(alpha = LocalContentAlpha.current),
     onClick: () -> Unit
 ) {
@@ -215,6 +208,7 @@ fun IconButton(
         modifier = modifier
             .size(48.dp)
             .padding(padding),
+        enabled = enabled,
         onClick = onClick
     ) {
         Icon(

@@ -65,7 +65,7 @@ class GameCalendarScreenTest {
         repository.insertGame(getLastMonthGame())
         repository.insertGame(getNextMonthGame())
         composeTestRule.setContent {
-            GameCalendarScreen(
+            CalendarScreen(
                 viewModel = viewModel,
                 onClose = { isBack = true }
             )
