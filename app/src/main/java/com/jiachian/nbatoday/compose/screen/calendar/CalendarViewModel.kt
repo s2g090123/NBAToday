@@ -4,9 +4,9 @@ import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.compose.screen.card.GameCardViewModel
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
+import com.jiachian.nbatoday.models.local.calendar.CalendarDate
 import com.jiachian.nbatoday.models.local.game.Game
 import com.jiachian.nbatoday.models.local.game.GameAndBets
-import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.navigation.Route
 import com.jiachian.nbatoday.repository.game.GameRepository
@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.withContext
@@ -27,7 +28,7 @@ private const val DaysPerWeek = 7
 
 class CalendarViewModel(
     dateTime: Long,
-    repository: GameRepository,
+    private val repository: GameRepository,
     navigationController: NavigationController,
     private val composeViewModelProvider: ComposeViewModelProvider,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
@@ -37,213 +38,163 @@ class CalendarViewModel(
     navigationController = navigationController,
     route = Route.CALENDAR
 ) {
+    private val currentCalendar: MutableStateFlow<Calendar>
 
-    private val date = Date(dateTime)
-
-    private val games = repository.getGamesAndBets()
-
-    private val currentYear: MutableStateFlow<Int>
-    private val currentMonth: MutableStateFlow<Int>
-    private val currentDay: MutableStateFlow<Int>
+    private val selectedDateImp = MutableStateFlow(Date(dateTime))
+    val selectedDate = selectedDateImp.asStateFlow()
 
     init {
         DateUtils.getCalendar().apply {
-            time = date
-            currentYear = MutableStateFlow(get(Calendar.YEAR))
-            currentMonth = MutableStateFlow(get(Calendar.MONTH) + 1)
-            currentDay = MutableStateFlow(get(Calendar.DAY_OF_MONTH))
+            timeInMillis = dateTime
+            currentCalendar = MutableStateFlow(this)
         }
     }
+
+    val selectedGames = selectedDate.map { date ->
+        getSelectedGames(date)
+    }.stateIn(coroutineScope, SharingStarted.Eagerly, emptyList())
 
     val isProgressing = repository.isLoading
 
     private val isLoadingGamesImp = MutableStateFlow(false)
     val isLoadingGames = isLoadingGamesImp.asStateFlow()
 
-    private val lastDate = games.map {
-        val cal = DateUtils.getCalendar()
-        it.lastOrNull()?.game?.gameDateTime ?: cal.time
-    }.stateIn(coroutineScope, SharingStarted.Lazily, DateUtils.getCalendar().time)
-    private val firstDate = games.map {
-        val cal = DateUtils.getCalendar()
-        it.firstOrNull()?.game?.gameDate ?: cal.time
-    }.stateIn(coroutineScope, SharingStarted.Lazily, DateUtils.getCalendar().time)
+    private val isLoadingCalendarImp = MutableStateFlow(false)
+    val isLoadingCalendar = isLoadingCalendarImp.asStateFlow()
 
-    val currentDateString = combine(
-        currentYear, currentMonth
-    ) { year, month ->
-        (year * 100 + month) to (
-            when (month) {
-                1 -> "Jan"
-                2 -> "Feb"
-                3 -> "Mar"
-                4 -> "Apr"
-                5 -> "May"
-                6 -> "Jun"
-                7 -> "Jul"
-                8 -> "Aug"
-                9 -> "Sep"
-                10 -> "Oct"
-                11 -> "Nov"
-                else -> "Dec"
-            } + "  " + year
-            )
-    }.stateIn(coroutineScope, SharingStarted.Lazily, 0 to "")
+    private val lastGameDate = repository.getLastGameDateTime()
+        .stateIn(coroutineScope, SharingStarted.Eagerly, Date(dateTime))
+    private val firstGameDate = repository.getFirstGameDateTime()
+        .stateIn(coroutineScope, SharingStarted.Eagerly, Date(dateTime))
+
+    val selectedGamesVisible = combine(
+        currentCalendar,
+        selectedDate
+    ) { cal, selectedDate ->
+        isInCalendar(cal, selectedDate)
+    }.stateIn(coroutineScope, SharingStarted.Eagerly, false)
+
+    val numberAndDateStringPair = currentCalendar.map { cal ->
+        val year = cal.get(Calendar.YEAR)
+        val month = cal.get(Calendar.MONTH)
+        year * 100 + month to DateUtils.getDateString(year, month)
+    }.stateIn(coroutineScope, SharingStarted.Eagerly, 0 to "")
 
     val hasNextMonth = combine(
-        currentYear, currentMonth, lastDate
-    ) { _, _, _ ->
-        hasNextMonth()
-    }.stateIn(coroutineScope, SharingStarted.Lazily, false)
-    val hasPreviousMonth = combine(
-        currentYear, currentMonth, firstDate
-    ) { _, _, _ ->
-        hasPreviousMonth()
-    }.stateIn(coroutineScope, SharingStarted.Lazily, false)
+        currentCalendar, lastGameDate
+    ) { cal, lastDate ->
+        DateUtils.getCalendar()
+            .apply { time = lastDate }
+            .run {
+                get(Calendar.YEAR) > cal.get(Calendar.YEAR) || get(Calendar.MONTH) > cal.get(Calendar.MONTH)
+            }
+    }.stateIn(coroutineScope, SharingStarted.Eagerly, false)
+    val hasLastMonth = combine(
+        currentCalendar, firstGameDate
+    ) { cal, lastDate ->
+        DateUtils.getCalendar()
+            .apply { time = lastDate }
+            .run {
+                get(Calendar.YEAR) < cal.get(Calendar.YEAR) || get(Calendar.MONTH) < cal.get(Calendar.MONTH)
+            }
+    }.stateIn(coroutineScope, SharingStarted.Eagerly, false)
 
-    private val calendarMap = mutableMapOf<String, List<CalendarData>>()
-    val calendarData = combine(
-        currentYear, currentMonth
-    ) { year, month ->
-        getCalendar(year, month)
-    }.stateIn(coroutineScope, SharingStarted.Lazily, emptyList())
-    val gamesData = combine(
-        games, currentYear, currentMonth
-    ) { games, year, month ->
-        getGames(games, year, month)
-    }.stateIn(coroutineScope, SharingStarted.Lazily, emptyList())
+    private val calendarDatesMap = mutableMapOf<String, List<CalendarDate>>()
 
-    private val selectDate = MutableStateFlow(date)
-    val selectDateData = combine(
-        selectDate,
-        calendarData
-    ) { date, data ->
-        data.firstOrNull { it.date == date }
-    }.stateIn(coroutineScope, SharingStarted.Lazily, null)
-    val selectGames = combine(
-        selectDate,
-        gamesData
-    ) { date, data ->
-        data.flatten()
-            .filter { it.game.gameDate == date }
-    }.stateIn(coroutineScope, SharingStarted.Lazily, null)
+    val calendarDates = currentCalendar.map { cal ->
+        getCalendarDates(cal)
+    }.stateIn(coroutineScope, SharingStarted.Eagerly, emptyList())
+
+    private suspend fun getSelectedGames(date: Date): List<GameAndBets> {
+        return withContext(dispatcherProvider.io) {
+            isLoadingGamesImp.value = true
+            DateUtils
+                .getCalendar()
+                .run {
+                    time = date
+                    val after = timeInMillis
+                    add(Calendar.DAY_OF_MONTH, 1)
+                    add(Calendar.MILLISECOND, -1)
+                    val before = timeInMillis
+                    after to before
+                }
+                .let { (after, before) ->
+                    repository.getGamesAndBetsDuring(after, before)
+                }
+                .firstOrNull()
+                .also {
+                    isLoadingGamesImp.value = false
+                }
+                ?: emptyList()
+        }
+    }
 
     fun selectDate(date: Date) {
-        selectDate.value = date
+        selectedDateImp.value = date
     }
 
     fun nextMonth() {
-        if (hasNextMonth()) {
-            val cal = DateUtils.getCalendar()
-            cal.set(Calendar.YEAR, currentYear.value)
-            cal.set(Calendar.MONTH, currentMonth.value - 1)
-            cal.add(Calendar.MONTH, 1)
-            currentYear.value = cal.get(Calendar.YEAR)
-            currentMonth.value = cal.get(Calendar.MONTH) + 1
-        }
-    }
-
-    fun previousMonth() {
-        if (hasPreviousMonth()) {
-            val cal = DateUtils.getCalendar()
-            cal.set(Calendar.YEAR, currentYear.value)
-            cal.set(Calendar.MONTH, currentMonth.value - 1)
-            cal.add(Calendar.MONTH, -1)
-            currentYear.value = cal.get(Calendar.YEAR)
-            currentMonth.value = cal.get(Calendar.MONTH) + 1
-        }
-    }
-
-    private suspend fun getCalendar(year: Int, month: Int): List<CalendarData> {
-        return withContext(dispatcherProvider.default) {
-            val key = "$year-$month"
-            if (calendarMap.containsKey(key)) return@withContext calendarMap[key] ?: emptyList()
-            val cal = DateUtils.getCalendar().apply {
-                set(Calendar.YEAR, year)
-                set(Calendar.MONTH, month - 1)
-                set(Calendar.DAY_OF_MONTH, 1)
-                set(Calendar.HOUR_OF_DAY, 0)
-                set(Calendar.MINUTE, 0)
-                set(Calendar.SECOND, 0)
-                set(Calendar.MILLISECOND, 0)
-                add(Calendar.DATE, -(get(Calendar.DAY_OF_WEEK) - 1))
+        if (hasNextMonth.value) {
+            currentCalendar.value = DateUtils.getCalendar().apply {
+                time = currentCalendar.value.time
+                add(Calendar.MONTH, 1)
             }
-            val data = mutableListOf<CalendarData>()
-            while (cal.get(Calendar.YEAR) <= year && cal.get(Calendar.MONTH) + 1 <= month) {
-                repeat(DaysPerWeek) {
-                    val currentMonth = cal.get(Calendar.MONTH) + 1
-                    val currentDay = cal.get(Calendar.DAY_OF_MONTH)
-                    data.add(
-                        CalendarData(
-                            cal.time,
-                            currentMonth,
-                            currentDay,
-                            currentMonth == month
-                        )
-                    )
-                    cal.add(Calendar.DAY_OF_MONTH, 1)
-                }
-            }
-            calendarMap[key] = data
-            data
         }
     }
 
-    private suspend fun getGames(
-        games: List<GameAndBets>,
-        year: Int,
-        month: Int
-    ): List<List<GameAndBets>> {
+    fun lastMonth() {
+        if (hasLastMonth.value) {
+            currentCalendar.value = DateUtils.getCalendar().apply {
+                time = currentCalendar.value.time
+                add(Calendar.MONTH, -1)
+            }
+        }
+    }
+
+    private suspend fun getCalendarDates(calendar: Calendar): List<CalendarDate> {
         return withContext(dispatcherProvider.io) {
-            isLoadingGamesImp.value = true
-            val cal = DateUtils.getCalendar().apply {
-                set(Calendar.YEAR, year)
-                set(Calendar.MONTH, month - 1)
-                set(Calendar.DAY_OF_MONTH, 1)
-                set(Calendar.HOUR_OF_DAY, 0)
-                set(Calendar.MINUTE, 0)
-                set(Calendar.SECOND, 0)
-                set(Calendar.MILLISECOND, 0)
-                add(Calendar.DATE, -(get(Calendar.DAY_OF_WEEK) - 1))
-            }
-            val data = mutableListOf<List<GameAndBets>>()
-            while (cal.get(Calendar.YEAR) <= year && cal.get(Calendar.MONTH) + 1 <= month) {
-                repeat(DaysPerWeek) {
-                    data.add(games.filter { it.game.gameDate.time == cal.timeInMillis })
-                    cal.add(Calendar.DAY_OF_MONTH, 1)
+            val year = calendar.get(Calendar.YEAR)
+            val month = calendar.get(Calendar.MONTH)
+            val key = "$year-$month"
+            if (calendarDatesMap.containsKey(key)) return@withContext calendarDatesMap[key] ?: emptyList()
+            isLoadingCalendarImp.value = true
+            val dates = DateUtils.getCalendar()
+                .apply {
+                    set(year, month, 1, 0, 0, 0)
+                    set(Calendar.MILLISECOND, 0)
+                    add(Calendar.DATE, -(get(Calendar.DAY_OF_WEEK) - 1))
                 }
-            }
-            isLoadingGamesImp.value = false
-            data
+                .run {
+                    val calendarDates = mutableListOf<CalendarDate>()
+                    while (true) {
+                        val isLastYear = get(Calendar.YEAR) < year && get(Calendar.MONTH) > month
+                        val isCurrentMonth = get(Calendar.YEAR) == year && get(Calendar.MONTH) <= month
+                        if (!isLastYear && !isCurrentMonth) break
+                        repeat(DaysPerWeek) {
+                            calendarDates.add(
+                                CalendarDate(
+                                    date = time,
+                                    day = get(Calendar.DAY_OF_MONTH),
+                                    isCurrentMonth = get(Calendar.MONTH) == month
+                                )
+                            )
+                            add(Calendar.DAY_OF_MONTH, 1)
+                        }
+                    }
+                    calendarDates
+                }
+            calendarDatesMap[key] = dates
+            isLoadingCalendarImp.value = false
+            dates
         }
     }
 
-    private fun hasNextMonth(): Boolean {
-        val year = currentYear.value
-        val month = currentMonth.value
-        val cal = DateUtils.getCalendar()
-        cal.time = lastDate.value
-        val lastYear = cal.get(Calendar.YEAR)
-        val lastMonth = cal.get(Calendar.MONTH) + 1
-        return year < lastYear || (year == lastYear && month < lastMonth)
-    }
-
-    private fun hasPreviousMonth(): Boolean {
-        val year = currentYear.value
-        val month = currentMonth.value
-        val cal = DateUtils.getCalendar()
-        cal.time = firstDate.value
-        val firstYear = cal.get(Calendar.YEAR)
-        val firstMonth = cal.get(Calendar.MONTH) + 1
-        return year > firstYear || (year == firstYear && month > firstMonth)
-    }
-
-    fun openTeamStats(team: NBATeam) {
-        navigationController.navigateToTeam(team.teamId)
-    }
-
-    fun openGameBoxScore(game: Game) {
-        navigationController.navigateToBoxScore(game.gameId)
+    fun clickGameCard(game: Game) {
+        if (game.isGamePlayed) {
+            navigationController.navigateToBoxScore(game.gameId)
+        } else {
+            navigationController.navigateToTeam(game.homeTeamId)
+        }
     }
 
     fun createGameStatusCardViewModel(gameAndBets: GameAndBets): GameCardViewModel {
@@ -252,5 +203,17 @@ class CalendarViewModel(
             dispatcherProvider = dispatcherProvider,
             coroutineScope = coroutineScope,
         )
+    }
+
+    private fun isInCalendar(calendar: Calendar, date: Date): Boolean {
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        return DateUtils.getCalendar().run {
+            time = date
+            add(Calendar.DATE, -(get(Calendar.DAY_OF_WEEK) - 1))
+            if (get(Calendar.YEAR) == year && get(Calendar.MONTH) == month) return@run true
+            add(Calendar.DATE, DaysPerWeek - 1)
+            get(Calendar.YEAR) == year && get(Calendar.MONTH) == month
+        }
     }
 }

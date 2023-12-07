@@ -3,6 +3,7 @@ package com.jiachian.nbatoday.repository.game
 import com.jiachian.nbatoday.models.local.game.GameAndBets
 import com.jiachian.nbatoday.models.local.score.BoxScoreAndGame
 import com.jiachian.nbatoday.repository.BaseRepository
+import java.util.Date
 import kotlinx.coroutines.flow.Flow
 
 abstract class GameRepository : BaseRepository() {
@@ -13,4 +14,6 @@ abstract class GameRepository : BaseRepository() {
     abstract fun getGamesAndBets(): Flow<List<GameAndBets>>
     abstract fun getGamesAndBetsBeforeByTeam(teamId: Int, from: Long): Flow<List<GameAndBets>>
     abstract fun getGamesAndBetsAfterByTeam(teamId: Int, from: Long): Flow<List<GameAndBets>>
+    abstract fun getLastGameDateTime(): Flow<Date>
+    abstract fun getFirstGameDateTime(): Flow<Date>
 }

@@ -7,6 +7,7 @@ import com.jiachian.nbatoday.UserAccount
 import com.jiachian.nbatoday.UserPassword
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.models.TestRepository
+import com.jiachian.nbatoday.models.local.calendar.CalendarDate
 import com.jiachian.nbatoday.models.local.game.GameAndBets
 import com.jiachian.nbatoday.rule.CalendarRule
 import com.jiachian.nbatoday.rule.TestCoroutineEnvironment
@@ -72,14 +73,14 @@ class CalendarViewModelTest {
     @Test
     fun calendar_getHasPreviousMonth_returnsFalse() {
         viewModel.hasNextMonth.launchAndCollect(coroutineEnvironment)
-        assertThat(viewModel.hasPreviousMonth.value, `is`(false))
+        assertThat(viewModel.hasLastMonth.value, `is`(false))
     }
 
     @Test
     fun calendar_getCalendarData() {
         val expected = generateCalendarData()
-        viewModel.calendarData.launchAndCollect(coroutineEnvironment)
-        assertThat(viewModel.calendarData.value, `is`(expected))
+        viewModel.calendarDates.launchAndCollect(coroutineEnvironment)
+        assertThat(viewModel.calendarDates.value, `is`(expected))
     }
 
     @Test
@@ -194,8 +195,8 @@ class CalendarViewModelTest {
         )
     }
 
-    private fun generateCalendarData(): List<CalendarData> {
-        val data = mutableListOf<CalendarData>()
+    private fun generateCalendarData(): List<CalendarDate> {
+        val data = mutableListOf<CalendarDate>()
         val cal = DateUtils.getCalendar()
         val year = cal.get(Calendar.YEAR)
         val month = cal.get(Calendar.MONTH) + 1
@@ -204,7 +205,7 @@ class CalendarViewModelTest {
                 val currentMonth = cal.get(Calendar.MONTH) + 1
                 val currentDay = cal.get(Calendar.DAY_OF_MONTH)
                 data.add(
-                    CalendarData(
+                    CalendarDate(
                         cal.time,
                         currentMonth,
                         currentDay,

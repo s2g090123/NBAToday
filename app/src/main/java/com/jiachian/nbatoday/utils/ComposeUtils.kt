@@ -1,6 +1,15 @@
 package com.jiachian.nbatoday.utils
 
 import androidx.activity.ComponentActivity
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.ContentTransform
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.with
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.staticCompositionLocalOf
@@ -33,4 +42,17 @@ fun isPortrait() = booleanResource(R.bool.is_portrait)
 
 val LocalActivity = staticCompositionLocalOf<ComponentActivity> {
     error("CompositionLocal LocalActivity not present")
+}
+
+@ExperimentalAnimationApi
+fun <S> AnimatedContentScope<S>.slideSpec(toRight: Boolean): ContentTransform {
+    return if (toRight) {
+        slideInHorizontally { width -> width } + fadeIn() with
+            slideOutHorizontally { width -> -width } + fadeOut()
+    } else {
+        slideInHorizontally { width -> -width } + fadeIn() with
+            slideOutHorizontally { width -> width } + fadeOut()
+    }.using(
+        SizeTransform(clip = false)
+    )
 }

@@ -1,10 +1,10 @@
 package com.jiachian.nbatoday.datasource.local.game
 
 import com.jiachian.nbatoday.database.dao.GameDao
-import com.jiachian.nbatoday.models.local.game.Game
 import com.jiachian.nbatoday.models.local.game.GameAndBets
 import com.jiachian.nbatoday.models.local.game.GameScoreUpdateData
 import com.jiachian.nbatoday.models.local.game.GameUpdateData
+import java.util.Date
 import kotlinx.coroutines.flow.Flow
 
 class NBAGameLocalSource(
@@ -26,8 +26,12 @@ class NBAGameLocalSource(
         return gameDao.getGamesAndBetsAfterByTeam(teamId, from)
     }
 
-    override suspend fun insertGames(games: List<Game>) {
-        gameDao.insertGames(games)
+    override fun getLastGameDateTime(): Flow<Date> {
+        return gameDao.getLastGameDateTime()
+    }
+
+    override fun getFirstGameDateTime(): Flow<Date> {
+        return gameDao.getFirstGameDateTime()
     }
 
     override suspend fun updateGames(games: List<GameUpdateData>) {

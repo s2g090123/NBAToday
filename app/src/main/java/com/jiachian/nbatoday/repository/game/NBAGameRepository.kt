@@ -7,6 +7,7 @@ import com.jiachian.nbatoday.models.local.game.GameAndBets
 import com.jiachian.nbatoday.models.local.score.BoxScoreAndGame
 import com.jiachian.nbatoday.models.remote.score.toBoxScore
 import com.jiachian.nbatoday.utils.showErrorToast
+import java.util.Date
 import kotlinx.coroutines.flow.Flow
 
 class NBAGameRepository(
@@ -47,5 +48,13 @@ class NBAGameRepository(
 
     override fun getGamesAndBetsAfterByTeam(teamId: Int, from: Long): Flow<List<GameAndBets>> {
         return gameLocalSource.getGamesAndBetsAfterByTeam(teamId, from)
+    }
+
+    override fun getLastGameDateTime(): Flow<Date> {
+        return gameLocalSource.getLastGameDateTime()
+    }
+
+    override fun getFirstGameDateTime(): Flow<Date> {
+        return gameLocalSource.getFirstGameDateTime()
     }
 }

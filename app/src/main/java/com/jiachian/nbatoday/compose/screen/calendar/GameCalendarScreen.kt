@@ -2,14 +2,7 @@ package com.jiachian.nbatoday.compose.screen.calendar
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.SizeTransform
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.with
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -20,12 +13,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -43,7 +35,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -51,20 +42,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
-import coil.decode.SvgDecoder
-import coil.request.ImageRequest
-import com.google.accompanist.flowlayout.FlowRow
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.Transparency25
 import com.jiachian.nbatoday.compose.screen.card.GameCard
 import com.jiachian.nbatoday.compose.widget.DisableOverscroll
 import com.jiachian.nbatoday.compose.widget.LoadingScreen
+import com.jiachian.nbatoday.models.local.calendar.CalendarDate
 import com.jiachian.nbatoday.models.local.game.GameAndBets
-import com.jiachian.nbatoday.models.local.game.GameStatus
-import com.jiachian.nbatoday.utils.NBAUtils
 import com.jiachian.nbatoday.utils.noRippleClickable
 import com.jiachian.nbatoday.utils.rippleClickable
+import com.jiachian.nbatoday.utils.slideSpec
 import java.util.Date
 
 private const val DaysPerWeek = 7
@@ -136,8 +123,8 @@ private fun CalendarNavigationBar(
     modifier: Modifier = Modifier,
     viewModel: CalendarViewModel,
 ) {
-    val currentDate by viewModel.currentDateString.collectAsState()
-    val hasPreviousMonth by viewModel.hasPreviousMonth.collectAsState()
+    val dateStringPair by viewModel.numberAndDateStringPair.collectAsState()
+    val hasPreviousMonth by viewModel.hasLastMonth.collectAsState()
     val hasNextMonth by viewModel.hasNextMonth.collectAsState()
     Row(
         modifier = modifier,
@@ -147,22 +134,12 @@ private fun CalendarNavigationBar(
             modifier = Modifier.testTag("CalendarTopBar_Btn_Prev"),
             enabled = hasPreviousMonth,
             isLeft = true,
-            onClick = viewModel::previousMonth
+            onClick = viewModel::lastMonth
         )
         AnimatedContent(
             modifier = Modifier.weight(1f),
-            targetState = currentDate,
-            transitionSpec = {
-                if (targetState.first > initialState.first) {
-                    slideInHorizontally { width -> width } + fadeIn() with
-                        slideOutHorizontally { width -> -width } + fadeOut()
-                } else {
-                    slideInHorizontally { width -> -width } + fadeIn() with
-                        slideOutHorizontally { width -> width } + fadeOut()
-                }.using(
-                    SizeTransform(clip = false)
-                )
-            }
+            targetState = dateStringPair,
+            transitionSpec = { slideSpec(targetState.first > initialState.first) }
         ) { text ->
             Text(
                 modifier = Modifier.testTag("CalendarTopBar_Text_Date"),
@@ -202,13 +179,13 @@ private fun CalendarArrowButton(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun CalendarContent(
     modifier: Modifier = Modifier,
     viewModel: CalendarViewModel
 ) {
-    val selectGames by viewModel.selectGames.collectAsState()
+    val selectedGames by viewModel.selectedGames.collectAsState()
+    val selectedGamesVisible by viewModel.selectedGamesVisible.collectAsState()
     Column(modifier = modifier) {
         DayAbbrTextRow(
             modifier = Modifier.fillMaxWidth()
@@ -221,14 +198,14 @@ private fun CalendarContent(
                 .heightIn(max = LocalConfiguration.current.screenHeightDp.dp),
             viewModel = viewModel,
         )
-        selectGames?.let { games ->
+        if (selectedGamesVisible) {
             CalendarGames(
                 modifier = Modifier
                     .testTag("CalendarContent_CalendarGames")
                     .fillMaxWidth()
                     .heightIn(max = LocalConfiguration.current.screenHeightDp.dp),
                 viewModel = viewModel,
-                games = games
+                games = selectedGames
             )
         }
     }
@@ -239,26 +216,20 @@ private fun CalendarTable(
     modifier: Modifier = Modifier,
     viewModel: CalendarViewModel
 ) {
-    val calendarList by viewModel.calendarData.collectAsState()
-    val gameList by viewModel.gamesData.collectAsState()
-    val selectDate by viewModel.selectDateData.collectAsState()
+    val calendarList by viewModel.calendarDates.collectAsState()
+    val selectedDate by viewModel.selectedDate.collectAsState()
     val isLoading by viewModel.isLoadingGames.collectAsState()
     DisableOverscroll {
         LazyVerticalGrid(
             modifier = modifier,
             columns = GridCells.Fixed(DaysPerWeek)
         ) {
-            itemsIndexed(calendarList) { index, dateData ->
-                val games = gameList.getOrNull(index)
-                if (games != null) {
-                    DateBox(
-                        dateData = dateData,
-                        games = games,
-                        isSelected = dateData == selectDate,
-                        isLoadingGames = isLoading,
-                        onClick = viewModel::selectDate
-                    )
-                }
+            items(calendarList) { dateData ->
+                DateBox(
+                    dateData = dateData,
+                    isSelected = dateData.date == selectedDate,
+                    onClick = viewModel::selectDate
+                )
             }
         }
     }
@@ -290,13 +261,7 @@ private fun CalendarGames(
                     .fillMaxWidth()
                     .wrapContentHeight()
                     .background(MaterialTheme.colors.secondary)
-                    .rippleClickable {
-                        if (game.game.gameStatus == GameStatus.COMING_SOON) {
-                            viewModel.openTeamStats(game.game.homeTeam.team)
-                        } else {
-                            viewModel.openGameBoxScore(game.game)
-                        }
-                    }
+                    .rippleClickable { viewModel.clickGameCard(game.game) }
                     .padding(bottom = 8.dp),
                 viewModel = cardViewModel,
                 expandable = false,
@@ -335,10 +300,8 @@ private fun DayAbbrTextRow(
 
 @Composable
 private fun DateBox(
-    dateData: CalendarData,
-    games: List<GameAndBets>,
+    dateData: CalendarDate,
     isSelected: Boolean,
-    isLoadingGames: Boolean,
     onClick: (Date) -> Unit
 ) {
     Box(
@@ -372,38 +335,5 @@ private fun DateBox(
             fontSize = 12.sp,
             fontWeight = FontWeight.Medium
         )
-        if (!isLoadingGames) {
-            TeamIconThumbnailsRow(
-                modifier = Modifier
-                    .testTag("CalendarContent_FlowRow_Games")
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .align(Alignment.BottomStart)
-                    .padding(2.dp),
-                games = games
-            )
-        }
-    }
-}
-
-@Composable
-private fun TeamIconThumbnailsRow(
-    modifier: Modifier = Modifier,
-    games: List<GameAndBets>
-) {
-    FlowRow(modifier = modifier) {
-        games.forEach {
-            AsyncImage(
-                modifier = Modifier
-                    .testTag("CalendarContent_Image_Team")
-                    .size(12.dp),
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(NBAUtils.getTeamSmallLogoUrlById(it.game.homeTeam.team.teamId))
-                    .decoderFactory(SvgDecoder.Factory())
-                    .build(),
-                error = painterResource(it.game.homeTeam.team.logoRes),
-                contentDescription = null
-            )
-        }
     }
 }
