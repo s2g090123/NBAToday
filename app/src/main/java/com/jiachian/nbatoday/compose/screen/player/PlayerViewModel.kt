@@ -91,36 +91,24 @@ class PlayerViewModel(
             PlayerStatsSorting.W -> compareByDescending { it.stats.win }
             PlayerStatsSorting.L -> compareBy { it.stats.lose }
             PlayerStatsSorting.WINP -> compareByDescending { it.stats.winPercentage }
-            PlayerStatsSorting.PTS -> compareByDescending { it.stats.points.toDouble() / it.stats.gamePlayed }
-            PlayerStatsSorting.FGM -> compareByDescending { it.stats.fieldGoalsMade.toDouble() / it.stats.gamePlayed }
-            PlayerStatsSorting.FGA -> compareByDescending {
-                it.stats.fieldGoalsAttempted.toDouble() / it.stats.gamePlayed
-            }
+            PlayerStatsSorting.PTS -> compareByDescending { it.stats.pointsAverage }
+            PlayerStatsSorting.FGM -> compareByDescending { it.stats.fieldGoalsMadeAverage }
+            PlayerStatsSorting.FGA -> compareByDescending { it.stats.fieldGoalsAttemptedAverage }
             PlayerStatsSorting.FGP -> compareByDescending { it.stats.fieldGoalsPercentage }
-            PlayerStatsSorting.PM3 -> compareByDescending {
-                it.stats.threePointersMade.toDouble() / it.stats.gamePlayed
-            }
-            PlayerStatsSorting.PA3 -> compareByDescending {
-                it.stats.threePointersAttempted.toDouble() / it.stats.gamePlayed
-            }
+            PlayerStatsSorting.PM3 -> compareByDescending { it.stats.threePointersMadeAverage }
+            PlayerStatsSorting.PA3 -> compareByDescending { it.stats.threePointersAttemptedAverage }
             PlayerStatsSorting.PP3 -> compareByDescending { it.stats.threePointersPercentage }
-            PlayerStatsSorting.FTM -> compareByDescending { it.stats.freeThrowsMade.toDouble() / it.stats.gamePlayed }
-            PlayerStatsSorting.FTA -> compareByDescending {
-                it.stats.freeThrowsAttempted.toDouble() / it.stats.gamePlayed
-            }
+            PlayerStatsSorting.FTM -> compareByDescending { it.stats.freeThrowsMadeAverage }
+            PlayerStatsSorting.FTA -> compareByDescending { it.stats.freeThrowsAttemptedAverage }
             PlayerStatsSorting.FTP -> compareByDescending { it.stats.freeThrowsPercentage }
-            PlayerStatsSorting.OREB -> compareByDescending {
-                it.stats.reboundsOffensive.toDouble() / it.stats.gamePlayed
-            }
-            PlayerStatsSorting.DREB -> compareByDescending {
-                it.stats.reboundsDefensive.toDouble() / it.stats.gamePlayed
-            }
-            PlayerStatsSorting.REB -> compareByDescending { it.stats.reboundsTotal.toDouble() / it.stats.gamePlayed }
-            PlayerStatsSorting.AST -> compareByDescending { it.stats.assists.toDouble() / it.stats.gamePlayed }
-            PlayerStatsSorting.TOV -> compareBy { it.stats.turnovers.toDouble() / it.stats.gamePlayed }
-            PlayerStatsSorting.STL -> compareByDescending { it.stats.steals.toDouble() / it.stats.gamePlayed }
-            PlayerStatsSorting.BLK -> compareByDescending { it.stats.blocks.toDouble() / it.stats.gamePlayed }
-            PlayerStatsSorting.PF -> compareBy { it.stats.foulsPersonal.toDouble() / it.stats.gamePlayed }
+            PlayerStatsSorting.OREB -> compareByDescending { it.stats.reboundsOffensiveAverage }
+            PlayerStatsSorting.DREB -> compareByDescending { it.stats.reboundsDefensiveAverage }
+            PlayerStatsSorting.REB -> compareByDescending { it.stats.reboundsTotalAverage }
+            PlayerStatsSorting.AST -> compareByDescending { it.stats.assistsAverage }
+            PlayerStatsSorting.TOV -> compareBy { it.stats.turnoversAverage }
+            PlayerStatsSorting.STL -> compareByDescending { it.stats.stealsAverage }
+            PlayerStatsSorting.BLK -> compareByDescending { it.stats.blocksAverage }
+            PlayerStatsSorting.PF -> compareBy { it.stats.foulsPersonalAverage }
             PlayerStatsSorting.PLUSMINUS -> compareByDescending<PlayerStatsRowData> { it.stats.plusMinus }
         }.thenByDescending { it.stats.winPercentage }
         return sortedWith(comparator)

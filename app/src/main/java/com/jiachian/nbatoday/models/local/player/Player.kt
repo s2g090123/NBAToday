@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.jiachian.nbatoday.models.local.team.NBATeam
+import com.jiachian.nbatoday.utils.decimalFormat
 
 @Entity(tableName = "player")
 data class Player(
@@ -83,6 +84,37 @@ data class Player(
             @ColumnInfo(name = "fouls_personal") val foulsPersonal: Int,
             @ColumnInfo(name = "points") val points: Int,
             @ColumnInfo(name = "plus_minus") val plusMinus: Int
-        )
+        ) {
+            val pointsAverage: Double
+                get() = (points / gamePlayed.toDouble()).decimalFormat()
+            val fieldGoalsMadeAverage: Double
+                get() = (fieldGoalsMade / gamePlayed.toDouble()).decimalFormat()
+            val fieldGoalsAttemptedAverage: Double
+                get() = (fieldGoalsAttempted / gamePlayed.toDouble()).decimalFormat()
+            val threePointersMadeAverage: Double
+                get() = (threePointersMade / gamePlayed.toDouble()).decimalFormat()
+            val threePointersAttemptedAverage: Double
+                get() = (threePointersAttempted / gamePlayed.toDouble()).decimalFormat()
+            val freeThrowsMadeAverage: Double
+                get() = (freeThrowsMade / gamePlayed.toDouble()).decimalFormat()
+            val freeThrowsAttemptedAverage: Double
+                get() = (freeThrowsAttempted / gamePlayed.toDouble()).decimalFormat()
+            val reboundsOffensiveAverage: Double
+                get() = (reboundsOffensive / gamePlayed.toDouble()).decimalFormat()
+            val reboundsDefensiveAverage: Double
+                get() = (reboundsDefensive / gamePlayed.toDouble()).decimalFormat()
+            val reboundsTotalAverage: Double
+                get() = (reboundsTotal / gamePlayed.toDouble()).decimalFormat()
+            val assistsAverage: Double
+                get() = (assists / gamePlayed.toDouble()).decimalFormat()
+            val turnoversAverage: Double
+                get() = (turnovers / gamePlayed.toDouble()).decimalFormat()
+            val stealsAverage: Double
+                get() = (steals / gamePlayed.toDouble()).decimalFormat()
+            val blocksAverage: Double
+                get() = (blocks / gamePlayed.toDouble()).decimalFormat()
+            val foulsPersonalAverage: Double
+                get() = (foulsPersonal / gamePlayed.toDouble()).decimalFormat()
+        }
     }
 }

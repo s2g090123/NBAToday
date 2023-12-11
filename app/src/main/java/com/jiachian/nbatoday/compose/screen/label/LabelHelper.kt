@@ -121,24 +121,24 @@ object LabelHelper {
             PlayerStatsLabel.W -> stats.win
             PlayerStatsLabel.L -> stats.lose
             PlayerStatsLabel.WINP -> stats.winPercentage
-            PlayerStatsLabel.PTS -> stats.points.toDouble() / stats.gamePlayed
-            PlayerStatsLabel.FGM -> stats.fieldGoalsMade.toDouble() / stats.gamePlayed
-            PlayerStatsLabel.FGA -> stats.fieldGoalsAttempted.toDouble() / stats.gamePlayed
+            PlayerStatsLabel.PTS -> stats.pointsAverage
+            PlayerStatsLabel.FGM -> stats.fieldGoalsMadeAverage
+            PlayerStatsLabel.FGA -> stats.fieldGoalsAttemptedAverage
             PlayerStatsLabel.FGP -> stats.fieldGoalsPercentage
-            PlayerStatsLabel.PM3 -> stats.threePointersMade.toDouble() / stats.gamePlayed
-            PlayerStatsLabel.PA3 -> stats.threePointersAttempted.toDouble() / stats.gamePlayed
+            PlayerStatsLabel.PM3 -> stats.threePointersMadeAverage
+            PlayerStatsLabel.PA3 -> stats.threePointersAttemptedAverage
             PlayerStatsLabel.PP3 -> stats.threePointersPercentage
-            PlayerStatsLabel.FTM -> stats.freeThrowsMade.toDouble() / stats.gamePlayed
-            PlayerStatsLabel.FTA -> stats.freeThrowsAttempted.toDouble() / stats.gamePlayed
+            PlayerStatsLabel.FTM -> stats.freeThrowsMadeAverage
+            PlayerStatsLabel.FTA -> stats.freeThrowsAttemptedAverage
             PlayerStatsLabel.FTP -> stats.freeThrowsPercentage
-            PlayerStatsLabel.OREB -> stats.reboundsOffensive.toDouble() / stats.gamePlayed
-            PlayerStatsLabel.DREB -> stats.reboundsDefensive.toDouble() / stats.gamePlayed
-            PlayerStatsLabel.REB -> stats.reboundsTotal.toDouble() / stats.gamePlayed
-            PlayerStatsLabel.AST -> stats.assists.toDouble() / stats.gamePlayed
-            PlayerStatsLabel.TOV -> stats.turnovers.toDouble() / stats.gamePlayed
-            PlayerStatsLabel.STL -> stats.steals.toDouble() / stats.gamePlayed
-            PlayerStatsLabel.BLK -> stats.blocks.toDouble() / stats.gamePlayed
-            PlayerStatsLabel.PF -> stats.foulsPersonal.toDouble() / stats.gamePlayed
+            PlayerStatsLabel.OREB -> stats.reboundsOffensiveAverage
+            PlayerStatsLabel.DREB -> stats.reboundsDefensiveAverage
+            PlayerStatsLabel.REB -> stats.reboundsTotalAverage
+            PlayerStatsLabel.AST -> stats.assistsAverage
+            PlayerStatsLabel.TOV -> stats.turnoversAverage
+            PlayerStatsLabel.STL -> stats.stealsAverage
+            PlayerStatsLabel.BLK -> stats.blocksAverage
+            PlayerStatsLabel.PF -> stats.foulsPersonalAverage
             PlayerStatsLabel.PLUSMINUS -> stats.plusMinus
         }.let {
             if (it is Double) {
