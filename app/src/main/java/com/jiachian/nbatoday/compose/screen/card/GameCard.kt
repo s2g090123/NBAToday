@@ -28,6 +28,7 @@ import com.jiachian.nbatoday.compose.widget.AnimatedExpand
 import com.jiachian.nbatoday.compose.widget.TeamLogoImage
 import com.jiachian.nbatoday.models.local.game.GameAndBets
 import com.jiachian.nbatoday.models.local.game.GameTeam
+import com.jiachian.nbatoday.testing.testtag.GameCardTestTag
 import com.jiachian.nbatoday.utils.rippleClickable
 
 @Composable
@@ -37,7 +38,7 @@ fun GameCard(
     color: Color,
     expandable: Boolean,
 ) {
-    val canBet by viewModel.betAvailable.collectAsState()
+    val betAvailable by viewModel.betAvailable.collectAsState()
     val betDialogVisible by viewModel.betDialogVisible.collectAsState()
     Column(
         modifier = modifier,
@@ -47,7 +48,7 @@ fun GameCard(
             modifier = Modifier.fillMaxWidth(),
             gameAndBets = viewModel.gameAndBets,
             textColor = color,
-            betAvailable = canBet,
+            betAvailable = betAvailable,
             onBetClick = { viewModel.setBetDialogVisible(true) }
         )
         if (expandable && viewModel.expandedContentVisible) {
@@ -77,7 +78,7 @@ private fun GameDetail(
     ) {
         GameTeamInfo(
             modifier = Modifier
-                .testTag("ScoreBoard_TeamInfo_Home")
+                .testTag(GameCardTestTag.GameDetail_GameTeamInfo_Home)
                 .padding(start = 16.dp),
             gameTeam = gameAndBets.game.homeTeam,
             textColor = textColor
@@ -90,7 +91,7 @@ private fun GameDetail(
         )
         GameTeamInfo(
             modifier = Modifier
-                .testTag("ScoreBoard_TeamInfo_Away")
+                .testTag(GameCardTestTag.GameDetail_GameTeamInfo_Away)
                 .padding(end = 16.dp),
             gameTeam = gameAndBets.game.awayTeam,
             textColor = textColor
@@ -110,7 +111,7 @@ private fun GameTeamInfo(
     ) {
         Text(
             modifier = Modifier
-                .testTag("TeamInfo_Text_TriCode")
+                .testTag(GameCardTestTag.GameTeamInfo_Text_TeamAbbr)
                 .padding(top = 16.dp),
             text = gameTeam.team.abbreviation,
             color = textColor,
@@ -125,7 +126,7 @@ private fun GameTeamInfo(
         )
         Text(
             modifier = Modifier
-                .testTag("TeamInfo_Text_Score")
+                .testTag(GameCardTestTag.GameTeamInfo_Text_Score)
                 .padding(top = 8.dp),
             text = gameTeam.score.toString(),
             color = textColor,
@@ -144,7 +145,7 @@ private fun GameExpandedContent(
     Box {
         AnimatedExpand(
             modifier = Modifier
-                .testTag("ExpandContent_Btn_Expand")
+                .testTag(GameCardTestTag.GameExpandedContent_Button_Expand)
                 .fillMaxWidth()
                 .height(24.dp)
                 .rippleClickable { viewModel.setCardExpanded(true) }
@@ -160,7 +161,7 @@ private fun GameExpandedContent(
         }
         AnimatedExpand(
             modifier = Modifier
-                .testTag("ExpandContent_Btn_Collapse")
+                .testTag(GameCardTestTag.GameExpandedContent_Button_Collapse)
                 .padding(horizontal = 24.dp)
                 .fillMaxWidth(),
             visible = isExpanded,
@@ -168,7 +169,7 @@ private fun GameExpandedContent(
             Column(modifier = Modifier.fillMaxWidth()) {
                 GameCardLeadersInfo(
                     modifier = Modifier
-                        .testTag("ExpandContent_LeaderInfo")
+                        .testTag(GameCardTestTag.GameExpandedContent_GameCardLeadersInfo)
                         .padding(top = 8.dp)
                         .fillMaxWidth()
                         .wrapContentHeight(),

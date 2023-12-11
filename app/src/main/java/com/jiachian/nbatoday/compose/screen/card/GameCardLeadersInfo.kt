@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.widget.PlayerImage
 import com.jiachian.nbatoday.models.local.game.GameLeaders
+import com.jiachian.nbatoday.testing.testtag.GameCardTestTag
 import com.jiachian.nbatoday.utils.dividerPrimaryColor
 
 @Composable
@@ -38,7 +39,7 @@ fun GameCardLeadersInfo(
         )
         LeaderInfoRow(
             modifier = Modifier
-                .testTag("LeaderInfo_LeaderRow_Home")
+                .testTag(GameCardTestTag.GameCardLeadersInfo_LeaderInfoRow_Home)
                 .padding(top = 8.dp)
                 .fillMaxWidth(),
             player = viewModel.homeLeader,
@@ -47,7 +48,7 @@ fun GameCardLeadersInfo(
         )
         LeaderInfoRow(
             modifier = Modifier
-                .testTag("LeaderInfo_LeaderRow_Away")
+                .testTag(GameCardTestTag.GameCardLeadersInfo_LeaderInfoRow_Away)
                 .padding(top = 8.dp)
                 .fillMaxWidth(),
             player = viewModel.awayLeader,
@@ -130,7 +131,7 @@ private fun LeaderInfoRow(
                 fontSize = 12.sp
             )
             Text(
-                modifier = Modifier.testTag("LeaderRow_Text_PlayerInfo"),
+                modifier = Modifier.testTag(GameCardTestTag.LeaderInfoRow_Text_PlayerTitle),
                 text = player.playerTitle,
                 color = color,
                 fontSize = 12.sp
@@ -139,21 +140,21 @@ private fun LeaderInfoRow(
         Spacer(modifier = Modifier.weight(1f))
         LeaderStatsText(
             modifier = Modifier
-                .testTag("LeaderRow_Text_Pts")
+                .testTag(GameCardTestTag.LeaderInfoRow_LeaderStatsText_Points)
                 .width(36.dp),
             text = (if (isGamePlayed) player.points.toInt() else player.points).toString(),
             color = color
         )
         LeaderStatsText(
             modifier = Modifier
-                .testTag("LeaderRow_Text_Reb")
+                .testTag(GameCardTestTag.LeaderInfoRow_LeaderStatsText_Rebounds)
                 .width(36.dp),
             text = (if (isGamePlayed) player.rebounds.toInt() else player.rebounds).toString(),
             color = color
         )
         LeaderStatsText(
             modifier = Modifier
-                .testTag("LeaderRow_Text_Ast")
+                .testTag(GameCardTestTag.LeaderInfoRow_LeaderStatsText_Assists)
                 .width(36.dp),
             text = (if (isGamePlayed) player.assists.toInt() else player.assists).toString(),
             color = color

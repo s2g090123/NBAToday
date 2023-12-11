@@ -19,6 +19,7 @@ import com.jiachian.nbatoday.compose.screen.account.LoginDialog
 import com.jiachian.nbatoday.compose.screen.bet.BetDialog
 import com.jiachian.nbatoday.compose.widget.IconButton
 import com.jiachian.nbatoday.models.local.game.GameAndBets
+import com.jiachian.nbatoday.testing.testtag.GameCardTestTag
 import com.jiachian.nbatoday.utils.showToast
 
 @Composable
@@ -57,7 +58,7 @@ fun GameStatusAndBetButton(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            modifier = Modifier.testTag("GameStatusCard2_Text_GameStatus"),
+            modifier = Modifier.testTag(GameCardTestTag.GameStatusAndBetButton_Text_Status),
             text = gameAndBets.game.gameStatusFormatText,
             textAlign = TextAlign.Center,
             color = textColor,
@@ -67,7 +68,7 @@ fun GameStatusAndBetButton(
         if (betAvailable) {
             IconButton(
                 modifier = Modifier
-                    .testTag("GameStatusCard2_Btn_Bet")
+                    .testTag(GameCardTestTag.GameStatusAndBetButton_Button_Bet)
                     .padding(top = 8.dp),
                 drawableRes = R.drawable.ic_black_coin,
                 tint = textColor,
