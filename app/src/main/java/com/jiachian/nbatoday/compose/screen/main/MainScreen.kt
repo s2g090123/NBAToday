@@ -45,7 +45,7 @@ import com.jiachian.nbatoday.Transparency25
 import com.jiachian.nbatoday.compose.screen.bet.BetScreen
 import com.jiachian.nbatoday.compose.screen.calendar.CalendarScreen
 import com.jiachian.nbatoday.compose.screen.home.HomeScreen
-import com.jiachian.nbatoday.compose.screen.player.PlayerCareerScreen
+import com.jiachian.nbatoday.compose.screen.player.PlayerScreen
 import com.jiachian.nbatoday.compose.screen.score.BoxScoreScreen
 import com.jiachian.nbatoday.compose.screen.team.TeamScreen
 import com.jiachian.nbatoday.navigation.Route
@@ -95,7 +95,7 @@ fun MainScreen(
                 viewModel.viewModelProvider.getPlayerViewModel(
                     playerId = it.arguments?.getStringToInt("playerId").getOrError()
                 )
-            }.let { viewModel -> PlayerCareerScreen(viewModel = viewModel) }
+            }.let { viewModel -> PlayerScreen(viewModel = viewModel) }
         }
         composable("${Route.CALENDAR.route}/{dateTime}") {
             remember {

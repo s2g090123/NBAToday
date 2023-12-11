@@ -1,7 +1,14 @@
 package com.jiachian.nbatoday.compose.screen.player.models
 
 data class PlayerInfoTableData(
-    val firstRowData: PlayerInfoRowData,
-    val secondRowData: PlayerInfoRowData,
-    val thirdRowData: PlayerInfoRowData,
-)
+    val rowData: List<RowData>,
+) {
+    data class RowData(
+        val data: List<Data>,
+    ) {
+        data class Data(
+            val title: String,
+            val value: String,
+        )
+    }
+}

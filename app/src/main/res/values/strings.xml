@@ -110,31 +110,32 @@
     <string name="team_page_tab_next_game">Next</string>
     <string name="team_game_status_win">Win</string>
     <string name="team_game_status_lose">Lose</string>
-    <string name="player_stats_label_gp" translatable="false">GP</string>
-    <string name="player_stats_label_w" translatable="false">W</string>
-    <string name="player_stats_label_l" translatable="false">L</string>
-    <string name="player_stats_label_winPercentage" translatable="false">WIN%</string>
-    <string name="player_stats_label_pts" translatable="false">PTS</string>
-    <string name="player_stats_label_fgm" translatable="false">FGM</string>
-    <string name="player_stats_label_fga" translatable="false">FGA</string>
-    <string name="player_stats_label_fgPercentage" translatable="false">FG%</string>
-    <string name="player_stats_label_3pm" translatable="false">3PM</string>
-    <string name="player_stats_label_3pa" translatable="false">3PA</string>
-    <string name="player_stats_label_3pPercentage" translatable="false">3P%</string>
-    <string name="player_stats_label_ftm" translatable="false">FTM</string>
-    <string name="player_stats_label_fta" translatable="false">FTA</string>
-    <string name="player_stats_label_ftPercentage" translatable="false">FT%</string>
-    <string name="player_stats_label_oreb" translatable="false">OREB</string>
-    <string name="player_stats_label_dreb" translatable="false">DREB</string>
-    <string name="player_stats_label_reb" translatable="false">REB</string>
-    <string name="player_stats_label_ast" translatable="false">AST</string>
-    <string name="player_stats_label_tov" translatable="false">TOV</string>
-    <string name="player_stats_label_stl" translatable="false">STL</string>
-    <string name="player_stats_label_blk" translatable="false">BLK</string>
-    <string name="player_stats_label_pf" translatable="false">PF</string>
-    <string name="player_stats_label_plusMinus" translatable="false">+/-</string>
+    <string name="stats_label_gp" translatable="false">GP</string>
+    <string name="stats_label_w" translatable="false">W</string>
+    <string name="stats_label_l" translatable="false">L</string>
+    <string name="stats_label_winPercentage" translatable="false">WIN%</string>
+    <string name="stats_label_pts" translatable="false">PTS</string>
+    <string name="stats_label_fgm" translatable="false">FGM</string>
+    <string name="stats_label_fga" translatable="false">FGA</string>
+    <string name="stats_label_fgPercentage" translatable="false">FG%</string>
+    <string name="stats_label_3pm" translatable="false">3PM</string>
+    <string name="stats_label_3pa" translatable="false">3PA</string>
+    <string name="stats_label_3pPercentage" translatable="false">3P%</string>
+    <string name="stats_label_ftm" translatable="false">FTM</string>
+    <string name="stats_label_fta" translatable="false">FTA</string>
+    <string name="stats_label_ftPercentage" translatable="false">FT%</string>
+    <string name="stats_label_oreb" translatable="false">OREB</string>
+    <string name="stats_label_dreb" translatable="false">DREB</string>
+    <string name="stats_label_reb" translatable="false">REB</string>
+    <string name="stats_label_ast" translatable="false">AST</string>
+    <string name="stats_label_tov" translatable="false">TOV</string>
+    <string name="stats_label_stl" translatable="false">STL</string>
+    <string name="stats_label_blk" translatable="false">BLK</string>
+    <string name="stats_label_pf" translatable="false">PF</string>
+    <string name="stats_label_plusMinus" translatable="false">+/-</string>
     <string name="player_career_not_found">Player not found or Something went wrong.</string>
     <string name="player_career_info" translatable="false"> %1$s %2$s | #%3$d | %4$s</string>
+    <string name="player_career_by_year" translatable="false">By Year</string>
     <string name="player_career_info_ppg">PPG</string>
     <string name="player_career_info_rpg">RPG</string>
     <string name="player_career_info_apg">APG</string>

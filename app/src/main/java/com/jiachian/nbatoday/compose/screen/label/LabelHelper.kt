@@ -1,11 +1,14 @@
 package com.jiachian.nbatoday.compose.screen.label
 
 import com.jiachian.nbatoday.NA
+import com.jiachian.nbatoday.compose.screen.player.models.PlayerStatsLabel
 import com.jiachian.nbatoday.compose.screen.score.label.ScoreLabel
 import com.jiachian.nbatoday.compose.screen.score.label.ScoreLeaderLabel
 import com.jiachian.nbatoday.compose.screen.score.label.ScoreTeamLabel
 import com.jiachian.nbatoday.compose.screen.team.TeamPlayerLabel
+import com.jiachian.nbatoday.models.local.player.Player
 import com.jiachian.nbatoday.models.local.score.BoxScore
+import com.jiachian.nbatoday.utils.decimalFormat
 
 object LabelHelper {
     fun createScoreLabel(): Array<ScoreLabel> {
@@ -102,6 +105,43 @@ object LabelHelper {
             ScoreLeaderLabel.TO -> stats.turnovers
             ScoreLeaderLabel.PF -> stats.foulsPersonal
             ScoreLeaderLabel.TF -> stats.foulsTechnical
+        }.toString()
+    }
+
+    fun getValueByLabel(
+        label: PlayerStatsLabel,
+        stats: Player.PlayerStats.Stats
+    ): String {
+        return when (label) {
+            PlayerStatsLabel.GP -> stats.gamePlayed
+            PlayerStatsLabel.W -> stats.win
+            PlayerStatsLabel.L -> stats.lose
+            PlayerStatsLabel.WINP -> stats.winPercentage
+            PlayerStatsLabel.PTS -> stats.points.toDouble() / stats.gamePlayed
+            PlayerStatsLabel.FGM -> stats.fieldGoalsMade.toDouble() / stats.gamePlayed
+            PlayerStatsLabel.FGA -> stats.fieldGoalsAttempted.toDouble() / stats.gamePlayed
+            PlayerStatsLabel.FGP -> stats.fieldGoalsPercentage
+            PlayerStatsLabel.PM3 -> stats.threePointersMade.toDouble() / stats.gamePlayed
+            PlayerStatsLabel.PA3 -> stats.threePointersAttempted.toDouble() / stats.gamePlayed
+            PlayerStatsLabel.PP3 -> stats.threePointersPercentage
+            PlayerStatsLabel.FTM -> stats.freeThrowsMade.toDouble() / stats.gamePlayed
+            PlayerStatsLabel.FTA -> stats.freeThrowsAttempted.toDouble() / stats.gamePlayed
+            PlayerStatsLabel.FTP -> stats.freeThrowsPercentage
+            PlayerStatsLabel.OREB -> stats.reboundsOffensive.toDouble() / stats.gamePlayed
+            PlayerStatsLabel.DREB -> stats.reboundsDefensive.toDouble() / stats.gamePlayed
+            PlayerStatsLabel.REB -> stats.reboundsTotal.toDouble() / stats.gamePlayed
+            PlayerStatsLabel.AST -> stats.assists.toDouble() / stats.gamePlayed
+            PlayerStatsLabel.TOV -> stats.turnovers.toDouble() / stats.gamePlayed
+            PlayerStatsLabel.STL -> stats.steals.toDouble() / stats.gamePlayed
+            PlayerStatsLabel.BLK -> stats.blocks.toDouble() / stats.gamePlayed
+            PlayerStatsLabel.PF -> stats.foulsPersonal.toDouble() / stats.gamePlayed
+            PlayerStatsLabel.PLUSMINUS -> stats.plusMinus
+        }.let {
+            if (it is Double) {
+                it.decimalFormat()
+            } else {
+                it
+            }
         }.toString()
     }
 }

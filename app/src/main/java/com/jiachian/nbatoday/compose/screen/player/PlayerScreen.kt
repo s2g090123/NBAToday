@@ -2,12 +2,10 @@ package com.jiachian.nbatoday.compose.screen.player
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -21,16 +19,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.R
-import com.jiachian.nbatoday.compose.screen.player.info.PlayerCareerInfo
-import com.jiachian.nbatoday.compose.screen.player.stats.PlayerCareerStats
+import com.jiachian.nbatoday.compose.screen.player.widgets.playerInfo
+import com.jiachian.nbatoday.compose.screen.player.widgets.playerStats
 import com.jiachian.nbatoday.compose.widget.FocusableColumn
 import com.jiachian.nbatoday.compose.widget.IconButton
 import com.jiachian.nbatoday.compose.widget.LoadingScreen
+import com.jiachian.nbatoday.compose.widget.NullCheckScreen
+import com.jiachian.nbatoday.testing.testtag.PlayerTestTag
 
 @Composable
-fun PlayerCareerScreen(viewModel: PlayerViewModel) {
-    val isRefreshing by viewModel.isRefreshing.collectAsState()
-    val notFoundVisible by viewModel.notFoundVisible.collectAsState()
+fun PlayerScreen(viewModel: PlayerViewModel) {
+    val isLoading by viewModel.isLoading.collectAsState()
+    val notFound by viewModel.notFound.collectAsState()
     FocusableColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -38,30 +38,44 @@ fun PlayerCareerScreen(viewModel: PlayerViewModel) {
     ) {
         IconButton(
             modifier = Modifier
-                .testTag("PlayerCareerScreen_Btn_Back")
+                .testTag(PlayerTestTag.PlayerScreen_Button_Back)
                 .padding(top = 8.dp, start = 8.dp),
             drawableRes = R.drawable.ic_black_back,
             tint = MaterialTheme.colors.secondary,
             onClick = viewModel::close
         )
         when {
-            isRefreshing -> {
+            isLoading -> {
                 LoadingScreen(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.secondary,
                     interceptBack = false
                 )
             }
-            notFoundVisible -> {
-                PlayerCareerNotFound(modifier = Modifier.fillMaxSize())
+            notFound -> {
+                PlayerNotFound(modifier = Modifier.fillMaxSize())
             }
             else -> {
-                Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-                    PlayerCareerInfo(viewModel = viewModel)
-                    PlayerCareerStats(
-                        modifier = Modifier.fillMaxWidth(),
-                        viewModel = viewModel
-                    )
+                val playerImp by viewModel.player.collectAsState()
+                val statsRowData by viewModel.sortedStatsRowData.collectAsState()
+                val sorting by viewModel.statsSorting.collectAsState()
+                val labelState = rememberLazyListState()
+                NullCheckScreen(
+                    data = playerImp,
+                    ifNull = null
+                ) { player ->
+                    LazyColumn {
+                        playerInfo(
+                            viewModel = viewModel,
+                            player = player,
+                        )
+                        playerStats(
+                            viewModel = viewModel,
+                            labelState = labelState,
+                            statsRowData = statsRowData,
+                            sorting = sorting,
+                        )
+                    }
                 }
             }
         }
@@ -69,9 +83,7 @@ fun PlayerCareerScreen(viewModel: PlayerViewModel) {
 }
 
 @Composable
-private fun PlayerCareerNotFound(
-    modifier: Modifier = Modifier
-) {
+private fun PlayerNotFound(modifier: Modifier = Modifier) {
     Box(modifier = modifier) {
         Text(
             modifier = Modifier.align(Alignment.Center),

@@ -259,14 +259,12 @@ fun PlayerImage(
 @Composable
 fun <T> NullCheckScreen(
     data: T?,
-    ifNull: @Composable () -> Unit,
-    ifNotNull: @Composable (T) -> Unit
+    ifNull: (@Composable () -> Unit)?,
+    ifNotNull: (@Composable (T) -> Unit)?
 ) {
-    if (data == null) {
-        ifNull()
-    } else {
-        ifNotNull(data)
-    }
+    data?.let {
+        ifNotNull?.invoke(it)
+    } ?: ifNull?.invoke()
 }
 
 @Composable

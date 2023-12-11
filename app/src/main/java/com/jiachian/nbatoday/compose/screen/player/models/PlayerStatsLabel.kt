@@ -1,128 +1,153 @@
-package com.jiachian.nbatoday.compose.screen.team
+package com.jiachian.nbatoday.compose.screen.player.models
 
 import androidx.annotation.StringRes
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.jiachian.nbatoday.R
 
-enum class TeamPlayerLabel(
+enum class PlayerStatsLabel(
     val width: Dp,
     @StringRes val textRes: Int,
-    val sort: PlayerSort,
+    val align: TextAlign,
+    val sorting: PlayerStatsSorting,
 ) {
     GP(
         width = 40.dp,
         textRes = R.string.stats_label_gp,
-        sort = PlayerSort.GP
+        align = TextAlign.End,
+        sorting = PlayerStatsSorting.GP,
     ),
-    WIN(
+    W(
         width = 40.dp,
         textRes = R.string.stats_label_w,
-        sort = PlayerSort.W
+        align = TextAlign.End,
+        sorting = PlayerStatsSorting.W,
     ),
-    LOSE(
+    L(
         width = 40.dp,
         textRes = R.string.stats_label_l,
-        sort = PlayerSort.L
+        align = TextAlign.End,
+        sorting = PlayerStatsSorting.L,
     ),
     WINP(
         width = 64.dp,
         textRes = R.string.stats_label_winPercentage,
-        sort = PlayerSort.WINP
+        align = TextAlign.End,
+        sorting = PlayerStatsSorting.WINP,
     ),
     PTS(
         width = 64.dp,
         textRes = R.string.stats_label_pts,
-        sort = PlayerSort.PTS
+        align = TextAlign.End,
+        sorting = PlayerStatsSorting.PTS,
     ),
     FGM(
         width = 64.dp,
         textRes = R.string.stats_label_fgm,
-        sort = PlayerSort.FGM
+        align = TextAlign.End,
+        sorting = PlayerStatsSorting.FGM,
     ),
     FGA(
         width = 64.dp,
         textRes = R.string.stats_label_fga,
-        sort = PlayerSort.FGA
+        align = TextAlign.End,
+        sorting = PlayerStatsSorting.FGA,
     ),
     FGP(
         width = 64.dp,
         textRes = R.string.stats_label_fgPercentage,
-        sort = PlayerSort.FGP
+        align = TextAlign.End,
+        sorting = PlayerStatsSorting.FGP,
     ),
     PM3(
         width = 64.dp,
         textRes = R.string.stats_label_3pm,
-        sort = PlayerSort.PM3
+        align = TextAlign.End,
+        sorting = PlayerStatsSorting.PM3,
     ),
     PA3(
         width = 64.dp,
         textRes = R.string.stats_label_3pa,
-        sort = PlayerSort.PA3
+        align = TextAlign.End,
+        sorting = PlayerStatsSorting.PA3,
     ),
     PP3(
         width = 64.dp,
         textRes = R.string.stats_label_3pPercentage,
-        sort = PlayerSort.PP3
+        align = TextAlign.End,
+        sorting = PlayerStatsSorting.PP3,
     ),
     FTM(
         width = 64.dp,
         textRes = R.string.stats_label_ftm,
-        sort = PlayerSort.FTM
+        align = TextAlign.End,
+        sorting = PlayerStatsSorting.FTM,
     ),
     FTA(
         width = 64.dp,
         textRes = R.string.stats_label_fta,
-        sort = PlayerSort.FTA
+        align = TextAlign.End,
+        sorting = PlayerStatsSorting.FTA,
     ),
     FTP(
         width = 64.dp,
         textRes = R.string.stats_label_ftPercentage,
-        sort = PlayerSort.FTP
+        align = TextAlign.End,
+        sorting = PlayerStatsSorting.FTP,
     ),
     OREB(
         width = 48.dp,
         textRes = R.string.stats_label_oreb,
-        sort = PlayerSort.OREB
+        align = TextAlign.End,
+        sorting = PlayerStatsSorting.OREB,
     ),
     DREB(
         width = 48.dp,
         textRes = R.string.stats_label_dreb,
-        sort = PlayerSort.DREB
+        align = TextAlign.End,
+        sorting = PlayerStatsSorting.DREB,
     ),
     REB(
         width = 48.dp,
         textRes = R.string.stats_label_reb,
-        sort = PlayerSort.REB
+        align = TextAlign.End,
+        sorting = PlayerStatsSorting.REB,
     ),
     AST(
         width = 48.dp,
         textRes = R.string.stats_label_ast,
-        sort = PlayerSort.AST
+        align = TextAlign.End,
+        sorting = PlayerStatsSorting.AST,
     ),
     TOV(
         width = 48.dp,
         textRes = R.string.stats_label_tov,
-        sort = PlayerSort.TOV
+        align = TextAlign.End,
+        sorting = PlayerStatsSorting.TOV,
     ),
     STL(
         width = 48.dp,
         textRes = R.string.stats_label_stl,
-        sort = PlayerSort.STL
+        align = TextAlign.End,
+        sorting = PlayerStatsSorting.STL,
     ),
     BLK(
         width = 48.dp,
         textRes = R.string.stats_label_blk,
-        sort = PlayerSort.BLK
+        align = TextAlign.End,
+        sorting = PlayerStatsSorting.BLK,
     ),
     PF(
         width = 48.dp,
         textRes = R.string.stats_label_pf,
-        sort = PlayerSort.PF
+        align = TextAlign.End,
+        sorting = PlayerStatsSorting.PF,
     ),
     PLUSMINUS(
         width = 48.dp,
         textRes = R.string.stats_label_plusMinus,
-        sort = PlayerSort.PLUSMINUS
+        align = TextAlign.End,
+        sorting = PlayerStatsSorting.PLUSMINUS,
     ),
 }

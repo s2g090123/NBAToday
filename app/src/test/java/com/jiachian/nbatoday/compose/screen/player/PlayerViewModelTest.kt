@@ -1,6 +1,7 @@
 package com.jiachian.nbatoday.compose.screen.player
 
 import com.jiachian.nbatoday.HomePlayerId
+import com.jiachian.nbatoday.compose.screen.player.models.PlayerStatsSorting
 import com.jiachian.nbatoday.models.PlayerCareerFactory
 import com.jiachian.nbatoday.models.TestRepository
 import com.jiachian.nbatoday.rule.TestCoroutineEnvironment
@@ -35,8 +36,8 @@ class PlayerViewModelTest {
 
     @Test
     fun player_homePlayer_checksPlayerCareer() {
-        viewModel.playerCareer.launchAndCollect(coroutineEnvironment)
-        val playerCareer = viewModel.playerCareer.value
+        viewModel.player.launchAndCollect(coroutineEnvironment)
+        val playerCareer = viewModel.player.value
         assertThat(playerCareer?.playerId, `is`(homePlayer.playerId))
         assertThat(playerCareer?.info, `is`(notNullValue()))
         assertThat(playerCareer?.info?.playerName, `is`(homePlayer.info.playerName))
@@ -52,7 +53,7 @@ class PlayerViewModelTest {
         viewModel.statsRowData.launchAndCollect(coroutineEnvironment)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.stats.first(), viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats.first(), viewModel.statsSorting.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
@@ -63,7 +64,7 @@ class PlayerViewModelTest {
         viewModel.statsRowData.launchAndCollect(coroutineEnvironment)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.stats.first(), viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats.first(), viewModel.statsSorting.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
@@ -72,10 +73,10 @@ class PlayerViewModelTest {
     @Test
     fun player_updateGamePlayedSort_checksFirstRowCareerStats() {
         viewModel.statsRowData.launchAndCollect(coroutineEnvironment)
-        viewModel.updateStatsSort(CareerStatsSort.GP)
+        viewModel.updateStatsSorting(PlayerStatsSorting.GP)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSorting.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
@@ -84,10 +85,10 @@ class PlayerViewModelTest {
     @Test
     fun player_updateGameWinSort_checksFirstRowCareerStats() {
         viewModel.statsRowData.launchAndCollect(coroutineEnvironment)
-        viewModel.updateStatsSort(CareerStatsSort.W)
+        viewModel.updateStatsSorting(PlayerStatsSorting.W)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSorting.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
@@ -96,10 +97,10 @@ class PlayerViewModelTest {
     @Test
     fun player_updateLoseSort_checksFirstRowCareerStats() {
         viewModel.statsRowData.launchAndCollect(coroutineEnvironment)
-        viewModel.updateStatsSort(CareerStatsSort.L)
+        viewModel.updateStatsSorting(PlayerStatsSorting.L)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.stats.first(), viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats.first(), viewModel.statsSorting.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
@@ -108,10 +109,10 @@ class PlayerViewModelTest {
     @Test
     fun player_updateWinPercentageSort_checksFirstRowCareerStats() {
         viewModel.statsRowData.launchAndCollect(coroutineEnvironment)
-        viewModel.updateStatsSort(CareerStatsSort.WINP)
+        viewModel.updateStatsSorting(PlayerStatsSorting.WINP)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSorting.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
@@ -120,10 +121,10 @@ class PlayerViewModelTest {
     @Test
     fun player_updatePointsSort_checksFirstRowCareerStats() {
         viewModel.statsRowData.launchAndCollect(coroutineEnvironment)
-        viewModel.updateStatsSort(CareerStatsSort.PTS)
+        viewModel.updateStatsSorting(PlayerStatsSorting.PTS)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSorting.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
@@ -132,10 +133,10 @@ class PlayerViewModelTest {
     @Test
     fun player_updateFGMSort_checksFirstRowCareerStats() {
         viewModel.statsRowData.launchAndCollect(coroutineEnvironment)
-        viewModel.updateStatsSort(CareerStatsSort.FGM)
+        viewModel.updateStatsSorting(PlayerStatsSorting.FGM)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSorting.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
@@ -144,10 +145,10 @@ class PlayerViewModelTest {
     @Test
     fun player_updateFGASort_checksFirstRowCareerStats() {
         viewModel.statsRowData.launchAndCollect(coroutineEnvironment)
-        viewModel.updateStatsSort(CareerStatsSort.FGA)
+        viewModel.updateStatsSorting(PlayerStatsSorting.FGA)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSorting.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
@@ -156,10 +157,10 @@ class PlayerViewModelTest {
     @Test
     fun player_updateFGPSort_checksFirstRowCareerStats() {
         viewModel.statsRowData.launchAndCollect(coroutineEnvironment)
-        viewModel.updateStatsSort(CareerStatsSort.FGP)
+        viewModel.updateStatsSorting(PlayerStatsSorting.FGP)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSorting.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
@@ -168,10 +169,10 @@ class PlayerViewModelTest {
     @Test
     fun player_updatePM3Sort_checksFirstRowCareerStats() {
         viewModel.statsRowData.launchAndCollect(coroutineEnvironment)
-        viewModel.updateStatsSort(CareerStatsSort.PM3)
+        viewModel.updateStatsSorting(PlayerStatsSorting.PM3)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSorting.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
@@ -180,10 +181,10 @@ class PlayerViewModelTest {
     @Test
     fun player_updatePA3Sort_checksFirstRowCareerStats() {
         viewModel.statsRowData.launchAndCollect(coroutineEnvironment)
-        viewModel.updateStatsSort(CareerStatsSort.PA3)
+        viewModel.updateStatsSorting(PlayerStatsSorting.PA3)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSorting.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
@@ -192,10 +193,10 @@ class PlayerViewModelTest {
     @Test
     fun player_updatePP3Sort_checksFirstRowCareerStats() {
         viewModel.statsRowData.launchAndCollect(coroutineEnvironment)
-        viewModel.updateStatsSort(CareerStatsSort.PP3)
+        viewModel.updateStatsSorting(PlayerStatsSorting.PP3)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSorting.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
@@ -204,10 +205,10 @@ class PlayerViewModelTest {
     @Test
     fun player_updateFTMSort_checksFirstRowCareerStats() {
         viewModel.statsRowData.launchAndCollect(coroutineEnvironment)
-        viewModel.updateStatsSort(CareerStatsSort.FTM)
+        viewModel.updateStatsSorting(PlayerStatsSorting.FTM)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSorting.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
@@ -216,10 +217,10 @@ class PlayerViewModelTest {
     @Test
     fun player_updateFTASort_checksFirstRowCareerStats() {
         viewModel.statsRowData.launchAndCollect(coroutineEnvironment)
-        viewModel.updateStatsSort(CareerStatsSort.FTA)
+        viewModel.updateStatsSorting(PlayerStatsSorting.FTA)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSorting.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
@@ -228,10 +229,10 @@ class PlayerViewModelTest {
     @Test
     fun player_updateFTPSort_checksFirstRowCareerStats() {
         viewModel.statsRowData.launchAndCollect(coroutineEnvironment)
-        viewModel.updateStatsSort(CareerStatsSort.FTP)
+        viewModel.updateStatsSorting(PlayerStatsSorting.FTP)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSorting.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
@@ -240,10 +241,10 @@ class PlayerViewModelTest {
     @Test
     fun player_updateOREBSort_checksFirstRowCareerStats() {
         viewModel.statsRowData.launchAndCollect(coroutineEnvironment)
-        viewModel.updateStatsSort(CareerStatsSort.OREB)
+        viewModel.updateStatsSorting(PlayerStatsSorting.OREB)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSorting.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
@@ -252,10 +253,10 @@ class PlayerViewModelTest {
     @Test
     fun player_updateDREBSort_checksFirstRowCareerStats() {
         viewModel.statsRowData.launchAndCollect(coroutineEnvironment)
-        viewModel.updateStatsSort(CareerStatsSort.DREB)
+        viewModel.updateStatsSorting(PlayerStatsSorting.DREB)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSorting.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
@@ -264,10 +265,10 @@ class PlayerViewModelTest {
     @Test
     fun player_updateREBSort_checksFirstRowCareerStats() {
         viewModel.statsRowData.launchAndCollect(coroutineEnvironment)
-        viewModel.updateStatsSort(CareerStatsSort.REB)
+        viewModel.updateStatsSorting(PlayerStatsSorting.REB)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSorting.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
@@ -276,10 +277,10 @@ class PlayerViewModelTest {
     @Test
     fun player_updateASTSort_checksFirstRowCareerStats() {
         viewModel.statsRowData.launchAndCollect(coroutineEnvironment)
-        viewModel.updateStatsSort(CareerStatsSort.AST)
+        viewModel.updateStatsSorting(PlayerStatsSorting.AST)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSorting.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
@@ -288,10 +289,10 @@ class PlayerViewModelTest {
     @Test
     fun player_updateTOVSort_checksFirstRowCareerStats() {
         viewModel.statsRowData.launchAndCollect(coroutineEnvironment)
-        viewModel.updateStatsSort(CareerStatsSort.TOV)
+        viewModel.updateStatsSorting(PlayerStatsSorting.TOV)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSorting.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
@@ -300,10 +301,10 @@ class PlayerViewModelTest {
     @Test
     fun player_updateSTLSort_checksFirstRowCareerStats() {
         viewModel.statsRowData.launchAndCollect(coroutineEnvironment)
-        viewModel.updateStatsSort(CareerStatsSort.STL)
+        viewModel.updateStatsSorting(PlayerStatsSorting.STL)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSorting.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
@@ -312,10 +313,10 @@ class PlayerViewModelTest {
     @Test
     fun player_updateBLKSort_checksFirstRowCareerStats() {
         viewModel.statsRowData.launchAndCollect(coroutineEnvironment)
-        viewModel.updateStatsSort(CareerStatsSort.BLK)
+        viewModel.updateStatsSorting(PlayerStatsSorting.BLK)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSorting.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
@@ -324,10 +325,10 @@ class PlayerViewModelTest {
     @Test
     fun player_updatePFSort_checksFirstRowCareerStats() {
         viewModel.statsRowData.launchAndCollect(coroutineEnvironment)
-        viewModel.updateStatsSort(CareerStatsSort.PF)
+        viewModel.updateStatsSorting(PlayerStatsSorting.PF)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSorting.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))
@@ -336,10 +337,10 @@ class PlayerViewModelTest {
     @Test
     fun player_updatePLUSMINUSSort_checksFirstRowCareerStats() {
         viewModel.statsRowData.launchAndCollect(coroutineEnvironment)
-        viewModel.updateStatsSort(CareerStatsSort.PLUSMINUS)
+        viewModel.updateStatsSorting(PlayerStatsSorting.PLUSMINUS)
         val labels = viewModel.statsLabels.value
         val homeCareerStats = labels.map {
-            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSort.value)
+            it.getRowData(homePlayer.stats.stats[1], viewModel.statsSorting.value)
         }
         val careerStats = viewModel.statsRowData.value.first()
         assertThat(careerStats, `is`(homeCareerStats))

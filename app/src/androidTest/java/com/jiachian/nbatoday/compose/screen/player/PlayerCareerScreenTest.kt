@@ -38,7 +38,7 @@ class PlayerCareerScreenTest : BaseAndroidTest() {
             dispatcherProvider = coroutineEnvironment.testDispatcherProvider
         )
         composeTestRule.setContent {
-            PlayerCareerScreen(
+            PlayerScreen(
                 viewModel = viewModel,
                 onBack = { isBack = true }
             )

@@ -48,6 +48,9 @@ data class Player(
 
         val impact: Double
             get() = headlineStats.impact
+
+        val detail: String
+            get() = "${team.location} ${team.teamName} | #$jersey | $position"
     }
 
     data class PlayerStats(
