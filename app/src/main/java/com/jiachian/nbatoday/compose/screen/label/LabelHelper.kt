@@ -27,6 +27,10 @@ object LabelHelper {
         return TeamPlayerLabel.values()
     }
 
+    fun createPlayerStatsLabel(): Array<PlayerStatsLabel> {
+        return PlayerStatsLabel.values()
+    }
+
     fun getValueByLabel(
         label: ScoreLabel,
         stats: BoxScore.BoxScoreTeam.Player.Statistics?
