@@ -7,6 +7,7 @@ import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -69,15 +70,13 @@ fun LazyListScope.playerStats(
     }
     stickyHeader {
         val draggableState = rememberDraggableState(onDelta = { scrollDelta = it })
-        Surface(color = MaterialTheme.colors.primary) {
-            PlayerStatsLabelDraggableRow(
-                modifier = Modifier.draggable(draggableState, Orientation.Horizontal),
-                viewModel = viewModel,
-                labelState = labelState,
-                sorting = sorting,
-                scrollDelta = scrollDelta,
-            )
-        }
+        PlayerStatsLabelDraggableRow(
+            modifier = Modifier.draggable(draggableState, Orientation.Horizontal),
+            viewModel = viewModel,
+            labelState = labelState,
+            sorting = sorting,
+            scrollDelta = scrollDelta,
+        )
     }
     items(statsRowData) { rowData ->
         val draggableState = rememberDraggableState(onDelta = { scrollDelta = it })
@@ -98,17 +97,19 @@ private fun PlayerStatsLabelDraggableRow(
     sorting: PlayerStatsSorting,
     scrollDelta: Float,
 ) {
-    PlayerStatsLabelRow(
-        modifier = modifier,
-        viewModel = viewModel,
-        state = labelState,
-        sorting = sorting,
-    )
-    Divider(
-        modifier = Modifier.fillMaxWidth(),
-        color = dividerSecondaryColor(),
-        thickness = 3.dp
-    )
+    Column(modifier = Modifier.background(MaterialTheme.colors.primary)) {
+        PlayerStatsLabelRow(
+            modifier = modifier,
+            viewModel = viewModel,
+            state = labelState,
+            sorting = sorting,
+        )
+        Divider(
+            modifier = Modifier.fillMaxWidth(),
+            color = dividerSecondaryColor(),
+            thickness = 3.dp
+        )
+    }
     LaunchedEffect(scrollDelta) {
         labelState.scrollBy(-scrollDelta)
     }
