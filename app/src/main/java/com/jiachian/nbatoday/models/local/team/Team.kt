@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.jiachian.nbatoday.utils.decimalFormat
+import com.jiachian.nbatoday.utils.toRank
 
 @Entity(tableName = "team")
 data class Team(
@@ -40,4 +41,8 @@ data class Team(
         get() = (reboundsTotal.toDouble() / gamePlayed).decimalFormat()
     val assistsAverage: Double
         get() = (assists.toDouble() / gamePlayed).decimalFormat()
+
+    fun getStandingDetail(standing: Int): String {
+        return "$win - $lose | ${standing.toRank()} in $teamConference"
+    }
 }

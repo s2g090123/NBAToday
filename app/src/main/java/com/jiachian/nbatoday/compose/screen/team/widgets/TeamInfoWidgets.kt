@@ -32,26 +32,23 @@ import com.jiachian.nbatoday.utils.toRank
 
 @Composable
 fun TeamInformation(
-    modifier: Modifier = Modifier,
-    viewModel: TeamViewModel
+    viewModel: TeamViewModel,
+    stats: Team,
 ) {
-    val stats by viewModel.teamStats.collectAsState()
-    val teamStanding by viewModel.teamStanding.collectAsState()
-    stats?.let {
-        Column(modifier = modifier) {
-            TeamNameAndStanding(
-                stats = it,
-                teamStanding = teamStanding,
-                textColor = viewModel.colors.extra2,
-            )
-            TeamStatsDetail(
-                modifier = Modifier
-                    .padding(top = 8.dp, start = 16.dp, end = 16.dp)
-                    .height(IntrinsicSize.Min),
-                viewModel = viewModel,
-                stats = it,
-            )
-        }
+    val standing by viewModel.teamStanding.collectAsState()
+    Column {
+        TeamNameAndStanding(
+            stats = stats,
+            standing = standing,
+            textColor = viewModel.colors.extra2,
+        )
+        TeamStatsDetail(
+            modifier = Modifier
+                .padding(top = 8.dp, start = 16.dp, end = 16.dp)
+                .height(IntrinsicSize.Min),
+            viewModel = viewModel,
+            stats = stats,
+        )
     }
 }
 
@@ -59,7 +56,7 @@ fun TeamInformation(
 private fun TeamNameAndStanding(
     modifier: Modifier = Modifier,
     stats: Team,
-    teamStanding: Int,
+    standing: Int,
     textColor: Color,
 ) {
     Row(
@@ -87,13 +84,7 @@ private fun TeamNameAndStanding(
             )
             Text(
                 modifier = Modifier.testTag("TeamInformation_Text_TeamRecord"),
-                text = stringResource(
-                    R.string.team_rank_record,
-                    stats.win,
-                    stats.lose,
-                    teamStanding.toRank(),
-                    stats.teamConference.toString()
-                ),
+                text = stats.getStandingDetail(standing),
                 fontWeight = FontWeight.Medium,
                 fontSize = 20.sp,
                 color = textColor

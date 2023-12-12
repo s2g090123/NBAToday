@@ -5,9 +5,10 @@ import com.jiachian.nbatoday.compose.screen.player.models.PlayerStatsLabel
 import com.jiachian.nbatoday.compose.screen.score.label.ScoreLabel
 import com.jiachian.nbatoday.compose.screen.score.label.ScoreLeaderLabel
 import com.jiachian.nbatoday.compose.screen.score.label.ScoreTeamLabel
-import com.jiachian.nbatoday.compose.screen.team.TeamPlayerLabel
+import com.jiachian.nbatoday.compose.screen.team.models.TeamPlayerLabel
 import com.jiachian.nbatoday.models.local.player.Player
 import com.jiachian.nbatoday.models.local.score.BoxScore
+import com.jiachian.nbatoday.models.local.team.TeamPlayer
 import com.jiachian.nbatoday.utils.decimalFormat
 
 object LabelHelper {
@@ -140,6 +141,43 @@ object LabelHelper {
             PlayerStatsLabel.BLK -> stats.blocksAverage
             PlayerStatsLabel.PF -> stats.foulsPersonalAverage
             PlayerStatsLabel.PLUSMINUS -> stats.plusMinus
+        }.let {
+            if (it is Double) {
+                it.decimalFormat()
+            } else {
+                it
+            }
+        }.toString()
+    }
+
+    fun getValueByLabel(
+        label: TeamPlayerLabel,
+        stats: TeamPlayer
+    ): String {
+        return when (label) {
+            TeamPlayerLabel.GP -> stats.gamePlayed
+            TeamPlayerLabel.W -> stats.win
+            TeamPlayerLabel.L -> stats.lose
+            TeamPlayerLabel.WINP -> stats.winPercentage
+            TeamPlayerLabel.PTS -> stats.pointsAverage
+            TeamPlayerLabel.FGM -> stats.fieldGoalsMadeAverage
+            TeamPlayerLabel.FGA -> stats.fieldGoalsAttemptedAverage
+            TeamPlayerLabel.FGP -> stats.fieldGoalsPercentage
+            TeamPlayerLabel.PM3 -> stats.threePointersMadeAverage
+            TeamPlayerLabel.PA3 -> stats.threePointersAttemptedAverage
+            TeamPlayerLabel.PP3 -> stats.threePointersPercentage
+            TeamPlayerLabel.FTM -> stats.freeThrowsMadeAverage
+            TeamPlayerLabel.FTA -> stats.freeThrowsAttemptedAverage
+            TeamPlayerLabel.FTP -> stats.freeThrowsPercentage
+            TeamPlayerLabel.OREB -> stats.reboundsOffensiveAverage
+            TeamPlayerLabel.DREB -> stats.reboundsDefensiveAverage
+            TeamPlayerLabel.REB -> stats.reboundsTotalAverage
+            TeamPlayerLabel.AST -> stats.assistsAverage
+            TeamPlayerLabel.TOV -> stats.turnoversAverage
+            TeamPlayerLabel.STL -> stats.stealsAverage
+            TeamPlayerLabel.BLK -> stats.blocksAverage
+            TeamPlayerLabel.PF -> stats.foulsPersonalAverage
+            TeamPlayerLabel.PLUSMINUS -> stats.plusMinus
         }.let {
             if (it is Double) {
                 it.decimalFormat()

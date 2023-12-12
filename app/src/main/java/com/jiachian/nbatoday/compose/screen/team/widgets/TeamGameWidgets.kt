@@ -1,6 +1,5 @@
 package com.jiachian.nbatoday.compose.screen.team.widgets
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -14,7 +13,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.jiachian.nbatoday.R
@@ -22,14 +20,14 @@ import com.jiachian.nbatoday.compose.screen.card.GameCard
 import com.jiachian.nbatoday.compose.screen.team.TeamViewModel
 import com.jiachian.nbatoday.models.local.game.GameAndBets
 import com.jiachian.nbatoday.utils.rippleClickable
+import com.jiachian.nbatoday.utils.showToast
 
 @Composable
-fun GamesPage(
+fun GamePage(
     modifier: Modifier = Modifier,
     viewModel: TeamViewModel,
     games: List<GameAndBets>
 ) {
-    val context = LocalContext.current
     LazyColumn(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -54,9 +52,7 @@ fun GamesPage(
                     .background(viewModel.colors.secondary)
                     .rippleClickable {
                         if (!game.game.isGamePlayed) {
-                            Toast
-                                .makeText(context, context.getString(R.string.game_is_coming_soon), Toast.LENGTH_SHORT)
-                                .show()
+                            showToast(R.string.game_is_coming_soon)
                         } else {
                             viewModel.openGameBoxScore(game.game)
                         }

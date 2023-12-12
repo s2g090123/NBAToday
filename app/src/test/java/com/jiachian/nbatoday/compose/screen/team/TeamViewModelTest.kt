@@ -3,6 +3,7 @@ package com.jiachian.nbatoday.compose.screen.team
 import com.jiachian.nbatoday.UserAccount
 import com.jiachian.nbatoday.UserPassword
 import com.jiachian.nbatoday.UserPoints
+import com.jiachian.nbatoday.compose.screen.team.models.TeamPlayerSorting
 import com.jiachian.nbatoday.models.NbaGameFactory
 import com.jiachian.nbatoday.models.PlayerStatsFactory
 import com.jiachian.nbatoday.models.TeamStatsFactory
@@ -168,30 +169,30 @@ class TeamViewModelTest {
 
     @Test
     fun team_selectPlayersTab_checksPlayersSelect() {
-        viewModel.selectPage.launchAndCollect(coroutineEnvironment)
-        viewModel.updateSelectPage(TeamPageTab.PLAYERS)
-        assertThat(viewModel.selectPage.value, `is`(TeamPageTab.PLAYERS))
+        viewModel.selectedPage.launchAndCollect(coroutineEnvironment)
+        viewModel.selectPage(TeamPage.PLAYERS)
+        assertThat(viewModel.selectedPage.value, `is`(TeamPage.PLAYERS))
     }
 
     @Test
     fun team_selectPreviousTab_checksPreviousSelect() {
-        viewModel.selectPage.launchAndCollect(coroutineEnvironment)
-        viewModel.updateSelectPage(TeamPageTab.PREVIOUS)
-        assertThat(viewModel.selectPage.value, `is`(TeamPageTab.PREVIOUS))
+        viewModel.selectedPage.launchAndCollect(coroutineEnvironment)
+        viewModel.selectPage(TeamPage.PREVIOUS)
+        assertThat(viewModel.selectedPage.value, `is`(TeamPage.PREVIOUS))
     }
 
     @Test
     fun team_selectNextTab_checksNextSelect() {
-        viewModel.selectPage.launchAndCollect(coroutineEnvironment)
-        viewModel.updateSelectPage(TeamPageTab.NEXT)
-        assertThat(viewModel.selectPage.value, `is`(TeamPageTab.NEXT))
+        viewModel.selectedPage.launchAndCollect(coroutineEnvironment)
+        viewModel.selectPage(TeamPage.NEXT)
+        assertThat(viewModel.selectedPage.value, `is`(TeamPage.NEXT))
     }
 
     @Test
     fun team_selectGamePlayedSort_checksGamePlaySelect() {
-        viewModel.playerSort.launchAndCollect(coroutineEnvironment)
-        viewModel.updatePlayerSort(PlayerSort.GP)
-        assertThat(viewModel.playerSort.value, `is`(PlayerSort.GP))
+        viewModel.playerSorting.launchAndCollect(coroutineEnvironment)
+        viewModel.updatePlayerSorting(TeamPlayerSorting.GP)
+        assertThat(viewModel.playerSorting.value, `is`(TeamPlayerSorting.GP))
     }
 
     @Test

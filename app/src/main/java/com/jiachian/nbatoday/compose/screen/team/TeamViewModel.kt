@@ -3,12 +3,13 @@ package com.jiachian.nbatoday.compose.screen.team
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.compose.screen.card.GameCardViewModel
 import com.jiachian.nbatoday.compose.screen.label.LabelHelper
+import com.jiachian.nbatoday.compose.screen.team.models.TeamPlayerRowData
+import com.jiachian.nbatoday.compose.screen.team.models.TeamPlayerSorting
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.models.local.game.Game
 import com.jiachian.nbatoday.models.local.game.GameAndBets
 import com.jiachian.nbatoday.models.local.team.NBATeam
-import com.jiachian.nbatoday.models.local.team.TeamPlayer
 import com.jiachian.nbatoday.models.local.team.TeamRank
 import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.navigation.Route
@@ -16,7 +17,6 @@ import com.jiachian.nbatoday.repository.game.GameRepository
 import com.jiachian.nbatoday.repository.team.TeamRepository
 import com.jiachian.nbatoday.utils.ComposeViewModelProvider
 import com.jiachian.nbatoday.utils.DateUtils
-import com.jiachian.nbatoday.utils.decimalFormat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,7 +26,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class TeamViewModel(
     teamId: Int,
@@ -41,15 +40,24 @@ class TeamViewModel(
     navigationController = navigationController,
     route = Route.TEAM
 ) {
+    init {
+        coroutineScope.launch(dispatcherProvider.io) {
+            val deferred1 = async { teamRepository.updateTeamStats() }
+            val deferred2 = async { teamRepository.updateTeamPlayers(team.teamId) }
+            deferred1.await()
+            deferred2.await()
+        }
+    }
+
     private val team = NBATeam.getTeamById(teamId)
     val colors = team.colors
 
     val labels = LabelHelper.createTeamPlayerLabel()
 
     val gamesBefore = gameRepository.getGamesAndBetsBeforeByTeam(team.teamId, DateUtils.getCalendar().timeInMillis)
-        .stateIn(coroutineScope, SharingStarted.Lazily, emptyList())
+        .stateIn(coroutineScope, SharingStarted.Eagerly, emptyList())
     val gamesAfter = gameRepository.getGamesAndBetsAfterByTeam(team.teamId, DateUtils.getCalendar().timeInMillis)
-        .stateIn(coroutineScope, SharingStarted.Lazily, emptyList())
+        .stateIn(coroutineScope, SharingStarted.Eagerly, emptyList())
     private val teamAndPlayersStats = teamRepository.getTeamAndPlayers(team.teamId)
 
     val teamStats = teamAndPlayersStats.map {
@@ -74,262 +82,40 @@ class TeamViewModel(
         it.plusMinusRank
     }.stateIn(coroutineScope, SharingStarted.Eagerly, 0)
 
-    val isProgressing = teamRepository.isLoading
-    private val isTeamRefreshingImp = MutableStateFlow(false)
-    val isTeamRefreshing = isTeamRefreshingImp.asStateFlow()
-    private val selectPageImp = MutableStateFlow(TeamPageTab.PLAYERS)
-    val selectPage = selectPageImp.asStateFlow()
+    private val playerSortingImp = MutableStateFlow(TeamPlayerSorting.PTS)
+    val playerSorting = playerSortingImp.asStateFlow()
 
-    private val playerSortImp = MutableStateFlow(PlayerSort.PTS)
-    val playerSort = playerSortImp.asStateFlow()
-
-    val playersStats = combine(
-        teamAndPlayersStats,
-        playerSort
-    ) { stats, sort ->
-        val playerStats = stats?.teamPlayers ?: emptyList()
-        when (sort) {
-            PlayerSort.GP -> playerStats.sortedWith(
-                compareByDescending<TeamPlayer> {
-                    it.gamePlayed
-                }.thenByDescending {
-                    it.winPercentage
+    private val playerRowData = teamAndPlayersStats.map { teamAndPlayers ->
+        teamAndPlayers?.teamPlayers?.map { player ->
+            TeamPlayerRowData(
+                player = player,
+                data = labels.map { label ->
+                    TeamPlayerRowData.Data(
+                        value = LabelHelper.getValueByLabel(label, player),
+                        width = label.width,
+                        sorting = label.sorting,
+                    )
                 }
             )
+        } ?: emptyList()
+    }
 
-            PlayerSort.W -> playerStats.sortedWith(
-                compareByDescending<TeamPlayer> {
-                    it.win
-                }.thenByDescending {
-                    it.winPercentage
-                }
-            )
+    val sortedPlayerRowData = combine(
+        playerRowData,
+        playerSorting
+    ) { rowData, sorting ->
+        rowData.sortedWith(sorting)
+    }.stateIn(coroutineScope, SharingStarted.Eagerly, emptyList())
 
-            PlayerSort.L -> playerStats.sortedWith(
-                compareBy<TeamPlayer> {
-                    it.lose
-                }.thenByDescending {
-                    it.winPercentage
-                }
-            )
-
-            PlayerSort.WINP -> playerStats.sortedWith(
-                compareByDescending<TeamPlayer> {
-                    it.winPercentage
-                }.thenByDescending {
-                    it.winPercentage
-                }
-            )
-
-            PlayerSort.PTS -> playerStats.sortedWith(
-                compareByDescending<TeamPlayer> {
-                    it.points.toDouble() / it.gamePlayed
-                }.thenByDescending {
-                    it.winPercentage
-                }
-            )
-
-            PlayerSort.FGM -> playerStats.sortedWith(
-                compareByDescending<TeamPlayer> {
-                    it.fieldGoalsMade.toDouble() / it.gamePlayed
-                }.thenByDescending {
-                    it.winPercentage
-                }
-            )
-
-            PlayerSort.FGA -> playerStats.sortedWith(
-                compareByDescending<TeamPlayer> {
-                    it.fieldGoalsAttempted.toDouble() / it.gamePlayed
-                }.thenByDescending {
-                    it.winPercentage
-                }
-            )
-
-            PlayerSort.FGP -> playerStats.sortedWith(
-                compareByDescending<TeamPlayer> {
-                    it.fieldGoalsPercentage
-                }.thenByDescending {
-                    it.winPercentage
-                }
-            )
-
-            PlayerSort.PM3 -> playerStats.sortedWith(
-                compareByDescending<TeamPlayer> {
-                    it.threePointersMade.toDouble() / it.gamePlayed
-                }.thenByDescending {
-                    it.winPercentage
-                }
-            )
-
-            PlayerSort.PA3 -> playerStats.sortedWith(
-                compareByDescending<TeamPlayer> {
-                    it.threePointersAttempted.toDouble() / it.gamePlayed
-                }.thenByDescending {
-                    it.winPercentage
-                }
-            )
-
-            PlayerSort.PP3 -> playerStats.sortedWith(
-                compareByDescending<TeamPlayer> {
-                    it.threePointersPercentage
-                }.thenByDescending {
-                    it.winPercentage
-                }
-            )
-
-            PlayerSort.FTM -> playerStats.sortedWith(
-                compareByDescending<TeamPlayer> {
-                    it.freeThrowsMade.toDouble() / it.gamePlayed
-                }.thenByDescending {
-                    it.winPercentage
-                }
-            )
-
-            PlayerSort.FTA -> playerStats.sortedWith(
-                compareByDescending<TeamPlayer> {
-                    it.freeThrowsAttempted.toDouble() / it.gamePlayed
-                }.thenByDescending {
-                    it.winPercentage
-                }
-            )
-
-            PlayerSort.FTP -> playerStats.sortedWith(
-                compareByDescending<TeamPlayer> {
-                    it.freeThrowsPercentage
-                }.thenByDescending {
-                    it.winPercentage
-                }
-            )
-
-            PlayerSort.OREB -> playerStats.sortedWith(
-                compareByDescending<TeamPlayer> {
-                    it.reboundsOffensive.toDouble() / it.gamePlayed
-                }.thenByDescending {
-                    it.winPercentage
-                }
-            )
-
-            PlayerSort.DREB -> playerStats.sortedWith(
-                compareByDescending<TeamPlayer> {
-                    it.reboundsDefensive.toDouble() / it.gamePlayed
-                }.thenByDescending {
-                    it.winPercentage
-                }
-            )
-
-            PlayerSort.REB -> playerStats.sortedWith(
-                compareByDescending<TeamPlayer> {
-                    it.reboundsTotal.toDouble() / it.gamePlayed
-                }.thenByDescending {
-                    it.winPercentage
-                }
-            )
-
-            PlayerSort.AST -> playerStats.sortedWith(
-                compareByDescending<TeamPlayer> {
-                    it.assists.toDouble() / it.gamePlayed
-                }.thenByDescending {
-                    it.winPercentage
-                }
-            )
-
-            PlayerSort.TOV -> playerStats.sortedWith(
-                compareBy<TeamPlayer> {
-                    it.turnovers.toDouble() / it.gamePlayed
-                }.thenByDescending {
-                    it.winPercentage
-                }
-            )
-
-            PlayerSort.STL -> playerStats.sortedWith(
-                compareByDescending<TeamPlayer> {
-                    it.steals.toDouble() / it.gamePlayed
-                }.thenByDescending {
-                    it.winPercentage
-                }
-            )
-
-            PlayerSort.BLK -> playerStats.sortedWith(
-                compareByDescending<TeamPlayer> {
-                    it.blocks.toDouble() / it.gamePlayed
-                }.thenByDescending {
-                    it.winPercentage
-                }
-            )
-
-            PlayerSort.PF -> playerStats.sortedWith(
-                compareBy<TeamPlayer> {
-                    it.foulsPersonal.toDouble() / it.gamePlayed
-                }.thenByDescending {
-                    it.winPercentage
-                }
-            )
-
-            PlayerSort.PLUSMINUS -> playerStats.sortedWith(
-                compareByDescending<TeamPlayer> {
-                    it.plusMinus
-                }.thenByDescending {
-                    it.winPercentage
-                }
-            )
-        }
-    }.stateIn(coroutineScope, SharingStarted.Lazily, emptyList())
-
-    val isDataLoaded = teamStats.combine(playersStats) { a, b ->
-        a != null && b.isNotEmpty()
+    val isLoading = combine(
+        teamRepository.isLoading,
+        teamStats,
+    ) { loading, team ->
+        loading || team == null
     }.stateIn(coroutineScope, SharingStarted.Lazily, false)
 
-    val getStatsTextByLabel = { label: TeamPlayerLabel, stats: TeamPlayer ->
-        when (label) {
-            TeamPlayerLabel.GP -> stats.gamePlayed
-            TeamPlayerLabel.WIN -> stats.win
-            TeamPlayerLabel.LOSE -> stats.lose
-            TeamPlayerLabel.WINP -> stats.winPercentage.decimalFormat()
-            TeamPlayerLabel.PTS -> stats.pointsAverage.decimalFormat()
-            TeamPlayerLabel.FGM -> stats.fieldGoalsMadeAverage.decimalFormat()
-            TeamPlayerLabel.FGA -> stats.fieldGoalsAttemptedAverage.decimalFormat()
-            TeamPlayerLabel.FGP -> stats.fieldGoalsPercentage.decimalFormat()
-            TeamPlayerLabel.PM3 -> stats.threePointersMadeAverage.decimalFormat()
-            TeamPlayerLabel.PA3 -> stats.threePointersAttemptedAverage.decimalFormat()
-            TeamPlayerLabel.PP3 -> stats.threePointersPercentage.decimalFormat()
-            TeamPlayerLabel.FTM -> stats.freeThrowsMadeAverage.decimalFormat()
-            TeamPlayerLabel.FTA -> stats.freeThrowsAttemptedAverage.decimalFormat()
-            TeamPlayerLabel.FTP -> stats.freeThrowsPercentage.decimalFormat()
-            TeamPlayerLabel.OREB -> stats.reboundsOffensiveAverage.decimalFormat()
-            TeamPlayerLabel.DREB -> stats.reboundsDefensiveAverage.decimalFormat()
-            TeamPlayerLabel.REB -> stats.reboundsTotalAverage.decimalFormat()
-            TeamPlayerLabel.AST -> stats.assistsAverage.decimalFormat()
-            TeamPlayerLabel.TOV -> stats.turnoversAverage.decimalFormat()
-            TeamPlayerLabel.STL -> stats.stealsAverage.decimalFormat()
-            TeamPlayerLabel.BLK -> stats.blocksAverage.decimalFormat()
-            TeamPlayerLabel.PF -> stats.foulsPersonalAverage.decimalFormat()
-            TeamPlayerLabel.PLUSMINUS -> stats.plusMinus
-        }.toString()
-    }
-
-    init {
-        updateStats()
-    }
-
-    fun updateStats() {
-        coroutineScope.launch {
-            isTeamRefreshingImp.value = true
-            withContext(dispatcherProvider.io) {
-                val deferred1 = async { teamRepository.updateTeamStats() }
-                val deferred2 = async { teamRepository.updateTeamPlayers(team.teamId) }
-                deferred1.await()
-                deferred2.await()
-            }
-            isTeamRefreshingImp.value = false
-        }
-    }
-
-    fun updateSelectPage(page: TeamPageTab) {
-        selectPageImp.value = page
-    }
-
-    fun updatePlayerSort(sort: PlayerSort) {
-        playerSortImp.value = sort
+    fun updatePlayerSorting(sorting: TeamPlayerSorting) {
+        playerSortingImp.value = sorting
     }
 
     fun openGameBoxScore(game: Game) {
@@ -346,5 +132,34 @@ class TeamViewModel(
             dispatcherProvider = dispatcherProvider,
             coroutineScope = coroutineScope
         )
+    }
+
+    private fun List<TeamPlayerRowData>.sortedWith(sorting: TeamPlayerSorting): List<TeamPlayerRowData> {
+        val comparator = when (sorting) {
+            TeamPlayerSorting.GP -> compareByDescending { it.player.gamePlayed }
+            TeamPlayerSorting.W -> compareByDescending { it.player.win }
+            TeamPlayerSorting.L -> compareBy { it.player.lose }
+            TeamPlayerSorting.WINP -> compareByDescending { it.player.winPercentage }
+            TeamPlayerSorting.PTS -> compareByDescending { it.player.pointsAverage }
+            TeamPlayerSorting.FGM -> compareByDescending { it.player.fieldGoalsMadeAverage }
+            TeamPlayerSorting.FGA -> compareByDescending { it.player.fieldGoalsAttemptedAverage }
+            TeamPlayerSorting.FGP -> compareByDescending { it.player.fieldGoalsPercentage }
+            TeamPlayerSorting.PM3 -> compareByDescending { it.player.threePointersMadeAverage }
+            TeamPlayerSorting.PA3 -> compareByDescending { it.player.threePointersAttemptedAverage }
+            TeamPlayerSorting.PP3 -> compareByDescending { it.player.threePointersPercentage }
+            TeamPlayerSorting.FTM -> compareByDescending { it.player.freeThrowsMadeAverage }
+            TeamPlayerSorting.FTA -> compareByDescending { it.player.freeThrowsAttemptedAverage }
+            TeamPlayerSorting.FTP -> compareByDescending { it.player.freeThrowsPercentage }
+            TeamPlayerSorting.OREB -> compareByDescending { it.player.reboundsOffensiveAverage }
+            TeamPlayerSorting.DREB -> compareByDescending { it.player.reboundsDefensiveAverage }
+            TeamPlayerSorting.REB -> compareByDescending { it.player.reboundsTotalAverage }
+            TeamPlayerSorting.AST -> compareByDescending { it.player.assistsAverage }
+            TeamPlayerSorting.TOV -> compareBy { it.player.turnoversAverage }
+            TeamPlayerSorting.STL -> compareByDescending { it.player.stealsAverage }
+            TeamPlayerSorting.BLK -> compareByDescending { it.player.blocksAverage }
+            TeamPlayerSorting.PF -> compareBy { it.player.foulsPersonalAverage }
+            TeamPlayerSorting.PLUSMINUS -> compareByDescending<TeamPlayerRowData> { it.player.plusMinus }
+        }.thenByDescending { it.player.winPercentage }
+        return sortedWith(comparator)
     }
 }

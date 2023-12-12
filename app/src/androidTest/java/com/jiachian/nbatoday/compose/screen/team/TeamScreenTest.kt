@@ -10,6 +10,7 @@ import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.UserAccount
 import com.jiachian.nbatoday.UserPassword
 import com.jiachian.nbatoday.UserPoints
+import com.jiachian.nbatoday.compose.screen.team.models.TeamPlayerSorting
 import com.jiachian.nbatoday.models.TeamStatsFactory
 import com.jiachian.nbatoday.models.TestRepository
 import com.jiachian.nbatoday.utils.assertDialogExist
@@ -39,29 +40,29 @@ class TeamScreenTest : BaseAndroidTest() {
     private val team = TeamStatsFactory.getHomeTeamStats()
 
     private val labels = listOf(
-        PlayerLabel(40.dp, "GP", PlayerSort.GP),
-        PlayerLabel(40.dp, "W", PlayerSort.W),
-        PlayerLabel(40.dp, "L", PlayerSort.L),
-        PlayerLabel(64.dp, "WIN%", PlayerSort.WINP),
-        PlayerLabel(64.dp, "PTS", PlayerSort.PTS),
-        PlayerLabel(64.dp, "FGM", PlayerSort.FGM),
-        PlayerLabel(64.dp, "FGA", PlayerSort.FGA),
-        PlayerLabel(64.dp, "FG%", PlayerSort.FGP),
-        PlayerLabel(64.dp, "3PM", PlayerSort.PM3),
-        PlayerLabel(64.dp, "3PA", PlayerSort.PA3),
-        PlayerLabel(64.dp, "3P%", PlayerSort.PP3),
-        PlayerLabel(64.dp, "FTM", PlayerSort.FTM),
-        PlayerLabel(64.dp, "FTA", PlayerSort.FTA),
-        PlayerLabel(64.dp, "FT%", PlayerSort.FTP),
-        PlayerLabel(48.dp, "OREB", PlayerSort.OREB),
-        PlayerLabel(48.dp, "DREB", PlayerSort.DREB),
-        PlayerLabel(48.dp, "REB", PlayerSort.REB),
-        PlayerLabel(48.dp, "AST", PlayerSort.AST),
-        PlayerLabel(48.dp, "TOV", PlayerSort.TOV),
-        PlayerLabel(48.dp, "STL", PlayerSort.STL),
-        PlayerLabel(48.dp, "BLK", PlayerSort.BLK),
-        PlayerLabel(48.dp, "PF", PlayerSort.PF),
-        PlayerLabel(48.dp, "+/-", PlayerSort.PLUSMINUS)
+        PlayerLabel(40.dp, "GP", TeamPlayerSorting.GP),
+        PlayerLabel(40.dp, "W", TeamPlayerSorting.W),
+        PlayerLabel(40.dp, "L", TeamPlayerSorting.L),
+        PlayerLabel(64.dp, "WIN%", TeamPlayerSorting.WINP),
+        PlayerLabel(64.dp, "PTS", TeamPlayerSorting.PTS),
+        PlayerLabel(64.dp, "FGM", TeamPlayerSorting.FGM),
+        PlayerLabel(64.dp, "FGA", TeamPlayerSorting.FGA),
+        PlayerLabel(64.dp, "FG%", TeamPlayerSorting.FGP),
+        PlayerLabel(64.dp, "3PM", TeamPlayerSorting.PM3),
+        PlayerLabel(64.dp, "3PA", TeamPlayerSorting.PA3),
+        PlayerLabel(64.dp, "3P%", TeamPlayerSorting.PP3),
+        PlayerLabel(64.dp, "FTM", TeamPlayerSorting.FTM),
+        PlayerLabel(64.dp, "FTA", TeamPlayerSorting.FTA),
+        PlayerLabel(64.dp, "FT%", TeamPlayerSorting.FTP),
+        PlayerLabel(48.dp, "OREB", TeamPlayerSorting.OREB),
+        PlayerLabel(48.dp, "DREB", TeamPlayerSorting.DREB),
+        PlayerLabel(48.dp, "REB", TeamPlayerSorting.REB),
+        PlayerLabel(48.dp, "AST", TeamPlayerSorting.AST),
+        PlayerLabel(48.dp, "TOV", TeamPlayerSorting.TOV),
+        PlayerLabel(48.dp, "STL", TeamPlayerSorting.STL),
+        PlayerLabel(48.dp, "BLK", TeamPlayerSorting.BLK),
+        PlayerLabel(48.dp, "PF", TeamPlayerSorting.PF),
+        PlayerLabel(48.dp, "+/-", TeamPlayerSorting.PLUSMINUS)
     )
 
     @Before

@@ -100,7 +100,6 @@
     <string name="game_is_coming_soon">Game starts soon</string>
     <string name="standing_conference_east">East</string>
     <string name="standing_conference_west">West</string>
-    <string name="team_rank_record" translatable="false">%1$d - %2$d | %3$s in %4$s</string>
     <string name="team_rank_points_abbr">PPG</string>
     <string name="team_rank_rebounds_abbr">RPG</string>
     <string name="team_rank_assists_abbr">APG</string>

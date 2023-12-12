@@ -8,15 +8,19 @@ abstract class BaseRepository {
     private val isLoadingImp = MutableStateFlow(false)
     val isLoading = isLoadingImp.asStateFlow()
 
+    @Volatile
+    private var enqueueJobAmount = 0
+
     protected fun Response<*>.isError() = !isSuccessful || body() == null
 
     protected suspend fun <T> loading(runnable: suspend () -> T): T {
-        val isLoadingEarly = isLoading.value
         return try {
             isLoadingImp.value = true
+            enqueueJobAmount++
             runnable()
         } finally {
-            if (!isLoadingEarly) {
+            enqueueJobAmount--
+            if (enqueueJobAmount == 0) {
                 isLoadingImp.value = false
             }
         }
