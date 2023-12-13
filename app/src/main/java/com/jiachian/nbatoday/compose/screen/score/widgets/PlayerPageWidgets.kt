@@ -1,13 +1,12 @@
 package com.jiachian.nbatoday.compose.screen.score.widgets
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.rememberScrollableState
-import androidx.compose.foundation.gestures.scrollBy
-import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,24 +15,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -52,7 +42,6 @@ import com.jiachian.nbatoday.compose.screen.score.models.BoxScorePlayerLabel
 import com.jiachian.nbatoday.compose.screen.score.models.BoxScorePlayerRowData
 import com.jiachian.nbatoday.utils.dividerSecondaryColor
 import com.jiachian.nbatoday.utils.rippleClickable
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -61,27 +50,19 @@ fun ScorePlayerPage(
     viewModel: BoxScoreViewModel,
     players: List<BoxScorePlayerRowData>,
 ) {
-    var scrollDelta by remember { mutableStateOf(0f) }
-    val scrollableState = rememberScrollableState {
-        scrollDelta = it
-        scrollDelta
-    }
-    val labelState = rememberLazyListState()
+    val scrollState = rememberScrollState()
     LazyColumn(modifier = modifier) {
         stickyHeader {
             ScorePlayerLabelScrollableRow(
-                modifier = Modifier.scrollable(scrollableState, Orientation.Horizontal),
                 viewModel = viewModel,
-                labelState = labelState,
-                scrollDelta = scrollDelta,
+                scrollState = scrollState
             )
         }
         items(players) { rowData ->
             ScorePlayerScrollableRow(
-                modifier = Modifier.scrollable(scrollableState, Orientation.Horizontal),
                 viewModel = viewModel,
-                labelState = labelState,
                 rowData = rowData,
+                scrollState = scrollState,
             )
         }
     }
@@ -91,14 +72,13 @@ fun ScorePlayerPage(
 private fun ScorePlayerLabelScrollableRow(
     modifier: Modifier = Modifier,
     viewModel: BoxScoreViewModel,
-    labelState: LazyListState,
-    scrollDelta: Float,
+    scrollState: ScrollState,
 ) {
     Column(modifier = Modifier.background(MaterialTheme.colors.primary)) {
         ScorePlayerLabelRow(
             modifier = modifier,
             viewModel = viewModel,
-            state = labelState,
+            scrollState = scrollState,
         )
         Divider(
             modifier = Modifier.fillMaxWidth(),
@@ -106,47 +86,41 @@ private fun ScorePlayerLabelScrollableRow(
             thickness = 3.dp,
         )
     }
-    LaunchedEffect(scrollDelta) {
-        labelState.scrollBy(-scrollDelta)
-    }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ScorePlayerLabelRow(
     modifier: Modifier = Modifier,
     viewModel: BoxScoreViewModel,
-    state: LazyListState,
+    scrollState: ScrollState,
 ) {
     val selectedLabel by viewModel.selectedPlayerLabel.collectAsState()
-    LazyRow(
-        modifier = modifier,
-        state = state,
-        userScrollEnabled = false,
-    ) {
-        stickyHeader {
-            Text(
-                modifier = Modifier
-                    .size(120.dp, 40.dp)
-                    .background(MaterialTheme.colors.primary)
-                    .padding(top = 8.dp, bottom = 8.dp, start = 4.dp),
-                text = stringResource(R.string.box_score_label_player),
-                textAlign = TextAlign.Start,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colors.secondary
-            )
-        }
-        item {
+    Row(modifier = modifier) {
+        Text(
+            modifier = Modifier
+                .size(120.dp, 40.dp)
+                .background(MaterialTheme.colors.primary)
+                .padding(top = 8.dp, bottom = 8.dp, start = 4.dp),
+            text = stringResource(R.string.box_score_label_player),
+            textAlign = TextAlign.Start,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Medium,
+            color = MaterialTheme.colors.secondary
+        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .horizontalScroll(scrollState)
+        ) {
             Spacer(modifier = Modifier.width(40.dp))
-        }
-        items(viewModel.playerLabels) { label ->
-            ScorePlayerLabel(
-                label = label,
-                isPopupVisible = label == selectedLabel,
-                onClick = { viewModel.selectPlayerLabel(label) },
-                onDismiss = { viewModel.selectPlayerLabel(null) }
-            )
+            viewModel.playerLabels.forEach { label ->
+                ScorePlayerLabel(
+                    label = label,
+                    isPopupVisible = label == selectedLabel,
+                    onClick = { viewModel.selectPlayerLabel(label) },
+                    onDismiss = { viewModel.selectPlayerLabel(null) }
+                )
+            }
         }
     }
 }
@@ -211,17 +185,13 @@ private fun ScorePlayerLabelPopup(
 private fun ScorePlayerScrollableRow(
     modifier: Modifier = Modifier,
     viewModel: BoxScoreViewModel,
-    labelState: LazyListState,
     rowData: BoxScorePlayerRowData,
+    scrollState: ScrollState,
 ) {
-    val statsState = rememberLazyListState()
-    val coroutineScope = rememberCoroutineScope()
-    val visibleIndex by remember(labelState) { derivedStateOf { labelState.firstVisibleItemIndex } }
-    val visibleOffset by remember(labelState) { derivedStateOf { labelState.firstVisibleItemScrollOffset } }
     ScorePlayerRow(
         modifier = modifier,
         viewModel = viewModel,
-        state = statsState,
+        scrollState = scrollState,
         rowData = rowData,
     )
     Divider(
@@ -229,46 +199,30 @@ private fun ScorePlayerScrollableRow(
         color = dividerSecondaryColor(),
         thickness = 1.dp
     )
-    LaunchedEffect(visibleIndex, visibleOffset) {
-        // WORKAROUND
-        // LazyListState#scrollToItem is suspended if PlayerStatsDraggableRow is not visible on the screen.
-        // Once it becomes visible, it may scroll to the wrong position.
-        // To address this issue,
-        // scrolling twice ensures that PlayerStatsDraggableRows scroll to correct position.
-        coroutineScope.launch {
-            statsState.scrollToItem(visibleIndex, visibleOffset)
-            //statsState.scrollToItem(visibleIndex, visibleOffset)
-        }
-    }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ScorePlayerRow(
     modifier: Modifier = Modifier,
     viewModel: BoxScoreViewModel,
-    state: LazyListState,
+    scrollState: ScrollState,
     rowData: BoxScorePlayerRowData,
 ) {
-    LazyRow(
-        modifier = modifier,
-        state = state,
-        userScrollEnabled = false,
-    ) {
-        stickyHeader {
-            Surface(color = MaterialTheme.colors.primary) {
-                ScorePlayerNameText(
-                    modifier = Modifier
-                        .testTag("PlayerStatistics_Text_PlayerName")
-                        .size(120.dp, 40.dp)
-                        .rippleClickable { viewModel.openPlayerInfo(rowData.player.playerId) }
-                        .padding(top = 8.dp, bottom = 8.dp, start = 4.dp),
-                    playerName = rowData.player.nameAbbr,
-                    color = MaterialTheme.colors.secondary,
-                )
-            }
-        }
-        item {
+    Row(modifier = modifier) {
+        ScorePlayerNameText(
+            modifier = Modifier
+                .testTag("PlayerStatistics_Text_PlayerName")
+                .size(120.dp, 40.dp)
+                .rippleClickable { viewModel.openPlayerInfo(rowData.player.playerId) }
+                .padding(top = 8.dp, bottom = 8.dp, start = 4.dp),
+            playerName = rowData.player.nameAbbr,
+            color = MaterialTheme.colors.secondary,
+        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .horizontalScroll(scrollState)
+        ) {
             Text(
                 modifier = Modifier
                     .size(40.dp)
@@ -278,12 +232,12 @@ private fun ScorePlayerRow(
                 fontSize = 16.sp,
                 color = MaterialTheme.colors.secondary,
             )
-        }
-        items(rowData.data) { data ->
-            ScorePlayerStatsText(
-                data = data,
-                color = MaterialTheme.colors.secondary,
-            )
+            rowData.data.forEach { data ->
+                ScorePlayerStatsText(
+                    data = data,
+                    color = MaterialTheme.colors.secondary,
+                )
+            }
         }
     }
 }

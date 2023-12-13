@@ -28,7 +28,7 @@ import kotlinx.coroutines.launch
 
 private const val HomePageIndex = 0
 private const val AwayPageIndex = 1
-private const val TeamPageIndex = 1
+private const val TeamPageIndex = 2
 private const val LeaderPageIndex = 3
 
 @OptIn(ExperimentalPagerApi::class)
