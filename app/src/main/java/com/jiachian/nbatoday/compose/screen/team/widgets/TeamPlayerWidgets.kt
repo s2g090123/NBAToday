@@ -35,6 +35,7 @@ import com.jiachian.nbatoday.compose.screen.team.TeamViewModel
 import com.jiachian.nbatoday.compose.screen.team.models.TeamPlayerLabel
 import com.jiachian.nbatoday.compose.screen.team.models.TeamPlayerRowData
 import com.jiachian.nbatoday.compose.screen.team.models.TeamPlayerSorting
+import com.jiachian.nbatoday.testing.testtag.TeamTestTag
 import com.jiachian.nbatoday.utils.rippleClickable
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -173,7 +174,7 @@ private fun TeamPlayerRow(
     Row(modifier = modifier) {
         TeamPlayerNameText(
             modifier = Modifier
-                .testTag("PlayerStatistics_Text_PlayerName")
+                .testTag(TeamTestTag.TeamPlayerRow_Text_PlayerName)
                 .size(120.dp, 40.dp)
                 .rippleClickable { viewModel.openPlayerInfo(rowData.player.playerId) }
                 .padding(top = 8.dp, bottom = 8.dp, start = 4.dp),

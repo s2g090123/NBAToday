@@ -36,13 +36,14 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
 import com.jiachian.nbatoday.R
-import com.jiachian.nbatoday.compose.screen.team.widgets.GamePage
+import com.jiachian.nbatoday.compose.screen.team.widgets.TeamGamePage
 import com.jiachian.nbatoday.compose.screen.team.widgets.TeamInformation
 import com.jiachian.nbatoday.compose.screen.team.widgets.TeamPlayerPage
 import com.jiachian.nbatoday.compose.widget.FocusableColumn
 import com.jiachian.nbatoday.compose.widget.IconButton
 import com.jiachian.nbatoday.compose.widget.LoadingScreen
 import com.jiachian.nbatoday.compose.widget.NullCheckScreen
+import com.jiachian.nbatoday.testing.testtag.TeamTestTag
 import kotlinx.coroutines.launch
 
 private val TopMargin = 56.dp
@@ -176,7 +177,7 @@ private fun TeamTab(
     Tab(
         text = {
             Text(
-                modifier = Modifier.testTag("TeamStatsScreen_Tab"),
+                modifier = Modifier.testTag(TeamTestTag.TeamTab_Text),
                 text = text,
                 color = textColor,
                 fontSize = 14.sp
@@ -224,14 +225,14 @@ private fun TeamPager(
             }
             1 -> {
                 val gamesBefore by viewModel.gamesBefore.collectAsState()
-                GamePage(
+                TeamGamePage(
                     viewModel = viewModel,
                     games = gamesBefore
                 )
             }
             2 -> {
                 val gamesAfter by viewModel.gamesAfter.collectAsState()
-                GamePage(
+                TeamGamePage(
                     viewModel = viewModel,
                     games = gamesAfter
                 )

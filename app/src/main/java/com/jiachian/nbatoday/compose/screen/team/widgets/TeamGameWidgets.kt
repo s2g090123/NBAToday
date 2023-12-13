@@ -19,11 +19,12 @@ import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.screen.card.GameCard
 import com.jiachian.nbatoday.compose.screen.team.TeamViewModel
 import com.jiachian.nbatoday.models.local.game.GameAndBets
+import com.jiachian.nbatoday.testing.testtag.TeamTestTag
 import com.jiachian.nbatoday.utils.rippleClickable
 import com.jiachian.nbatoday.utils.showToast
 
 @Composable
-fun GamePage(
+fun TeamGamePage(
     modifier: Modifier = Modifier,
     viewModel: TeamViewModel,
     games: List<GameAndBets>
@@ -38,7 +39,7 @@ fun GamePage(
             }
             GameCard(
                 modifier = Modifier
-                    .testTag("GamesPage_GameStatusCard2")
+                    .testTag(TeamTestTag.TeamGamePage_GameCard)
                     .padding(
                         top = 16.dp,
                         bottom = if (index == games.size - 1) 16.dp else 0.dp,

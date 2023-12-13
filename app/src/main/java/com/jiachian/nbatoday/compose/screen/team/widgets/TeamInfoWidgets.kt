@@ -27,6 +27,7 @@ import com.jiachian.nbatoday.Transparency25
 import com.jiachian.nbatoday.compose.screen.team.TeamViewModel
 import com.jiachian.nbatoday.compose.widget.TeamLogoImage
 import com.jiachian.nbatoday.models.local.team.Team
+import com.jiachian.nbatoday.testing.testtag.TeamTestTag
 import com.jiachian.nbatoday.utils.decimalFormat
 import com.jiachian.nbatoday.utils.toRank
 
@@ -76,14 +77,14 @@ private fun TeamNameAndStanding(
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                modifier = Modifier.testTag("TeamInformation_Text_TeamName"),
+                modifier = Modifier.testTag(TeamTestTag.TeamNameAndStanding_Text_TeamName),
                 text = stats.team.teamFullName,
                 fontWeight = FontWeight.Bold,
                 fontSize = 24.sp,
                 color = textColor
             )
             Text(
-                modifier = Modifier.testTag("TeamInformation_Text_TeamRecord"),
+                modifier = Modifier.testTag(TeamTestTag.TeamNameAndStanding_Text_StandingDetail),
                 text = stats.getStandingDetail(standing),
                 fontWeight = FontWeight.Medium,
                 fontSize = 20.sp,
@@ -105,7 +106,7 @@ private fun TeamStatsDetail(
     val plusMinusRank by viewModel.teamPlusMinusRank.collectAsState()
     Row(modifier = modifier) {
         TeamRankBox(
-            modifier = Modifier.testTag("TeamInformation_Column_PointsRank"),
+            modifier = Modifier.testTag(TeamTestTag.TeamStatsDetail_TeamRankBox_Points),
             label = stringResource(R.string.team_rank_points_abbr),
             rank = pointsRank,
             average = stats.pointsAverage,
@@ -113,7 +114,7 @@ private fun TeamStatsDetail(
             divider = true,
         )
         TeamRankBox(
-            modifier = Modifier.testTag("TeamInformation_Column_ReboundsRank"),
+            modifier = Modifier.testTag(TeamTestTag.TeamStatsDetail_TeamRankBox_Rebounds),
             label = stringResource(R.string.team_rank_rebounds_abbr),
             rank = reboundsRank,
             average = stats.reboundsAverage,
@@ -121,7 +122,7 @@ private fun TeamStatsDetail(
             divider = true,
         )
         TeamRankBox(
-            modifier = Modifier.testTag("TeamInformation_Column_AssistsRank"),
+            modifier = Modifier.testTag(TeamTestTag.TeamStatsDetail_TeamRankBox_Assists),
             label = stringResource(R.string.team_rank_assists_abbr),
             rank = assistsRank,
             average = stats.assistsAverage,
@@ -129,7 +130,7 @@ private fun TeamStatsDetail(
             divider = true
         )
         TeamRankBox(
-            modifier = Modifier.testTag("TeamInformation_Column_PlusMinusRank"),
+            modifier = Modifier.testTag(TeamTestTag.TeamStatsDetail_TeamRankBox_PlusMinus),
             label = stringResource(R.string.team_rank_plusMinus_abbr),
             rank = plusMinusRank,
             average = stats.plusMinus,
@@ -163,14 +164,14 @@ private fun TeamRankBox(
                 color = textColor
             )
             Text(
-                modifier = Modifier.testTag("TeamInformation_Text_Rank"),
+                modifier = Modifier.testTag(TeamTestTag.TeamRankBox_Text_Rank),
                 text = rank.toRank(),
                 fontWeight = FontWeight.Medium,
                 fontSize = 18.sp,
                 color = textColor
             )
             Text(
-                modifier = Modifier.testTag("TeamInformation_Text_Average"),
+                modifier = Modifier.testTag(TeamTestTag.TeamRankBox_Text_Average),
                 text = average.decimalFormat().toString(),
                 fontWeight = FontWeight.Medium,
                 fontSize = 18.sp,
