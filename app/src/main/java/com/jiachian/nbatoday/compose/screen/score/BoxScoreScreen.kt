@@ -1,87 +1,83 @@
 package com.jiachian.nbatoday.compose.screen.score
 
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Tab
-import androidx.compose.material.TabRow
-import androidx.compose.material.TabRowDefaults
-import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
 import com.jiachian.nbatoday.R
-import com.jiachian.nbatoday.compose.screen.score.tab.BoxScoreTab
 import com.jiachian.nbatoday.compose.screen.score.widgets.ScoreDetailPager
 import com.jiachian.nbatoday.compose.screen.score.widgets.ScorePeriod
+import com.jiachian.nbatoday.compose.screen.score.widgets.ScoreTabRow
 import com.jiachian.nbatoday.compose.screen.score.widgets.ScoreTotal
-import com.jiachian.nbatoday.compose.widget.BackHandle
 import com.jiachian.nbatoday.compose.widget.IconButton
 import com.jiachian.nbatoday.compose.widget.LoadingScreen
 import com.jiachian.nbatoday.compose.widget.NullCheckScreen
 import com.jiachian.nbatoday.models.local.score.BoxScore
-import com.jiachian.nbatoday.utils.noRippleClickable
+
+private val TopMargin = 56.dp
 
 @Composable
 fun BoxScoreScreen(viewModel: BoxScoreViewModel) {
-    val isRefreshing by viewModel.isRefreshing.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
     val date by viewModel.date.collectAsState()
-    val isNotFound by viewModel.isNotFound.collectAsState()
-    BackHandle(onBack = viewModel::close) {
-        Column(
+    val notFound by viewModel.notFound.collectAsState()
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colors.primary)
+    ) {
+        ScoreTopBar(
             modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colors.primary)
-                .noRippleClickable { }
-        ) {
-            ScoreTopBar(
-                modifier = Modifier
-                    .padding(top = 8.dp)
-                    .fillMaxWidth(),
-                date = date,
-                onBack = viewModel::close
-            )
-            when {
-                isRefreshing -> {
-                    LoadingScreen(
-                        modifier = Modifier.fillMaxSize(),
-                        color = MaterialTheme.colors.primary,
-                        interceptBack = false
-                    )
-                }
-
-                isNotFound -> {
-                    EmptyScreen(modifier = Modifier.fillMaxSize())
-                }
-
-                else -> {
-                    ScoreScreen(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .verticalScroll(rememberScrollState()),
-                        viewModel = viewModel
-                    )
-                }
+                .padding(top = 8.dp)
+                .fillMaxWidth(),
+            title = date,
+            onBack = viewModel::close
+        )
+        when {
+            isLoading -> {
+                LoadingScreen(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colors.secondary,
+                )
+            }
+            notFound -> NotFoundScreen(modifier = Modifier.fillMaxSize())
+            else -> {
+                val scrollState = rememberScrollState()
+                ScoreScreen(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(scrollState),
+                    viewModel = viewModel,
+                    scrollState = scrollState,
+                )
             }
         }
     }
@@ -90,15 +86,15 @@ fun BoxScoreScreen(viewModel: BoxScoreViewModel) {
 @Composable
 private fun ScoreScreen(
     modifier: Modifier = Modifier,
-    viewModel: BoxScoreViewModel
+    viewModel: BoxScoreViewModel,
+    scrollState: ScrollState,
 ) {
     val boxScore by viewModel.boxScore.collectAsState()
-    val labels by viewModel.periodLabel.collectAsState()
+    val labels by viewModel.periodLabels.collectAsState()
+    val detailHeight = LocalConfiguration.current.screenHeightDp.dp - TopMargin
     NullCheckScreen(
         data = boxScore,
-        ifNull = {
-            EmptyScreen(modifier = modifier)
-        },
+        ifNull = { NotFoundScreen(modifier = modifier) },
         ifNotNull = { score ->
             Column(modifier = modifier) {
                 ScoreTotal(
@@ -118,9 +114,10 @@ private fun ScoreScreen(
                 ScoreDetail(
                     modifier = Modifier
                         .padding(top = 16.dp)
-                        .fillMaxWidth(),
+                        .height(detailHeight),
                     viewModel = viewModel,
-                    score = score
+                    score = score,
+                    scrollState = scrollState,
                 )
             }
         }
@@ -130,7 +127,7 @@ private fun ScoreScreen(
 @Composable
 private fun ScoreTopBar(
     modifier: Modifier = Modifier,
-    date: String,
+    title: String,
     onBack: () -> Unit
 ) {
     Row(modifier = modifier) {
@@ -147,7 +144,7 @@ private fun ScoreTopBar(
                 .testTag("ScoreScreen_Text_Date")
                 .align(Alignment.CenterVertically)
                 .padding(start = 16.dp),
-            text = date,
+            text = title,
             fontSize = 18.sp,
             fontWeight = FontWeight.Medium,
             color = MaterialTheme.colors.secondary
@@ -160,106 +157,43 @@ private fun ScoreTopBar(
 private fun ScoreDetail(
     modifier: Modifier = Modifier,
     viewModel: BoxScoreViewModel,
-    score: BoxScore
+    score: BoxScore,
+    scrollState: ScrollState,
 ) {
-    val tabs = remember { BoxScoreTab.values() }
-    val selectedTabIndex by viewModel.selectedTabIndex.collectAsState()
-    val pagerState = rememberPagerState(initialPage = selectedTabIndex)
+    val pagerState = rememberPagerState()
+    val nestedScrollConnection = remember {
+        object : NestedScrollConnection {
+            override fun onPreScroll(
+                available: Offset,
+                source: NestedScrollSource
+            ): Offset {
+                return when {
+                    available.y > 0 -> Offset.Zero
+                    else -> Offset(x = 0f, y = -scrollState.dispatchRawDelta(-available.y))
+                }
+            }
+        }
+    }
     Column(modifier = modifier) {
-        StatisticsTabRow(
+        ScoreTabRow(
             modifier = Modifier.fillMaxWidth(),
-            viewModel = viewModel,
             pagerState = pagerState,
             score = score
         )
         ScoreDetailPager(
             modifier = Modifier
                 .testTag("ScoreDetail_Pager")
-                .fillMaxWidth(),
+                .fillMaxHeight()
+                .nestedScroll(nestedScrollConnection),
             viewModel = viewModel,
             pagerState = pagerState,
-            count = tabs.size
-        )
-    }
-    LaunchedEffect(selectedTabIndex) {
-        pagerState.animateScrollToPage(selectedTabIndex)
-    }
-}
-
-@OptIn(ExperimentalPagerApi::class)
-@Composable
-private fun StatisticsTabRow(
-    modifier: Modifier = Modifier,
-    viewModel: BoxScoreViewModel,
-    pagerState: PagerState,
-    score: BoxScore,
-) {
-    val selectedTab by viewModel.selectedTab.collectAsState()
-    val selectedTabIndex by viewModel.selectedTabIndex.collectAsState()
-    TabRow(
-        modifier = modifier,
-        selectedTabIndex = selectedTabIndex,
-        backgroundColor = MaterialTheme.colors.secondary,
-        contentColor = MaterialTheme.colors.primaryVariant,
-        indicator = @Composable { tabPositions ->
-            TabRowDefaults.Indicator(
-                modifier = Modifier.tabIndicatorOffset(tabPositions[pagerState.currentPage]),
-                color = MaterialTheme.colors.primaryVariant
-            )
-        }
-    ) {
-        StatisticsTab(
-            modifier = Modifier.testTag("ScoreDetail_Tab_Home"),
-            text = score.homeTeam.team.teamName,
-            isSelected = selectedTab == BoxScoreTab.HOME,
-            onClick = { viewModel.selectTab(BoxScoreTab.HOME) }
-        )
-        StatisticsTab(
-            modifier = Modifier.testTag("ScoreDetail_Tab_Away"),
-            text = score.awayTeam.team.teamName,
-            isSelected = selectedTab == BoxScoreTab.AWAY,
-            onClick = { viewModel.selectTab(BoxScoreTab.AWAY) }
-        )
-        StatisticsTab(
-            modifier = Modifier.testTag("ScoreDetail_Tab_TeamStats"),
-            text = stringResource(R.string.box_score_tab_statistics),
-            isSelected = selectedTab == BoxScoreTab.STATS,
-            onClick = { viewModel.selectTab(BoxScoreTab.STATS) }
-        )
-        StatisticsTab(
-            modifier = Modifier.testTag("ScoreDetail_Tab_LeaderStats"),
-            text = stringResource(R.string.box_score_tab_leaders),
-            isSelected = selectedTab == BoxScoreTab.LEADER,
-            onClick = { viewModel.selectTab(BoxScoreTab.LEADER) }
+            count = 4,
         )
     }
 }
 
 @Composable
-private fun StatisticsTab(
-    modifier: Modifier = Modifier,
-    text: String,
-    isSelected: Boolean,
-    onClick: () -> Unit
-) {
-    Tab(
-        modifier = modifier,
-        text = {
-            Text(
-                text = text,
-                color = MaterialTheme.colors.primary,
-                fontSize = 14.sp
-            )
-        },
-        selected = isSelected,
-        onClick = onClick
-    )
-}
-
-@Composable
-private fun EmptyScreen(
-    modifier: Modifier = Modifier
-) {
+private fun NotFoundScreen(modifier: Modifier = Modifier) {
     Box(modifier = modifier) {
         Text(
             modifier = Modifier.align(Alignment.Center),

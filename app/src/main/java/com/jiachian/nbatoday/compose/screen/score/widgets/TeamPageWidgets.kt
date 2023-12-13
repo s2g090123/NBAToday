@@ -26,22 +26,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.screen.score.BoxScoreViewModel
-import com.jiachian.nbatoday.compose.screen.score.data.ScoreTeamRowData
+import com.jiachian.nbatoday.compose.screen.score.models.BoxScoreTeamRowData
 import com.jiachian.nbatoday.compose.widget.TeamLogoImage
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.utils.dividerSecondaryColor
 
 @Composable
-fun TeamStatistics(
+fun ScoreTeamPage(
     modifier: Modifier = Modifier,
     viewModel: BoxScoreViewModel
 ) {
     val homeTeam by viewModel.homeTeam.collectAsState()
     val awayTeam by viewModel.awayTeam.collectAsState()
-    val teamRowData by viewModel.teamStatsRowData.collectAsState()
+    val rowData by viewModel.teamRowData.collectAsState()
     LazyColumn(modifier = modifier) {
         item {
-            TeamStatsTitleRow(
+            ScoreTeamTitleRow(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 8.dp),
@@ -49,7 +49,7 @@ fun TeamStatistics(
                 awayTeam = awayTeam
             )
         }
-        items(teamRowData) { rowData ->
+        items(rowData) { rowData ->
             TeamStatsRow(
                 modifier = Modifier
                     .testTag("TeamStatistics_TeamStatsRow")
@@ -66,7 +66,7 @@ fun TeamStatistics(
 @Composable
 private fun TeamStatsRow(
     modifier: Modifier = Modifier,
-    rowData: ScoreTeamRowData
+    rowData: BoxScoreTeamRowData
 ) {
     val label = rowData.label
     Column(modifier = modifier) {
@@ -75,14 +75,11 @@ private fun TeamStatsRow(
                 .fillMaxWidth()
                 .padding(top = if (label.topMargin) 8.dp else 0.dp, start = 4.dp, end = 4.dp),
         ) {
-            Text(
+            ScoreTeamStatsText(
                 modifier = Modifier
                     .testTag("TeamStatsRow_Text_Home")
                     .align(Alignment.CenterStart),
-                text = rowData.homeValue,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colors.secondary
+                value = rowData.home,
             )
             Text(
                 modifier = Modifier.align(Alignment.Center),
@@ -91,17 +88,14 @@ private fun TeamStatsRow(
                 fontWeight = FontWeight.Medium,
                 color = MaterialTheme.colors.secondary
             )
-            Text(
+            ScoreTeamStatsText(
                 modifier = Modifier
                     .testTag("TeamStatsRow_Text_Away")
                     .align(Alignment.CenterEnd),
-                text = rowData.awayValue,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colors.secondary
+                value = rowData.away,
             )
         }
-        if (label.divider) {
+        if (label.bottomDivider) {
             Divider(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -113,7 +107,7 @@ private fun TeamStatsRow(
 }
 
 @Composable
-private fun TeamStatsTitleRow(
+private fun ScoreTeamTitleRow(
     modifier: Modifier = Modifier,
     homeTeam: NBATeam,
     awayTeam: NBATeam
@@ -138,4 +132,18 @@ private fun TeamStatsTitleRow(
             team = awayTeam
         )
     }
+}
+
+@Composable
+private fun ScoreTeamStatsText(
+    modifier: Modifier = Modifier,
+    value: String,
+) {
+    Text(
+        modifier = modifier,
+        text = value,
+        fontSize = 16.sp,
+        fontWeight = FontWeight.Medium,
+        color = MaterialTheme.colors.secondary
+    )
 }

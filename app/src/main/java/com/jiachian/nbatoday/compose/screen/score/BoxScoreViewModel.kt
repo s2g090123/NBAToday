@@ -2,17 +2,12 @@ package com.jiachian.nbatoday.compose.screen.score
 
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.compose.screen.label.LabelHelper
-import com.jiachian.nbatoday.compose.screen.score.data.ScoreLeaderRowData
-import com.jiachian.nbatoday.compose.screen.score.data.ScoreTeamRowData
-import com.jiachian.nbatoday.compose.screen.score.label.ScoreLabel
-import com.jiachian.nbatoday.compose.screen.score.label.ScoreLeaderLabel
-import com.jiachian.nbatoday.compose.screen.score.label.ScoreTeamLabel
-import com.jiachian.nbatoday.compose.screen.score.tab.BoxScoreTab
+import com.jiachian.nbatoday.compose.screen.score.models.BoxScoreLeaderRowData
+import com.jiachian.nbatoday.compose.screen.score.models.BoxScorePlayerLabel
+import com.jiachian.nbatoday.compose.screen.score.models.BoxScorePlayerRowData
+import com.jiachian.nbatoday.compose.screen.score.models.BoxScoreTeamRowData
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
-import com.jiachian.nbatoday.models.local.score.BoxScore
-import com.jiachian.nbatoday.models.local.score.BoxScoreRowData
-import com.jiachian.nbatoday.models.local.score.createRowData
 import com.jiachian.nbatoday.models.local.team.data.teamOfficial
 import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.navigation.Route
@@ -25,7 +20,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class BoxScoreViewModel(
     private val gameId: String,
@@ -38,8 +32,13 @@ class BoxScoreViewModel(
     navigationController = navigationController,
     route = Route.BOX_SCORE
 ) {
-    private val isRefreshingImp = MutableStateFlow(false)
-    val isRefreshing = isRefreshingImp.asStateFlow()
+    val isLoading = repository.isLoading
+
+    init {
+        coroutineScope.launch(dispatcherProvider.io) {
+            repository.updateBoxScore(gameId)
+        }
+    }
 
     private val boxScoreAndGame = repository.getBoxScoreAndGame(gameId)
 
@@ -51,21 +50,22 @@ class BoxScoreViewModel(
         it?.gameDate ?: ""
     }.stateIn(coroutineScope, SharingStarted.Lazily, "")
 
-    val isNotFound = boxScore.map {
+    val notFound = boxScore.map {
         it == null
     }.stateIn(coroutineScope, SharingStarted.Lazily, true)
 
-    val periodLabel = boxScore.map {
+    val periodLabels = boxScore.map {
         it?.homeTeam?.periods?.map { period ->
             period.periodLabel
         } ?: emptyList()
     }.stateIn(coroutineScope, SharingStarted.Lazily, emptyList())
 
-    val statsLabels = LabelHelper.createScoreLabel()
+    val playerLabels = LabelHelper.createBoxScorePlayerLabels()
+    private val teamLabels = LabelHelper.createBoxScoreTeamLabels()
+    private val leaderLabels = LabelHelper.createBoxScoreLeaderLabels()
 
-    private val teamStatsLabels = LabelHelper.createScoreTeamLabel()
-
-    private val leaderStatsLabels = LabelHelper.createScoreLeaderLabel()
+    private val selectedPlayerLabelImp = MutableStateFlow<BoxScorePlayerLabel?>(null)
+    val selectedPlayerLabel = selectedPlayerLabelImp.asStateFlow()
 
     val homeTeam = boxScore.map { score ->
         score?.homeTeam?.team ?: teamOfficial
@@ -77,48 +77,56 @@ class BoxScoreViewModel(
 
     val homeLeader = boxScoreAndGame.map { boxScoreAndGame ->
         val score = boxScoreAndGame?.boxScore
-        val game = boxScoreAndGame?.game
-        val homePlayerId = game?.homeLeaderPlayerId
+        val leaderPlayerId = boxScoreAndGame?.game?.homeLeaderPlayerId
         score?.homeTeam?.players?.firstOrNull {
-            it.playerId == homePlayerId
+            it.playerId == leaderPlayerId
         } ?: score?.homeTeam?.getMostPointsPlayer()
     }.stateIn(coroutineScope, SharingStarted.Lazily, null)
     val awayLeader = boxScoreAndGame.map { boxScoreAndGame ->
         val score = boxScoreAndGame?.boxScore
-        val game = boxScoreAndGame?.game
-        val awayPlayerId = game?.awayLeadersPlayerId
+        val leaderPlayerId = boxScoreAndGame?.game?.awayLeadersPlayerId
         score?.awayTeam?.players?.firstOrNull {
-            it.playerId == awayPlayerId
+            it.playerId == leaderPlayerId
         } ?: score?.awayTeam?.getMostPointsPlayer()
     }.stateIn(coroutineScope, SharingStarted.Lazily, null)
 
-    private val selectedTabImp = MutableStateFlow(BoxScoreTab.HOME)
-    val selectedTab = selectedTabImp.asStateFlow()
-    val selectedTabIndex = selectedTab.map {
-        BoxScoreTab.indexOf(it)
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, 0)
-
-    val homeScoreRowData = boxScore.map { score ->
+    val homePlayerRowData = boxScore.map { score ->
         score?.homeTeam?.players?.map { player ->
-            val statsRowData = statsLabels.map { label ->
-                label.transformRowData(player.statistics)
-            }
-            player.createRowData(statsRowData)
+            BoxScorePlayerRowData(
+                player = player,
+                data = playerLabels.map { label ->
+                    BoxScorePlayerRowData.Data(
+                        value = LabelHelper.getValueByLabel(label, player.statistics),
+                        width = label.width,
+                        align = label.align,
+                    )
+                }
+            )
         } ?: emptyList()
     }.stateIn(coroutineScope, SharingStarted.Eagerly, emptyList())
 
-    val awayScoreRowData = boxScore.map { score ->
+    val awayPlayerRowData = boxScore.map { score ->
         score?.awayTeam?.players?.map { player ->
-            val statsRowData = statsLabels.map { label ->
-                label.transformRowData(player.statistics)
-            }
-            player.createRowData(statsRowData)
+            BoxScorePlayerRowData(
+                player = player,
+                data = playerLabels.map { label ->
+                    BoxScorePlayerRowData.Data(
+                        value = LabelHelper.getValueByLabel(label, player.statistics),
+                        width = label.width,
+                        align = label.align,
+                    )
+                }
+            )
         } ?: emptyList()
     }.stateIn(coroutineScope, SharingStarted.Eagerly, emptyList())
 
-    val teamStatsRowData = boxScore.map { score ->
-        teamStatsLabels.map { label ->
-            label.transformRowData(score)
+    val teamRowData = boxScore.map { score ->
+        teamLabels.map { label ->
+            BoxScoreTeamRowData(
+                label = label,
+                home = LabelHelper.getValueByLabel(label, score?.homeTeam?.statistics),
+                away = LabelHelper.getValueByLabel(label, score?.awayTeam?.statistics),
+            )
         }
     }.stateIn(coroutineScope, SharingStarted.Eagerly, emptyList())
 
@@ -126,59 +134,20 @@ class BoxScoreViewModel(
         homeLeader,
         awayLeader
     ) { home, away ->
-        leaderStatsLabels.map { label ->
-            label.transformRowData(home, away)
+        leaderLabels.map { label ->
+            BoxScoreLeaderRowData(
+                label = label,
+                home = LabelHelper.getValueByLabel(label, home),
+                away = LabelHelper.getValueByLabel(label, away),
+            )
         }
     }.stateIn(coroutineScope, SharingStarted.Eagerly, emptyList())
 
-    init {
-        refreshScore()
+    fun selectPlayerLabel(label: BoxScorePlayerLabel?) {
+        selectedPlayerLabelImp.value = label
     }
 
-    fun refreshScore() {
-        coroutineScope.launch {
-            isRefreshingImp.value = true
-            withContext(dispatcherProvider.io) {
-                repository.updateBoxScore(gameId)
-            }
-            isRefreshingImp.value = false
-        }
-    }
-
-    fun selectTab(tab: BoxScoreTab) {
-        selectedTabImp.value = tab
-    }
-
-    private fun ScoreLabel.transformRowData(
-        stats: BoxScore.BoxScoreTeam.Player.Statistics
-    ): BoxScoreRowData.RowData {
-        return BoxScoreRowData.RowData(
-            value = LabelHelper.getValueByLabel(this, stats),
-            textWidth = width,
-            textAlign = textAlign
-        )
-    }
-
-    private fun ScoreTeamLabel.transformRowData(score: BoxScore?): ScoreTeamRowData {
-        return ScoreTeamRowData(
-            homeValue = LabelHelper.getValueByLabel(this, score?.homeTeam?.statistics),
-            awayValue = LabelHelper.getValueByLabel(this, score?.awayTeam?.statistics),
-            label = this
-        )
-    }
-
-    private fun ScoreLeaderLabel.transformRowData(
-        homeLeader: BoxScore.BoxScoreTeam.Player?,
-        awayLeader: BoxScore.BoxScoreTeam.Player?
-    ): ScoreLeaderRowData {
-        return ScoreLeaderRowData(
-            homeValue = LabelHelper.getValueByLabel(this, homeLeader),
-            awayValue = LabelHelper.getValueByLabel(this, awayLeader),
-            label = this
-        )
-    }
-
-    fun openPlayerCareer(playerId: Int) {
+    fun openPlayerInfo(playerId: Int) {
         navigationController.navigateToPlayer(playerId)
     }
 }

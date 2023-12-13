@@ -216,10 +216,12 @@ private fun TeamPager(
         userScrollEnabled = false,
     ) { page ->
         when (page) {
-            0 -> TeamPlayerPage(
-                modifier = Modifier.fillMaxHeight(),
-                viewModel = viewModel
-            )
+            0 -> {
+                TeamPlayerPage(
+                    modifier = Modifier.fillMaxHeight(),
+                    viewModel = viewModel
+                )
+            }
             1 -> {
                 val gamesBefore by viewModel.gamesBefore.collectAsState()
                 GamePage(

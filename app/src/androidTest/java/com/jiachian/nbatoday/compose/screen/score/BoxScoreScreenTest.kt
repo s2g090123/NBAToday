@@ -7,7 +7,6 @@ import androidx.compose.ui.test.performScrollTo
 import com.jiachian.nbatoday.BaseAndroidTest
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.screen.label.LabelHelper
-import com.jiachian.nbatoday.compose.screen.score.label.ScoreLabel
 import com.jiachian.nbatoday.models.BoxScoreFactory
 import com.jiachian.nbatoday.models.NbaGameFactory
 import com.jiachian.nbatoday.models.TestRepository

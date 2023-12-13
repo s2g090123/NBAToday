@@ -2,9 +2,9 @@ package com.jiachian.nbatoday.compose.screen.label
 
 import com.jiachian.nbatoday.NA
 import com.jiachian.nbatoday.compose.screen.player.models.PlayerStatsLabel
-import com.jiachian.nbatoday.compose.screen.score.label.ScoreLabel
-import com.jiachian.nbatoday.compose.screen.score.label.ScoreLeaderLabel
-import com.jiachian.nbatoday.compose.screen.score.label.ScoreTeamLabel
+import com.jiachian.nbatoday.compose.screen.score.models.BoxScoreLeaderLabel
+import com.jiachian.nbatoday.compose.screen.score.models.BoxScorePlayerLabel
+import com.jiachian.nbatoday.compose.screen.score.models.BoxScoreTeamLabel
 import com.jiachian.nbatoday.compose.screen.team.models.TeamPlayerLabel
 import com.jiachian.nbatoday.models.local.player.Player
 import com.jiachian.nbatoday.models.local.score.BoxScore
@@ -12,104 +12,103 @@ import com.jiachian.nbatoday.models.local.team.TeamPlayer
 import com.jiachian.nbatoday.utils.decimalFormat
 
 object LabelHelper {
-    fun createScoreLabel(): Array<ScoreLabel> {
-        return ScoreLabel.values()
+    fun createBoxScorePlayerLabels(): Array<BoxScorePlayerLabel> {
+        return BoxScorePlayerLabel.values()
     }
 
-    fun createScoreTeamLabel(): Array<ScoreTeamLabel> {
-        return ScoreTeamLabel.values()
+    fun createBoxScoreTeamLabels(): Array<BoxScoreTeamLabel> {
+        return BoxScoreTeamLabel.values()
     }
 
-    fun createScoreLeaderLabel(): Array<ScoreLeaderLabel> {
-        return ScoreLeaderLabel.values()
+    fun createBoxScoreLeaderLabels(): Array<BoxScoreLeaderLabel> {
+        return BoxScoreLeaderLabel.values()
     }
 
-    fun createTeamPlayerLabel(): Array<TeamPlayerLabel> {
+    fun createTeamPlayerLabels(): Array<TeamPlayerLabel> {
         return TeamPlayerLabel.values()
     }
 
-    fun createPlayerStatsLabel(): Array<PlayerStatsLabel> {
+    fun createPlayerStatsLabels(): Array<PlayerStatsLabel> {
         return PlayerStatsLabel.values()
     }
 
     fun getValueByLabel(
-        label: ScoreLabel,
-        stats: BoxScore.BoxScoreTeam.Player.Statistics?
+        label: BoxScorePlayerLabel,
+        stats: BoxScore.BoxScoreTeam.Player.Statistics
     ): String {
-        stats ?: return NA
         return when (label) {
-            ScoreLabel.MIN -> stats.minutes
-            ScoreLabel.FGMA -> stats.fieldGoalProportion
-            ScoreLabel.PMA3 -> stats.threePointProportion
-            ScoreLabel.FTMA -> stats.freeThrowProportion
-            ScoreLabel.PLUSMINUS -> stats.plusMinusPoints
-            ScoreLabel.OREB -> stats.reboundsOffensive
-            ScoreLabel.DREB -> stats.reboundsDefensive
-            ScoreLabel.REB -> stats.reboundsTotal
-            ScoreLabel.AST -> stats.assists
-            ScoreLabel.PF -> stats.foulsPersonal
-            ScoreLabel.STL -> stats.steals
-            ScoreLabel.TOV -> stats.turnovers
-            ScoreLabel.BS -> stats.blocks
-            ScoreLabel.BA -> stats.blocksReceived
-            ScoreLabel.PTS -> stats.points
-            ScoreLabel.EFF -> stats.efficiency
+            BoxScorePlayerLabel.MIN -> stats.minutes
+            BoxScorePlayerLabel.FGMA -> stats.fieldGoalProportion
+            BoxScorePlayerLabel.PMA3 -> stats.threePointProportion
+            BoxScorePlayerLabel.FTMA -> stats.freeThrowProportion
+            BoxScorePlayerLabel.PLUSMINUS -> stats.plusMinusPoints
+            BoxScorePlayerLabel.OREB -> stats.reboundsOffensive
+            BoxScorePlayerLabel.DREB -> stats.reboundsDefensive
+            BoxScorePlayerLabel.REB -> stats.reboundsTotal
+            BoxScorePlayerLabel.AST -> stats.assists
+            BoxScorePlayerLabel.PF -> stats.foulsPersonal
+            BoxScorePlayerLabel.STL -> stats.steals
+            BoxScorePlayerLabel.TOV -> stats.turnovers
+            BoxScorePlayerLabel.BS -> stats.blocks
+            BoxScorePlayerLabel.BA -> stats.blocksReceived
+            BoxScorePlayerLabel.PTS -> stats.points
+            BoxScorePlayerLabel.EFF -> stats.efficiency
         }.toString()
     }
 
     fun getValueByLabel(
-        label: ScoreTeamLabel,
+        label: BoxScoreTeamLabel,
         stats: BoxScore.BoxScoreTeam.Statistics?
     ): String {
         stats ?: return NA
         return when (label) {
-            ScoreTeamLabel.PTS -> stats.points
-            ScoreTeamLabel.FG -> stats.fieldGoalsFormat
-            ScoreTeamLabel.TP -> stats.twoPointsFormat
-            ScoreTeamLabel.P3 -> stats.threePointsFormat
-            ScoreTeamLabel.FT -> stats.freeThrowFormat
-            ScoreTeamLabel.REB -> stats.reboundsTotal
-            ScoreTeamLabel.DREB -> stats.reboundsDefensive
-            ScoreTeamLabel.OREB -> stats.reboundsOffensive
-            ScoreTeamLabel.AST -> stats.assists
-            ScoreTeamLabel.BLK -> stats.blocks
-            ScoreTeamLabel.STL -> stats.steals
-            ScoreTeamLabel.TO -> stats.turnovers
-            ScoreTeamLabel.FASTBREAK -> stats.pointsFastBreak
-            ScoreTeamLabel.POINTSTURNOVERS -> stats.pointsFromTurnovers
-            ScoreTeamLabel.POINTSINPAINT -> stats.pointsInThePaint
-            ScoreTeamLabel.POINTSSECONDCHANCE -> stats.pointsSecondChance
-            ScoreTeamLabel.BENCHPOINTS -> stats.benchPoints
-            ScoreTeamLabel.PF -> stats.foulsPersonal
-            ScoreTeamLabel.TF -> stats.foulsTechnical
+            BoxScoreTeamLabel.PTS -> stats.points
+            BoxScoreTeamLabel.FG -> stats.fieldGoalsFormat
+            BoxScoreTeamLabel.TP -> stats.twoPointsFormat
+            BoxScoreTeamLabel.P3 -> stats.threePointsFormat
+            BoxScoreTeamLabel.FT -> stats.freeThrowFormat
+            BoxScoreTeamLabel.REB -> stats.reboundsTotal
+            BoxScoreTeamLabel.DREB -> stats.reboundsDefensive
+            BoxScoreTeamLabel.OREB -> stats.reboundsOffensive
+            BoxScoreTeamLabel.AST -> stats.assists
+            BoxScoreTeamLabel.BLK -> stats.blocks
+            BoxScoreTeamLabel.STL -> stats.steals
+            BoxScoreTeamLabel.TO -> stats.turnovers
+            BoxScoreTeamLabel.FASTBREAK -> stats.pointsFastBreak
+            BoxScoreTeamLabel.POINTSTURNOVERS -> stats.pointsFromTurnovers
+            BoxScoreTeamLabel.POINTSINPAINT -> stats.pointsInThePaint
+            BoxScoreTeamLabel.POINTSSECONDCHANCE -> stats.pointsSecondChance
+            BoxScoreTeamLabel.BENCHPOINTS -> stats.benchPoints
+            BoxScoreTeamLabel.PF -> stats.foulsPersonal
+            BoxScoreTeamLabel.TF -> stats.foulsTechnical
         }.toString()
     }
 
     fun getValueByLabel(
-        label: ScoreLeaderLabel,
+        label: BoxScoreLeaderLabel,
         player: BoxScore.BoxScoreTeam.Player?
     ): String {
         player ?: return NA
         val stats = player.statistics
         return when (label) {
-            ScoreLeaderLabel.NAME -> player.nameAbbr
-            ScoreLeaderLabel.POSITION -> player.position
-            ScoreLeaderLabel.MIN -> stats.minutes
-            ScoreLeaderLabel.PTS -> stats.points
-            ScoreLeaderLabel.PLUSMINUS -> stats.plusMinusPoints
-            ScoreLeaderLabel.FG -> stats.fieldGoalsFormat
-            ScoreLeaderLabel.P2 -> stats.twoPointsFormat
-            ScoreLeaderLabel.P3 -> stats.threePointsFormat
-            ScoreLeaderLabel.FT -> stats.freeThrowFormat
-            ScoreLeaderLabel.REB -> stats.reboundsTotal
-            ScoreLeaderLabel.DREB -> stats.reboundsDefensive
-            ScoreLeaderLabel.OREB -> stats.reboundsOffensive
-            ScoreLeaderLabel.AST -> stats.assists
-            ScoreLeaderLabel.BLK -> stats.blocks
-            ScoreLeaderLabel.STL -> stats.steals
-            ScoreLeaderLabel.TO -> stats.turnovers
-            ScoreLeaderLabel.PF -> stats.foulsPersonal
-            ScoreLeaderLabel.TF -> stats.foulsTechnical
+            BoxScoreLeaderLabel.NAME -> player.nameAbbr
+            BoxScoreLeaderLabel.POSITION -> player.position
+            BoxScoreLeaderLabel.MIN -> stats.minutes
+            BoxScoreLeaderLabel.PTS -> stats.points
+            BoxScoreLeaderLabel.PLUSMINUS -> stats.plusMinusPoints
+            BoxScoreLeaderLabel.FG -> stats.fieldGoalsFormat
+            BoxScoreLeaderLabel.P2 -> stats.twoPointsFormat
+            BoxScoreLeaderLabel.P3 -> stats.threePointsFormat
+            BoxScoreLeaderLabel.FT -> stats.freeThrowFormat
+            BoxScoreLeaderLabel.REB -> stats.reboundsTotal
+            BoxScoreLeaderLabel.DREB -> stats.reboundsDefensive
+            BoxScoreLeaderLabel.OREB -> stats.reboundsOffensive
+            BoxScoreLeaderLabel.AST -> stats.assists
+            BoxScoreLeaderLabel.BLK -> stats.blocks
+            BoxScoreLeaderLabel.STL -> stats.steals
+            BoxScoreLeaderLabel.TO -> stats.turnovers
+            BoxScoreLeaderLabel.PF -> stats.foulsPersonal
+            BoxScoreLeaderLabel.TF -> stats.foulsTechnical
         }.toString()
     }
 

@@ -48,7 +48,7 @@ class PlayerViewModel(
     private val statsSortingImp = MutableStateFlow(PlayerStatsSorting.TIME_FRAME)
     val statsSorting = statsSortingImp.asStateFlow()
 
-    val statsLabels = LabelHelper.createPlayerStatsLabel()
+    val statsLabels = LabelHelper.createPlayerStatsLabels()
 
     private val statsRowData = player.map { player ->
         player?.stats?.stats?.map { stats ->

@@ -26,23 +26,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.screen.score.BoxScoreViewModel
-import com.jiachian.nbatoday.compose.screen.score.data.ScoreLeaderRowData
+import com.jiachian.nbatoday.compose.screen.score.models.BoxScoreLeaderRowData
 import com.jiachian.nbatoday.compose.widget.PlayerImage
 import com.jiachian.nbatoday.models.local.score.BoxScore
 import com.jiachian.nbatoday.utils.dividerSecondaryColor
-import com.jiachian.nbatoday.utils.modifyIf
 
 @Composable
-fun LeaderStatistics(
+fun ScoreLeaderPage(
     modifier: Modifier = Modifier,
     viewModel: BoxScoreViewModel
 ) {
     val homeLeader by viewModel.homeLeader.collectAsState()
     val awayLeader by viewModel.awayLeader.collectAsState()
-    val leaderRowData by viewModel.leaderStatsRowData.collectAsState()
+    val rowData by viewModel.leaderStatsRowData.collectAsState()
     LazyColumn(modifier = modifier) {
         item {
-            LeaderStatisticsTitleRow(
+            ScoreLeaderTitleRow(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 8.dp),
@@ -50,8 +49,8 @@ fun LeaderStatistics(
                 awayLeader = awayLeader
             )
         }
-        items(leaderRowData) { rowData ->
-            LeaderStatisticsRow(
+        items(rowData) { rowData ->
+            ScoreLeaderRow(
                 modifier = Modifier
                     .testTag("LeaderStatistics_LeaderStatisticsRow")
                     .fillMaxWidth(),
@@ -65,7 +64,7 @@ fun LeaderStatistics(
 }
 
 @Composable
-private fun LeaderStatisticsTitleRow(
+private fun ScoreLeaderTitleRow(
     modifier: Modifier = Modifier,
     homeLeader: BoxScore.BoxScoreTeam.Player?,
     awayLeader: BoxScore.BoxScoreTeam.Player?
@@ -93,29 +92,22 @@ private fun LeaderStatisticsTitleRow(
 }
 
 @Composable
-private fun LeaderStatisticsRow(
+private fun ScoreLeaderRow(
     modifier: Modifier = Modifier,
-    rowData: ScoreLeaderRowData
+    rowData: BoxScoreLeaderRowData
 ) {
     val label = rowData.label
     Column(modifier = modifier) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .modifyIf(
-                    condition = label.topMargin,
-                    modify = { padding(top = 8.dp, start = 4.dp, end = 4.dp) },
-                    elseModify = { padding(horizontal = 4.dp) }
-                )
+                .padding(top = if (label.topMargin) 8.dp else 0.dp, start = 4.dp, end = 4.dp)
         ) {
-            Text(
+            LeaderStatsText(
                 modifier = Modifier
                     .testTag("LeaderStatisticsRow_Text_Home")
                     .align(Alignment.CenterStart),
-                text = rowData.homeValue,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colors.secondary
+                value = rowData.home
             )
             Text(
                 modifier = Modifier.align(Alignment.Center),
@@ -124,17 +116,14 @@ private fun LeaderStatisticsRow(
                 fontWeight = FontWeight.Medium,
                 color = MaterialTheme.colors.secondary
             )
-            Text(
+            LeaderStatsText(
                 modifier = Modifier
                     .testTag("LeaderStatisticsRow_Text_Away")
                     .align(Alignment.CenterEnd),
-                text = rowData.awayValue,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colors.secondary
+                value = rowData.away
             )
         }
-        if (label.divider) {
+        if (label.bottomDivider) {
             Divider(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -143,4 +132,18 @@ private fun LeaderStatisticsRow(
             )
         }
     }
+}
+
+@Composable
+private fun LeaderStatsText(
+    modifier: Modifier = Modifier,
+    value: String,
+) {
+    Text(
+        modifier = modifier,
+        text = value,
+        fontSize = 16.sp,
+        fontWeight = FontWeight.Medium,
+        color = MaterialTheme.colors.secondary
+    )
 }

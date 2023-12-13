@@ -44,7 +44,6 @@ import com.jiachian.nbatoday.compose.screen.team.TeamViewModel
 import com.jiachian.nbatoday.compose.screen.team.models.TeamPlayerLabel
 import com.jiachian.nbatoday.compose.screen.team.models.TeamPlayerRowData
 import com.jiachian.nbatoday.compose.screen.team.models.TeamPlayerSorting
-import com.jiachian.nbatoday.utils.dividerSecondaryColor
 import com.jiachian.nbatoday.utils.rippleClickable
 import kotlinx.coroutines.launch
 
@@ -61,7 +60,7 @@ fun TeamPlayerPage(
     val teamPlayers by viewModel.sortedPlayerRowData.collectAsState()
     LazyColumn(modifier = modifier) {
         stickyHeader {
-            TeamPlayerLabelDraggableRow(
+            ScorePlayerLabelDraggableRow(
                 modifier = Modifier.draggable(draggableState, Orientation.Horizontal),
                 viewModel = viewModel,
                 labelState = labelState,
@@ -82,7 +81,7 @@ fun TeamPlayerPage(
 }
 
 @Composable
-private fun TeamPlayerLabelDraggableRow(
+private fun ScorePlayerLabelDraggableRow(
     modifier: Modifier = Modifier,
     viewModel: TeamViewModel,
     labelState: LazyListState,
@@ -186,7 +185,7 @@ private fun TeamPlayerDraggableRow(
     )
     Divider(
         modifier = Modifier.fillMaxWidth(),
-        color = dividerSecondaryColor(),
+        color = viewModel.colors.secondary.copy(Transparency25),
         thickness = 1.dp
     )
     LaunchedEffect(visibleIndex, visibleOffset) {

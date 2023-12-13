@@ -52,7 +52,7 @@ class TeamViewModel(
     private val team = NBATeam.getTeamById(teamId)
     val colors = team.colors
 
-    val labels = LabelHelper.createTeamPlayerLabel()
+    val labels = LabelHelper.createTeamPlayerLabels()
 
     val gamesBefore = gameRepository.getGamesAndBetsBeforeByTeam(team.teamId, DateUtils.getCalendar().timeInMillis)
         .stateIn(coroutineScope, SharingStarted.Eagerly, emptyList())

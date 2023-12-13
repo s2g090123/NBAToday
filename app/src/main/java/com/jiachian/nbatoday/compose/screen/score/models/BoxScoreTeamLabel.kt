@@ -1,106 +1,106 @@
-package com.jiachian.nbatoday.compose.screen.score.label
+package com.jiachian.nbatoday.compose.screen.score.models
 
 import androidx.annotation.StringRes
 import com.jiachian.nbatoday.R
 
-enum class ScoreTeamLabel(
+enum class BoxScoreTeamLabel(
     @StringRes val textRes: Int,
     val topMargin: Boolean,
-    val divider: Boolean
+    val bottomDivider: Boolean
 ) {
     PTS(
         textRes = R.string.box_score_statistics_points,
         topMargin = true,
-        divider = false
+        bottomDivider = false
     ),
     FG(
         textRes = R.string.box_score_statistics_fieldGoal,
         topMargin = true,
-        divider = false
+        bottomDivider = false
     ),
     TP(
         textRes = R.string.box_score_statistics_twoPoints,
         topMargin = true,
-        divider = false
+        bottomDivider = false
     ),
     P3(
         textRes = R.string.box_score_statistics_threePoints,
         topMargin = true,
-        divider = false
+        bottomDivider = false
     ),
     FT(
         textRes = R.string.box_score_statistics_freeThrows,
         topMargin = true,
-        divider = true
+        bottomDivider = true
     ),
     REB(
         textRes = R.string.box_score_statistics_rebounds,
         topMargin = false,
-        divider = false
+        bottomDivider = false
     ),
     DREB(
         textRes = R.string.box_score_statistics_reboundsDef,
         topMargin = false,
-        divider = false
+        bottomDivider = false
     ),
     OREB(
         textRes = R.string.box_score_statistics_reboundsOff,
         topMargin = false,
-        divider = false
+        bottomDivider = false
     ),
     AST(
         textRes = R.string.box_score_statistics_assists,
         topMargin = true,
-        divider = false
+        bottomDivider = false
     ),
     BLK(
         textRes = R.string.box_score_statistics_blocks,
         topMargin = true,
-        divider = false
+        bottomDivider = false
     ),
     STL(
         textRes = R.string.box_score_statistics_steals,
         topMargin = true,
-        divider = false
+        bottomDivider = false
     ),
     TO(
         textRes = R.string.box_score_statistics_turnovers,
         topMargin = true,
-        divider = false
+        bottomDivider = false
     ),
     FASTBREAK(
         textRes = R.string.box_score_statistics_pointsFastBreak,
         topMargin = true,
-        divider = false
+        bottomDivider = false
     ),
     POINTSTURNOVERS(
         textRes = R.string.box_score_statistics_pointsFromTurnOvers,
         topMargin = false,
-        divider = false
+        bottomDivider = false
     ),
     POINTSINPAINT(
         textRes = R.string.box_score_statistics_pointsInPaint,
         topMargin = false,
-        divider = false
+        bottomDivider = false
     ),
     POINTSSECONDCHANCE(
         textRes = R.string.box_score_statistics_pointsSecondChance,
         topMargin = false,
-        divider = false
+        bottomDivider = false
     ),
     BENCHPOINTS(
         textRes = R.string.box_score_statistics_benchPoints,
         topMargin = false,
-        divider = false
+        bottomDivider = false
     ),
     PF(
         textRes = R.string.box_score_statistics_foulsPersonal,
         topMargin = true,
-        divider = false
+        bottomDivider = false
     ),
     TF(
         textRes = R.string.box_score_statistics_foulsTechnical,
         topMargin = false,
-        divider = false
+        bottomDivider = false
     )
 }

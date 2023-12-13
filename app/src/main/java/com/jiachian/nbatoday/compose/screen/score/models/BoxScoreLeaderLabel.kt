@@ -1,101 +1,101 @@
-package com.jiachian.nbatoday.compose.screen.score.label
+package com.jiachian.nbatoday.compose.screen.score.models
 
 import androidx.annotation.StringRes
 import com.jiachian.nbatoday.R
 
-enum class ScoreLeaderLabel(
+enum class BoxScoreLeaderLabel(
     @StringRes val textRes: Int,
     val topMargin: Boolean,
-    val divider: Boolean
+    val bottomDivider: Boolean
 ) {
     NAME(
         textRes = R.string.box_score_leader_statistics_name,
         topMargin = true,
-        divider = false
+        bottomDivider = false
     ),
     POSITION(
         textRes = R.string.box_score_leader_statistics_position,
         topMargin = true,
-        divider = false
+        bottomDivider = false
     ),
     MIN(
         textRes = R.string.box_score_leader_statistics_time,
         topMargin = true,
-        divider = true
+        bottomDivider = true
     ),
     PTS(
         textRes = R.string.box_score_leader_statistics_points,
         topMargin = false,
-        divider = false
+        bottomDivider = false
     ),
     PLUSMINUS(
         textRes = R.string.box_score_leader_statistics_plusMinusPoints,
         topMargin = true,
-        divider = false
+        bottomDivider = false
     ),
     FG(
         textRes = R.string.box_score_leader_statistics_fieldGoal,
         topMargin = true,
-        divider = false
+        bottomDivider = false
     ),
     P2(
         textRes = R.string.box_score_leader_statistics_twoPoints,
         topMargin = true,
-        divider = false
+        bottomDivider = false
     ),
     P3(
         textRes = R.string.box_score_leader_statistics_threePoints,
         topMargin = true,
-        divider = false
+        bottomDivider = false
     ),
     FT(
         textRes = R.string.box_score_leader_statistics_freeThrows,
         topMargin = true,
-        divider = true
+        bottomDivider = true
     ),
     REB(
         textRes = R.string.box_score_leader_statistics_rebounds,
         topMargin = false,
-        divider = false
+        bottomDivider = false
     ),
     DREB(
         textRes = R.string.box_score_leader_statistics_reboundsDef,
         topMargin = true,
-        divider = false
+        bottomDivider = false
     ),
     OREB(
         textRes = R.string.box_score_leader_statistics_reboundsOff,
         topMargin = true,
-        divider = false
+        bottomDivider = false
     ),
     AST(
         textRes = R.string.box_score_leader_statistics_assists,
         topMargin = true,
-        divider = false
+        bottomDivider = false
     ),
     BLK(
         textRes = R.string.box_score_leader_statistics_blocks,
         topMargin = true,
-        divider = false
+        bottomDivider = false
     ),
     STL(
         textRes = R.string.box_score_leader_statistics_steals,
         topMargin = true,
-        divider = false
+        bottomDivider = false
     ),
     TO(
         textRes = R.string.box_score_leader_statistics_turnovers,
         topMargin = true,
-        divider = false
+        bottomDivider = false
     ),
     PF(
         textRes = R.string.box_score_leader_statistics_foulsPersonal,
         topMargin = true,
-        divider = false
+        bottomDivider = false
     ),
     TF(
         textRes = R.string.box_score_leader_statistics_foulsTechnical,
         topMargin = true,
-        divider = false
+        bottomDivider = false
     )
 }
