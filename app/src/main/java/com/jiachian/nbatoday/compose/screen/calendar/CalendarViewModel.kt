@@ -200,8 +200,8 @@ class CalendarViewModel(
         }
     }
 
-    fun createGameStatusCardViewModel(gameAndBets: GameAndBets): GameCardViewModel {
-        return composeViewModelProvider.getGameStatusCardViewModel(
+    fun createGameCardViewModel(gameAndBets: GameAndBets): GameCardViewModel {
+        return composeViewModelProvider.getGameCardViewModel(
             gameAndBets = gameAndBets,
             dispatcherProvider = dispatcherProvider,
             coroutineScope = coroutineScope,

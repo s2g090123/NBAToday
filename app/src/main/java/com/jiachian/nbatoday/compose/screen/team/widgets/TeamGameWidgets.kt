@@ -35,7 +35,7 @@ fun TeamGamePage(
     ) {
         itemsIndexed(games) { index, game ->
             val cardViewModel = remember(game) {
-                viewModel.createGameStatusCardViewModel(game)
+                viewModel.createGameCardViewModel(game)
             }
             GameCard(
                 modifier = Modifier

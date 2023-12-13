@@ -10,8 +10,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ScrollableTabRow
 import androidx.compose.material.Tab
@@ -23,25 +21,28 @@ import androidx.compose.material.pullrefresh.PullRefreshState
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.screen.card.GameCard
+import com.jiachian.nbatoday.compose.screen.home.schedule.models.DateData
+import com.jiachian.nbatoday.compose.widget.IconButton
 import com.jiachian.nbatoday.models.local.game.GameAndBets
 import com.jiachian.nbatoday.utils.rippleClickable
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class, ExperimentalMaterialApi::class)
 @Composable
@@ -49,19 +50,15 @@ fun SchedulePage(
     modifier: Modifier = Modifier,
     viewModel: SchedulePageViewModel
 ) {
-    val pagerState = rememberPagerState()
-    val dateData = viewModel.scheduleDates
-    val index by viewModel.scheduleIndex.collectAsState()
-    val scheduleGames by viewModel.scheduleGames.collectAsState()
-    val isRefreshing by viewModel.isRefreshingSchedule.collectAsState()
+    val dateData = viewModel.dateData
+    val pagerState = rememberPagerState(initialPage = dateData.size / 2)
+    val dateAndGames by viewModel.groupedGames.collectAsState()
+    val isRefreshing by viewModel.isRefreshing.collectAsState()
     val pullRefreshState = rememberPullRefreshState(
         refreshing = isRefreshing,
-        onRefresh = { viewModel.updateTodaySchedule() }
+        onRefresh = { viewModel.updateSelectedSchedule() }
     )
-
-    Box(
-        modifier = modifier
-    ) {
+    Box(modifier = modifier) {
         HorizontalPager(
             modifier = Modifier
                 .testTag("SchedulePage_Pager")
@@ -70,24 +67,19 @@ fun SchedulePage(
             state = pagerState,
             count = dateData.size
         ) { page ->
-            dateData.getOrNull(page)?.let { dateData ->
-                ScheduleContent(
-                    viewModel = viewModel,
-                    refreshState = pullRefreshState,
-                    games = scheduleGames[dateData] ?: emptyList(),
-                    onClickCalendar = { viewModel.openCalendar(dateData) },
-                    onClickGame = viewModel::clickScheduleGame
-                )
-            }
+            val date = dateData[page]
+            ScheduleContent(
+                viewModel = viewModel,
+                isRefreshing = isRefreshing,
+                refreshState = pullRefreshState,
+                games = dateAndGames[date] ?: emptyList(),
+            )
         }
         ScheduleTabRow(
-            currentPage = index,
+            pagerState = pagerState,
             dates = dateData,
-            selectPage = viewModel::updateScheduleIndex
+            selectDate = viewModel::selectDate
         )
-    }
-    LaunchedEffect(index) {
-        pagerState.animateScrollToPage(index)
     }
 }
 
@@ -96,11 +88,9 @@ fun SchedulePage(
 private fun ScheduleContent(
     viewModel: SchedulePageViewModel,
     refreshState: PullRefreshState,
+    isRefreshing: Boolean,
     games: List<GameAndBets>,
-    onClickCalendar: () -> Unit,
-    onClickGame: (GameAndBets) -> Unit
 ) {
-    val isRefreshing by viewModel.isRefreshingSchedule.collectAsState()
     Box(
         modifier = Modifier
             .testTag("SchedulePage_Box")
@@ -110,19 +100,21 @@ private fun ScheduleContent(
             modifier = Modifier
                 .testTag("SchedulePage_LZ_Body")
                 .fillMaxSize(),
-            horizontalAlignment = Alignment.End
+            horizontalAlignment = Alignment.End,
         ) {
             item {
-                CalendarButton(
+                IconButton(
                     modifier = Modifier
                         .testTag("SchedulePage_Btn_Calendar")
                         .padding(top = 8.dp, end = 4.dp),
-                    onClick = onClickCalendar
+                    drawableRes = R.drawable.ic_black_calendar,
+                    tint = MaterialTheme.colors.secondary,
+                    onClick = viewModel::onClickCalendar
                 )
             }
             itemsIndexed(games) { index, game ->
                 val cardViewModel = remember(game) {
-                    viewModel.createGameStatusCardViewModel(game)
+                    viewModel.createGameCardViewModel(game)
                 }
                 GameCard(
                     modifier = Modifier
@@ -139,7 +131,7 @@ private fun ScheduleContent(
                         .wrapContentHeight()
                         .background(MaterialTheme.colors.secondary)
                         .rippleClickable {
-                            onClickGame(game)
+                            viewModel.onClickGame(game)
                         },
                     viewModel = cardViewModel,
                     color = MaterialTheme.colors.primary,
@@ -155,42 +147,27 @@ private fun ScheduleContent(
     }
 }
 
-@Composable
-private fun CalendarButton(
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit
-) {
-    IconButton(
-        modifier = modifier,
-        onClick = onClick
-    ) {
-        Icon(
-            painter = painterResource(R.drawable.ic_black_calendar),
-            contentDescription = null,
-            tint = MaterialTheme.colors.secondary
-        )
-    }
-}
-
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 private fun ScheduleTabRow(
-    currentPage: Int,
+    pagerState: PagerState,
     dates: List<DateData>,
-    selectPage: (Int) -> Unit
+    selectDate: (DateData) -> Unit
 ) {
+    val coroutineScope = rememberCoroutineScope()
     ScrollableTabRow(
-        selectedTabIndex = currentPage,
+        selectedTabIndex = pagerState.currentPage,
         contentColor = MaterialTheme.colors.primaryVariant,
         backgroundColor = MaterialTheme.colors.secondary,
         edgePadding = 0.dp,
         indicator = @Composable { tabPositions ->
             TabRowDefaults.Indicator(
-                modifier = Modifier.tabIndicatorOffset(tabPositions[currentPage]),
+                modifier = Modifier.tabIndicatorOffset(tabPositions[pagerState.currentPage]),
                 color = MaterialTheme.colors.primaryVariant
             )
         }
     ) {
-        dates.forEachIndexed { index, date ->
+        dates.forEachIndexed { page, date ->
             Tab(
                 text = {
                     Text(
@@ -199,8 +176,13 @@ private fun ScheduleTabRow(
                         fontSize = 14.sp
                     )
                 },
-                selected = index == currentPage,
-                onClick = { selectPage(index) }
+                selected = page == pagerState.currentPage,
+                onClick = {
+                    coroutineScope.launch {
+                        pagerState.animateScrollToPage(page)
+                        selectDate(date)
+                    }
+                }
             )
         }
     }

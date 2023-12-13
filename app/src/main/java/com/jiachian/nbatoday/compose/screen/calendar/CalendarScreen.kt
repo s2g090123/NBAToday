@@ -233,7 +233,7 @@ private fun LazyGridScope.calendarGameCards(
     span = { _, _ -> GridItemSpan(DaysPerWeek) }
 ) { index, game ->
     val cardViewModel = remember(game) {
-        viewModel.createGameStatusCardViewModel(game)
+        viewModel.createGameCardViewModel(game)
     }
     CalendarGameCard(
         modifier = Modifier

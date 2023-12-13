@@ -3,11 +3,10 @@ package com.jiachian.nbatoday.compose.screen.home.schedule
 import android.annotation.SuppressLint
 import com.jiachian.nbatoday.ScheduleDateRange
 import com.jiachian.nbatoday.compose.screen.card.GameCardViewModel
+import com.jiachian.nbatoday.compose.screen.home.schedule.models.DateData
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
-import com.jiachian.nbatoday.models.local.game.Game
 import com.jiachian.nbatoday.models.local.game.GameAndBets
-import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.repository.game.GameRepository
 import com.jiachian.nbatoday.repository.schedule.ScheduleRepository
@@ -33,94 +32,94 @@ class SchedulePageViewModel(
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
     private val coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
 ) {
+    val dateData = createDateData()
 
-    val scheduleDates: List<DateData> = getDateData()
-    private val scheduleIndexImp = MutableStateFlow(scheduleDates.size / 2)
-    val scheduleIndex = scheduleIndexImp.asStateFlow()
-    private val scheduleGamesImp = DateUtils.getCalendar().let {
-        it.set(Calendar.HOUR, 0)
-        it.set(Calendar.MINUTE, 0)
-        it.set(Calendar.SECOND, 0)
+    private var selectedDate = dateData[dateData.size / 2]
+
+    private val games = DateUtils.getCalendar().run {
+        set(Calendar.HOUR, 0)
+        set(Calendar.MINUTE, 0)
+        set(Calendar.MILLISECOND, 0)
         gameRepository.getGamesAndBetsDuring(
-            it.timeInMillis - android.text.format.DateUtils.DAY_IN_MILLIS * (ScheduleDateRange + 1),
-            it.timeInMillis + android.text.format.DateUtils.DAY_IN_MILLIS * (ScheduleDateRange)
+            timeInMillis - android.text.format.DateUtils.DAY_IN_MILLIS * (ScheduleDateRange + 1),
+            timeInMillis + android.text.format.DateUtils.DAY_IN_MILLIS * (ScheduleDateRange)
         )
     }
-    val scheduleGames = scheduleGamesImp.map {
-        val calendar = DateUtils.getCalendar()
-        it.groupBy { game ->
-            calendar.time = game.game.gameDateTime
-            DateData(
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH) + 1,
-                calendar.get(Calendar.DAY_OF_MONTH)
-            )
-        }
+    val groupedGames = games.map {
+        getGroupedGames(it)
     }.stateIn(coroutineScope, SharingStarted.Lazily, mapOf())
-    private val isRefreshingScheduleImp = MutableStateFlow(false)
-    val isRefreshingSchedule = isRefreshingScheduleImp.asStateFlow()
 
-    fun updateScheduleIndex(index: Int) {
-        if (index !in scheduleDates.indices) return
-        scheduleIndexImp.value = index
-    }
+    private val isRefreshingImp = MutableStateFlow(false)
+    val isRefreshing = isRefreshingImp.asStateFlow()
 
-    private fun getDateData(): List<DateData> {
-        val output = mutableListOf<DateData>()
-        val calendar = DateUtils.getCalendar()
-        calendar.add(Calendar.DAY_OF_MONTH, -ScheduleDateRange)
-        repeat(ScheduleDateRange * 2 + 1) {
-            output.add(
+    private fun createDateData(): List<DateData> {
+        val range = ScheduleDateRange * 2 + 1
+        return DateUtils.getCalendar().run {
+            add(Calendar.DAY_OF_MONTH, -ScheduleDateRange)
+            List(range) {
                 DateData(
-                    calendar.get(Calendar.YEAR),
-                    calendar.get(Calendar.MONTH) + 1,
-                    calendar.get(Calendar.DAY_OF_MONTH)
-                )
-            )
-            calendar.add(Calendar.DAY_OF_MONTH, 1)
-        }
-        return output
-    }
-
-    fun updateTodaySchedule() {
-        if (isRefreshingSchedule.value) return
-        val dateData = scheduleDates.getOrNull(scheduleIndex.value) ?: return
-        coroutineScope.launch {
-            isRefreshingScheduleImp.value = true
-            withContext(dispatcherProvider.io) {
-                scheduleRepository.updateSchedule(dateData.year, dateData.month, dateData.day)
+                    get(Calendar.YEAR),
+                    get(Calendar.MONTH) + 1,
+                    get(Calendar.DAY_OF_MONTH)
+                ).also {
+                    add(Calendar.DAY_OF_MONTH, 1)
+                }
             }
-            isRefreshingScheduleImp.value = false
         }
     }
 
-    fun clickScheduleGame(game: GameAndBets) {
+    private suspend fun getGroupedGames(games: List<GameAndBets>): Map<DateData, List<GameAndBets>> {
+        return withContext(dispatcherProvider.io) {
+            DateUtils.getCalendar().run {
+                games.groupBy { game ->
+                    time = game.game.gameDateTime
+                    DateData(
+                        get(Calendar.YEAR),
+                        get(Calendar.MONTH) + 1,
+                        get(Calendar.DAY_OF_MONTH)
+                    )
+                }
+            }
+        }
+    }
+
+    fun selectDate(dateData: DateData) {
+        selectedDate = dateData
+    }
+
+    fun updateSelectedSchedule() {
+        if (isRefreshing.value) return
+        coroutineScope.launch(dispatcherProvider.io) {
+            isRefreshingImp.value = true
+            scheduleRepository.updateSchedule(
+                selectedDate.year,
+                selectedDate.month,
+                selectedDate.day
+            )
+            isRefreshingImp.value = false
+        }
+    }
+
+    fun onClickGame(game: GameAndBets) {
         if (!game.game.isGamePlayed) {
-            openTeamStats(game.game.homeTeam.team)
+            navigationController.navigateToTeam(game.game.homeTeam.team.teamId)
         } else {
-            openGameBoxScore(game.game)
+            navigationController.navigateToBoxScore(game.game.gameId)
         }
-    }
-
-    fun openGameBoxScore(game: Game) {
-        navigationController.navigateToBoxScore(game.gameId)
-    }
-
-    fun openTeamStats(team: NBATeam) {
-        navigationController.navigateToTeam(team.teamId)
     }
 
     @SuppressLint("SimpleDateFormat")
-    fun openCalendar(dateData: DateData) {
-        val format = SimpleDateFormat("yyyy/MM/dd").apply {
-            timeZone = TimeZone.getTimeZone("EST")
+    fun onClickCalendar() {
+        SimpleDateFormat("yyyy/MM/dd").let { format ->
+            format.timeZone = TimeZone.getTimeZone("EST")
+            format.parse(selectedDate.dateString)?.time
+        }?.run {
+            navigationController.navigateToCalendar(this)
         }
-        val date = format.parse(dateData.dateString) ?: return
-        navigationController.navigateToCalendar(date.time)
     }
 
-    fun createGameStatusCardViewModel(gameAndBets: GameAndBets): GameCardViewModel {
-        return composeViewModelProvider.getGameStatusCardViewModel(
+    fun createGameCardViewModel(gameAndBets: GameAndBets): GameCardViewModel {
+        return composeViewModelProvider.getGameCardViewModel(
             gameAndBets = gameAndBets,
             dispatcherProvider = dispatcherProvider,
             coroutineScope = coroutineScope

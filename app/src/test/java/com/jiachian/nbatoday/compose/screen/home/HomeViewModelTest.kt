@@ -10,7 +10,8 @@ import com.jiachian.nbatoday.HomeTeam
 import com.jiachian.nbatoday.ScheduleDateRange
 import com.jiachian.nbatoday.UserAccount
 import com.jiachian.nbatoday.UserPassword
-import com.jiachian.nbatoday.compose.screen.home.schedule.DateData
+import com.jiachian.nbatoday.compose.screen.home.navigation.HomePage
+import com.jiachian.nbatoday.compose.screen.home.schedule.models.DateData
 import com.jiachian.nbatoday.compose.screen.home.standing.StandingLabel
 import com.jiachian.nbatoday.compose.screen.home.standing.StandingSort
 import com.jiachian.nbatoday.compose.theme.CelticsColors

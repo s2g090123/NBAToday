@@ -163,7 +163,7 @@ class ComposeViewModelProvider(
         )
     }
 
-    fun getGameStatusCardViewModel(
+    fun getGameCardViewModel(
         gameAndBets: GameAndBets,
         dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
         coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined),
