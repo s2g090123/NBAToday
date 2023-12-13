@@ -1,11 +1,9 @@
 package com.jiachian.nbatoday.compose.screen.player.widgets
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.draggable
-import androidx.compose.foundation.gestures.rememberDraggableState
-import androidx.compose.foundation.gestures.scrollBy
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,22 +14,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -50,16 +40,14 @@ import com.jiachian.nbatoday.compose.screen.player.models.PlayerStatsSorting
 import com.jiachian.nbatoday.testing.testtag.PlayerTestTag
 import com.jiachian.nbatoday.utils.dividerSecondaryColor
 import com.jiachian.nbatoday.utils.rippleClickable
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 fun LazyListScope.playerStats(
     viewModel: PlayerViewModel,
-    labelState: LazyListState,
+    scrollState: ScrollState,
     statsRowData: List<PlayerStatsRowData>,
     sorting: PlayerStatsSorting,
 ) {
-    var scrollDelta by mutableStateOf(0f)
     item {
         PlayerStatsBar(
             modifier = Modifier
@@ -69,20 +57,15 @@ fun LazyListScope.playerStats(
         )
     }
     stickyHeader {
-        val draggableState = rememberDraggableState(onDelta = { scrollDelta = it })
         PlayerStatsLabelDraggableRow(
-            modifier = Modifier.draggable(draggableState, Orientation.Horizontal),
             viewModel = viewModel,
-            labelState = labelState,
+            scrollState = scrollState,
             sorting = sorting,
-            scrollDelta = scrollDelta,
         )
     }
     items(statsRowData) { rowData ->
-        val draggableState = rememberDraggableState(onDelta = { scrollDelta = it })
         PlayerStatsDraggableRow(
-            modifier = Modifier.draggable(draggableState, Orientation.Horizontal),
-            labelState = labelState,
+            scrollState = scrollState,
             rowData = rowData,
             sorting = sorting,
         )
@@ -93,15 +76,14 @@ fun LazyListScope.playerStats(
 private fun PlayerStatsLabelDraggableRow(
     modifier: Modifier = Modifier,
     viewModel: PlayerViewModel,
-    labelState: LazyListState,
+    scrollState: ScrollState,
     sorting: PlayerStatsSorting,
-    scrollDelta: Float,
 ) {
     Column(modifier = Modifier.background(MaterialTheme.colors.primary)) {
         PlayerStatsLabelRow(
             modifier = modifier,
             viewModel = viewModel,
-            state = labelState,
+            scrollState = scrollState,
             sorting = sorting,
         )
         Divider(
@@ -110,25 +92,18 @@ private fun PlayerStatsLabelDraggableRow(
             thickness = 3.dp
         )
     }
-    LaunchedEffect(scrollDelta) {
-        labelState.scrollBy(-scrollDelta)
-    }
 }
 
 @Composable
 private fun PlayerStatsDraggableRow(
     modifier: Modifier = Modifier,
-    labelState: LazyListState,
+    scrollState: ScrollState,
     rowData: PlayerStatsRowData,
     sorting: PlayerStatsSorting,
 ) {
-    val statsState = rememberLazyListState()
-    val coroutineScope = rememberCoroutineScope()
-    val visibleIndex by remember(labelState) { derivedStateOf { labelState.firstVisibleItemIndex } }
-    val visibleOffset by remember(labelState) { derivedStateOf { labelState.firstVisibleItemScrollOffset } }
     PlayerStatsRow(
         modifier = modifier,
-        state = statsState,
+        scrollState = scrollState,
         rowData = rowData,
         sorting = sorting,
     )
@@ -137,17 +112,6 @@ private fun PlayerStatsDraggableRow(
         color = dividerSecondaryColor(),
         thickness = 1.dp
     )
-    LaunchedEffect(visibleIndex, visibleOffset) {
-        // WORKAROUND
-        // LazyListState#scrollToItem is suspended if PlayerStatsDraggableRow is not visible on the screen.
-        // Once it becomes visible, it may scroll to the wrong position.
-        // To address this issue,
-        // scrolling twice ensures that PlayerStatsDraggableRows scroll to correct position.
-        coroutineScope.launch {
-            statsState.scrollToItem(visibleIndex, visibleOffset)
-            statsState.scrollToItem(visibleIndex, visibleOffset)
-        }
-    }
 }
 
 @Composable
@@ -166,86 +130,80 @@ private fun PlayerStatsBar(modifier: Modifier = Modifier) {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun PlayerStatsLabelRow(
     modifier: Modifier = Modifier,
     viewModel: PlayerViewModel,
-    state: LazyListState,
+    scrollState: ScrollState,
     sorting: PlayerStatsSorting,
 ) {
     val selectTimeFrame by remember(sorting) {
         derivedStateOf { sorting == PlayerStatsSorting.TIME_FRAME }
     }
-    LazyRow(
-        modifier = modifier,
-        state = state,
-        userScrollEnabled = false,
-    ) {
-        stickyHeader {
-            Surface(color = MaterialTheme.colors.primary) {
-                Text(
-                    modifier = Modifier
-                        .size(120.dp, 40.dp)
-                        .background(
-                            if (selectTimeFrame) MaterialTheme.colors.secondary.copy(Transparency25)
-                            else MaterialTheme.colors.primary,
-                        )
-                        .rippleClickable { viewModel.updateStatsSorting(PlayerStatsSorting.TIME_FRAME) }
-                        .padding(8.dp),
-                    text = stringResource(R.string.player_career_by_year),
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colors.secondary
+    Row(modifier = modifier) {
+        Text(
+            modifier = Modifier
+                .size(120.dp, 40.dp)
+                .background(
+                    if (selectTimeFrame) MaterialTheme.colors.secondary.copy(Transparency25)
+                    else MaterialTheme.colors.primary,
+                )
+                .rippleClickable { viewModel.updateStatsSorting(PlayerStatsSorting.TIME_FRAME) }
+                .padding(8.dp),
+            text = stringResource(R.string.player_career_by_year),
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Medium,
+            color = MaterialTheme.colors.secondary
+        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .horizontalScroll(scrollState)
+        ) {
+            viewModel.statsLabels.forEach { label ->
+                PlayerStatsLabel(
+                    label = label,
+                    isFocus = label.sorting == sorting,
+                    onClick = { viewModel.updateStatsSorting(label.sorting) }
                 )
             }
-        }
-        items(viewModel.statsLabels) { label ->
-            PlayerStatsLabel(
-                label = label,
-                isFocus = label.sorting == sorting,
-                onClick = { viewModel.updateStatsSorting(label.sorting) }
-            )
         }
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun PlayerStatsRow(
     modifier: Modifier = Modifier,
-    state: LazyListState,
+    scrollState: ScrollState,
     rowData: PlayerStatsRowData,
     sorting: PlayerStatsSorting
 ) {
     val selectTimeFrame by remember(sorting) {
         derivedStateOf { sorting == PlayerStatsSorting.TIME_FRAME }
     }
-    LazyRow(
-        modifier = modifier,
-        state = state,
-        userScrollEnabled = false,
-    ) {
-        stickyHeader {
-            Surface(color = MaterialTheme.colors.primary) {
-                PlayerStatsYearText(
-                    modifier = Modifier
-                        .testTag(PlayerTestTag.PlayerStatsRow_PlayerStatsYearText)
-                        .size(120.dp, 40.dp)
-                        .background(
-                            if (selectTimeFrame) MaterialTheme.colors.secondary.copy(Transparency25)
-                            else MaterialTheme.colors.primary,
-                        ),
-                    time = rowData.timeFrame,
-                    teamNameAbbr = rowData.teamAbbr
+    Row(modifier = modifier) {
+        PlayerStatsYearText(
+            modifier = Modifier
+                .testTag(PlayerTestTag.PlayerStatsRow_PlayerStatsYearText)
+                .size(120.dp, 40.dp)
+                .background(
+                    if (selectTimeFrame) MaterialTheme.colors.secondary.copy(Transparency25)
+                    else MaterialTheme.colors.primary,
+                ),
+            time = rowData.timeFrame,
+            teamNameAbbr = rowData.teamAbbr
+        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .horizontalScroll(scrollState)
+        ) {
+            rowData.data.forEach { data ->
+                PlayerStatsText(
+                    data = data,
+                    focus = data.sorting == sorting,
                 )
             }
-        }
-        items(rowData.data) { data ->
-            PlayerStatsText(
-                data = data,
-                focus = data.sorting == sorting,
-            )
         }
     }
 }

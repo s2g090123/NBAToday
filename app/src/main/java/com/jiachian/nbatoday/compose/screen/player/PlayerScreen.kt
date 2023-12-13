@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -59,7 +59,7 @@ fun PlayerScreen(viewModel: PlayerViewModel) {
                 val playerImp by viewModel.player.collectAsState()
                 val statsRowData by viewModel.sortedStatsRowData.collectAsState()
                 val sorting by viewModel.statsSorting.collectAsState()
-                val labelState = rememberLazyListState()
+                val scrollState = rememberScrollState()
                 NullCheckScreen(
                     data = playerImp,
                     ifNull = null
@@ -71,7 +71,7 @@ fun PlayerScreen(viewModel: PlayerViewModel) {
                         )
                         playerStats(
                             viewModel = viewModel,
-                            labelState = labelState,
+                            scrollState = scrollState,
                             statsRowData = statsRowData,
                             sorting = sorting,
                         )
