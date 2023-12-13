@@ -21,6 +21,7 @@ import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.widget.TeamLogoImage
 import com.jiachian.nbatoday.models.local.score.BoxScore
 import com.jiachian.nbatoday.models.local.team.NBATeam
+import com.jiachian.nbatoday.testing.testtag.BoxScoreTestTag
 
 @Composable
 fun ScoreTotal(
@@ -36,7 +37,7 @@ fun ScoreTotal(
     ) {
         TeamInfo(
             modifier = Modifier
-                .testTag("ScoreTotal_TeamInfo_Home")
+                .testTag(BoxScoreTestTag.ScoreTotal_TeamInfo_Home)
                 .padding(start = 24.dp),
             team = homeTeam.team
         )
@@ -47,7 +48,7 @@ fun ScoreTotal(
         )
         TeamInfo(
             modifier = Modifier
-                .testTag("ScoreTotal_TeamInfo_Away")
+                .testTag(BoxScoreTestTag.ScoreTotal_TeamInfo_Away)
                 .padding(end = 24.dp),
             team = awayTeam.team
         )
@@ -69,7 +70,7 @@ private fun TeamInfo(
         )
         Text(
             modifier = Modifier
-                .testTag("TeamInfo_Text_Name")
+                .testTag(BoxScoreTestTag.TeamInfo_Text_TeamName)
                 .padding(top = 8.dp),
             text = team.teamName,
             fontWeight = FontWeight.Medium,
@@ -91,7 +92,7 @@ private fun GameScoreStatus(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            modifier = Modifier.testTag("ScoreTotal_Text_ScoreComparison"),
+            modifier = Modifier.testTag(BoxScoreTestTag.GameScoreStatus_Text_ScoreComparison),
             text = stringResource(R.string.box_score_comparison, homeScore, awayScore),
             fontWeight = FontWeight.Bold,
             fontSize = 24.sp,
@@ -99,7 +100,7 @@ private fun GameScoreStatus(
         )
         Text(
             modifier = Modifier
-                .testTag("ScoreTotal_Text_Status")
+                .testTag(BoxScoreTestTag.GameScoreStatus_Text_Status)
                 .padding(top = 16.dp),
             text = gameStatus,
             fontWeight = FontWeight.Bold,

@@ -41,6 +41,7 @@ import com.jiachian.nbatoday.compose.widget.IconButton
 import com.jiachian.nbatoday.compose.widget.LoadingScreen
 import com.jiachian.nbatoday.compose.widget.NullCheckScreen
 import com.jiachian.nbatoday.models.local.score.BoxScore
+import com.jiachian.nbatoday.testing.testtag.BoxScoreTestTag
 
 private val TopMargin = 56.dp
 
@@ -105,7 +106,7 @@ private fun ScoreScreen(
                 )
                 ScorePeriod(
                     modifier = Modifier
-                        .testTag("ScoreScreen_ScorePeriod")
+                        .testTag(BoxScoreTestTag.ScoreScreen_ScorePeriod)
                         .padding(top = 16.dp, start = 12.dp, end = 12.dp)
                         .fillMaxWidth(),
                     score = score,
@@ -133,7 +134,7 @@ private fun ScoreTopBar(
     Row(modifier = modifier) {
         IconButton(
             modifier = Modifier
-                .testTag("ScoreScreen_Btn_Back")
+                .testTag(BoxScoreTestTag.ScoreTopBar_Button_Back)
                 .padding(start = 8.dp),
             drawableRes = R.drawable.ic_black_back,
             tint = MaterialTheme.colors.secondary,
@@ -141,7 +142,7 @@ private fun ScoreTopBar(
         )
         Text(
             modifier = Modifier
-                .testTag("ScoreScreen_Text_Date")
+                .testTag(BoxScoreTestTag.ScoreTopBar_Text_Date)
                 .align(Alignment.CenterVertically)
                 .padding(start = 16.dp),
             text = title,
@@ -182,7 +183,7 @@ private fun ScoreDetail(
         )
         ScoreDetailPager(
             modifier = Modifier
-                .testTag("ScoreDetail_Pager")
+                .testTag(BoxScoreTestTag.ScoreDetail_ScoreDetailPager)
                 .fillMaxHeight()
                 .nestedScroll(nestedScrollConnection),
             viewModel = viewModel,

@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.models.local.score.BoxScore
+import com.jiachian.nbatoday.testing.testtag.BoxScoreTestTag
 import com.jiachian.nbatoday.utils.dividerSecondaryColor
 
 @Composable
@@ -100,13 +101,13 @@ private fun PeriodScoreTable(
     Column(modifier = modifier) {
         PeriodScoreRow(
             modifier = Modifier
-                .testTag("ScorePeriod_Box_Score")
+                .testTag(BoxScoreTestTag.PeriodScoreTable_PeriodScoreRow_Home)
                 .fillMaxWidth(),
             team = homeTeam
         )
         PeriodScoreRow(
             modifier = Modifier
-                .testTag("ScorePeriod_Box_Score")
+                .testTag(BoxScoreTestTag.PeriodScoreTable_PeriodScoreRow_Away)
                 .fillMaxWidth(),
             team = awayTeam
         )
@@ -121,7 +122,7 @@ private fun PeriodScoreRow(
     Box(modifier = modifier) {
         Text(
             modifier = Modifier
-                .testTag("ScorePeriod_Text_TeamName")
+                .testTag(BoxScoreTestTag.PeriodScoreRow_Text_TeamName)
                 .align(Alignment.TopStart),
             text = team.team.teamName,
             color = MaterialTheme.colors.secondary,
@@ -131,14 +132,14 @@ private fun PeriodScoreRow(
             team.periods.forEach { period ->
                 ScoreText(
                     modifier = Modifier
-                        .testTag("ScorePeriod_Text_Score")
+                        .testTag(BoxScoreTestTag.PeriodScoreRow_Text_Score)
                         .width(38.dp),
                     score = period.score
                 )
             }
             ScoreText(
                 modifier = Modifier
-                    .testTag("ScorePeriod_Text_ScoreTotal")
+                    .testTag(BoxScoreTestTag.PeriodScoreRow_Text_ScoreTotal)
                     .width(38.dp),
                 score = team.score
             )

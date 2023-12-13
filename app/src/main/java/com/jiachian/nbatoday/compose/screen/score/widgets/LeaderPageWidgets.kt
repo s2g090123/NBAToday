@@ -29,6 +29,7 @@ import com.jiachian.nbatoday.compose.screen.score.BoxScoreViewModel
 import com.jiachian.nbatoday.compose.screen.score.models.BoxScoreLeaderRowData
 import com.jiachian.nbatoday.compose.widget.PlayerImage
 import com.jiachian.nbatoday.models.local.score.BoxScore
+import com.jiachian.nbatoday.testing.testtag.BoxScoreTestTag
 import com.jiachian.nbatoday.utils.dividerSecondaryColor
 
 @Composable
@@ -52,7 +53,7 @@ fun ScoreLeaderPage(
         items(rowData) { rowData ->
             ScoreLeaderRow(
                 modifier = Modifier
-                    .testTag("LeaderStatistics_LeaderStatisticsRow")
+                    .testTag(BoxScoreTestTag.ScoreLeaderPage_ScoreLeaderRow)
                     .fillMaxWidth(),
                 rowData = rowData
             )
@@ -105,7 +106,7 @@ private fun ScoreLeaderRow(
         ) {
             LeaderStatsText(
                 modifier = Modifier
-                    .testTag("LeaderStatisticsRow_Text_Home")
+                    .testTag(BoxScoreTestTag.ScoreLeaderRow_LeaderStatsText_Home)
                     .align(Alignment.CenterStart),
                 value = rowData.home
             )
@@ -118,7 +119,7 @@ private fun ScoreLeaderRow(
             )
             LeaderStatsText(
                 modifier = Modifier
-                    .testTag("LeaderStatisticsRow_Text_Away")
+                    .testTag(BoxScoreTestTag.ScoreLeaderRow_LeaderStatsText_Away)
                     .align(Alignment.CenterEnd),
                 value = rowData.away
             )

@@ -24,6 +24,7 @@ import com.google.accompanist.pager.PagerState
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.screen.score.BoxScoreViewModel
 import com.jiachian.nbatoday.models.local.score.BoxScore
+import com.jiachian.nbatoday.testing.testtag.BoxScoreTestTag
 import kotlinx.coroutines.launch
 
 private const val HomePageIndex = 0
@@ -50,7 +51,7 @@ fun ScoreDetailPager(
                 val rowData by viewModel.homePlayerRowData.collectAsState()
                 ScorePlayerPage(
                     modifier = Modifier
-                        .testTag("ScoreDetail_PlayerStatistics_Home")
+                        .testTag(BoxScoreTestTag.ScoreDetailPager_ScorePlayerPage_Home)
                         .fillMaxSize(),
                     viewModel = viewModel,
                     players = rowData,
@@ -60,7 +61,7 @@ fun ScoreDetailPager(
                 val rowData by viewModel.awayPlayerRowData.collectAsState()
                 ScorePlayerPage(
                     modifier = Modifier
-                        .testTag("ScoreDetail_PlayerStatistics_Away")
+                        .testTag(BoxScoreTestTag.ScoreDetailPager_ScorePlayerPage_Away)
                         .fillMaxHeight(),
                     viewModel = viewModel,
                     players = rowData,
@@ -69,7 +70,7 @@ fun ScoreDetailPager(
             TeamPageIndex -> {
                 ScoreTeamPage(
                     modifier = Modifier
-                        .testTag("ScoreDetail_TeamStatistics")
+                        .testTag(BoxScoreTestTag.ScoreDetailPager_ScoreTeamPage)
                         .fillMaxHeight()
                         .padding(horizontal = 16.dp),
                     viewModel = viewModel
@@ -78,7 +79,7 @@ fun ScoreDetailPager(
             LeaderPageIndex -> {
                 ScoreLeaderPage(
                     modifier = Modifier
-                        .testTag("ScoreDetail_LeaderStatistics")
+                        .testTag(BoxScoreTestTag.ScoreDetailPager_ScoreLeaderPage)
                         .fillMaxHeight()
                         .padding(horizontal = 16.dp),
                     viewModel = viewModel
@@ -109,7 +110,7 @@ fun ScoreTabRow(
         }
     ) {
         ScoreTab(
-            modifier = Modifier.testTag("ScoreDetail_Tab_Home"),
+            modifier = Modifier.testTag(BoxScoreTestTag.ScoreTabRow_ScoreTab_Home),
             text = score.homeTeam.team.teamName,
             isSelected = pagerState.currentPage == HomePageIndex,
             onClick = {
@@ -119,7 +120,7 @@ fun ScoreTabRow(
             }
         )
         ScoreTab(
-            modifier = Modifier.testTag("ScoreDetail_Tab_Away"),
+            modifier = Modifier.testTag(BoxScoreTestTag.ScoreTabRow_ScoreTab_Away),
             text = score.awayTeam.team.teamName,
             isSelected = pagerState.currentPage == AwayPageIndex,
             onClick = {
@@ -129,7 +130,7 @@ fun ScoreTabRow(
             }
         )
         ScoreTab(
-            modifier = Modifier.testTag("ScoreDetail_Tab_TeamStats"),
+            modifier = Modifier.testTag(BoxScoreTestTag.ScoreTabRow_ScoreTab_Team),
             text = stringResource(R.string.box_score_tab_statistics),
             isSelected = pagerState.currentPage == TeamPageIndex,
             onClick = {
@@ -139,7 +140,7 @@ fun ScoreTabRow(
             }
         )
         ScoreTab(
-            modifier = Modifier.testTag("ScoreDetail_Tab_LeaderStats"),
+            modifier = Modifier.testTag(BoxScoreTestTag.ScoreTabRow_ScoreTab_Leader),
             text = stringResource(R.string.box_score_tab_leaders),
             isSelected = pagerState.currentPage == LeaderPageIndex,
             onClick = {

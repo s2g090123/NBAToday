@@ -40,6 +40,7 @@ import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.screen.score.BoxScoreViewModel
 import com.jiachian.nbatoday.compose.screen.score.models.BoxScorePlayerLabel
 import com.jiachian.nbatoday.compose.screen.score.models.BoxScorePlayerRowData
+import com.jiachian.nbatoday.testing.testtag.BoxScoreTestTag
 import com.jiachian.nbatoday.utils.dividerSecondaryColor
 import com.jiachian.nbatoday.utils.rippleClickable
 
@@ -134,7 +135,7 @@ private fun ScorePlayerLabel(
 ) {
     Box(
         modifier = Modifier
-            .testTag("PlayerStatistics_Box_Label")
+            .testTag(BoxScoreTestTag.ScorePlayerLabel)
             .size(label.width, 40.dp)
             .rippleClickable { onClick() }
             .padding(8.dp)
@@ -172,7 +173,7 @@ private fun ScorePlayerLabelPopup(
         ) {
             Text(
                 modifier = Modifier
-                    .testTag("LabelAboutPopup_Text_About")
+                    .testTag(BoxScoreTestTag.ScorePlayerLabelPopup_Text_About)
                     .padding(8.dp),
                 text = text,
                 color = MaterialTheme.colors.primaryVariant
@@ -211,7 +212,7 @@ private fun ScorePlayerRow(
     Row(modifier = modifier) {
         ScorePlayerNameText(
             modifier = Modifier
-                .testTag("PlayerStatistics_Text_PlayerName")
+                .testTag(BoxScoreTestTag.ScorePlayerRow_ScorePlayerNameText)
                 .size(120.dp, 40.dp)
                 .rippleClickable { viewModel.openPlayerInfo(rowData.player.playerId) }
                 .padding(top = 8.dp, bottom = 8.dp, start = 4.dp),

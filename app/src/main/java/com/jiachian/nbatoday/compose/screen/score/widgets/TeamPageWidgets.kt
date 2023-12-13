@@ -29,6 +29,7 @@ import com.jiachian.nbatoday.compose.screen.score.BoxScoreViewModel
 import com.jiachian.nbatoday.compose.screen.score.models.BoxScoreTeamRowData
 import com.jiachian.nbatoday.compose.widget.TeamLogoImage
 import com.jiachian.nbatoday.models.local.team.NBATeam
+import com.jiachian.nbatoday.testing.testtag.BoxScoreTestTag
 import com.jiachian.nbatoday.utils.dividerSecondaryColor
 
 @Composable
@@ -52,7 +53,7 @@ fun ScoreTeamPage(
         items(rowData) { rowData ->
             TeamStatsRow(
                 modifier = Modifier
-                    .testTag("TeamStatistics_TeamStatsRow")
+                    .testTag(BoxScoreTestTag.ScoreTeamPage_TeamStatsRow)
                     .fillMaxWidth(),
                 rowData = rowData
             )
@@ -77,7 +78,7 @@ private fun TeamStatsRow(
         ) {
             ScoreTeamStatsText(
                 modifier = Modifier
-                    .testTag("TeamStatsRow_Text_Home")
+                    .testTag(BoxScoreTestTag.TeamStatsRow_ScoreTeamStatsText_Home)
                     .align(Alignment.CenterStart),
                 value = rowData.home,
             )
@@ -90,7 +91,7 @@ private fun TeamStatsRow(
             )
             ScoreTeamStatsText(
                 modifier = Modifier
-                    .testTag("TeamStatsRow_Text_Away")
+                    .testTag(BoxScoreTestTag.TeamStatsRow_ScoreTeamStatsText_Away)
                     .align(Alignment.CenterEnd),
                 value = rowData.away,
             )
