@@ -24,23 +24,15 @@ object LabelHelper {
             StandingLabel.L -> stats.lose
             StandingLabel.WINP -> stats.winPercentage
             StandingLabel.PTS -> stats.pointsAverage
-            StandingLabel.FGM -> stats.fieldGoalsMadeAverage
-            StandingLabel.FGA -> stats.fieldGoalsAttemptedAverage
             StandingLabel.FGP -> stats.fieldGoalsPercentage
-            StandingLabel.PM3 -> stats.threePointersMadeAverage
-            StandingLabel.PA3 -> stats.threePointersAttemptedAverage
             StandingLabel.PP3 -> stats.threePointersPercentage
-            StandingLabel.FTM -> stats.freeThrowsMadeAverage
-            StandingLabel.FTA -> stats.freeThrowsAttemptedAverage
             StandingLabel.FTP -> stats.freeThrowsPercentage
             StandingLabel.OREB -> stats.reboundsOffensiveAverage
             StandingLabel.DREB -> stats.reboundsDefensiveAverage
-            StandingLabel.REB -> stats.reboundsTotalAverage
             StandingLabel.AST -> stats.assistsAverage
             StandingLabel.TOV -> stats.turnoversAverage
             StandingLabel.STL -> stats.stealsAverage
             StandingLabel.BLK -> stats.blocksAverage
-            StandingLabel.PF -> stats.foulsPersonalAverage
         }.let {
             if (it is Double) {
                 it.decimalFormat()

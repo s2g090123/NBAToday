@@ -42,53 +42,17 @@ enum class StandingLabel(
         align = TextAlign.End,
         sorting = StandingSorting.PTS,
     ),
-    FGM(
-        width = 64.dp,
-        textRes = R.string.stats_label_fgm,
-        align = TextAlign.End,
-        sorting = StandingSorting.FGM,
-    ),
-    FGA(
-        width = 64.dp,
-        textRes = R.string.stats_label_fga,
-        align = TextAlign.End,
-        sorting = StandingSorting.FGA,
-    ),
     FGP(
         width = 64.dp,
         textRes = R.string.stats_label_fgPercentage,
         align = TextAlign.End,
         sorting = StandingSorting.FGP,
     ),
-    PM3(
-        width = 64.dp,
-        textRes = R.string.stats_label_3pm,
-        align = TextAlign.End,
-        sorting = StandingSorting.PM3,
-    ),
-    PA3(
-        width = 64.dp,
-        textRes = R.string.stats_label_3pa,
-        align = TextAlign.End,
-        sorting = StandingSorting.PA3,
-    ),
     PP3(
         width = 64.dp,
         textRes = R.string.stats_label_3pPercentage,
         align = TextAlign.End,
         sorting = StandingSorting.PP3,
-    ),
-    FTM(
-        width = 64.dp,
-        textRes = R.string.stats_label_ftm,
-        align = TextAlign.End,
-        sorting = StandingSorting.FTM,
-    ),
-    FTA(
-        width = 64.dp,
-        textRes = R.string.stats_label_fta,
-        align = TextAlign.End,
-        sorting = StandingSorting.FTA,
     ),
     FTP(
         width = 64.dp,
@@ -107,12 +71,6 @@ enum class StandingLabel(
         textRes = R.string.stats_label_dreb,
         align = TextAlign.End,
         sorting = StandingSorting.DREB,
-    ),
-    REB(
-        width = 48.dp,
-        textRes = R.string.stats_label_reb,
-        align = TextAlign.End,
-        sorting = StandingSorting.REB,
     ),
     AST(
         width = 48.dp,
@@ -137,11 +95,5 @@ enum class StandingLabel(
         textRes = R.string.stats_label_blk,
         align = TextAlign.End,
         sorting = StandingSorting.BLK,
-    ),
-    PF(
-        width = 48.dp,
-        textRes = R.string.stats_label_pf,
-        align = TextAlign.End,
-        sorting = StandingSorting.PF,
     ),
 }
