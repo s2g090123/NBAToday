@@ -4,7 +4,7 @@ import com.jiachian.nbatoday.FinalGameId
 import com.jiachian.nbatoday.GameDate
 import com.jiachian.nbatoday.HomePlayerId
 import com.jiachian.nbatoday.HomeTeamId
-import com.jiachian.nbatoday.NbaLeagueId
+import com.jiachian.nbatoday.NBALeagueId
 import com.jiachian.nbatoday.UserAccount
 import com.jiachian.nbatoday.UserName
 import com.jiachian.nbatoday.UserPassword
@@ -156,14 +156,14 @@ class NbaRemoteDataSourceTest {
 
     @Test
     fun getScoreboard_fullGameDate_checksResponseBody() = runTest {
-        val actual = remoteDataSource.getScoreboard(NbaLeagueId, GameDate)
+        val actual = remoteDataSource.getScoreboard(NBALeagueId, GameDate)
         val expected = RemoteGameFactory.getRemoteGameScoreboard()
         assertThat(actual, `is`(expected))
     }
 
     @Test
     fun getScoreboard_separateGameDate_checksResponseBody() = runTest {
-        val actual = remoteDataSource.getScoreboard(NbaLeagueId, 2023, 1, 1, 0)
+        val actual = remoteDataSource.getScoreboard(NBALeagueId, 2023, 1, 1, 0)
         val expected = listOf(RemoteGameFactory.getRemoteGameScoreboard())
         assertThat(actual, `is`(expected))
     }

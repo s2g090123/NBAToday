@@ -25,7 +25,7 @@ import com.jiachian.nbatoday.HomePlayerLastName
 import com.jiachian.nbatoday.HomeTeamAbbr
 import com.jiachian.nbatoday.HomeTeamId
 import com.jiachian.nbatoday.HomeTeamName
-import com.jiachian.nbatoday.NbaLeagueId
+import com.jiachian.nbatoday.NBALeagueId
 import com.jiachian.nbatoday.TeamCity
 import com.jiachian.nbatoday.models.GameLeaderFactory
 import com.jiachian.nbatoday.models.GameTeamFactory
@@ -108,7 +108,7 @@ object RemoteGameFactory {
                         )
                     )
                 ),
-                leagueId = NbaLeagueId,
+                leagueId = NBALeagueId,
                 seasonYear = GameSeason
             )
         )

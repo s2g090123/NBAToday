@@ -4,11 +4,11 @@ const val CdnBaseUrl = "https://cdn.nba.com/"
 const val StatsBaseUrl = "https://stats.nba.com/stats/"
 const val NBAServerUrl = "http://10.0.2.2:8080/nba/"
 
-const val ScheduleDateRange = 7
+const val ScheduleDateRange = 3
 
 const val DataStoreName = "nba_data_store"
 
-const val NbaLeagueId = "00"
+const val NBALeagueId = "00"
 
 const val CurrentSeason = "2023-24"
 

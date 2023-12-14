@@ -1,6 +1,6 @@
 package com.jiachian.nbatoday.repository.schedule
 
-import com.jiachian.nbatoday.NbaLeagueId
+import com.jiachian.nbatoday.NBALeagueId
 import com.jiachian.nbatoday.ScheduleDateRange
 import com.jiachian.nbatoday.datasource.local.game.GameLocalSource
 import com.jiachian.nbatoday.datasource.remote.game.GameRemoteSource
@@ -45,7 +45,7 @@ class NBAScheduleRepository(
     override suspend fun updateSchedule(year: Int, month: Int, day: Int) {
         loading {
             val gameDate = DateUtils.formatScoreboardGameDate(year, month, day)
-            gameRemoteSource.getGame(NbaLeagueId, gameDate)
+            gameRemoteSource.getGame(NBALeagueId, gameDate)
                 .takeIf { !it.isError() }
                 ?.body()
                 ?.scoreboard
