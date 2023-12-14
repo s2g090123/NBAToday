@@ -65,10 +65,10 @@ fun StandingPage(
     modifier: Modifier = Modifier,
     viewModel: StandingPageViewModel,
 ) {
-    val isLoading by viewModel.isLoading.collectAsState()
+    val isRefreshing by viewModel.isRefreshing.collectAsState()
     val pagerState = rememberPagerState()
     val pullRefreshState = rememberPullRefreshState(
-        refreshing = isLoading,
+        refreshing = isRefreshing,
         onRefresh = { viewModel.updateTeamStats() }
     )
     Box(modifier = modifier) {
@@ -88,7 +88,7 @@ fun StandingPage(
                 )
                 PullRefreshIndicator(
                     modifier = Modifier.align(Alignment.TopCenter),
-                    refreshing = isLoading,
+                    refreshing = isRefreshing,
                     state = pullRefreshState
                 )
             }

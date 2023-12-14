@@ -57,24 +57,17 @@ class StandingPageViewModel(
         rowData.sortedWith(sorting)
     }.stateIn(coroutineScope, SharingStarted.Eagerly, null)
 
-    private val isRefreshing = MutableStateFlow(false)
-
-    val isLoading = combine(
-        isRefreshing,
-        sortedEastRowData,
-        sortedWestRowData,
-    ) { refreshing, east, west ->
-        refreshing || east == null || west == null
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, false)
+    private val isRefreshingImp = MutableStateFlow(false)
+    val isRefreshing = isRefreshingImp.asStateFlow()
 
     private val selectedConference = MutableStateFlow(NBATeam.Conference.EAST)
 
     fun updateTeamStats() {
-        if (isLoading.value) return
+        if (isRefreshing.value) return
         coroutineScope.launch(dispatcherProvider.io) {
-            isRefreshing.value = true
+            isRefreshingImp.value = true
             repository.updateTeamStats()
-            isRefreshing.value = false
+            isRefreshingImp.value = false
         }
     }
 
