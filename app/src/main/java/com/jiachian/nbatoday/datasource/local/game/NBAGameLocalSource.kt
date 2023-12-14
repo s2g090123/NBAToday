@@ -1,6 +1,7 @@
 package com.jiachian.nbatoday.datasource.local.game
 
 import com.jiachian.nbatoday.database.dao.GameDao
+import com.jiachian.nbatoday.models.local.game.Game
 import com.jiachian.nbatoday.models.local.game.GameAndBets
 import com.jiachian.nbatoday.models.local.game.GameScoreUpdateData
 import com.jiachian.nbatoday.models.local.game.GameUpdateData
@@ -32,6 +33,10 @@ class NBAGameLocalSource(
 
     override fun getFirstGameDateTime(): Flow<Date> {
         return gameDao.getFirstGameDateTime()
+    }
+
+    override suspend fun insertGames(games: List<Game>) {
+        gameDao.insertGames(games)
     }
 
     override suspend fun updateGames(games: List<GameUpdateData>) {

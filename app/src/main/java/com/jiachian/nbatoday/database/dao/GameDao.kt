@@ -1,6 +1,7 @@
 package com.jiachian.nbatoday.database.dao
 
 import androidx.room.Dao
+import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
@@ -33,6 +34,9 @@ interface GameDao {
 
     @Query("SELECT EXISTS (SELECT 1 FROM game)")
     fun exitsGame(): Boolean
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertGames(games: List<Game>)
 
     @Update(entity = Game::class, onConflict = OnConflictStrategy.REPLACE)
     suspend fun updateGames(games: List<GameUpdateData>)

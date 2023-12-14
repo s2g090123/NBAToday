@@ -110,20 +110,26 @@ class NBAScheduleRepository(
 
     private suspend fun updateGames(games: List<Game>, currentDate: Date) {
         loading {
-            val gameExists = gameLocalSource.existsGame()
-            val updatedGames = if (!gameExists) {
-                games
-            } else {
-                val before = Date(currentDate.time - TimeUnit.DAYS.toMillis(1))
-                val after = DateUtils.parseDate(dataStore.lastAccessedDay.first()) ?: Date(0)
-                games.filter { game ->
-                    val gameDate = game.gameDateTime
-                    gameDate.after(after) && gameDate.before(before)
+            when (gameLocalSource.existsGame()) {
+                true -> {
+                    val before = Date(currentDate.time - TimeUnit.DAYS.toMillis(1))
+                    val after = DateUtils.parseDate(dataStore.lastAccessedDay.first()) ?: Date(0)
+                    games
+                        .filter { game ->
+                            val gameDate = game.gameDateTime
+                            gameDate.after(after) && gameDate.before(before)
+                        }
+                        .map { game ->
+                            game.toGameScoreUpdateData()
+                        }
+                        .also { updatedGames ->
+                            gameLocalSource.updateGamesScore(updatedGames)
+                        }
                 }
-            }.map { game ->
-                game.toGameScoreUpdateData()
+                false -> {
+                    gameLocalSource.insertGames(games)
+                }
             }
-            gameLocalSource.updateGamesScore(updatedGames)
         }
     }
 
