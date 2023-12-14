@@ -25,7 +25,9 @@ import com.jiachian.nbatoday.compose.screen.home.user.UserPage
 
 @Composable
 fun HomeScreen(viewModel: HomeViewModel) {
-    val navController = rememberNavController()
+    val navController = rememberNavController().apply {
+        enableOnBackPressed(false)
+    }
     Scaffold(
         bottomBar = {
             HomeBottomNavigation(
