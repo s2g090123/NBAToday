@@ -54,6 +54,7 @@ import com.jiachian.nbatoday.compose.screen.home.standing.models.StandingSorting
 import com.jiachian.nbatoday.compose.widget.NullCheckScreen
 import com.jiachian.nbatoday.compose.widget.TeamLogoImage
 import com.jiachian.nbatoday.models.local.team.NBATeam
+import com.jiachian.nbatoday.testing.testtag.StandingTestTag
 import com.jiachian.nbatoday.utils.dividerSecondaryColor
 import com.jiachian.nbatoday.utils.rippleClickable
 import kotlinx.coroutines.launch
@@ -73,7 +74,7 @@ fun StandingPage(
     Box(modifier = modifier) {
         HorizontalPager(
             modifier = Modifier
-                .testTag("StandingPage_Pager")
+                .testTag(StandingTestTag.StandingPage_Pager)
                 .padding(top = 48.dp),
             state = pagerState,
             count = viewModel.conferences.size,
@@ -107,7 +108,7 @@ private fun StandingTabRow(
 ) {
     val coroutineScope = rememberCoroutineScope()
     TabRow(
-        modifier = Modifier.testTag("StandingPage_TabRow_Conference"),
+        modifier = Modifier.testTag(StandingTestTag.StandingTabRow_TabRow),
         selectedTabIndex = pagerState.currentPage,
         backgroundColor = MaterialTheme.colors.secondary,
         contentColor = MaterialTheme.colors.primaryVariant,
@@ -120,7 +121,7 @@ private fun StandingTabRow(
     ) {
         viewModel.conferences.forEachIndexed { index, conference ->
             Tab(
-                modifier = Modifier.testTag("StandingPage_Tab_Conference"),
+                modifier = Modifier.testTag(StandingTestTag.StandingTabRow_Tab),
                 text = {
                     Text(
                         text = stringResource(
@@ -323,7 +324,7 @@ private fun StandingTeamRow(
     ) {
         Text(
             modifier = Modifier
-                .testTag("TeamStanding_Text_Index")
+                .testTag(StandingTestTag.StandingTeamRow_Text_Standing)
                 .padding(start = 4.dp)
                 .width(20.dp),
             text = standing.toString(),
@@ -338,7 +339,7 @@ private fun StandingTeamRow(
         )
         Text(
             modifier = Modifier
-                .testTag("TeamStanding_Text_TeamName")
+                .testTag(StandingTestTag.StandingTeamRow_Text_TeamName)
                 .padding(start = 4.dp),
             text = team.teamName,
             textAlign = TextAlign.Start,

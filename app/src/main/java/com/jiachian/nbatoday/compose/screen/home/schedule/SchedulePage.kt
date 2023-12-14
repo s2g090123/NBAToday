@@ -41,6 +41,7 @@ import com.jiachian.nbatoday.compose.screen.card.GameCard
 import com.jiachian.nbatoday.compose.screen.home.schedule.models.DateData
 import com.jiachian.nbatoday.compose.widget.IconButton
 import com.jiachian.nbatoday.models.local.game.GameAndBets
+import com.jiachian.nbatoday.testing.testtag.ScheduleTestTag
 import com.jiachian.nbatoday.utils.rippleClickable
 import kotlinx.coroutines.launch
 
@@ -61,7 +62,7 @@ fun SchedulePage(
     Box(modifier = modifier) {
         HorizontalPager(
             modifier = Modifier
-                .testTag("SchedulePage_Pager")
+                .testTag(ScheduleTestTag.SchedulePage_Pager)
                 .padding(top = 48.dp)
                 .fillMaxSize(),
             state = pagerState,
@@ -93,19 +94,19 @@ private fun ScheduleContent(
 ) {
     Box(
         modifier = Modifier
-            .testTag("SchedulePage_Box")
+            .testTag(ScheduleTestTag.ScheduleContent)
             .pullRefresh(refreshState)
     ) {
         LazyColumn(
             modifier = Modifier
-                .testTag("SchedulePage_LZ_Body")
+                .testTag(ScheduleTestTag.ScheduleContent_LazyColumn)
                 .fillMaxSize(),
             horizontalAlignment = Alignment.End,
         ) {
             item {
                 IconButton(
                     modifier = Modifier
-                        .testTag("SchedulePage_Btn_Calendar")
+                        .testTag(ScheduleTestTag.ScheduleContent_Button_Calendar)
                         .padding(top = 8.dp, end = 4.dp),
                     drawableRes = R.drawable.ic_black_calendar,
                     tint = MaterialTheme.colors.secondary,
@@ -118,7 +119,7 @@ private fun ScheduleContent(
                 }
                 GameCard(
                     modifier = Modifier
-                        .testTag("SchedulePage_GameStatusCard2")
+                        .testTag(ScheduleTestTag.ScheduleContent_GameCard)
                         .padding(
                             top = if (index == 0) 8.dp else 16.dp,
                             bottom = if (index >= games.size - 1) 16.dp else 0.dp,
