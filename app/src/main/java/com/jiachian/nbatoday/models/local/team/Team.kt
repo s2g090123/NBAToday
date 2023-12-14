@@ -36,11 +36,35 @@ data class Team(
     @ColumnInfo(name = "plus_minus") val plusMinus: Double
 ) {
     val pointsAverage: Double
-        get() = (points.toDouble() / gamePlayed).decimalFormat()
-    val reboundsAverage: Double
-        get() = (reboundsTotal.toDouble() / gamePlayed).decimalFormat()
+        get() = (points / gamePlayed.toDouble()).decimalFormat()
+    val fieldGoalsMadeAverage: Double
+        get() = (fieldGoalsMade / gamePlayed.toDouble()).decimalFormat()
+    val fieldGoalsAttemptedAverage: Double
+        get() = (fieldGoalsAttempted / gamePlayed.toDouble()).decimalFormat()
+    val threePointersMadeAverage: Double
+        get() = (threePointersMade / gamePlayed.toDouble()).decimalFormat()
+    val threePointersAttemptedAverage: Double
+        get() = (threePointersAttempted / gamePlayed.toDouble()).decimalFormat()
+    val freeThrowsMadeAverage: Double
+        get() = (freeThrowsMade / gamePlayed.toDouble()).decimalFormat()
+    val freeThrowsAttemptedAverage: Double
+        get() = (freeThrowsAttempted / gamePlayed.toDouble()).decimalFormat()
+    val reboundsOffensiveAverage: Double
+        get() = (reboundsOffensive / gamePlayed.toDouble()).decimalFormat()
+    val reboundsDefensiveAverage: Double
+        get() = (reboundsDefensive / gamePlayed.toDouble()).decimalFormat()
+    val reboundsTotalAverage: Double
+        get() = (reboundsTotal / gamePlayed.toDouble()).decimalFormat()
     val assistsAverage: Double
-        get() = (assists.toDouble() / gamePlayed).decimalFormat()
+        get() = (assists / gamePlayed.toDouble()).decimalFormat()
+    val turnoversAverage: Double
+        get() = (turnovers / gamePlayed.toDouble()).decimalFormat()
+    val stealsAverage: Double
+        get() = (steals / gamePlayed.toDouble()).decimalFormat()
+    val blocksAverage: Double
+        get() = (blocks / gamePlayed.toDouble()).decimalFormat()
+    val foulsPersonalAverage: Double
+        get() = (foulsPersonal / gamePlayed.toDouble()).decimalFormat()
 
     fun getStandingDetail(standing: Int): String {
         return "$win - $lose | ${standing.toRank()} in $teamConference"

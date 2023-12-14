@@ -24,8 +24,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -121,7 +121,6 @@ fun TeamPlayerLabel(
     color: Color,
     onClick: () -> Unit
 ) {
-    val context = LocalContext.current
     Box(
         modifier = Modifier
             .width(label.width)
@@ -132,7 +131,7 @@ fun TeamPlayerLabel(
     ) {
         Text(
             modifier = Modifier.fillMaxSize(),
-            text = context.getString(label.textRes),
+            text = stringResource(label.textRes),
             textAlign = if (isSelected) TextAlign.Center else TextAlign.End,
             fontSize = 16.sp,
             fontWeight = FontWeight.Medium,

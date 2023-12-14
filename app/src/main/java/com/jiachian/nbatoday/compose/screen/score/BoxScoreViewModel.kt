@@ -2,9 +2,11 @@ package com.jiachian.nbatoday.compose.screen.score
 
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.compose.screen.label.LabelHelper
+import com.jiachian.nbatoday.compose.screen.score.models.BoxScoreLeaderLabel
 import com.jiachian.nbatoday.compose.screen.score.models.BoxScoreLeaderRowData
 import com.jiachian.nbatoday.compose.screen.score.models.BoxScorePlayerLabel
 import com.jiachian.nbatoday.compose.screen.score.models.BoxScorePlayerRowData
+import com.jiachian.nbatoday.compose.screen.score.models.BoxScoreTeamLabel
 import com.jiachian.nbatoday.compose.screen.score.models.BoxScoreTeamRowData
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
@@ -60,9 +62,9 @@ class BoxScoreViewModel(
         } ?: emptyList()
     }.stateIn(coroutineScope, SharingStarted.Lazily, emptyList())
 
-    val playerLabels = LabelHelper.createBoxScorePlayerLabels()
-    private val teamLabels = LabelHelper.createBoxScoreTeamLabels()
-    private val leaderLabels = LabelHelper.createBoxScoreLeaderLabels()
+    val playerLabels = BoxScorePlayerLabel.values()
+    private val teamLabels = BoxScoreTeamLabel.values()
+    private val leaderLabels = BoxScoreLeaderLabel.values()
 
     private val selectedPlayerLabelImp = MutableStateFlow<BoxScorePlayerLabel?>(null)
     val selectedPlayerLabel = selectedPlayerLabelImp.asStateFlow()

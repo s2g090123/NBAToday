@@ -12,8 +12,8 @@ import com.jiachian.nbatoday.UserAccount
 import com.jiachian.nbatoday.UserPassword
 import com.jiachian.nbatoday.compose.screen.home.navigation.HomePage
 import com.jiachian.nbatoday.compose.screen.home.schedule.models.DateData
-import com.jiachian.nbatoday.compose.screen.home.standing.StandingLabel
-import com.jiachian.nbatoday.compose.screen.home.standing.StandingSort
+import com.jiachian.nbatoday.compose.screen.home.standing.models.StandingLabel
+import com.jiachian.nbatoday.compose.screen.home.standing.models.StandingSorting
 import com.jiachian.nbatoday.compose.theme.CelticsColors
 import com.jiachian.nbatoday.models.TestDataStore
 import com.jiachian.nbatoday.models.TestRepository
@@ -99,7 +99,7 @@ class HomeViewModelTest {
 
     @Test
     fun home_getStandingSort() {
-        assertThat(viewModel.standingSort.value, `is`(StandingSort.WINP))
+        assertThat(viewModel.standingSort.value, `is`(StandingSorting.WINP))
     }
 
     @Test
@@ -197,10 +197,10 @@ class HomeViewModelTest {
             BasicNumber.dp,
             BasicMinutes,
             TextAlign.Center,
-            StandingSort.GP
+            StandingSorting.GP
         )
-        viewModel.updateStandingSort(label.sort)
-        assertThat(viewModel.standingSort.value, `is`(StandingSort.GP))
+        viewModel.updateStandingSort(label.sorting)
+        assertThat(viewModel.standingSort.value, `is`(StandingSorting.GP))
     }
 
     @Test
@@ -320,28 +320,28 @@ class HomeViewModelTest {
 
     private fun generateStandingLabels(): List<StandingLabel> {
         return listOf(
-            StandingLabel(40.dp, "GP", TextAlign.End, StandingSort.GP),
-            StandingLabel(40.dp, "W", TextAlign.End, StandingSort.W),
-            StandingLabel(40.dp, "L", TextAlign.End, StandingSort.L),
-            StandingLabel(64.dp, "WIN%", TextAlign.End, StandingSort.WINP),
-            StandingLabel(64.dp, "PTS", TextAlign.End, StandingSort.PTS),
-            StandingLabel(64.dp, "FGM", TextAlign.End, StandingSort.FGM),
-            StandingLabel(64.dp, "FGA", TextAlign.End, StandingSort.FGA),
-            StandingLabel(64.dp, "FG%", TextAlign.End, StandingSort.FGP),
-            StandingLabel(64.dp, "3PM", TextAlign.End, StandingSort.PM3),
-            StandingLabel(64.dp, "3PA", TextAlign.End, StandingSort.PA3),
-            StandingLabel(64.dp, "3P%", TextAlign.End, StandingSort.PP3),
-            StandingLabel(64.dp, "FTM", TextAlign.End, StandingSort.FTM),
-            StandingLabel(64.dp, "FTA", TextAlign.End, StandingSort.FTA),
-            StandingLabel(64.dp, "FT%", TextAlign.End, StandingSort.FTP),
-            StandingLabel(48.dp, "OREB", TextAlign.End, StandingSort.OREB),
-            StandingLabel(48.dp, "DREB", TextAlign.End, StandingSort.DREB),
-            StandingLabel(48.dp, "REB", TextAlign.End, StandingSort.REB),
-            StandingLabel(48.dp, "AST", TextAlign.End, StandingSort.AST),
-            StandingLabel(48.dp, "TOV", TextAlign.End, StandingSort.TOV),
-            StandingLabel(48.dp, "STL", TextAlign.End, StandingSort.STL),
-            StandingLabel(48.dp, "BLK", TextAlign.End, StandingSort.BLK),
-            StandingLabel(48.dp, "PF", TextAlign.End, StandingSort.PF)
+            StandingLabel(40.dp, "GP", TextAlign.End, StandingSorting.GP),
+            StandingLabel(40.dp, "W", TextAlign.End, StandingSorting.W),
+            StandingLabel(40.dp, "L", TextAlign.End, StandingSorting.L),
+            StandingLabel(64.dp, "WIN%", TextAlign.End, StandingSorting.WINP),
+            StandingLabel(64.dp, "PTS", TextAlign.End, StandingSorting.PTS),
+            StandingLabel(64.dp, "FGM", TextAlign.End, StandingSorting.FGM),
+            StandingLabel(64.dp, "FGA", TextAlign.End, StandingSorting.FGA),
+            StandingLabel(64.dp, "FG%", TextAlign.End, StandingSorting.FGP),
+            StandingLabel(64.dp, "3PM", TextAlign.End, StandingSorting.PM3),
+            StandingLabel(64.dp, "3PA", TextAlign.End, StandingSorting.PA3),
+            StandingLabel(64.dp, "3P%", TextAlign.End, StandingSorting.PP3),
+            StandingLabel(64.dp, "FTM", TextAlign.End, StandingSorting.FTM),
+            StandingLabel(64.dp, "FTA", TextAlign.End, StandingSorting.FTA),
+            StandingLabel(64.dp, "FT%", TextAlign.End, StandingSorting.FTP),
+            StandingLabel(48.dp, "OREB", TextAlign.End, StandingSorting.OREB),
+            StandingLabel(48.dp, "DREB", TextAlign.End, StandingSorting.DREB),
+            StandingLabel(48.dp, "REB", TextAlign.End, StandingSorting.REB),
+            StandingLabel(48.dp, "AST", TextAlign.End, StandingSorting.AST),
+            StandingLabel(48.dp, "TOV", TextAlign.End, StandingSorting.TOV),
+            StandingLabel(48.dp, "STL", TextAlign.End, StandingSorting.STL),
+            StandingLabel(48.dp, "BLK", TextAlign.End, StandingSorting.BLK),
+            StandingLabel(48.dp, "PF", TextAlign.End, StandingSorting.PF)
         )
     }
 }

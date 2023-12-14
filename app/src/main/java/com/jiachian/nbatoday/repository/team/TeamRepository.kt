@@ -12,7 +12,7 @@ abstract class TeamRepository : BaseRepository() {
     abstract suspend fun updateTeamStats(teamId: Int)
     abstract suspend fun updateTeamPlayers(teamId: Int)
 
-    abstract fun getTeams(): Flow<List<Team>>
+    abstract fun getTeams(conference: NBATeam.Conference): Flow<List<Team>>
     abstract fun getTeamAndPlayers(teamId: Int): Flow<TeamAndPlayers?>
     abstract fun getTeamRank(teamId: Int, conference: NBATeam.Conference): Flow<TeamRank>
 }

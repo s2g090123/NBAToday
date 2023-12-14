@@ -117,7 +117,7 @@ private fun TeamStatsDetail(
             modifier = Modifier.testTag(TeamTestTag.TeamStatsDetail_TeamRankBox_Rebounds),
             label = stringResource(R.string.team_rank_rebounds_abbr),
             rank = reboundsRank,
-            average = stats.reboundsAverage,
+            average = stats.reboundsTotalAverage,
             textColor = viewModel.colors.extra2,
             divider = true,
         )

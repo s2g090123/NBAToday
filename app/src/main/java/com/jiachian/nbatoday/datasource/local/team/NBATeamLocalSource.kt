@@ -12,8 +12,8 @@ import kotlinx.coroutines.flow.combine
 class NBATeamLocalSource(
     private val teamDao: TeamDao,
 ) : TeamLocalSource() {
-    override fun getTeams(): Flow<List<Team>> {
-        return teamDao.getTeams()
+    override fun getTeams(conference: NBATeam.Conference): Flow<List<Team>> {
+        return teamDao.getTeams(conference)
     }
 
     override fun getTeamAndPlayers(teamId: Int): Flow<TeamAndPlayers?> {
@@ -27,13 +27,13 @@ class NBATeamLocalSource(
             teamDao.getReboundsRank(teamId),
             teamDao.getAssistsRank(teamId),
             teamDao.getPlusMinusRank(teamId)
-        ) { standing, points, reboudns, assists, plusminus ->
+        ) { standing, points, rebounds, assists, plusMinus ->
             TeamRank(
                 standing = standing,
                 pointsRank = points,
-                reboundsRank = reboudns,
+                reboundsRank = rebounds,
                 assistsRank = assists,
-                plusMinusRank = plusminus
+                plusMinusRank = plusMinus
             )
         }
     }

@@ -8,7 +8,7 @@ import com.jiachian.nbatoday.models.local.team.TeamRank
 import kotlinx.coroutines.flow.Flow
 
 abstract class TeamLocalSource {
-    abstract fun getTeams(): Flow<List<Team>>
+    abstract fun getTeams(conference: NBATeam.Conference): Flow<List<Team>>
     abstract fun getTeamAndPlayers(teamId: Int): Flow<TeamAndPlayers?>
     abstract fun getTeamRank(teamId: Int, conference: NBATeam.Conference): Flow<TeamRank>
 

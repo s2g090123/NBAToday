@@ -1,6 +1,7 @@
 package com.jiachian.nbatoday.compose.screen.label
 
 import com.jiachian.nbatoday.NA
+import com.jiachian.nbatoday.compose.screen.home.standing.models.StandingLabel
 import com.jiachian.nbatoday.compose.screen.player.models.PlayerStatsLabel
 import com.jiachian.nbatoday.compose.screen.score.models.BoxScoreLeaderLabel
 import com.jiachian.nbatoday.compose.screen.score.models.BoxScorePlayerLabel
@@ -8,28 +9,45 @@ import com.jiachian.nbatoday.compose.screen.score.models.BoxScoreTeamLabel
 import com.jiachian.nbatoday.compose.screen.team.models.TeamPlayerLabel
 import com.jiachian.nbatoday.models.local.player.Player
 import com.jiachian.nbatoday.models.local.score.BoxScore
+import com.jiachian.nbatoday.models.local.team.Team
 import com.jiachian.nbatoday.models.local.team.TeamPlayer
 import com.jiachian.nbatoday.utils.decimalFormat
 
 object LabelHelper {
-    fun createBoxScorePlayerLabels(): Array<BoxScorePlayerLabel> {
-        return BoxScorePlayerLabel.values()
-    }
-
-    fun createBoxScoreTeamLabels(): Array<BoxScoreTeamLabel> {
-        return BoxScoreTeamLabel.values()
-    }
-
-    fun createBoxScoreLeaderLabels(): Array<BoxScoreLeaderLabel> {
-        return BoxScoreLeaderLabel.values()
-    }
-
-    fun createTeamPlayerLabels(): Array<TeamPlayerLabel> {
-        return TeamPlayerLabel.values()
-    }
-
-    fun createPlayerStatsLabels(): Array<PlayerStatsLabel> {
-        return PlayerStatsLabel.values()
+    fun getValueByLabel(
+        label: StandingLabel,
+        stats: Team,
+    ): String {
+        return when (label) {
+            StandingLabel.GP -> stats.gamePlayed
+            StandingLabel.W -> stats.win
+            StandingLabel.L -> stats.lose
+            StandingLabel.WINP -> stats.winPercentage
+            StandingLabel.PTS -> stats.pointsAverage
+            StandingLabel.FGM -> stats.fieldGoalsMadeAverage
+            StandingLabel.FGA -> stats.fieldGoalsAttemptedAverage
+            StandingLabel.FGP -> stats.fieldGoalsPercentage
+            StandingLabel.PM3 -> stats.threePointersMadeAverage
+            StandingLabel.PA3 -> stats.threePointersAttemptedAverage
+            StandingLabel.PP3 -> stats.threePointersPercentage
+            StandingLabel.FTM -> stats.freeThrowsMadeAverage
+            StandingLabel.FTA -> stats.freeThrowsAttemptedAverage
+            StandingLabel.FTP -> stats.freeThrowsPercentage
+            StandingLabel.OREB -> stats.reboundsOffensiveAverage
+            StandingLabel.DREB -> stats.reboundsDefensiveAverage
+            StandingLabel.REB -> stats.reboundsTotalAverage
+            StandingLabel.AST -> stats.assistsAverage
+            StandingLabel.TOV -> stats.turnoversAverage
+            StandingLabel.STL -> stats.stealsAverage
+            StandingLabel.BLK -> stats.blocksAverage
+            StandingLabel.PF -> stats.foulsPersonalAverage
+        }.let {
+            if (it is Double) {
+                it.decimalFormat()
+            } else {
+                it
+            }
+        }.toString()
     }
 
     fun getValueByLabel(

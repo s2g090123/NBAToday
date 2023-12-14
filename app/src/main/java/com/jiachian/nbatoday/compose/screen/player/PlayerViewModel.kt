@@ -2,6 +2,7 @@ package com.jiachian.nbatoday.compose.screen.player
 
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.compose.screen.label.LabelHelper
+import com.jiachian.nbatoday.compose.screen.player.models.PlayerStatsLabel
 import com.jiachian.nbatoday.compose.screen.player.models.PlayerStatsRowData
 import com.jiachian.nbatoday.compose.screen.player.models.PlayerStatsSorting
 import com.jiachian.nbatoday.compose.screen.player.utils.PlayerInfoHelper
@@ -48,7 +49,7 @@ class PlayerViewModel(
     private val statsSortingImp = MutableStateFlow(PlayerStatsSorting.TIME_FRAME)
     val statsSorting = statsSortingImp.asStateFlow()
 
-    val statsLabels = LabelHelper.createPlayerStatsLabels()
+    val statsLabels = PlayerStatsLabel.values()
 
     private val statsRowData = player.map { player ->
         player?.stats?.stats?.map { stats ->

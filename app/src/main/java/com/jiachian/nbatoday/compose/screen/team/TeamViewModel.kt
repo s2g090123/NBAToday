@@ -3,6 +3,7 @@ package com.jiachian.nbatoday.compose.screen.team
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.compose.screen.card.GameCardViewModel
 import com.jiachian.nbatoday.compose.screen.label.LabelHelper
+import com.jiachian.nbatoday.compose.screen.team.models.TeamPlayerLabel
 import com.jiachian.nbatoday.compose.screen.team.models.TeamPlayerRowData
 import com.jiachian.nbatoday.compose.screen.team.models.TeamPlayerSorting
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
@@ -52,7 +53,7 @@ class TeamViewModel(
     private val team = NBATeam.getTeamById(teamId)
     val colors = team.colors
 
-    val labels = LabelHelper.createTeamPlayerLabels()
+    val labels = TeamPlayerLabel.values()
 
     val gamesBefore = gameRepository.getGamesAndBetsBeforeByTeam(team.teamId, DateUtils.getCalendar().timeInMillis)
         .stateIn(coroutineScope, SharingStarted.Eagerly, emptyList())

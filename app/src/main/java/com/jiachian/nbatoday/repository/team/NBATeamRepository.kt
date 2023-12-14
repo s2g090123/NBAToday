@@ -60,8 +60,8 @@ class NBATeamRepository(
         }
     }
 
-    override fun getTeams(): Flow<List<Team>> {
-        return teamLocalSource.getTeams()
+    override fun getTeams(conference: NBATeam.Conference): Flow<List<Team>> {
+        return teamLocalSource.getTeams(conference)
     }
 
     override fun getTeamAndPlayers(teamId: Int): Flow<TeamAndPlayers?> {

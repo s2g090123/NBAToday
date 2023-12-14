@@ -12,8 +12,8 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TeamDao {
-    @Query("SELECT * FROM team")
-    fun getTeams(): Flow<List<Team>>
+    @Query("SELECT * FROM team WHERE team_conference == :conference")
+    fun getTeams(conference: NBATeam.Conference): Flow<List<Team>>
 
     @Query("SELECT * FROM team WHERE team_id == :teamId")
     fun getTeamAndPlayers(teamId: Int): Flow<TeamAndPlayers?>
