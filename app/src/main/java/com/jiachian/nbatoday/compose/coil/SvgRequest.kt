@@ -1,31 +1,17 @@
 package com.jiachian.nbatoday.compose.coil
 
 import android.content.Context
+import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 
 class SvgRequest private constructor(
     val context: Context
 ) {
-    class Builder {
+    class Builder(context: Context) {
 
-        private val context: Context
+        private val requestBuilder = ImageRequest.Builder(context)
 
-        private val requestBuilder: ImageRequest.Builder
-
-        private var data: Any?
-
-        constructor(context: Context) {
-            this.context = context
-            data = null
-            requestBuilder = ImageRequest.Builder(context)
-        }
-
-        @JvmOverloads
-        constructor(request: SvgRequest, context: Context = request.context) {
-            this.context = context
-            data = null
-            requestBuilder = ImageRequest.Builder(context)
-        }
+        private var data: Any? = null
 
         fun data(data: Any?) = apply {
             this.data = data
@@ -33,7 +19,9 @@ class SvgRequest private constructor(
         }
 
         fun build(): ImageRequest {
-            return requestBuilder.build()
+            return requestBuilder
+                .decoderFactory(SvgDecoder.Factory())
+                .build()
         }
     }
 }
