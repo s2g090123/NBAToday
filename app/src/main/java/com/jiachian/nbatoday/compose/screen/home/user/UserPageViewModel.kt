@@ -10,6 +10,7 @@ import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.repository.user.UserRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -20,23 +21,25 @@ class UserPageViewModel(
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
     private val coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
 ) {
-
     val user = repository.user
-        .stateIn(coroutineScope, SharingStarted.WhileSubscribed(5000), null)
 
-    val nbaTeams: List<NBATeam> = mutableListOf<NBATeam>().apply {
+    private val account = user.map {
+        it?.account
+    }.stateIn(coroutineScope, SharingStarted.Eagerly, null)
+
+    val teams: List<NBATeam> = mutableListOf<NBATeam>().apply {
         add(teamOfficial)
         addAll(NBATeam.nbaTeams)
     }
 
-    fun openBetScreen() {
-        val account = user.value?.account ?: return
+    fun onBetClick() {
+        val account = account.value ?: return
         navigationController.navigateToBet(account)
     }
 
     fun updateTheme(team: NBATeam) {
-        updateColors(team.colors)
         coroutineScope.launch(dispatcherProvider.io) {
+            updateColors(team.colors)
             dataStore.updateThemeColorsTeamId(team.teamId)
         }
     }

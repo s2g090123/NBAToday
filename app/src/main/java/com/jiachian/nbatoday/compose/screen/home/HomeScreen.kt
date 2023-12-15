@@ -1,6 +1,7 @@
 package com.jiachian.nbatoday.compose.screen.home
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
@@ -44,13 +45,22 @@ fun HomeScreen(viewModel: HomeViewModel) {
             startDestination = HomePage.SCHEDULE.route,
         ) {
             composable(HomePage.SCHEDULE.route) {
-                SchedulePage(viewModel = viewModel.schedulePageViewModel)
+                SchedulePage(
+                    modifier = Modifier.fillMaxSize(),
+                    viewModel = viewModel.schedulePageViewModel
+                )
             }
             composable(HomePage.STANDING.route) {
-                StandingPage(viewModel = viewModel.standingPageViewModel)
+                StandingPage(
+                    modifier = Modifier.fillMaxSize(),
+                    viewModel = viewModel.standingPageViewModel
+                )
             }
             composable(HomePage.USER.route) {
-                UserPage(modifier = Modifier, viewModel = viewModel.userPageViewModel)
+                UserPage(
+                    modifier = Modifier.fillMaxSize(),
+                    viewModel = viewModel.userPageViewModel
+                )
             }
         }
     }

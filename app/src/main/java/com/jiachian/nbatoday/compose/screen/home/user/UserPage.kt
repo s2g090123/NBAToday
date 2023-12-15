@@ -46,37 +46,34 @@ import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.screen.account.LoginDialog
 import com.jiachian.nbatoday.compose.theme.NBAColors
 import com.jiachian.nbatoday.compose.widget.IconButton
+import com.jiachian.nbatoday.compose.widget.NullCheckScreen
 import com.jiachian.nbatoday.compose.widget.TeamLogoImage
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.models.local.user.User
-import com.jiachian.nbatoday.utils.getOrNA
-import com.jiachian.nbatoday.utils.getOrZero
-import com.jiachian.nbatoday.utils.isPhone
-import com.jiachian.nbatoday.utils.isPortrait
 import com.jiachian.nbatoday.utils.rippleClickable
-
-private const val GridCellsStyle1 = 2
-private const val GridCellsStyle2 = 3
-private const val GridCellsStyle3 = 4
-private const val GridCellsStyle4 = 6
 
 @Composable
 fun UserPage(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     viewModel: UserPageViewModel
 ) {
-    val user by viewModel.user.collectAsState()
-    user?.let {
+    val userImp by viewModel.user.collectAsState(null)
+    NullCheckScreen(
+        data = userImp,
+        ifNull = {
+            LoginScreen(
+                modifier = modifier,
+                onLogin = viewModel::login,
+                onRegister = viewModel::register
+            )
+        }
+    ) { user ->
         UserScreen(
             modifier = modifier,
             viewModel = viewModel,
-            user = it,
+            user = user,
         )
-    } ?: RequireLoginScreen(
-        modifier = modifier,
-        login = viewModel::login,
-        register = viewModel::register
-    )
+    }
 }
 
 @Composable
@@ -90,17 +87,17 @@ private fun UserScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(MaterialTheme.colors.secondary),
-            name = user.name.getOrNA(),
-            points = user.points.getOrZero(),
-            onRewardClick = viewModel::openBetScreen,
-            onLogoutClick = viewModel::logout
+            name = user.name,
+            points = user.points,
+            onBet = viewModel::onBetClick,
+            onLogout = viewModel::logout
         )
         ThemesTable(
             modifier = Modifier
                 .testTag("UserPage_LVG_Palette")
                 .fillMaxSize(),
-            teams = viewModel.nbaTeams,
-            onTeamClick = viewModel::updateTheme
+            teams = viewModel.teams,
+            onPalette = viewModel::updateTheme
         )
     }
 }
@@ -109,20 +106,11 @@ private fun UserScreen(
 private fun ThemesTable(
     modifier: Modifier = Modifier,
     teams: List<NBATeam>,
-    onTeamClick: (NBATeam) -> Unit
+    onPalette: (NBATeam) -> Unit
 ) {
-    val isPhone = isPhone()
-    val isPortrait = isPortrait()
     LazyVerticalGrid(
         modifier = modifier,
-        columns = GridCells.Fixed(
-            when {
-                isPhone && isPortrait -> GridCellsStyle1
-                isPhone && !isPortrait -> GridCellsStyle2
-                !isPhone && isPortrait -> GridCellsStyle3
-                else -> GridCellsStyle4
-            }
-        ),
+        columns = GridCells.Fixed(2),
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -137,7 +125,7 @@ private fun ThemesTable(
                     .clip(RoundedCornerShape(7.dp))
                     .background(MaterialTheme.colors.secondary)
                     .rippleClickable {
-                        onTeamClick(team)
+                        onPalette(team)
                     }
                     .padding(bottom = 8.dp),
                 team = team,
@@ -148,12 +136,12 @@ private fun ThemesTable(
 }
 
 @Composable
-private fun RequireLoginScreen(
+private fun LoginScreen(
     modifier: Modifier = Modifier,
-    login: (String, String) -> Unit,
-    register: (String, String) -> Unit
+    onLogin: (String, String) -> Unit,
+    onRegister: (String, String) -> Unit
 ) {
-    var showLoginDialog by remember { mutableStateOf(false) }
+    var dialogVisible by remember { mutableStateOf(false) }
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -169,7 +157,7 @@ private fun RequireLoginScreen(
             modifier = Modifier
                 .testTag("UserPage_Btn_Login")
                 .padding(top = 8.dp),
-            onClick = { showLoginDialog = true },
+            onClick = { dialogVisible = true },
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = MaterialTheme.colors.secondary
             )
@@ -179,17 +167,17 @@ private fun RequireLoginScreen(
                 color = MaterialTheme.colors.secondaryVariant
             )
         }
-        if (showLoginDialog) {
+        if (dialogVisible) {
             LoginDialog(
                 onLogin = { account, password ->
-                    login(account, password)
-                    showLoginDialog = false
+                    onLogin(account, password)
+                    dialogVisible = false
                 },
                 onRegister = { account, password ->
-                    register(account, password)
-                    showLoginDialog = false
+                    onRegister(account, password)
+                    dialogVisible = false
                 },
-                onDismiss = { showLoginDialog = false }
+                onDismiss = { dialogVisible = false }
             )
         }
     }
@@ -210,9 +198,8 @@ private fun ThemeCard(
         )
         Column(
             modifier = Modifier
-                .padding(top = 8.dp)
+                .padding(top = 8.dp, start = 8.dp, end = 8.dp)
                 .fillMaxWidth()
-                .padding(horizontal = 8.dp)
         ) {
             Text(
                 modifier = Modifier.testTag("ThemeCard_Text_Name"),
@@ -223,7 +210,7 @@ private fun ThemeCard(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
-            ThemeColorPreviewRow(
+            ThemePalette(
                 modifier = Modifier
                     .padding(top = 8.dp)
                     .fillMaxWidth(),
@@ -234,7 +221,7 @@ private fun ThemeCard(
 }
 
 @Composable
-private fun ThemeColorPreviewRow(
+private fun ThemePalette(
     modifier: Modifier = Modifier,
     colors: NBAColors,
 ) {
@@ -242,25 +229,25 @@ private fun ThemeColorPreviewRow(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        ThemeColorPreview(
+        ColorCircle(
             modifier = Modifier
                 .weight(1f)
                 .aspectRatio(1f),
             color = colors.primary
         )
-        ThemeColorPreview(
+        ColorCircle(
             modifier = Modifier
                 .weight(1f)
                 .aspectRatio(1f),
             color = colors.secondary
         )
-        ThemeColorPreview(
+        ColorCircle(
             modifier = Modifier
                 .weight(1f)
                 .aspectRatio(1f),
             color = colors.extra1
         )
-        ThemeColorPreview(
+        ColorCircle(
             modifier = Modifier
                 .weight(1f)
                 .aspectRatio(1f),
@@ -274,8 +261,8 @@ private fun UserTopBar(
     modifier: Modifier = Modifier,
     name: String,
     points: Long,
-    onRewardClick: () -> Unit,
-    onLogoutClick: () -> Unit
+    onBet: () -> Unit,
+    onLogout: () -> Unit
 ) {
     Row(
         modifier = modifier,
@@ -309,25 +296,25 @@ private fun UserTopBar(
                 color = MaterialTheme.colors.primaryVariant
             )
         }
-        Row {
-            IconButton(
-                modifier = Modifier.testTag("AccountInfo_Btn_Bet"),
-                drawableRes = R.drawable.ic_black_coin,
-                onClick = onRewardClick
-            )
-            IconButton(
-                modifier = Modifier
-                    .testTag("AccountInfo_Btn_Logout")
-                    .padding(start = 8.dp),
-                drawableRes = R.drawable.ic_black_logout,
-                onClick = onLogoutClick
-            )
-        }
+        IconButton(
+            modifier = Modifier.testTag("AccountInfo_Btn_Bet"),
+            drawableRes = R.drawable.ic_black_coin,
+            tint = MaterialTheme.colors.primaryVariant,
+            onClick = onBet,
+        )
+        IconButton(
+            modifier = Modifier
+                .testTag("AccountInfo_Btn_Logout")
+                .padding(start = 8.dp),
+            drawableRes = R.drawable.ic_black_logout,
+            tint = MaterialTheme.colors.primaryVariant,
+            onClick = onLogout,
+        )
     }
 }
 
 @Composable
-private fun ThemeColorPreview(
+private fun ColorCircle(
     modifier: Modifier = Modifier,
     color: Color
 ) {
