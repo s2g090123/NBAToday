@@ -50,6 +50,7 @@ import com.jiachian.nbatoday.compose.widget.NullCheckScreen
 import com.jiachian.nbatoday.compose.widget.TeamLogoImage
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.models.local.user.User
+import com.jiachian.nbatoday.testing.testtag.UserTestTag
 import com.jiachian.nbatoday.utils.rippleClickable
 
 @Composable
@@ -92,9 +93,9 @@ private fun UserScreen(
             onBet = viewModel::onBetClick,
             onLogout = viewModel::logout
         )
-        ThemesTable(
+        ThemeTable(
             modifier = Modifier
-                .testTag("UserPage_LVG_Palette")
+                .testTag(UserTestTag.UserScreen_ThemesTable)
                 .fillMaxSize(),
             teams = viewModel.teams,
             onPalette = viewModel::updateTheme
@@ -103,7 +104,7 @@ private fun UserScreen(
 }
 
 @Composable
-private fun ThemesTable(
+private fun ThemeTable(
     modifier: Modifier = Modifier,
     teams: List<NBATeam>,
     onPalette: (NBATeam) -> Unit
@@ -118,7 +119,7 @@ private fun ThemesTable(
         items(teams) { team ->
             ThemeCard(
                 modifier = Modifier
-                    .testTag("UserPage_ThemeCard")
+                    .testTag(UserTestTag.ThemeTable_ThemeCard)
                     .fillMaxWidth()
                     .wrapContentHeight()
                     .border(1.dp, Color.White, RoundedCornerShape(8.dp))
@@ -155,7 +156,7 @@ private fun LoginScreen(
         )
         Button(
             modifier = Modifier
-                .testTag("UserPage_Btn_Login")
+                .testTag(UserTestTag.LoginScreen_Button_Login)
                 .padding(top = 8.dp),
             onClick = { dialogVisible = true },
             colors = ButtonDefaults.buttonColors(
@@ -202,7 +203,7 @@ private fun ThemeCard(
                 .fillMaxWidth()
         ) {
             Text(
-                modifier = Modifier.testTag("ThemeCard_Text_Name"),
+                modifier = Modifier.testTag(UserTestTag.ThemeCard_Text_TeamName),
                 text = team.teamName,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Medium,
@@ -283,28 +284,28 @@ private fun UserTopBar(
                 .weight(1f)
         ) {
             Text(
-                modifier = Modifier.testTag("AccountInfo_Text_AccountName"),
+                modifier = Modifier.testTag(UserTestTag.UserTopBar_Text_AccountName),
                 text = name,
                 fontSize = 16.sp,
                 color = MaterialTheme.colors.primaryVariant,
                 fontWeight = FontWeight.Medium
             )
             Text(
-                modifier = Modifier.testTag("AccountInfo_Text_Credit"),
+                modifier = Modifier.testTag(UserTestTag.UserTopBar_Text_Credits),
                 text = stringResource(R.string.user_points, points),
                 fontSize = 16.sp,
                 color = MaterialTheme.colors.primaryVariant
             )
         }
         IconButton(
-            modifier = Modifier.testTag("AccountInfo_Btn_Bet"),
+            modifier = Modifier.testTag(UserTestTag.UserTopBar_Button_Bet),
             drawableRes = R.drawable.ic_black_coin,
             tint = MaterialTheme.colors.primaryVariant,
             onClick = onBet,
         )
         IconButton(
             modifier = Modifier
-                .testTag("AccountInfo_Btn_Logout")
+                .testTag(UserTestTag.UserTopBar_Button_Logout)
                 .padding(start = 8.dp),
             drawableRes = R.drawable.ic_black_logout,
             tint = MaterialTheme.colors.primaryVariant,

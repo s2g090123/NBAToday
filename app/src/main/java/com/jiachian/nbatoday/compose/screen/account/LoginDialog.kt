@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.jiachian.nbatoday.R
+import com.jiachian.nbatoday.testing.testtag.UserTestTag
 import com.jiachian.nbatoday.utils.color
 
 @Composable
@@ -53,7 +54,6 @@ fun LoginDialog(
     Dialog(onDismissRequest = onDismiss) {
         Column(
             modifier = Modifier
-                .testTag("LoginDialog_Dialog")
                 .clip(RoundedCornerShape(8.dp))
                 .width(IntrinsicSize.Min)
                 .background(Color.White),
@@ -61,7 +61,7 @@ fun LoginDialog(
         ) {
             AccountTextField(
                 modifier = Modifier
-                    .testTag("LoginDialog_AccountTextField")
+                    .testTag(UserTestTag.LoginDialog_AccountTextField)
                     .padding(top = 24.dp, start = 16.dp, end = 16.dp)
                     .fillMaxWidth(),
                 value = account,
@@ -69,7 +69,7 @@ fun LoginDialog(
             )
             PasswordTextField(
                 modifier = Modifier
-                    .testTag("LoginDialog_PasswordTextField")
+                    .testTag(UserTestTag.LoginDialog_PasswordTextField)
                     .padding(top = 16.dp, start = 16.dp, end = 16.dp)
                     .fillMaxWidth(),
                 value = password,
@@ -93,7 +93,7 @@ private fun AccountTextField(
     val isHintVisible by remember(value) { derivedStateOf { value.isEmpty() } }
     Column(modifier = modifier) {
         BasicTextField(
-            modifier = Modifier.testTag("AccountTextField_TextField_Account"),
+            modifier = Modifier.testTag(UserTestTag.AccountTextField_TextField),
             value = value,
             onValueChange = onValueChanged,
             singleLine = true,
@@ -133,7 +133,7 @@ private fun PasswordTextField(
     val isHintVisible by remember(value) { derivedStateOf { value.isEmpty() } }
     Column(modifier = modifier) {
         BasicTextField(
-            modifier = Modifier.testTag("PasswordTextField_TextFiled_Password"),
+            modifier = Modifier.testTag(UserTestTag.PasswordTextField_TextField),
             value = value,
             onValueChange = onValueChanged,
             singleLine = true,
@@ -175,7 +175,7 @@ private fun BottomButtons(
     Row {
         Button(
             modifier = Modifier
-                .testTag("LoginDialog_Btn_Register")
+                .testTag(UserTestTag.BottomButtons_Button_Register)
                 .padding(top = 16.dp, bottom = 16.dp, start = 16.dp)
                 .width(120.dp),
             onClick = onRegister,
@@ -191,7 +191,7 @@ private fun BottomButtons(
         }
         Button(
             modifier = Modifier
-                .testTag("LoginDialog_Btn_Login")
+                .testTag(UserTestTag.BottomButtons_Button_Login)
                 .padding(top = 16.dp, bottom = 16.dp, start = 16.dp, end = 16.dp)
                 .width(120.dp),
             enabled = enabled,
