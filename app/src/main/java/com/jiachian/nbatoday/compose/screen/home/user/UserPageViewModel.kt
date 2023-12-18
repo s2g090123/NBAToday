@@ -30,7 +30,7 @@ class UserPageViewModel(
 
     private val account = user.map {
         it?.account
-    }.stateIn(coroutineScope, SharingStarted.Lazily, null)
+    }.stateIn(coroutineScope, SharingStarted.Eagerly, null)
 
     val teams: List<NBATeam> = mutableListOf<NBATeam>().apply {
         add(teamOfficial)
