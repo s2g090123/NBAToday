@@ -1,9 +1,10 @@
-package com.jiachian.nbatoday.models.remote.player
+package com.jiachian.nbatoday.models.remote.player.extensions
 
 import android.annotation.SuppressLint
 import com.jiachian.nbatoday.OneHundredPercentage
 import com.jiachian.nbatoday.models.local.player.Player
 import com.jiachian.nbatoday.models.local.team.NBATeam
+import com.jiachian.nbatoday.models.remote.player.RemotePlayerInfo
 import com.jiachian.nbatoday.utils.DateUtils
 import com.jiachian.nbatoday.utils.decimalFormat
 import com.jiachian.nbatoday.utils.getOrError
@@ -54,9 +55,9 @@ private fun RemotePlayerInfo.createPlayerCareerStats(): Player.PlayerInfo.Headli
     val assists = getPlayerStats("AST")?.toDoubleOrNull()
     val rebounds = getPlayerStats("REB")?.toDoubleOrNull()
     val impact = getPlayerStats("PIE")?.toDoubleOrNull()?.times(OneHundredPercentage)?.decimalFormat()
-    val isTimeValid = timeFrame != null
-    val isStatsValid = points != null && assists != null && rebounds != null && impact != null
-    if (!isTimeValid || !isStatsValid) return null
+    val timeValid = timeFrame != null
+    val statsValid = points != null && assists != null && rebounds != null && impact != null
+    if (!timeValid || !statsValid) return null
     return Player.PlayerInfo.HeadlineStats(
         points.getOrError(),
         assists.getOrError(),

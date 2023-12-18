@@ -12,12 +12,13 @@ class NBABetRepository(
     private val betLocalSource: BetLocalSource,
     private val userRepository: UserRepository,
 ) : BetRepository() {
-    override suspend fun bet(gameId: String, homePoints: Long, awayPoints: Long) {
+    override suspend fun insertBet(gameId: String, homePoints: Long, awayPoints: Long) {
         loading {
             val usedPoints = homePoints + awayPoints
             userRepository
                 .user
                 .firstOrNull()
+                ?.takeIf { user -> user.available }
                 ?.takeIf { user -> user.points - usedPoints >= 0 }
                 ?.let { user ->
                     betLocalSource.insertBet(
@@ -57,6 +58,6 @@ class NBABetRepository(
     }
 
     override fun getBetsAndGames(account: String): Flow<List<BetAndGame>> {
-        return betLocalSource.getBetsAndGamesByUser(account)
+        return betLocalSource.getBetsAndGames(account)
     }
 }

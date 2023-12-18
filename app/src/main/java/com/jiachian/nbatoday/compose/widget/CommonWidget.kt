@@ -5,13 +5,9 @@ import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandIn
 import androidx.compose.animation.shrinkOut
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -27,7 +23,6 @@ import androidx.compose.material.LocalContentColor
 import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,6 +46,7 @@ import coil.compose.AsyncImage
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.annotation.ExcludeFromJacocoGeneratedReport
 import com.jiachian.nbatoday.compose.coil.SvgRequest
+import com.jiachian.nbatoday.compose.screen.state.UIState
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.utils.NBAUtils
 import com.jiachian.nbatoday.utils.color
@@ -85,7 +81,7 @@ fun CustomOutlinedTextField(
     placeHolder: @Composable (() -> Unit)? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
-    isError: Boolean = false,
+    error: Boolean = false,
     keyboardOptions: KeyboardOptions = KeyboardOptions(autoCorrect = false),
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     singleLine: Boolean = false,
@@ -94,15 +90,15 @@ fun CustomOutlinedTextField(
     borderWidth: Dp = 2.dp
 ) {
     val focusManager = LocalFocusManager.current
-    var isFocus by remember { mutableStateOf(false) }
-    val currentColor = if (isError) errorColor else if (isFocus) textColor else borderColor
+    var focus by remember { mutableStateOf(false) }
+    val currentColor = if (error) errorColor else if (focus) textColor else borderColor
     BasicTextField(
         value = value,
         onValueChange = onValueChange,
         modifier = modifier.then(
             Modifier
                 .focusRequester(focusRequester)
-                .onFocusChanged { isFocus = it.isFocused }
+                .onFocusChanged { focus = it.isFocused }
                 .border(borderWidth, currentColor, shape)
         ),
         enabled = enabled,
@@ -121,12 +117,12 @@ fun CustomOutlinedTextField(
         ),
         singleLine = singleLine,
         maxLines = maxLines,
-        cursorBrush = SolidColor(if (isError) errorColor else textColor)
+        cursorBrush = SolidColor(if (error) errorColor else textColor)
     ) {
         Row(modifier = Modifier.fillMaxSize()) {
-            if (leadingIcon != null) {
+            leadingIcon?.let {
                 Box(modifier = Modifier.align(Alignment.CenterVertically)) {
-                    leadingIcon()
+                    it()
                 }
             }
             Box(
@@ -135,28 +131,19 @@ fun CustomOutlinedTextField(
                     .weight(1f),
                 contentAlignment = Alignment.Center
             ) {
-                if (placeHolder != null && value.isEmpty()) {
-                    placeHolder()
-                }
+                placeHolder
+                    ?.takeIf { value.isEmpty() }
+                    ?.let {
+                        it()
+                    }
                 it()
             }
-            if (trailingIcon != null) {
+            trailingIcon?.let {
                 Box(modifier = Modifier.align(Alignment.CenterVertically)) {
-                    trailingIcon()
+                    it()
                 }
             }
         }
-    }
-}
-
-@ExcludeFromJacocoGeneratedReport
-@Composable
-inline fun FocusableColumn(
-    modifier: Modifier = Modifier,
-    content: @Composable ColumnScope.() -> Unit
-) {
-    Column(modifier = modifier.noRippleClickable { }) {
-        content()
     }
 }
 
@@ -167,30 +154,6 @@ inline fun FocusableBox(
     content: @Composable BoxScope.() -> Unit
 ) {
     Box(modifier = modifier.noRippleClickable { }) {
-        content()
-    }
-}
-
-@Composable
-fun BackHandle(
-    enabled: Boolean = true,
-    onBack: () -> Unit,
-    content: @Composable () -> Unit
-) {
-    content()
-    BackHandler(enabled) {
-        onBack()
-    }
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun DisableOverscroll(
-    content: @Composable () -> Unit
-) {
-    CompositionLocalProvider(
-        LocalOverscrollConfiguration provides null
-    ) {
         content()
     }
 }
@@ -241,14 +204,10 @@ fun PlayerImage(
     modifier: Modifier = Modifier,
     playerId: Int?
 ) {
-    val imageUrl by remember(playerId) {
-        val url = playerId?.let { NBAUtils.getPlayerImageUrlById(it) }
-        mutableStateOf(url)
-    }
     AsyncImage(
         modifier = modifier,
         model = SvgRequest.Builder(LocalContext.current)
-            .data(imageUrl)
+            .data(NBAUtils.getPlayerImageUrlById(playerId ?: 0))
             .build(),
         error = painterResource(R.drawable.ic_black_person),
         placeholder = painterResource(R.drawable.ic_black_person),
@@ -268,8 +227,25 @@ fun <T> NullCheckScreen(
 }
 
 @Composable
+fun <T> UIStateScreen(
+    state: UIState<T>,
+    loading: (@Composable () -> Unit)?,
+    ifNull: (@Composable () -> Unit)?,
+    ifNotNull: (@Composable (T) -> Unit)?
+) {
+    when (state) {
+        is UIState.Loading -> loading?.invoke()
+        is UIState.Loaded -> {
+            state.data?.let { data ->
+                ifNotNull?.invoke(data)
+            } ?: ifNull?.invoke()
+        }
+    }
+}
+
+@Composable
 fun AnimatedExpand(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     visible: Boolean,
     content: @Composable () -> Unit
 ) {

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import com.jiachian.nbatoday.ScheduleDateRange
 import com.jiachian.nbatoday.compose.screen.card.GameCardViewModel
 import com.jiachian.nbatoday.compose.screen.home.schedule.models.DateData
+import com.jiachian.nbatoday.compose.screen.state.UIState
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.models.local.game.GameAndBets
@@ -19,10 +20,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class SchedulePageViewModel(
     private val scheduleRepository: ScheduleRepository,
@@ -41,16 +42,20 @@ class SchedulePageViewModel(
         set(Calendar.MINUTE, 0)
         set(Calendar.MILLISECOND, 0)
         gameRepository.getGamesAndBetsDuring(
-            timeInMillis - android.text.format.DateUtils.DAY_IN_MILLIS * (ScheduleDateRange + 1),
-            timeInMillis + android.text.format.DateUtils.DAY_IN_MILLIS * (ScheduleDateRange)
+            timeInMillis - DateUtils.DAY_IN_MILLIS * (ScheduleDateRange + 1),
+            timeInMillis + DateUtils.DAY_IN_MILLIS * (ScheduleDateRange)
         )
     }
-    val groupedGames = games.map {
-        getGroupedGames(it)
-    }.stateIn(coroutineScope, SharingStarted.Lazily, mapOf())
 
-    private val isRefreshingImp = MutableStateFlow(false)
-    val isRefreshing = isRefreshingImp.asStateFlow()
+    val groupedGamesState = games
+        .map { UIState.Loaded(getGroupedGames(it)) }
+        .flowOn(dispatcherProvider.io)
+        .stateIn(coroutineScope, SharingStarted.Lazily, UIState.Loading())
+
+    private val refreshingImp = MutableStateFlow(false)
+    val refreshing = refreshingImp.asStateFlow()
+
+    private val gameCardViewModelMap = mutableMapOf<GameAndBets, GameCardViewModel>()
 
     private fun createDateData(): List<DateData> {
         val range = ScheduleDateRange * 2 + 1
@@ -68,17 +73,15 @@ class SchedulePageViewModel(
         }
     }
 
-    private suspend fun getGroupedGames(games: List<GameAndBets>): Map<DateData, List<GameAndBets>> {
-        return withContext(dispatcherProvider.io) {
-            DateUtils.getCalendar().run {
-                games.groupBy { game ->
-                    time = game.game.gameDateTime
-                    DateData(
-                        get(Calendar.YEAR),
-                        get(Calendar.MONTH) + 1,
-                        get(Calendar.DAY_OF_MONTH)
-                    )
-                }
+    private fun getGroupedGames(games: List<GameAndBets>): Map<DateData, List<GameAndBets>> {
+        return DateUtils.getCalendar().run {
+            games.groupBy { game ->
+                time = game.game.gameDateTime
+                DateData(
+                    get(Calendar.YEAR),
+                    get(Calendar.MONTH) + 1,
+                    get(Calendar.DAY_OF_MONTH)
+                )
             }
         }
     }
@@ -88,20 +91,20 @@ class SchedulePageViewModel(
     }
 
     fun updateSelectedSchedule() {
-        if (isRefreshing.value) return
+        if (refreshing.value) return
         coroutineScope.launch(dispatcherProvider.io) {
-            isRefreshingImp.value = true
+            refreshingImp.value = true
             scheduleRepository.updateSchedule(
                 selectedDate.year,
                 selectedDate.month,
                 selectedDate.day
             )
-            isRefreshingImp.value = false
+            refreshingImp.value = false
         }
     }
 
     fun onClickGame(game: GameAndBets) {
-        if (!game.game.isGamePlayed) {
+        if (!game.game.gamePlayed) {
             navigationController.navigateToTeam(game.game.homeTeam.team.teamId)
         } else {
             navigationController.navigateToBoxScore(game.game.gameId)
@@ -118,11 +121,13 @@ class SchedulePageViewModel(
         }
     }
 
-    fun createGameCardViewModel(gameAndBets: GameAndBets): GameCardViewModel {
-        return composeViewModelProvider.getGameCardViewModel(
-            gameAndBets = gameAndBets,
-            dispatcherProvider = dispatcherProvider,
-            coroutineScope = coroutineScope
-        )
+    fun getGameCardViewModel(gameAndBets: GameAndBets): GameCardViewModel {
+        return gameCardViewModelMap.getOrPut(gameAndBets) {
+            composeViewModelProvider.getGameCardViewModel(
+                gameAndBets = gameAndBets,
+                dispatcherProvider = dispatcherProvider,
+                coroutineScope = coroutineScope
+            )
+        }
     }
 }

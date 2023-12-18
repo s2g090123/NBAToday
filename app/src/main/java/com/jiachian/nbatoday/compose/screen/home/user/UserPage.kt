@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -46,8 +45,9 @@ import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.screen.account.LoginDialog
 import com.jiachian.nbatoday.compose.theme.NBAColors
 import com.jiachian.nbatoday.compose.widget.IconButton
-import com.jiachian.nbatoday.compose.widget.NullCheckScreen
+import com.jiachian.nbatoday.compose.widget.LoadingScreen
 import com.jiachian.nbatoday.compose.widget.TeamLogoImage
+import com.jiachian.nbatoday.compose.widget.UIStateScreen
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.models.local.user.User
 import com.jiachian.nbatoday.testing.testtag.UserTestTag
@@ -58,9 +58,15 @@ fun UserPage(
     modifier: Modifier = Modifier,
     viewModel: UserPageViewModel
 ) {
-    val userImp by viewModel.user.collectAsState(null)
-    NullCheckScreen(
-        data = userImp,
+    val userState by viewModel.userState.collectAsState()
+    UIStateScreen(
+        state = userState,
+        loading = {
+            LoadingScreen(
+                modifier = modifier,
+                color = MaterialTheme.colors.secondary
+            )
+        },
         ifNull = {
             LoginScreen(
                 modifier = modifier,
@@ -94,9 +100,7 @@ private fun UserScreen(
             onLogout = viewModel::logout
         )
         ThemeTable(
-            modifier = Modifier
-                .testTag(UserTestTag.UserScreen_ThemesTable)
-                .fillMaxSize(),
+            modifier = Modifier.testTag(UserTestTag.UserScreen_ThemesTable),
             teams = viewModel.teams,
             onPalette = viewModel::updateTheme
         )
@@ -197,11 +201,7 @@ private fun ThemeCard(
                 .size(48.dp),
             team = team
         )
-        Column(
-            modifier = Modifier
-                .padding(top = 8.dp, start = 8.dp, end = 8.dp)
-                .fillMaxWidth()
-        ) {
+        Column(modifier = Modifier.padding(top = 8.dp, start = 8.dp, end = 8.dp)) {
             Text(
                 modifier = Modifier.testTag(UserTestTag.ThemeCard_Text_TeamName),
                 text = team.teamName,
@@ -212,9 +212,7 @@ private fun ThemeCard(
                 overflow = TextOverflow.Ellipsis
             )
             ThemePalette(
-                modifier = Modifier
-                    .padding(top = 8.dp)
-                    .fillMaxWidth(),
+                modifier = Modifier.padding(top = 8.dp),
                 colors = colors,
             )
         }

@@ -8,17 +8,20 @@ import com.jiachian.nbatoday.compose.screen.score.models.BoxScorePlayerLabel
 import com.jiachian.nbatoday.compose.screen.score.models.BoxScorePlayerRowData
 import com.jiachian.nbatoday.compose.screen.score.models.BoxScoreTeamLabel
 import com.jiachian.nbatoday.compose.screen.score.models.BoxScoreTeamRowData
+import com.jiachian.nbatoday.compose.screen.score.models.BoxScoreUI
+import com.jiachian.nbatoday.compose.screen.state.UIState
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.models.local.team.data.teamOfficial
+import com.jiachian.nbatoday.navigation.MainRoute
 import com.jiachian.nbatoday.navigation.NavigationController
-import com.jiachian.nbatoday.navigation.Route
 import com.jiachian.nbatoday.repository.game.GameRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -32,67 +35,99 @@ class BoxScoreViewModel(
 ) : ComposeViewModel(
     coroutineScope = coroutineScope,
     navigationController = navigationController,
-    route = Route.BOX_SCORE
+    route = MainRoute.BoxScore
 ) {
-    val isLoading = repository.isLoading
-
     init {
         coroutineScope.launch(dispatcherProvider.io) {
-            repository.updateBoxScore(gameId)
+            repository.insertBoxScore(gameId)
         }
     }
-
-    private val boxScoreAndGame = repository.getBoxScoreAndGame(gameId)
-
-    val boxScore = boxScoreAndGame.map {
-        it?.boxScore
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, null)
-
-    val date = boxScore.map {
-        it?.gameDate ?: ""
-    }.stateIn(coroutineScope, SharingStarted.Lazily, "")
-
-    val notFound = boxScore.map {
-        it == null
-    }.stateIn(coroutineScope, SharingStarted.Lazily, true)
-
-    val periodLabels = boxScore.map {
-        it?.homeTeam?.periods?.map { period ->
-            period.periodLabel
-        } ?: emptyList()
-    }.stateIn(coroutineScope, SharingStarted.Lazily, emptyList())
 
     val playerLabels = BoxScorePlayerLabel.values()
     private val teamLabels = BoxScoreTeamLabel.values()
     private val leaderLabels = BoxScoreLeaderLabel.values()
 
-    private val selectedPlayerLabelImp = MutableStateFlow<BoxScorePlayerLabel?>(null)
-    val selectedPlayerLabel = selectedPlayerLabelImp.asStateFlow()
+    private val boxScoreAndGame = repository.getBoxScoreAndGame(gameId)
+    private val boxScore = boxScoreAndGame.map {
+        it?.boxScore
+    }
 
-    val homeTeam = boxScore.map { score ->
+    val date = boxScore.map {
+        it?.gameDate ?: ""
+    }.stateIn(coroutineScope, SharingStarted.Lazily, "")
+
+    private val periods = boxScore.map {
+        it?.homeTeam?.periods?.map { period ->
+            period.periodLabel
+        }
+    }.flowOn(dispatcherProvider.io)
+
+    private val homeTeam = boxScore.map { score ->
         score?.homeTeam?.team ?: teamOfficial
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, teamOfficial)
-
-    val awayTeam = boxScore.map { score ->
+    }
+    private val awayTeam = boxScore.map { score ->
         score?.awayTeam?.team ?: teamOfficial
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, teamOfficial)
+    }
+    private val teamRowData = boxScore.map { score ->
+        teamLabels.map { label ->
+            BoxScoreTeamRowData(
+                label = label,
+                home = LabelHelper.getValueByLabel(label, score?.homeTeam?.statistics),
+                away = LabelHelper.getValueByLabel(label, score?.awayTeam?.statistics),
+            )
+        }
+    }.flowOn(dispatcherProvider.io)
+    private val teamUI = combine(
+        homeTeam,
+        awayTeam,
+        teamRowData
+    ) { home, away, rowData ->
+        BoxScoreUI.BoxScoreTeamsUI(
+            home = home,
+            away = away,
+            rowData = rowData
+        )
+    }
 
-    val homeLeader = boxScoreAndGame.map { boxScoreAndGame ->
+    private val homeLeader = boxScoreAndGame.map { boxScoreAndGame ->
         val score = boxScoreAndGame?.boxScore
-        val leaderPlayerId = boxScoreAndGame?.game?.homeLeaderPlayerId
+        val leaderPlayerId = boxScoreAndGame?.game?.homeLeaderId
         score?.homeTeam?.players?.firstOrNull {
             it.playerId == leaderPlayerId
         } ?: score?.homeTeam?.getMostPointsPlayer()
-    }.stateIn(coroutineScope, SharingStarted.Lazily, null)
-    val awayLeader = boxScoreAndGame.map { boxScoreAndGame ->
+    }.flowOn(dispatcherProvider.io)
+    private val awayLeader = boxScoreAndGame.map { boxScoreAndGame ->
         val score = boxScoreAndGame?.boxScore
-        val leaderPlayerId = boxScoreAndGame?.game?.awayLeadersPlayerId
+        val leaderPlayerId = boxScoreAndGame?.game?.awayLeaderId
         score?.awayTeam?.players?.firstOrNull {
             it.playerId == leaderPlayerId
         } ?: score?.awayTeam?.getMostPointsPlayer()
-    }.stateIn(coroutineScope, SharingStarted.Lazily, null)
+    }.flowOn(dispatcherProvider.io)
+    private val leaderRowData = combine(
+        homeLeader,
+        awayLeader
+    ) { home, away ->
+        leaderLabels.map { label ->
+            BoxScoreLeaderRowData(
+                label = label,
+                home = LabelHelper.getValueByLabel(label, home),
+                away = LabelHelper.getValueByLabel(label, away),
+            )
+        }
+    }.flowOn(dispatcherProvider.io)
+    private val leaderUI = combine(
+        homeLeader,
+        awayLeader,
+        leaderRowData
+    ) { home, away, rowData ->
+        BoxScoreUI.BoxScoreLeadersUI(
+            home = home,
+            away = away,
+            rowData = rowData
+        )
+    }
 
-    val homePlayerRowData = boxScore.map { score ->
+    private val homePlayerRowData = boxScore.map { score ->
         score?.homeTeam?.players?.map { player ->
             BoxScorePlayerRowData(
                 player = player,
@@ -105,9 +140,8 @@ class BoxScoreViewModel(
                 }
             )
         } ?: emptyList()
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, emptyList())
-
-    val awayPlayerRowData = boxScore.map { score ->
+    }.flowOn(dispatcherProvider.io)
+    private val awayPlayerRowData = boxScore.map { score ->
         score?.awayTeam?.players?.map { player ->
             BoxScorePlayerRowData(
                 player = player,
@@ -120,30 +154,43 @@ class BoxScoreViewModel(
                 }
             )
         } ?: emptyList()
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, emptyList())
-
-    val teamRowData = boxScore.map { score ->
-        teamLabels.map { label ->
-            BoxScoreTeamRowData(
-                label = label,
-                home = LabelHelper.getValueByLabel(label, score?.homeTeam?.statistics),
-                away = LabelHelper.getValueByLabel(label, score?.awayTeam?.statistics),
-            )
-        }
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, emptyList())
-
-    val leaderStatsRowData = combine(
-        homeLeader,
-        awayLeader
+    }.flowOn(dispatcherProvider.io)
+    private val playerUI = combine(
+        homePlayerRowData,
+        awayPlayerRowData
     ) { home, away ->
-        leaderLabels.map { label ->
-            BoxScoreLeaderRowData(
-                label = label,
-                home = LabelHelper.getValueByLabel(label, home),
-                away = LabelHelper.getValueByLabel(label, away),
-            )
-        }
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, emptyList())
+        BoxScoreUI.BoxScorePlayersUI(
+            home = home,
+            away = away
+        )
+    }
+
+    private val boxScoreUI = combine(
+        boxScore,
+        periods,
+        playerUI,
+        teamUI,
+        leaderUI
+    ) { boxScore, periods, player, team, leader ->
+        if (boxScore == null || periods == null) return@combine null
+        BoxScoreUI(
+            boxScore = boxScore,
+            periods = periods,
+            players = player,
+            teams = team,
+            leaders = leader,
+        )
+    }
+    val boxScoreUIState = combine(
+        repository.loading,
+        boxScoreUI
+    ) { loading, boxScoreUI ->
+        if (loading) return@combine UIState.Loading()
+        UIState.Loaded(boxScoreUI)
+    }.stateIn(coroutineScope, SharingStarted.Eagerly, UIState.Loading())
+
+    private val selectedPlayerLabelImp = MutableStateFlow<BoxScorePlayerLabel?>(null)
+    val selectedPlayerLabel = selectedPlayerLabelImp.asStateFlow()
 
     fun selectPlayerLabel(label: BoxScorePlayerLabel?) {
         selectedPlayerLabelImp.value = label

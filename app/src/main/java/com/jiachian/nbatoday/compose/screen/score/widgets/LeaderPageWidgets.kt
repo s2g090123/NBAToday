@@ -15,8 +15,6 @@ import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -25,8 +23,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.R
-import com.jiachian.nbatoday.compose.screen.score.BoxScoreViewModel
 import com.jiachian.nbatoday.compose.screen.score.models.BoxScoreLeaderRowData
+import com.jiachian.nbatoday.compose.screen.score.models.BoxScoreUI
 import com.jiachian.nbatoday.compose.widget.PlayerImage
 import com.jiachian.nbatoday.models.local.score.BoxScore
 import com.jiachian.nbatoday.testing.testtag.BoxScoreTestTag
@@ -35,22 +33,19 @@ import com.jiachian.nbatoday.utils.dividerSecondaryColor
 @Composable
 fun ScoreLeaderPage(
     modifier: Modifier = Modifier,
-    viewModel: BoxScoreViewModel
+    leadersUI: BoxScoreUI.BoxScoreLeadersUI,
 ) {
-    val homeLeader by viewModel.homeLeader.collectAsState()
-    val awayLeader by viewModel.awayLeader.collectAsState()
-    val rowData by viewModel.leaderStatsRowData.collectAsState()
     LazyColumn(modifier = modifier) {
         item {
             ScoreLeaderTitleRow(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 8.dp),
-                homeLeader = homeLeader,
-                awayLeader = awayLeader
+                homeLeader = leadersUI.home,
+                awayLeader = leadersUI.away,
             )
         }
-        items(rowData) { rowData ->
+        items(leadersUI.rowData) { rowData ->
             ScoreLeaderRow(
                 modifier = Modifier
                     .testTag(BoxScoreTestTag.ScoreLeaderPage_ScoreLeaderRow)
@@ -101,8 +96,12 @@ private fun ScoreLeaderRow(
     Column(modifier = modifier) {
         Box(
             modifier = Modifier
+                .padding(
+                    top = if (label.topMargin) 8.dp else 0.dp,
+                    start = 4.dp,
+                    end = 4.dp
+                )
                 .fillMaxWidth()
-                .padding(top = if (label.topMargin) 8.dp else 0.dp, start = 4.dp, end = 4.dp)
         ) {
             LeaderStatsText(
                 modifier = Modifier
@@ -126,9 +125,7 @@ private fun ScoreLeaderRow(
         }
         if (label.bottomDivider) {
             Divider(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 12.dp, bottom = 12.dp),
+                modifier = Modifier.padding(top = 12.dp, bottom = 12.dp),
                 color = dividerSecondaryColor()
             )
         }

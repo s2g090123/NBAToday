@@ -2,7 +2,6 @@ package com.jiachian.nbatoday.compose.theme
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 
 class NBAColors(
@@ -11,8 +10,8 @@ class NBAColors(
     extra1: Color,
     extra2: Color
 ) {
-    var primary by mutableStateOf(primary)
-    var secondary by mutableStateOf(secondary)
-    var extra1 by mutableStateOf(extra1)
-    var extra2 by mutableStateOf(extra2)
+    val primary by mutableStateOf(primary)
+    val secondary by mutableStateOf(secondary)
+    val extra1 by mutableStateOf(extra1)
+    val extra2 by mutableStateOf(extra2)
 }

@@ -14,7 +14,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
@@ -22,14 +21,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
-import coil.decode.SvgDecoder
-import coil.request.ImageRequest
 import com.jiachian.nbatoday.R
+import com.jiachian.nbatoday.compose.widget.TeamLogoImage
 import com.jiachian.nbatoday.models.local.bet.BetAndGame
 import com.jiachian.nbatoday.models.local.game.GameTeam
 import com.jiachian.nbatoday.testing.testtag.BetTestTag
-import com.jiachian.nbatoday.utils.NBAUtils
 
 private const val CrownIconRotationZ = -45f
 
@@ -52,8 +48,8 @@ fun BetCard(
             team = homeTeam,
             pointsText = betAndGame.getHomePointsText(),
             pointsTextColor = betAndGame.getHomePointsTextColor(),
-            isGamePlayed = betAndGame.isGamePlayed,
-            isWin = betAndGame.isHomeTeamWin
+            isGamePlayed = betAndGame.gamePlayed,
+            isWin = betAndGame.homeWin
         )
         Text(
             modifier = Modifier.testTag(BetTestTag.BetCard_Text_GameStatus),
@@ -70,8 +66,8 @@ fun BetCard(
             team = awayTeam,
             pointsText = betAndGame.getAwayPointsText(),
             pointsTextColor = betAndGame.getAwayPointsTextColor(),
-            isGamePlayed = betAndGame.isGamePlayed,
-            isWin = betAndGame.isAwayTeamWin
+            isGamePlayed = betAndGame.gamePlayed,
+            isWin = betAndGame.awayWin
         )
     }
 }
@@ -99,17 +95,11 @@ private fun BetCardTeamInfo(
             fontWeight = FontWeight.Bold
         )
         Box {
-            AsyncImage(
+            TeamLogoImage(
                 modifier = Modifier
                     .padding(top = 8.dp)
                     .size(100.dp),
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(NBAUtils.getTeamLogoUrlById(team.team.teamId))
-                    .decoderFactory(SvgDecoder.Factory())
-                    .build(),
-                error = painterResource(team.team.logoRes),
-                placeholder = painterResource(team.team.logoRes),
-                contentDescription = null
+                team = team.team,
             )
             if (isWin) {
                 Icon(

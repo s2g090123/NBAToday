@@ -230,7 +230,7 @@ class BetScreenTest {
             .onNodeWithTag("bet_lc_cards", useUnmergedTree = true)
             .onChildAt(0)
             .performClick()
-        assertThat(viewModel.betAndGame.value.size, `is`(2))
+        assertThat(viewModel.betsAndGames.value.size, `is`(2))
         assertThat(repository.user.value?.points, `is`(1020))
         composeTestRule
             .onNodeWithTag("AskTurnTableDialog_Dialog", useUnmergedTree = true)

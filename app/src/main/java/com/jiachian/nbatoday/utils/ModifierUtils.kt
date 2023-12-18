@@ -33,6 +33,12 @@ fun Modifier.modifyIf(
     modify: Modifier.() -> Modifier
 ) = if (condition) this.then(modify()) else this
 
+fun <T> Modifier.modifyIf(
+    condition: Boolean,
+    value: T,
+    modify: Modifier.(T) -> Modifier
+) = if (condition) this.then(modify(value)) else this
+
 fun Modifier.modifyIf(
     condition: Boolean,
     modify: Modifier.() -> Modifier,

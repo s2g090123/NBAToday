@@ -15,8 +15,8 @@ import com.jiachian.nbatoday.datastore.BaseDataStore
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.models.local.game.GameAndBets
+import com.jiachian.nbatoday.navigation.MainRoute
 import com.jiachian.nbatoday.navigation.NavigationController
-import com.jiachian.nbatoday.navigation.Route
 import com.jiachian.nbatoday.repository.RepositoryProvider
 import kotlinx.coroutines.CoroutineScope
 
@@ -25,19 +25,19 @@ class ComposeViewModelProvider(
     private val dataStore: BaseDataStore,
     private val navigationController: NavigationController,
 ) {
-    private val viewModelMap = mutableMapOf<Route, ComposeViewModel>()
+    private val viewModelMap = mutableMapOf<MainRoute, ComposeViewModel>()
 
     fun getHomeViewModel(
         dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
         coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined),
     ): HomeViewModel {
-        return viewModelMap[Route.HOME] as? HomeViewModel ?: HomeViewModel(
+        return viewModelMap[MainRoute.Home] as? HomeViewModel ?: HomeViewModel(
             composeViewModelProvider = this,
             navigationController = navigationController,
             dispatcherProvider = dispatcherProvider,
             coroutineScope = coroutineScope
         ).apply {
-            viewModelMap[Route.HOME] = this
+            viewModelMap[MainRoute.Home] = this
         }
     }
 
@@ -46,14 +46,14 @@ class ComposeViewModelProvider(
         dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
         coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined),
     ): BoxScoreViewModel {
-        return viewModelMap[Route.BOX_SCORE] as? BoxScoreViewModel ?: BoxScoreViewModel(
+        return viewModelMap[MainRoute.BoxScore] as? BoxScoreViewModel ?: BoxScoreViewModel(
             gameId = gameId,
             repository = repositoryProvider.game,
             navigationController = navigationController,
             dispatcherProvider = dispatcherProvider,
             coroutineScope = coroutineScope,
         ).apply {
-            viewModelMap[Route.BOX_SCORE] = this
+            viewModelMap[MainRoute.BoxScore] = this
         }
     }
 
@@ -62,7 +62,7 @@ class ComposeViewModelProvider(
         dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
         coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined),
     ): TeamViewModel {
-        return viewModelMap[Route.TEAM] as? TeamViewModel ?: TeamViewModel(
+        return viewModelMap[MainRoute.Team] as? TeamViewModel ?: TeamViewModel(
             teamId = teamId,
             teamRepository = repositoryProvider.team,
             gameRepository = repositoryProvider.game,
@@ -71,7 +71,7 @@ class ComposeViewModelProvider(
             dispatcherProvider = dispatcherProvider,
             coroutineScope = coroutineScope
         ).apply {
-            viewModelMap[Route.TEAM] = this
+            viewModelMap[MainRoute.Team] = this
         }
     }
 
@@ -80,14 +80,14 @@ class ComposeViewModelProvider(
         dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
         coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined),
     ): PlayerViewModel {
-        return viewModelMap[Route.PLAYER] as? PlayerViewModel ?: PlayerViewModel(
+        return viewModelMap[MainRoute.Player] as? PlayerViewModel ?: PlayerViewModel(
             playerId = playerId,
             repository = repositoryProvider.player,
             navigationController = navigationController,
             dispatcherProvider = dispatcherProvider,
             coroutineScope = coroutineScope,
         ).apply {
-            viewModelMap[Route.PLAYER] = this
+            viewModelMap[MainRoute.Player] = this
         }
     }
 
@@ -96,7 +96,7 @@ class ComposeViewModelProvider(
         dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
         coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined),
     ): CalendarViewModel {
-        return viewModelMap[Route.CALENDAR] as? CalendarViewModel ?: CalendarViewModel(
+        return viewModelMap[MainRoute.Calendar] as? CalendarViewModel ?: CalendarViewModel(
             dateTime = dateTime,
             repository = repositoryProvider.game,
             navigationController = navigationController,
@@ -104,7 +104,7 @@ class ComposeViewModelProvider(
             dispatcherProvider = dispatcherProvider,
             coroutineScope = coroutineScope,
         ).apply {
-            viewModelMap[Route.CALENDAR] = this
+            viewModelMap[MainRoute.Calendar] = this
         }
     }
 
@@ -113,14 +113,14 @@ class ComposeViewModelProvider(
         dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
         coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined),
     ): BetViewModel {
-        return viewModelMap[Route.BET] as? BetViewModel ?: BetViewModel(
+        return viewModelMap[MainRoute.Bet] as? BetViewModel ?: BetViewModel(
             account = account,
             repository = repositoryProvider.bet,
             navigationController = navigationController,
             dispatcherProvider = dispatcherProvider,
             coroutineScope = coroutineScope,
         ).apply {
-            viewModelMap[Route.BET] = this
+            viewModelMap[MainRoute.Bet] = this
         }
     }
 
@@ -177,7 +177,7 @@ class ComposeViewModelProvider(
         )
     }
 
-    fun removeViewModel(route: Route) {
+    fun removeViewModel(route: MainRoute) {
         viewModelMap.remove(route)
     }
 }

@@ -49,7 +49,7 @@ fun GameCard(
             gameAndBets = viewModel.gameAndBets,
             textColor = color,
             betAvailable = betAvailable,
-            onBetClick = { viewModel.setBetDialogVisible(true) }
+            onBet = { viewModel.setBetDialogVisible(true) }
         )
         if (expandable && viewModel.expandedContentVisible) {
             GameExpandedContent(
@@ -69,7 +69,7 @@ private fun GameDetail(
     gameAndBets: GameAndBets,
     textColor: Color,
     betAvailable: Boolean,
-    onBetClick: () -> Unit
+    onBet: () -> Unit
 ) {
     Row(
         modifier = modifier,
@@ -87,7 +87,7 @@ private fun GameDetail(
             gameAndBets = gameAndBets,
             textColor = textColor,
             betAvailable = betAvailable,
-            onBetClick = onBetClick
+            onBet = onBet
         )
         GameTeamInfo(
             modifier = Modifier
@@ -141,7 +141,7 @@ private fun GameExpandedContent(
     viewModel: GameCardViewModel,
     color: Color
 ) {
-    val isExpanded by viewModel.isCardExpanded.collectAsState()
+    val expanded by viewModel.expanded.collectAsState()
     Box {
         AnimatedExpand(
             modifier = Modifier
@@ -150,7 +150,7 @@ private fun GameExpandedContent(
                 .height(24.dp)
                 .rippleClickable { viewModel.setCardExpanded(true) }
                 .padding(vertical = 2.dp),
-            visible = !isExpanded,
+            visible = !expanded,
         ) {
             Image(
                 painter = painterResource(R.drawable.ic_black_expand_more),
@@ -164,7 +164,7 @@ private fun GameExpandedContent(
                 .testTag(GameCardTestTag.GameExpandedContent_Button_Collapse)
                 .padding(horizontal = 24.dp)
                 .fillMaxWidth(),
-            visible = isExpanded,
+            visible = expanded,
         ) {
             Column(modifier = Modifier.fillMaxWidth()) {
                 GameCardLeadersInfo(

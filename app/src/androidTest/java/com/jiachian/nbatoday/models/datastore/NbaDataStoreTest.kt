@@ -40,7 +40,7 @@ class NbaDataStoreTest {
     fun preferencesKeys_checksKeyName_isCorrect() {
         assertThat(NBADataStore.PreferencesKeys.STATS_COOKIES.name, `is`("stats_cookies"))
         assertThat(
-            NBADataStore.PreferencesKeys.LAST_ACCESSED_DAY.name,
+            NBADataStore.PreferencesKeys.LAST_ACCESSED_DATE.name,
             `is`("record_schedule_today")
         )
         assertThat(NBADataStore.PreferencesKeys.THEME_COLORS_TEAM_ID.name, `is`("theme_colors"))
@@ -59,10 +59,10 @@ class NbaDataStoreTest {
 
     @Test
     fun recordScheduleToday_setValue_valueIsCorrect() = runTest {
-        val emptyData = dataStore.lastAccessedDay.first()
+        val emptyData = dataStore.lastAccessedDate.first()
         assertThat(emptyData, `is`(DateUtils.formatDate(1990, 1, 1)))
-        dataStore.updateLastAccessedDay(2023, 1, 1)
-        val actualData = dataStore.lastAccessedDay.first()
+        dataStore.updateLastAccessedDate(2023, 1, 1)
+        val actualData = dataStore.lastAccessedDate.first()
         assertThat(actualData, `is`(DateUtils.formatDate(2023, 1, 1)))
     }
 

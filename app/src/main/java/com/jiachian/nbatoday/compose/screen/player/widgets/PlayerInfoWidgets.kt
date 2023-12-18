@@ -12,14 +12,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -29,9 +27,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.R
-import com.jiachian.nbatoday.compose.screen.player.PlayerViewModel
 import com.jiachian.nbatoday.compose.screen.player.models.PlayerInfoTableData
-import com.jiachian.nbatoday.compose.widget.NullCheckScreen
 import com.jiachian.nbatoday.compose.widget.PlayerImage
 import com.jiachian.nbatoday.compose.widget.TeamLogoImage
 import com.jiachian.nbatoday.models.local.player.Player
@@ -41,31 +37,29 @@ import com.jiachian.nbatoday.utils.modifyIf
 private const val PlayerImageAspectRatio = 1.36f
 
 fun LazyListScope.playerInfo(
-    viewModel: PlayerViewModel,
     player: Player,
+    tableData: PlayerInfoTableData?,
 ) {
     item {
-        TeamAndPlayerImage(
-            modifier = Modifier.fillMaxWidth(),
-            player = player,
-        )
+        TeamAndPlayerImage(player = player)
     }
     item {
         PlayerTitle(
-            modifier = Modifier
-                .padding(top = 8.dp)
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+            modifier = Modifier.padding(top = 8.dp, start = 16.dp, end = 16.dp),
             player = player,
         )
     }
-    item {
-        PlayerInfoTable(
-            modifier = Modifier
-                .padding(top = 8.dp)
-                .fillMaxWidth(),
-            viewModel = viewModel,
-        )
+    tableData?.rowData?.let {
+        itemsIndexed(tableData.rowData) { index, rowData ->
+            PlayerInfoRow(
+                modifier = Modifier
+                    .modifyIf(index == 0) { padding(top = 8.dp) }
+                    .fillMaxWidth(),
+                rowData = rowData,
+                topDivider = index < tableData.rowData.size - 1,
+                bottomDivider = index > 0,
+            )
+        }
     }
 }
 
@@ -130,31 +124,6 @@ private fun PlayerTitle(
 }
 
 @Composable
-private fun PlayerInfoTable(
-    modifier: Modifier = Modifier,
-    viewModel: PlayerViewModel,
-) {
-    val tableData by viewModel.playerInfoTableData.collectAsState()
-    NullCheckScreen(
-        data = tableData,
-        ifNull = null
-    ) { table ->
-        Column(modifier = modifier) {
-            table.rowData.forEachIndexed { index, rowData ->
-                PlayerInfoRow(
-                    modifier = Modifier
-                        .modifyIf(index == 0) { padding(top = 8.dp) }
-                        .fillMaxWidth(),
-                    rowData = rowData,
-                    topDivider = index < table.rowData.size - 1,
-                    bottomDivider = index > 0,
-                )
-            }
-        }
-    }
-}
-
-@Composable
 private fun PlayerInfoRow(
     modifier: Modifier = Modifier,
     rowData: PlayerInfoTableData.RowData,
@@ -163,10 +132,7 @@ private fun PlayerInfoRow(
 ) {
     Column(modifier = modifier) {
         if (topDivider) {
-            Divider(
-                modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colors.secondaryVariant
-            )
+            Divider(color = MaterialTheme.colors.secondaryVariant)
         }
         PlayerInfoRowContent(
             modifier = Modifier
@@ -175,10 +141,7 @@ private fun PlayerInfoRow(
             rowData = rowData,
         )
         if (bottomDivider) {
-            Divider(
-                modifier = Modifier.fillMaxWidth(),
-                color = MaterialTheme.colors.secondaryVariant
-            )
+            Divider(color = MaterialTheme.colors.secondaryVariant)
         }
     }
 }
@@ -221,9 +184,7 @@ private fun PlayerInfoBox(
         contentAlignment = Alignment.Center
     ) {
         Column(
-            modifier = Modifier
-                .wrapContentHeight()
-                .padding(vertical = 16.dp, horizontal = 8.dp),
+            modifier = Modifier.padding(vertical = 16.dp, horizontal = 8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(

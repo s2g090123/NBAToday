@@ -23,7 +23,6 @@ import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,6 +39,8 @@ import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.screen.card.GameCard
 import com.jiachian.nbatoday.compose.screen.home.schedule.models.DateData
 import com.jiachian.nbatoday.compose.widget.IconButton
+import com.jiachian.nbatoday.compose.widget.LoadingScreen
+import com.jiachian.nbatoday.compose.widget.UIStateScreen
 import com.jiachian.nbatoday.models.local.game.GameAndBets
 import com.jiachian.nbatoday.testing.testtag.ScheduleTestTag
 import com.jiachian.nbatoday.utils.rippleClickable
@@ -53,10 +54,10 @@ fun SchedulePage(
 ) {
     val dateData = viewModel.dateData
     val pagerState = rememberPagerState(initialPage = dateData.size / 2)
-    val dateAndGames by viewModel.groupedGames.collectAsState()
-    val isRefreshing by viewModel.isRefreshing.collectAsState()
+    val dateAndGamesState by viewModel.groupedGamesState.collectAsState()
+    val refreshing by viewModel.refreshing.collectAsState()
     val pullRefreshState = rememberPullRefreshState(
-        refreshing = isRefreshing,
+        refreshing = refreshing,
         onRefresh = { viewModel.updateSelectedSchedule() }
     )
     Box(modifier = modifier) {
@@ -68,13 +69,24 @@ fun SchedulePage(
             state = pagerState,
             count = dateData.size
         ) { page ->
-            val date = dateData[page]
-            ScheduleContent(
-                viewModel = viewModel,
-                isRefreshing = isRefreshing,
-                refreshState = pullRefreshState,
-                games = dateAndGames[date] ?: emptyList(),
-            )
+            UIStateScreen(
+                state = dateAndGamesState,
+                loading = {
+                    LoadingScreen(
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.colors.secondary,
+                    )
+                },
+                ifNull = null
+            ) { dateAndGames ->
+                val date = dateData[page]
+                ScheduleContent(
+                    viewModel = viewModel,
+                    refreshing = refreshing,
+                    refreshState = pullRefreshState,
+                    games = dateAndGames[date] ?: emptyList(),
+                )
+            }
         }
         ScheduleTabRow(
             pagerState = pagerState,
@@ -89,7 +101,7 @@ fun SchedulePage(
 private fun ScheduleContent(
     viewModel: SchedulePageViewModel,
     refreshState: PullRefreshState,
-    isRefreshing: Boolean,
+    refreshing: Boolean,
     games: List<GameAndBets>,
 ) {
     Box(
@@ -114,9 +126,6 @@ private fun ScheduleContent(
                 )
             }
             itemsIndexed(games) { index, game ->
-                val cardViewModel = remember(game) {
-                    viewModel.createGameCardViewModel(game)
-                }
                 GameCard(
                     modifier = Modifier
                         .testTag(ScheduleTestTag.ScheduleContent_GameCard)
@@ -134,7 +143,7 @@ private fun ScheduleContent(
                         .rippleClickable {
                             viewModel.onClickGame(game)
                         },
-                    viewModel = cardViewModel,
+                    viewModel = viewModel.getGameCardViewModel(game),
                     color = MaterialTheme.colors.primary,
                     expandable = true,
                 )
@@ -142,7 +151,7 @@ private fun ScheduleContent(
         }
         PullRefreshIndicator(
             modifier = Modifier.align(Alignment.TopCenter),
-            refreshing = isRefreshing,
+            refreshing = refreshing,
             state = refreshState
         )
     }

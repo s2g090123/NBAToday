@@ -5,8 +5,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import retrofit2.Response
 
 abstract class BaseRepository {
-    private val isLoadingImp = MutableStateFlow(false)
-    val isLoading = isLoadingImp.asStateFlow()
+    private val loadingImp = MutableStateFlow(false)
+    val loading = loadingImp.asStateFlow()
 
     @Volatile
     private var enqueueJobAmount = 0
@@ -15,13 +15,13 @@ abstract class BaseRepository {
 
     protected suspend fun <T> loading(runnable: suspend () -> T): T {
         return try {
-            isLoadingImp.value = true
+            loadingImp.value = true
             enqueueJobAmount++
             runnable()
         } finally {
             enqueueJobAmount--
             if (enqueueJobAmount == 0) {
-                isLoadingImp.value = false
+                loadingImp.value = false
             }
         }
     }

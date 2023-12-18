@@ -16,14 +16,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.R
-import com.jiachian.nbatoday.models.local.bet.TurnTablePoints
+import com.jiachian.nbatoday.compose.screen.bet.models.TurnTablePoints
 import com.jiachian.nbatoday.testing.testtag.BetTestTag
 import com.jiachian.nbatoday.utils.rippleClickable
 
 @Composable
 fun AskTurnTableDialog(
-    turnTablePoints: TurnTablePoints,
-    onContinue: (TurnTablePoints) -> Unit,
+    points: TurnTablePoints,
+    onContinue: () -> Unit,
     onCancel: () -> Unit
 ) {
     AlertDialog(
@@ -45,8 +45,8 @@ fun AskTurnTableDialog(
                 modifier = Modifier.testTag(BetTestTag.AskTurnTableDialog_Text_Body),
                 text = stringResource(
                     R.string.bet_ask_turn_table_text,
-                    turnTablePoints.winPoints,
-                    turnTablePoints.losePoints
+                    points.win,
+                    points.lose
                 ),
                 color = MaterialTheme.colors.primary,
                 fontSize = 16.sp
@@ -55,7 +55,7 @@ fun AskTurnTableDialog(
         buttons = {
             AskTurnTableButtons(
                 modifier = Modifier.fillMaxWidth(),
-                onContinue = { onContinue(turnTablePoints) },
+                onContinue = onContinue,
                 onCancel = onCancel
             )
         }

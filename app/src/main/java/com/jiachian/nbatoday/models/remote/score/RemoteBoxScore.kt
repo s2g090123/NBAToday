@@ -81,10 +81,7 @@ data class RemoteBoxScore(
                 }
 
                 fun isStarter(): Boolean {
-                    return starter
-                        ?.takeIf { it == "1" }
-                        ?.let { true }
-                        ?: false
+                    return starter?.let { it == "1" } ?: false
                 }
 
                 fun getFormattedNotPlayingReason(): String {

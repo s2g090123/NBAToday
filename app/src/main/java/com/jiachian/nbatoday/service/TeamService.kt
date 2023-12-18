@@ -9,13 +9,13 @@ import retrofit2.http.Query
 
 interface TeamService {
     @GET("team/{teamId}/players")
-    suspend fun getTeamPlayerStats(
+    suspend fun getTeamPlayer(
         @Path("teamId") teamId: Int,
         @Query("season") season: String
     ): Response<RemoteTeamPlayer>
 
     @GET("team/stats")
-    suspend fun getTeamStats(
+    suspend fun getTeam(
         @Query("season") season: String,
         @Query("id") teamId: Int?
     ): Response<RemoteTeam>

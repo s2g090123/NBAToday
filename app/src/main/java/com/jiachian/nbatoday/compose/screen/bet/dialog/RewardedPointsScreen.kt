@@ -26,13 +26,13 @@ import kotlin.math.abs
 
 @Composable
 fun RewardedPointsScreen(viewModel: BetViewModel) {
-    val rewardedPoints by viewModel.rewardedPointsVisible.collectAsState()
+    val pointsImp by viewModel.rewardedPoints.collectAsState()
     NullCheckScreen(
-        data = rewardedPoints,
-        ifNull = {}
+        data = pointsImp,
+        ifNull = null
     ) { points ->
         RewardedPointsDialog(
-            rewardedPoints = points,
+            points = points,
             onDismiss = { viewModel.closeRewardedPoints() }
         )
     }
@@ -40,7 +40,7 @@ fun RewardedPointsScreen(viewModel: BetViewModel) {
 
 @Composable
 private fun RewardedPointsDialog(
-    rewardedPoints: Long,
+    points: Long,
     onDismiss: () -> Unit
 ) {
     AlertDialog(
@@ -52,7 +52,7 @@ private fun RewardedPointsDialog(
             Text(
                 modifier = Modifier.testTag(BetTestTag.RewardedPointsDialog_Text_Title),
                 text = stringResource(
-                    if (rewardedPoints >= 0) R.string.bet_reward_win_title
+                    if (points >= 0) R.string.bet_reward_win_title
                     else R.string.bet_reward_lose_title
                 ),
                 color = MaterialTheme.colors.primary,
@@ -64,8 +64,8 @@ private fun RewardedPointsDialog(
             Text(
                 modifier = Modifier.testTag(BetTestTag.RewardedPointsDialog_Text_Body),
                 text = stringResource(
-                    if (rewardedPoints >= 0) R.string.bet_reward_win_text else R.string.bet_reward_lose_text,
-                    abs(rewardedPoints)
+                    if (points >= 0) R.string.bet_reward_win_text else R.string.bet_reward_lose_text,
+                    abs(points)
                 ),
                 color = MaterialTheme.colors.primary,
                 fontSize = 16.sp

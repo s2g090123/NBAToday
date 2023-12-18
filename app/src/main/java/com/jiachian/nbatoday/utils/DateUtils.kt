@@ -1,6 +1,7 @@
 package com.jiachian.nbatoday.utils
 
 import android.annotation.SuppressLint
+import android.text.format.DateUtils
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -9,6 +10,8 @@ import java.util.Locale
 import java.util.TimeZone
 
 object DateUtils {
+    const val DAY_IN_MILLIS = DateUtils.DAY_IN_MILLIS
+
     private const val MONTH_JAN = 0
     private const val MONTH_FEB = 1
     private const val MONTH_MAR = 2

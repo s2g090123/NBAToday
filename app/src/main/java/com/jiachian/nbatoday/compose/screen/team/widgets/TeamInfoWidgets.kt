@@ -12,8 +12,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,28 +25,29 @@ import com.jiachian.nbatoday.Transparency25
 import com.jiachian.nbatoday.compose.screen.team.TeamViewModel
 import com.jiachian.nbatoday.compose.widget.TeamLogoImage
 import com.jiachian.nbatoday.models.local.team.Team
+import com.jiachian.nbatoday.models.local.team.TeamRank
 import com.jiachian.nbatoday.testing.testtag.TeamTestTag
-import com.jiachian.nbatoday.utils.decimalFormat
 import com.jiachian.nbatoday.utils.toRank
 
 @Composable
 fun TeamInformation(
     viewModel: TeamViewModel,
-    stats: Team,
+    team: Team,
+    rank: TeamRank,
 ) {
-    val standing by viewModel.teamStanding.collectAsState()
     Column {
         TeamNameAndStanding(
-            stats = stats,
-            standing = standing,
-            textColor = viewModel.colors.extra2,
+            stats = team,
+            standing = rank.standing,
+            color = viewModel.colors.extra2,
         )
         TeamStatsDetail(
             modifier = Modifier
                 .padding(top = 8.dp, start = 16.dp, end = 16.dp)
                 .height(IntrinsicSize.Min),
-            viewModel = viewModel,
-            stats = stats,
+            team = team,
+            rank = rank,
+            color = viewModel.colors.extra2,
         )
     }
 }
@@ -58,7 +57,7 @@ private fun TeamNameAndStanding(
     modifier: Modifier = Modifier,
     stats: Team,
     standing: Int,
-    textColor: Color,
+    color: Color,
 ) {
     Row(
         modifier = modifier,
@@ -81,14 +80,14 @@ private fun TeamNameAndStanding(
                 text = stats.team.teamFullName,
                 fontWeight = FontWeight.Bold,
                 fontSize = 24.sp,
-                color = textColor
+                color = color
             )
             Text(
                 modifier = Modifier.testTag(TeamTestTag.TeamNameAndStanding_Text_StandingDetail),
                 text = stats.getStandingDetail(standing),
                 fontWeight = FontWeight.Medium,
                 fontSize = 20.sp,
-                color = textColor
+                color = color
             )
         }
     }
@@ -97,44 +96,41 @@ private fun TeamNameAndStanding(
 @Composable
 private fun TeamStatsDetail(
     modifier: Modifier = Modifier,
-    viewModel: TeamViewModel,
-    stats: Team,
+    team: Team,
+    rank: TeamRank,
+    color: Color,
 ) {
-    val pointsRank by viewModel.teamPointsRank.collectAsState()
-    val reboundsRank by viewModel.teamReboundsRank.collectAsState()
-    val assistsRank by viewModel.teamAssistsRank.collectAsState()
-    val plusMinusRank by viewModel.teamPlusMinusRank.collectAsState()
     Row(modifier = modifier) {
         TeamRankBox(
             modifier = Modifier.testTag(TeamTestTag.TeamStatsDetail_TeamRankBox_Points),
             label = stringResource(R.string.team_rank_points_abbr),
-            rank = pointsRank,
-            average = stats.pointsAverage,
-            textColor = viewModel.colors.extra2,
+            rank = rank.pointsRank,
+            average = team.pointsAverage,
+            color = color,
             divider = true,
         )
         TeamRankBox(
             modifier = Modifier.testTag(TeamTestTag.TeamStatsDetail_TeamRankBox_Rebounds),
             label = stringResource(R.string.team_rank_rebounds_abbr),
-            rank = reboundsRank,
-            average = stats.reboundsTotalAverage,
-            textColor = viewModel.colors.extra2,
+            rank = rank.reboundsRank,
+            average = team.reboundsTotalAverage,
+            color = color,
             divider = true,
         )
         TeamRankBox(
             modifier = Modifier.testTag(TeamTestTag.TeamStatsDetail_TeamRankBox_Assists),
             label = stringResource(R.string.team_rank_assists_abbr),
-            rank = assistsRank,
-            average = stats.assistsAverage,
-            textColor = viewModel.colors.extra2,
+            rank = rank.assistsRank,
+            average = team.assistsAverage,
+            color = color,
             divider = true
         )
         TeamRankBox(
             modifier = Modifier.testTag(TeamTestTag.TeamStatsDetail_TeamRankBox_PlusMinus),
             label = stringResource(R.string.team_rank_plusMinus_abbr),
-            rank = plusMinusRank,
-            average = stats.plusMinus,
-            textColor = viewModel.colors.extra2,
+            rank = rank.plusMinusRank,
+            average = team.plusMinus,
+            color = color,
             divider = false
         )
     }
@@ -146,7 +142,7 @@ private fun TeamRankBox(
     label: String,
     rank: Int,
     average: Double,
-    textColor: Color,
+    color: Color,
     divider: Boolean,
 ) {
     Row(
@@ -161,21 +157,21 @@ private fun TeamRankBox(
                 text = label,
                 fontWeight = FontWeight.Medium,
                 fontSize = 18.sp,
-                color = textColor
+                color = color
             )
             Text(
                 modifier = Modifier.testTag(TeamTestTag.TeamRankBox_Text_Rank),
                 text = rank.toRank(),
                 fontWeight = FontWeight.Medium,
                 fontSize = 18.sp,
-                color = textColor
+                color = color
             )
             Text(
                 modifier = Modifier.testTag(TeamTestTag.TeamRankBox_Text_Average),
-                text = average.decimalFormat().toString(),
+                text = average.toString(),
                 fontWeight = FontWeight.Medium,
                 fontSize = 18.sp,
-                color = textColor
+                color = color
             )
         }
         if (divider) {
@@ -183,7 +179,7 @@ private fun TeamRankBox(
                 modifier = Modifier
                     .fillMaxHeight()
                     .width(1.dp),
-                color = textColor.copy(Transparency25)
+                color = color.copy(Transparency25)
             )
         }
     }

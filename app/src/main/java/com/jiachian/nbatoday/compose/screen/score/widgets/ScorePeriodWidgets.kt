@@ -31,7 +31,6 @@ fun ScorePeriod(
 ) {
     Column(modifier = modifier) {
         Divider(
-            modifier = Modifier.fillMaxWidth(),
             color = dividerSecondaryColor(),
             thickness = 2.dp
         )
@@ -47,9 +46,7 @@ fun ScorePeriod(
             awayTeam = score.awayTeam
         )
         Divider(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 8.dp),
+            modifier = Modifier.padding(top = 8.dp),
             color = dividerSecondaryColor(),
             thickness = 2.dp
         )
@@ -66,25 +63,16 @@ private fun PeriodLabelRow(
         horizontalArrangement = Arrangement.End
     ) {
         labels.forEach {
-            ScoreLabelText(
-                modifier = Modifier.width(38.dp),
-                label = it
-            )
+            ScoreLabelText(label = it)
         }
-        ScoreLabelText(
-            modifier = Modifier.width(38.dp),
-            label = stringResource(R.string.box_score_total_abbr)
-        )
+        ScoreLabelText(label = stringResource(R.string.box_score_total_abbr))
     }
 }
 
 @Composable
-private fun ScoreLabelText(
-    modifier: Modifier = Modifier,
-    label: String
-) {
+private fun ScoreLabelText(label: String) {
     Text(
-        modifier = modifier,
+        modifier = Modifier.width(38.dp),
         text = label,
         textAlign = TextAlign.Center,
         fontSize = 16.sp,

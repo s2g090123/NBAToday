@@ -2,8 +2,6 @@ package com.jiachian.nbatoday.compose.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Shadow = Color(0x1e000000)
-
 val NBAMain = Color(0xFF17408B)
 val NBASub = Color(0xFFC9082A)
 val NBAExtra1 = Color(0xFF000000)

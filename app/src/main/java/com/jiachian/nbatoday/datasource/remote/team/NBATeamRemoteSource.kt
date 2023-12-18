@@ -12,15 +12,15 @@ class NBATeamRemoteSource : TeamRemoteSource() {
         retrofit.create(TeamService::class.java)
     }
 
-    override suspend fun getTeamStats(): Response<RemoteTeam> {
-        return teamService.getTeamStats(season = CurrentSeason, teamId = null)
+    override suspend fun getTeam(): Response<RemoteTeam> {
+        return teamService.getTeam(season = CurrentSeason, teamId = null)
     }
 
-    override suspend fun getTeamStats(teamId: Int): Response<RemoteTeam> {
-        return teamService.getTeamStats(season = CurrentSeason, teamId = teamId)
+    override suspend fun getTeam(teamId: Int): Response<RemoteTeam> {
+        return teamService.getTeam(season = CurrentSeason, teamId = teamId)
     }
 
-    override suspend fun getTeamPlayerStats(teamId: Int): Response<RemoteTeamPlayer> {
-        return teamService.getTeamPlayerStats(season = CurrentSeason, teamId = teamId)
+    override suspend fun getTeamPlayer(teamId: Int): Response<RemoteTeamPlayer> {
+        return teamService.getTeamPlayer(season = CurrentSeason, teamId = teamId)
     }
 }

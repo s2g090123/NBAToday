@@ -1,4 +1,4 @@
-package com.jiachian.nbatoday.models.remote.score
+package com.jiachian.nbatoday.models.remote.score.extensions
 
 import com.jiachian.nbatoday.FirstPeriod
 import com.jiachian.nbatoday.ForthPeriod
@@ -8,6 +8,7 @@ import com.jiachian.nbatoday.models.local.game.GameStatus
 import com.jiachian.nbatoday.models.local.score.BoxScore
 import com.jiachian.nbatoday.models.local.score.PlayerActiveStatus
 import com.jiachian.nbatoday.models.local.team.NBATeam
+import com.jiachian.nbatoday.models.remote.score.RemoteBoxScore
 import com.jiachian.nbatoday.utils.decimalFormat
 import com.jiachian.nbatoday.utils.getOrNA
 import com.jiachian.nbatoday.utils.getOrZero

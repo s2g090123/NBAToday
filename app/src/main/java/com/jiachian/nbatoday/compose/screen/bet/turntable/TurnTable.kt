@@ -37,6 +37,11 @@ private const val SecondSectorRotation = 135f
 private const val ThirdSectorRotation = 225f
 private const val ForthSectorRotation = 315f
 
+private const val PlusText1 = "X2\n-0"
+private const val PlusText2 = "X5"
+private const val MinusText1 = "+0"
+private const val MinusText2 = "+0\n-0"
+
 @OptIn(ExperimentalTextApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun BetTurnTable(
@@ -45,23 +50,23 @@ fun BetTurnTable(
     onStart: () -> Unit,
     onClose: () -> Unit
 ) {
-    val isStarting by viewModel.turnTableRunning.collectAsState()
-    val currentAngle by viewModel.turnTableAngle.collectAsState()
+    val running by viewModel.turnTableRunning.collectAsState()
+    val angle by viewModel.turnTableAngle.collectAsState()
     val textMeasure = rememberTextMeasurer()
-    val plus1TextSize = remember { textMeasure.measureSize("X2\n-0") }
-    val minus1TextSize = remember { textMeasure.measureSize("+0") }
-    val plus2TextSize = remember { textMeasure.measureSize("X5") }
-    val minus2TextSize = remember { textMeasure.measureSize("+0\n-0") }
+    val plusTextSize1 = remember { textMeasure.measureSize(PlusText1) }
+    val minusTextSize1 = remember { textMeasure.measureSize(MinusText1) }
+    val plusTextSize2 = remember { textMeasure.measureSize(PlusText2) }
+    val minusTextSize2 = remember { textMeasure.measureSize(MinusText2) }
     Dialog(
         onDismissRequest = onClose,
         properties = DialogProperties(
-            dismissOnBackPress = !isStarting,
+            dismissOnBackPress = !running,
             dismissOnClickOutside = false,
             usePlatformDefaultWidth = false,
         )
     ) {
         Box(modifier = modifier) {
-            if (!isStarting) {
+            if (!running) {
                 TurnTableCancelButton(
                     modifier = Modifier
                         .padding(8.dp)
@@ -74,25 +79,22 @@ fun BetTurnTable(
                 modifier = Modifier
                     .align(Alignment.Center)
                     .size(320.dp)
-                    .graphicsLayer {
-                        rotationZ = currentAngle
-                    },
+                    .graphicsLayer { rotationZ = angle },
                 textMeasurer = textMeasure,
-                plus1TextSize = plus1TextSize,
-                plus2TextSize = plus2TextSize,
-                minus1TextSize = minus1TextSize,
-                minus2TextSize = minus2TextSize
+                plusTextSize1 = plusTextSize1,
+                plusTextSize2 = plusTextSize2,
+                minusTextSize1 = minusTextSize1,
+                minusTextSize2 = minusTextSize2
             )
-            TriangleCursor(
+            TurnTableCursor(
                 modifier = Modifier
                     .align(Alignment.Center)
                     .graphicsLayer {
                         translationY -= 28.dp.toPx() + 160.dp.toPx() - 8.dp.toPx()
                     }
                     .size(48.dp, 56.dp),
-                color = Color.Red
             )
-            if (!isStarting) {
+            if (!running) {
                 TurnTableStartButton(
                     modifier = Modifier.align(Alignment.Center),
                     onClick = onStart
@@ -107,10 +109,10 @@ fun BetTurnTable(
 private fun TurnTableContent(
     modifier: Modifier = Modifier,
     textMeasurer: TextMeasurer,
-    plus1TextSize: IntSize,
-    plus2TextSize: IntSize,
-    minus1TextSize: IntSize,
-    minus2TextSize: IntSize
+    plusTextSize1: IntSize,
+    plusTextSize2: IntSize,
+    minusTextSize1: IntSize,
+    minusTextSize2: IntSize
 ) {
     Canvas(modifier = modifier) {
         val borderWidth = 2.dp.toPx()
@@ -124,36 +126,36 @@ private fun TurnTableContent(
         drawText(
             textMeasurer = textMeasurer,
             rotation = FirstSectorRotation,
-            text = "X2\n-0",
+            text = PlusText1,
             textColor = Color.Black,
-            textSize = plus1TextSize,
+            textSize = plusTextSize1,
             tableSize = turnTableSize,
             borderWidth = borderWidth
         )
         drawText(
             textMeasurer = textMeasurer,
             rotation = SecondSectorRotation,
-            text = "+0",
+            text = MinusText1,
             textColor = Color.White,
-            textSize = minus1TextSize,
+            textSize = minusTextSize1,
             tableSize = turnTableSize,
             borderWidth = borderWidth
         )
         drawText(
             textMeasurer = textMeasurer,
             rotation = ThirdSectorRotation,
-            text = "X5",
+            text = PlusText2,
             textColor = Color.Black,
-            textSize = plus2TextSize,
+            textSize = plusTextSize2,
             tableSize = turnTableSize,
             borderWidth = borderWidth
         )
         drawText(
             textMeasurer = textMeasurer,
             rotation = ForthSectorRotation,
-            text = "+0\n-0",
+            text = MinusText2,
             textColor = Color.White,
-            textSize = minus2TextSize,
+            textSize = minusTextSize2,
             tableSize = turnTableSize,
             borderWidth = borderWidth
         )
@@ -161,11 +163,7 @@ private fun TurnTableContent(
 }
 
 @Composable
-private fun TriangleCursor(
-    modifier: Modifier = Modifier,
-    color: Color,
-    borderColor: Color = Color.Black
-) {
+private fun TurnTableCursor(modifier: Modifier = Modifier) {
     val path = remember { Path() }
     Spacer(
         modifier = modifier.then(
@@ -176,8 +174,8 @@ private fun TriangleCursor(
                 path.lineTo(size.width / 2f, size.height)
                 path.close()
                 onDrawBehind {
-                    drawPath(path, color)
-                    drawPath(path, borderColor, style = Stroke(width = 2.dp.toPx()))
+                    drawPath(path, Color.Red)
+                    drawPath(path, Color.Black, style = Stroke(width = 2.dp.toPx()))
                 }
             }
         )

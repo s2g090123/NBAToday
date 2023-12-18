@@ -79,7 +79,9 @@ private fun HomeBottomNavigation(
         pages.forEach { page ->
             BottomNavigationItem(
                 selected = page.route == currentRoute,
+                alwaysShowLabel = page.route == currentRoute,
                 selectedContentColor = MaterialTheme.colors.primary,
+                unselectedContentColor = MaterialTheme.colors.primary,
                 onClick = {
                     navController.navigate(page.route) {
                         popUpTo(navController.graph.startDestinationId) {

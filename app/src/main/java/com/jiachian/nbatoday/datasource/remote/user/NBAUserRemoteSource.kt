@@ -3,7 +3,7 @@ package com.jiachian.nbatoday.datasource.remote.user
 import com.jiachian.nbatoday.models.remote.user.LoginBody
 import com.jiachian.nbatoday.models.remote.user.RemoteUser
 import com.jiachian.nbatoday.models.remote.user.UpdatePasswordBody
-import com.jiachian.nbatoday.models.remote.user.UpdatePointBody
+import com.jiachian.nbatoday.models.remote.user.UpdatePointsBody
 import com.jiachian.nbatoday.service.UserService
 import retrofit2.Response
 
@@ -26,6 +26,6 @@ class NBAUserRemoteSource : UserRemoteSource() {
     }
 
     override suspend fun updatePoints(account: String, points: Long, token: String): Response<String> {
-        return userService.updatePoints(UpdatePointBody(account, token, points))
+        return userService.updatePoints(UpdatePointsBody(account, token, points))
     }
 }

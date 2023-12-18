@@ -8,8 +8,8 @@ import com.jiachian.nbatoday.repository.BaseRepository
 import kotlinx.coroutines.flow.Flow
 
 abstract class TeamRepository : BaseRepository() {
-    abstract suspend fun updateTeamStats()
-    abstract suspend fun updateTeamStats(teamId: Int)
+    abstract suspend fun insertTeams()
+    abstract suspend fun insertTeam(teamId: Int)
     abstract suspend fun updateTeamPlayers(teamId: Int)
 
     abstract fun getTeams(conference: NBATeam.Conference): Flow<List<Team>>

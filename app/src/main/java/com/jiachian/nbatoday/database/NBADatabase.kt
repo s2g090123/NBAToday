@@ -65,7 +65,11 @@ abstract class NBADatabase : RoomDatabase() {
         }
 
         private fun buildDatabase(context: Context): NBADatabase {
-            return Room.databaseBuilder(context, NBADatabase::class.java, DATABASE_NAME).build()
+            return Room.databaseBuilder(
+                context,
+                NBADatabase::class.java,
+                DATABASE_NAME
+            ).build()
         }
 
         @VisibleForTesting

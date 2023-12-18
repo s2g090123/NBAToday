@@ -1,22 +1,23 @@
-package com.jiachian.nbatoday.models.remote.team
+package com.jiachian.nbatoday.models.remote.player.extensions
 
-import com.jiachian.nbatoday.models.local.team.TeamPlayer
+import com.jiachian.nbatoday.models.local.player.Player
+import com.jiachian.nbatoday.models.remote.player.RemotePlayerStats
 import com.jiachian.nbatoday.utils.getOrNA
 import com.jiachian.nbatoday.utils.getOrZero
 import com.jiachian.nbatoday.utils.toPercentage
 
-fun RemoteTeamPlayer.toTeamPlayerStats(): List<TeamPlayer> {
-    val teamId = parameters?.teamId ?: return emptyList()
-    return result?.rowData?.mapNotNull { data ->
-        createPlayerStats(data, teamId)
+fun RemotePlayerStats.toPlayerStats(): Player.PlayerStats {
+    val stats = result?.rowData?.mapNotNull { data ->
+        createPlayerCareerStats(data)
     } ?: emptyList()
+    return Player.PlayerStats(stats)
 }
 
-private fun RemoteTeamPlayer.createPlayerStats(data: List<String>, teamId: Int): TeamPlayer? {
-    return TeamPlayer(
-        playerId = getPlayerResult(data, "PLAYER_ID")?.toIntOrNull() ?: return null,
-        teamId = teamId,
-        playerName = getPlayerResult(data, "PLAYER_NAME").getOrNA(),
+private fun RemotePlayerStats.createPlayerCareerStats(data: List<String>): Player.PlayerStats.Stats? {
+    return Player.PlayerStats.Stats(
+        timeFrame = getPlayerResult(data, "GROUP_VALUE").getOrNA(),
+        teamId = getPlayerResult(data, "TEAM_ID")?.toIntOrNull() ?: return null,
+        teamNameAbbr = getPlayerResult(data, "TEAM_ABBREVIATION").getOrNA(),
         gamePlayed = getPlayerResult(data, "GP")?.toIntOrNull().getOrZero(),
         win = getPlayerResult(data, "W")?.toIntOrNull().getOrZero(),
         lose = getPlayerResult(data, "L")?.toIntOrNull().getOrZero(),
@@ -34,11 +35,11 @@ private fun RemoteTeamPlayer.createPlayerStats(data: List<String>, teamId: Int):
         reboundsDefensive = getPlayerResult(data, "DREB")?.toIntOrNull().getOrZero(),
         reboundsTotal = getPlayerResult(data, "REB")?.toIntOrNull().getOrZero(),
         assists = getPlayerResult(data, "AST")?.toIntOrNull().getOrZero(),
-        turnovers = getPlayerResult(data, "TOV")?.toDoubleOrNull()?.toInt().getOrZero(),
+        turnovers = getPlayerResult(data, "TOV")?.toIntOrNull().getOrZero(),
         steals = getPlayerResult(data, "STL")?.toIntOrNull().getOrZero(),
         blocks = getPlayerResult(data, "BLK")?.toIntOrNull().getOrZero(),
         foulsPersonal = getPlayerResult(data, "PF")?.toIntOrNull().getOrZero(),
         points = getPlayerResult(data, "PTS")?.toIntOrNull().getOrZero(),
-        plusMinus = getPlayerResult(data, "PLUS_MINUS")?.toDoubleOrNull()?.toInt().getOrZero()
+        plusMinus = getPlayerResult(data, "PLUS_MINUS")?.toIntOrNull().getOrZero(),
     )
 }

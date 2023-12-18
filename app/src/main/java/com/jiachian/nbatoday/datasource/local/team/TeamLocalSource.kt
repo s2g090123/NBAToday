@@ -12,7 +12,7 @@ abstract class TeamLocalSource {
     abstract fun getTeamAndPlayers(teamId: Int): Flow<TeamAndPlayers?>
     abstract fun getTeamRank(teamId: Int, conference: NBATeam.Conference): Flow<TeamRank>
 
-    abstract suspend fun updateTeams(stats: List<Team>)
-    abstract suspend fun updateTeamPlayers(stats: List<TeamPlayer>)
+    abstract suspend fun insertTeams(teams: List<Team>)
+    abstract suspend fun insertTeamPlayers(teamPlayers: List<TeamPlayer>)
     abstract suspend fun deleteTeamPlayers(teamId: Int, playerIds: List<Int>)
 }

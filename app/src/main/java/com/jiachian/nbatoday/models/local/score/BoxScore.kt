@@ -21,7 +21,6 @@ data class BoxScore(
     @ColumnInfo(name = "away_team")
     val awayTeam: BoxScoreTeam
 ) {
-
     val statusText: String
         get() {
             return when {
@@ -29,6 +28,9 @@ data class BoxScore(
                 else -> gameStatusText.replace(" ", "\n")
             }.trim()
         }
+
+    val scoreComparison: String
+        get() = "${homeTeam.score} - ${awayTeam.score}"
 
     data class BoxScoreTeam(
         @ColumnInfo(name = "team")

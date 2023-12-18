@@ -43,7 +43,6 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val module = module {
-
     factory { (get() as NBADatabase).getGameDao() }
     factory { (get() as NBADatabase).getBoxScoreDao() }
     factory { (get() as NBADatabase).getTeamDao() }

@@ -8,8 +8,8 @@ import kotlinx.coroutines.flow.Flow
 class NBABetLocalSource(
     private val betDao: BetDao,
 ) : BetLocalSource() {
-    override fun getBetsAndGamesByUser(account: String): Flow<List<BetAndGame>> {
-        return betDao.getBetsAndGamesByUser(account)
+    override fun getBetsAndGames(account: String): Flow<List<BetAndGame>> {
+        return betDao.getBetsAndGames(account)
     }
 
     override suspend fun insertBet(bet: Bet) {

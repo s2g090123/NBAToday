@@ -1,12 +1,9 @@
 package com.jiachian.nbatoday.compose.screen.account
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -14,6 +11,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -48,7 +46,7 @@ fun LoginDialog(
 ) {
     var account by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    val isInputValid by remember {
+    val valid by remember {
         derivedStateOf { account.isNotBlank() && password.isNotBlank() }
     }
     Dialog(onDismissRequest = onDismiss) {
@@ -62,21 +60,19 @@ fun LoginDialog(
             AccountTextField(
                 modifier = Modifier
                     .testTag(UserTestTag.LoginDialog_AccountTextField)
-                    .padding(top = 24.dp, start = 16.dp, end = 16.dp)
-                    .fillMaxWidth(),
+                    .padding(top = 24.dp, start = 16.dp, end = 16.dp),
                 value = account,
                 onValueChanged = { account = it }
             )
             PasswordTextField(
                 modifier = Modifier
                     .testTag(UserTestTag.LoginDialog_PasswordTextField)
-                    .padding(top = 16.dp, start = 16.dp, end = 16.dp)
-                    .fillMaxWidth(),
+                    .padding(top = 16.dp, start = 16.dp, end = 16.dp),
                 value = password,
                 onValueChanged = { password = it }
             )
             BottomButtons(
-                enabled = isInputValid,
+                enabled = valid,
                 onRegister = { onRegister(account, password) },
                 onLogin = { onLogin(account, password) }
             )
@@ -90,7 +86,7 @@ private fun AccountTextField(
     value: String,
     onValueChanged: (String) -> Unit
 ) {
-    val isHintVisible by remember(value) { derivedStateOf { value.isEmpty() } }
+    val hintVisible by remember(value) { derivedStateOf { value.isEmpty() } }
     Column(modifier = modifier) {
         BasicTextField(
             modifier = Modifier.testTag(UserTestTag.AccountTextField_TextField),
@@ -105,7 +101,7 @@ private fun AccountTextField(
                 textAlign = TextAlign.Start
             ),
             decorationBox = { innerTextField ->
-                if (isHintVisible) {
+                if (hintVisible) {
                     Text(
                         text = stringResource(R.string.user_login_account_hint),
                         color = "#40000000".color,
@@ -115,11 +111,9 @@ private fun AccountTextField(
                 innerTextField()
             }
         )
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(1.dp)
-                .background("#de000000".color)
+        Divider(
+            modifier = Modifier.padding(top = 1.dp),
+            color = "#de000000".color
         )
     }
 }
@@ -130,7 +124,7 @@ private fun PasswordTextField(
     value: String,
     onValueChanged: (String) -> Unit
 ) {
-    val isHintVisible by remember(value) { derivedStateOf { value.isEmpty() } }
+    val hintVisible by remember(value) { derivedStateOf { value.isEmpty() } }
     Column(modifier = modifier) {
         BasicTextField(
             modifier = Modifier.testTag(UserTestTag.PasswordTextField_TextField),
@@ -147,7 +141,7 @@ private fun PasswordTextField(
                 textAlign = TextAlign.Start
             ),
             decorationBox = { innerTextField ->
-                if (isHintVisible) {
+                if (hintVisible) {
                     Text(
                         text = stringResource(R.string.user_login_password_hint),
                         color = "#40000000".color,
@@ -157,11 +151,9 @@ private fun PasswordTextField(
                 innerTextField()
             }
         )
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(1.dp)
-                .background("#de000000".color)
+        Divider(
+            modifier = Modifier.padding(top = 1.dp),
+            color = "#de000000".color
         )
     }
 }

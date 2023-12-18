@@ -43,7 +43,7 @@ fun GameCardLeadersInfo(
                 .padding(top = 8.dp)
                 .fillMaxWidth(),
             player = viewModel.homeLeader,
-            isGamePlayed = viewModel.isGamePlayed,
+            isGamePlayed = viewModel.gamePlayed,
             color = color
         )
         LeaderInfoRow(
@@ -52,7 +52,7 @@ fun GameCardLeadersInfo(
                 .padding(top = 8.dp)
                 .fillMaxWidth(),
             player = viewModel.awayLeader,
-            isGamePlayed = viewModel.isGamePlayed,
+            isGamePlayed = viewModel.gamePlayed,
             color = color
         )
     }
@@ -85,9 +85,7 @@ private fun StatsLabelRow(
             )
         }
         Divider(
-            modifier = Modifier
-                .padding(top = 4.dp)
-                .fillMaxWidth(),
+            modifier = Modifier.padding(top = 4.dp),
             color = dividerPrimaryColor()
         )
     }
@@ -131,8 +129,8 @@ private fun LeaderInfoRow(
                 fontSize = 12.sp
             )
             Text(
-                modifier = Modifier.testTag(GameCardTestTag.LeaderInfoRow_Text_PlayerTitle),
-                text = player.playerTitle,
+                modifier = Modifier.testTag(GameCardTestTag.LeaderInfoRow_Text_PlayerDetail),
+                text = player.detail,
                 color = color,
                 fontSize = 12.sp
             )

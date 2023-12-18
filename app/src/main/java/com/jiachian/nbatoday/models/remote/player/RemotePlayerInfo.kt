@@ -73,12 +73,12 @@ data class RemotePlayerInfo(
             val foot = it.getOrNull(0)?.toIntOrNull() ?: 0
             val inches = it.getOrNull(1)?.toIntOrNull() ?: 0
             ((foot * InchPerFoot + inches) * CentiMetersPerInch) / CentiMeterPerMeter
-        }?.decimalFormat(2) ?: return 0.0
+        }?.decimalFormat(2) ?: 0.0
     }
 
     fun getFormattedWeight(): Double {
         return getPlayerInfo("WEIGHT")?.let { lb ->
             (lb.toIntOrNull() ?: 0) * KilogramPerPound
-        }?.decimalFormat() ?: return 0.0
+        }?.decimalFormat() ?: 0.0
     }
 }

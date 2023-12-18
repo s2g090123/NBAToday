@@ -15,7 +15,7 @@ interface BetDao {
     fun getBetsAndGames(): Flow<List<BetAndGame>>
 
     @Query("SELECT * FROM bet WHERE bet_account == :account")
-    fun getBetsAndGamesByUser(account: String): Flow<List<BetAndGame>>
+    fun getBetsAndGames(account: String): Flow<List<BetAndGame>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertBet(bet: Bet)

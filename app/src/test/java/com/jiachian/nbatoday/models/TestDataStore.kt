@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 class TestDataStore : BaseDataStore {
 
     override val statsCookies = MutableStateFlow<Set<String>>(emptySet())
-    override val lastAccessedDay = MutableStateFlow(DateUtils.formatDate(1990, 1, 1))
+    override val lastAccessedDate = MutableStateFlow(DateUtils.formatDate(1990, 1, 1))
     override val themeColors = MutableStateFlow(LakersColors)
     override val user = MutableStateFlow<User?>(null)
 
@@ -19,8 +19,8 @@ class TestDataStore : BaseDataStore {
         statsCookies.value = cookies
     }
 
-    override suspend fun updateLastAccessedDay(year: Int, month: Int, day: Int) {
-        lastAccessedDay.value = DateUtils.formatDate(year, month, day)
+    override suspend fun updateLastAccessedDate(year: Int, month: Int, day: Int) {
+        lastAccessedDate.value = DateUtils.formatDate(year, month, day)
     }
 
     override suspend fun updateThemeColorsTeamId(teamId: Int) {
@@ -35,7 +35,7 @@ class TestDataStore : BaseDataStore {
 
     fun clear() {
         statsCookies.value = emptySet()
-        lastAccessedDay.value = ""
+        lastAccessedDate.value = ""
         themeColors.value = LakersColors
         user.value = null
     }

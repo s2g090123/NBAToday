@@ -10,8 +10,6 @@ import androidx.compose.material.TabRowDefaults
 import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -23,7 +21,8 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.screen.score.BoxScoreViewModel
-import com.jiachian.nbatoday.models.local.score.BoxScore
+import com.jiachian.nbatoday.compose.screen.score.models.BoxScoreUI
+import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.testing.testtag.BoxScoreTestTag
 import kotlinx.coroutines.launch
 
@@ -38,33 +37,31 @@ fun ScoreDetailPager(
     modifier: Modifier = Modifier,
     viewModel: BoxScoreViewModel,
     pagerState: PagerState,
-    count: Int,
+    boxScoreUI: BoxScoreUI,
 ) {
     HorizontalPager(
         modifier = modifier,
         state = pagerState,
-        count = count,
+        count = 4,
         userScrollEnabled = false
     ) { index ->
         when (index) {
             HomePageIndex -> {
-                val rowData by viewModel.homePlayerRowData.collectAsState()
                 ScorePlayerPage(
                     modifier = Modifier
                         .testTag(BoxScoreTestTag.ScoreDetailPager_ScorePlayerPage_Home)
                         .fillMaxSize(),
                     viewModel = viewModel,
-                    players = rowData,
+                    players = boxScoreUI.players.home,
                 )
             }
             AwayPageIndex -> {
-                val rowData by viewModel.awayPlayerRowData.collectAsState()
                 ScorePlayerPage(
                     modifier = Modifier
                         .testTag(BoxScoreTestTag.ScoreDetailPager_ScorePlayerPage_Away)
                         .fillMaxHeight(),
                     viewModel = viewModel,
-                    players = rowData,
+                    players = boxScoreUI.players.away,
                 )
             }
             TeamPageIndex -> {
@@ -73,7 +70,7 @@ fun ScoreDetailPager(
                         .testTag(BoxScoreTestTag.ScoreDetailPager_ScoreTeamPage)
                         .fillMaxHeight()
                         .padding(horizontal = 16.dp),
-                    viewModel = viewModel
+                    teamsUI = boxScoreUI.teams,
                 )
             }
             LeaderPageIndex -> {
@@ -82,7 +79,7 @@ fun ScoreDetailPager(
                         .testTag(BoxScoreTestTag.ScoreDetailPager_ScoreLeaderPage)
                         .fillMaxHeight()
                         .padding(horizontal = 16.dp),
-                    viewModel = viewModel
+                    leadersUI = boxScoreUI.leaders,
                 )
             }
         }
@@ -94,7 +91,8 @@ fun ScoreDetailPager(
 fun ScoreTabRow(
     modifier: Modifier = Modifier,
     pagerState: PagerState,
-    score: BoxScore,
+    homeTeam: NBATeam,
+    awayTeam: NBATeam,
 ) {
     val coroutineScope = rememberCoroutineScope()
     TabRow(
@@ -111,8 +109,8 @@ fun ScoreTabRow(
     ) {
         ScoreTab(
             modifier = Modifier.testTag(BoxScoreTestTag.ScoreTabRow_ScoreTab_Home),
-            text = score.homeTeam.team.teamName,
-            isSelected = pagerState.currentPage == HomePageIndex,
+            text = homeTeam.abbreviation,
+            selected = pagerState.currentPage == HomePageIndex,
             onClick = {
                 coroutineScope.launch {
                     pagerState.animateScrollToPage(HomePageIndex)
@@ -121,8 +119,8 @@ fun ScoreTabRow(
         )
         ScoreTab(
             modifier = Modifier.testTag(BoxScoreTestTag.ScoreTabRow_ScoreTab_Away),
-            text = score.awayTeam.team.teamName,
-            isSelected = pagerState.currentPage == AwayPageIndex,
+            text = awayTeam.abbreviation,
+            selected = pagerState.currentPage == AwayPageIndex,
             onClick = {
                 coroutineScope.launch {
                     pagerState.animateScrollToPage(AwayPageIndex)
@@ -132,7 +130,7 @@ fun ScoreTabRow(
         ScoreTab(
             modifier = Modifier.testTag(BoxScoreTestTag.ScoreTabRow_ScoreTab_Team),
             text = stringResource(R.string.box_score_tab_statistics),
-            isSelected = pagerState.currentPage == TeamPageIndex,
+            selected = pagerState.currentPage == TeamPageIndex,
             onClick = {
                 coroutineScope.launch {
                     pagerState.animateScrollToPage(TeamPageIndex)
@@ -142,7 +140,7 @@ fun ScoreTabRow(
         ScoreTab(
             modifier = Modifier.testTag(BoxScoreTestTag.ScoreTabRow_ScoreTab_Leader),
             text = stringResource(R.string.box_score_tab_leaders),
-            isSelected = pagerState.currentPage == LeaderPageIndex,
+            selected = pagerState.currentPage == LeaderPageIndex,
             onClick = {
                 coroutineScope.launch {
                     pagerState.animateScrollToPage(LeaderPageIndex)
@@ -156,7 +154,7 @@ fun ScoreTabRow(
 private fun ScoreTab(
     modifier: Modifier = Modifier,
     text: String,
-    isSelected: Boolean,
+    selected: Boolean,
     onClick: () -> Unit
 ) {
     Tab(
@@ -168,7 +166,7 @@ private fun ScoreTab(
                 fontSize = 14.sp
             )
         },
-        selected = isSelected,
+        selected = selected,
         onClick = onClick
     )
 }

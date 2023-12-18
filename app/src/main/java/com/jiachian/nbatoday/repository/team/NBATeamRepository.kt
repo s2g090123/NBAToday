@@ -7,8 +7,8 @@ import com.jiachian.nbatoday.models.local.team.Team
 import com.jiachian.nbatoday.models.local.team.TeamAndPlayers
 import com.jiachian.nbatoday.models.local.team.TeamPlayer
 import com.jiachian.nbatoday.models.local.team.TeamRank
-import com.jiachian.nbatoday.models.remote.team.toTeamPlayerStats
-import com.jiachian.nbatoday.models.remote.team.toTeamStats
+import com.jiachian.nbatoday.models.remote.team.extensions.toTeamPlayerStats
+import com.jiachian.nbatoday.models.remote.team.extensions.toTeamStats
 import com.jiachian.nbatoday.utils.showErrorToast
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
@@ -17,29 +17,29 @@ class NBATeamRepository(
     private val teamLocalSource: TeamLocalSource,
     private val teamRemoteSource: TeamRemoteSource,
 ) : TeamRepository() {
-    override suspend fun updateTeamStats() {
+    override suspend fun insertTeams() {
         loading {
             teamRemoteSource
-                .getTeamStats()
+                .getTeam()
                 .takeIf { !it.isError() }
                 ?.body()
                 ?.toTeamStats()
                 ?.let { teams ->
-                    teamLocalSource.updateTeams(teams)
+                    teamLocalSource.insertTeams(teams)
                 }
                 ?: showErrorToast()
         }
     }
 
-    override suspend fun updateTeamStats(teamId: Int) {
+    override suspend fun insertTeam(teamId: Int) {
         loading {
             teamRemoteSource
-                .getTeamStats(teamId)
+                .getTeam(teamId)
                 .takeIf { !it.isError() }
                 ?.body()
                 ?.toTeamStats()
                 ?.let { teams ->
-                    teamLocalSource.updateTeams(teams)
+                    teamLocalSource.insertTeams(teams)
                 }
                 ?: showErrorToast()
         }
@@ -48,13 +48,13 @@ class NBATeamRepository(
     override suspend fun updateTeamPlayers(teamId: Int) {
         loading {
             teamRemoteSource
-                .getTeamPlayerStats(teamId)
+                .getTeamPlayer(teamId)
                 .takeIf { !it.isError() }
                 ?.body()
                 ?.toTeamPlayerStats()
                 ?.let { remoteTeamPlayers ->
                     deleteTradedPlayers(teamId, remoteTeamPlayers)
-                    teamLocalSource.updateTeamPlayers(remoteTeamPlayers)
+                    teamLocalSource.insertTeamPlayers(remoteTeamPlayers)
                 }
                 ?: showErrorToast()
         }

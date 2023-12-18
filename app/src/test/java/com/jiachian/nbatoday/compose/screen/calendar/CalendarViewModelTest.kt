@@ -5,9 +5,9 @@ import com.jiachian.nbatoday.BasicTime
 import com.jiachian.nbatoday.HomeTeam
 import com.jiachian.nbatoday.UserAccount
 import com.jiachian.nbatoday.UserPassword
+import com.jiachian.nbatoday.compose.screen.calendar.models.CalendarDate
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.models.TestRepository
-import com.jiachian.nbatoday.models.local.calendar.CalendarDate
 import com.jiachian.nbatoday.models.local.game.GameAndBets
 import com.jiachian.nbatoday.rule.CalendarRule
 import com.jiachian.nbatoday.rule.TestCoroutineEnvironment
@@ -79,8 +79,8 @@ class CalendarViewModelTest {
     @Test
     fun calendar_getCalendarData() {
         val expected = generateCalendarData()
-        viewModel.calendarDates.launchAndCollect(coroutineEnvironment)
-        assertThat(viewModel.calendarDates.value, `is`(expected))
+        viewModel.calendarDatesState.launchAndCollect(coroutineEnvironment)
+        assertThat(viewModel.calendarDatesState.value, `is`(expected))
     }
 
     @Test

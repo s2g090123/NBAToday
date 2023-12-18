@@ -8,16 +8,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.widget.TeamLogoImage
 import com.jiachian.nbatoday.models.local.score.BoxScore
 import com.jiachian.nbatoday.models.local.team.NBATeam
@@ -26,10 +23,8 @@ import com.jiachian.nbatoday.testing.testtag.BoxScoreTestTag
 @Composable
 fun ScoreTotal(
     modifier: Modifier = Modifier,
-    score: BoxScore
+    boxScore: BoxScore,
 ) {
-    val homeTeam = remember(score) { score.homeTeam }
-    val awayTeam = remember(score) { score.awayTeam }
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
@@ -39,18 +34,17 @@ fun ScoreTotal(
             modifier = Modifier
                 .testTag(BoxScoreTestTag.ScoreTotal_TeamInfo_Home)
                 .padding(start = 24.dp),
-            team = homeTeam.team
+            team = boxScore.homeTeam.team,
         )
         GameScoreStatus(
-            homeScore = homeTeam.score,
-            awayScore = awayTeam.score,
-            gameStatus = score.statusText
+            scoreComparison = boxScore.scoreComparison,
+            gameStatus = boxScore.statusText,
         )
         TeamInfo(
             modifier = Modifier
                 .testTag(BoxScoreTestTag.ScoreTotal_TeamInfo_Away)
                 .padding(end = 24.dp),
-            team = awayTeam.team
+            team = boxScore.awayTeam.team
         )
     }
 }
@@ -83,8 +77,7 @@ private fun TeamInfo(
 @Composable
 private fun GameScoreStatus(
     modifier: Modifier = Modifier,
-    homeScore: Int,
-    awayScore: Int,
+    scoreComparison: String,
     gameStatus: String
 ) {
     Column(
@@ -93,7 +86,7 @@ private fun GameScoreStatus(
     ) {
         Text(
             modifier = Modifier.testTag(BoxScoreTestTag.GameScoreStatus_Text_ScoreComparison),
-            text = stringResource(R.string.box_score_comparison, homeScore, awayScore),
+            text = scoreComparison,
             fontWeight = FontWeight.Bold,
             fontSize = 24.sp,
             color = MaterialTheme.colors.secondary

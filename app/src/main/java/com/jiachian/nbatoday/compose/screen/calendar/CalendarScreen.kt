@@ -25,7 +25,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,13 +38,12 @@ import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.DaysPerWeek
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.Transparency25
+import com.jiachian.nbatoday.compose.screen.calendar.models.CalendarDate
 import com.jiachian.nbatoday.compose.screen.card.GameCard
 import com.jiachian.nbatoday.compose.screen.card.GameCardViewModel
-import com.jiachian.nbatoday.compose.widget.FocusableColumn
 import com.jiachian.nbatoday.compose.widget.IconButton
 import com.jiachian.nbatoday.compose.widget.LoadingScreen
-import com.jiachian.nbatoday.models.local.calendar.CalendarDate
-import com.jiachian.nbatoday.models.local.game.Game
+import com.jiachian.nbatoday.compose.widget.UIStateScreen
 import com.jiachian.nbatoday.models.local.game.GameAndBets
 import com.jiachian.nbatoday.testing.testtag.CalendarTestTag
 import com.jiachian.nbatoday.utils.rippleClickable
@@ -54,7 +52,7 @@ import java.util.Date
 
 @Composable
 fun CalendarScreen(viewModel: CalendarViewModel) {
-    FocusableColumn(
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colors.primary)
@@ -67,7 +65,7 @@ fun CalendarScreen(viewModel: CalendarViewModel) {
         CalendarContent(
             modifier = Modifier
                 .padding(top = 8.dp)
-                .weight(1f),
+                .fillMaxSize(),
             viewModel = viewModel
         )
     }
@@ -167,43 +165,41 @@ private fun CalendarContent(
 ) {
     val selectedGames by viewModel.selectedGames.collectAsState()
     val selectedGamesVisible by viewModel.selectedGamesVisible.collectAsState()
-    val isLoadingCalendar by viewModel.isLoadingCalendar.collectAsState()
-    val isLoadingGames by viewModel.isLoadingGames.collectAsState()
-    val calendarDates by viewModel.calendarDates.collectAsState()
+    val loadingGames by viewModel.loadingGames.collectAsState()
+    val calendarDatesState by viewModel.calendarDatesState.collectAsState()
     val selectedDate by viewModel.selectedDate.collectAsState()
-    when {
-        isLoadingCalendar -> {
+    UIStateScreen(
+        state = calendarDatesState,
+        loading = {
             LoadingScreen(
                 modifier = modifier,
                 color = MaterialTheme.colors.secondary,
-                interceptBack = false,
             )
-        }
-        else -> {
-            LazyVerticalGrid(
-                modifier = modifier,
-                columns = GridCells.Fixed(DaysPerWeek),
-            ) {
-                dateBoxes(
-                    viewModel = viewModel,
-                    calendarDates = calendarDates,
-                    selectedDate = selectedDate
-                )
-                if (selectedGamesVisible) {
-                    if (isLoadingGames) {
-                        item(span = { GridItemSpan(DaysPerWeek) }) {
-                            LoadingScreen(
-                                modifier = Modifier.padding(top = 24.dp),
-                                color = MaterialTheme.colors.secondary,
-                                interceptBack = false
-                            )
-                        }
-                    } else {
-                        calendarGameCards(
-                            viewModel = viewModel,
-                            games = selectedGames,
+        },
+        ifNull = null
+    ) { calendarDates ->
+        LazyVerticalGrid(
+            modifier = modifier,
+            columns = GridCells.Fixed(DaysPerWeek),
+        ) {
+            dateBoxes(
+                viewModel = viewModel,
+                calendarDates = calendarDates,
+                selectedDate = selectedDate
+            )
+            if (selectedGamesVisible) {
+                if (loadingGames) {
+                    item(span = { GridItemSpan(DaysPerWeek) }) {
+                        LoadingScreen(
+                            modifier = Modifier.padding(top = 24.dp),
+                            color = MaterialTheme.colors.secondary,
                         )
                     }
+                } else {
+                    calendarGameCards(
+                        viewModel = viewModel,
+                        games = selectedGames,
+                    )
                 }
             }
         }
@@ -220,7 +216,7 @@ private fun LazyGridScope.dateBoxes(
 ) { calendarDate ->
     DateBox(
         calendarDate = calendarDate,
-        isSelected = calendarDate.date == selectedDate,
+        selected = calendarDate.date == selectedDate,
         onClick = viewModel::selectDate
     )
 }
@@ -232,9 +228,6 @@ private fun LazyGridScope.calendarGameCards(
     items = games,
     span = { _, _ -> GridItemSpan(DaysPerWeek) }
 ) { index, game ->
-    val cardViewModel = remember(game) {
-        viewModel.createGameCardViewModel(game)
-    }
     CalendarGameCard(
         modifier = Modifier
             .padding(
@@ -243,9 +236,8 @@ private fun LazyGridScope.calendarGameCards(
                 top = if (index == 0) 16.dp else 8.dp,
                 bottom = if (index == games.size - 1) 16.dp else 0.dp
             ),
-        viewModel = cardViewModel,
-        game = game,
-        onClick = { viewModel.clickGameCard(it) }
+        viewModel = viewModel.getGameCardViewModel(game),
+        onClick = { viewModel.clickGameCard(game.game) }
     )
 }
 
@@ -253,8 +245,7 @@ private fun LazyGridScope.calendarGameCards(
 private fun CalendarGameCard(
     modifier: Modifier = Modifier,
     viewModel: GameCardViewModel,
-    game: GameAndBets,
-    onClick: (Game) -> Unit,
+    onClick: () -> Unit,
 ) {
     GameCard(
         modifier = modifier
@@ -263,7 +254,7 @@ private fun CalendarGameCard(
             .fillMaxWidth()
             .wrapContentHeight()
             .background(MaterialTheme.colors.secondary)
-            .rippleClickable { onClick(game.game) }
+            .rippleClickable { onClick() }
             .padding(bottom = 8.dp),
         viewModel = viewModel,
         expandable = false,
@@ -298,7 +289,7 @@ private fun DayAbbrTextRow(modifier: Modifier = Modifier) {
 private fun DateBox(
     modifier: Modifier = Modifier,
     calendarDate: CalendarDate,
-    isSelected: Boolean,
+    selected: Boolean,
     onClick: (Date) -> Unit
 ) {
     Box(
@@ -307,7 +298,7 @@ private fun DateBox(
             .border(
                 BorderStroke(
                     2.dp,
-                    if (isSelected) MaterialTheme.colors.secondary else MaterialTheme.colors.secondaryVariant
+                    if (selected) MaterialTheme.colors.secondary else MaterialTheme.colors.secondaryVariant
                 )
             )
             .rippleClickable { onClick(calendarDate.date) }
@@ -318,10 +309,10 @@ private fun DateBox(
                 .align(Alignment.TopEnd)
                 .padding(4.dp),
             text = calendarDate.day.toString(),
-            color = if (isSelected && calendarDate.isCurrentMonth) {
+            color = if (selected && calendarDate.currentMonth) {
                 MaterialTheme.colors.secondary
             } else {
-                MaterialTheme.colors.secondaryVariant.copy(if (calendarDate.isCurrentMonth) 1f else Transparency25)
+                MaterialTheme.colors.secondaryVariant.copy(if (calendarDate.currentMonth) 1f else Transparency25)
             },
             fontSize = 12.sp,
             fontWeight = FontWeight.Medium

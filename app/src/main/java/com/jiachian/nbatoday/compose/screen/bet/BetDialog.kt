@@ -46,10 +46,10 @@ fun BetDialog(
     onConfirm: (homePoints: Long, awayPoints: Long) -> Unit,
     onDismiss: () -> Unit
 ) {
-    val showWarning by viewModel.showWarning.collectAsState()
+    val warning by viewModel.showWarning.collectAsState()
     val homePoints by viewModel.homePoints.collectAsState()
     val awayPoints by viewModel.awayPoints.collectAsState()
-    val confirmedEnabled by viewModel.confirmEnabled.collectAsState()
+    val enabled by viewModel.enabled.collectAsState()
     Dialog(onDismissRequest = onDismiss) {
         Column(
             modifier = Modifier
@@ -64,14 +64,13 @@ fun BetDialog(
                 awayPoints = awayPoints,
             )
             BetDialogConfirmButton(
-                modifier = Modifier
-                    .padding(top = 8.dp, end = 8.dp),
-                enabled = confirmedEnabled,
+                modifier = Modifier.padding(top = 8.dp, end = 8.dp),
+                enabled = enabled,
                 onConfirm = viewModel::showWarning
             )
         }
     }
-    if (showWarning) {
+    if (warning) {
         BetWarningDialog(
             onConfirm = {
                 onConfirm(homePoints, awayPoints)

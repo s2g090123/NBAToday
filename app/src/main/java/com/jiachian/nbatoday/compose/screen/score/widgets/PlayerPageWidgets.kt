@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -28,7 +27,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -82,7 +80,6 @@ private fun ScorePlayerLabelScrollableRow(
             scrollState = scrollState,
         )
         Divider(
-            modifier = Modifier.fillMaxWidth(),
             color = dividerSecondaryColor(),
             thickness = 3.dp,
         )
@@ -108,16 +105,12 @@ private fun ScorePlayerLabelRow(
             fontWeight = FontWeight.Medium,
             color = MaterialTheme.colors.secondary
         )
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .horizontalScroll(scrollState)
-        ) {
+        Row(modifier = Modifier.horizontalScroll(scrollState)) {
             Spacer(modifier = Modifier.width(40.dp))
             viewModel.playerLabels.forEach { label ->
                 ScorePlayerLabel(
                     label = label,
-                    isPopupVisible = label == selectedLabel,
+                    popup = label == selectedLabel,
                     onClick = { viewModel.selectPlayerLabel(label) },
                     onDismiss = { viewModel.selectPlayerLabel(null) }
                 )
@@ -129,7 +122,7 @@ private fun ScorePlayerLabelRow(
 @Composable
 private fun ScorePlayerLabel(
     label: BoxScorePlayerLabel,
-    isPopupVisible: Boolean,
+    popup: Boolean,
     onClick: () -> Unit,
     onDismiss: () -> Unit
 ) {
@@ -148,7 +141,7 @@ private fun ScorePlayerLabel(
             fontWeight = FontWeight.Medium,
             color = MaterialTheme.colors.secondary
         )
-        if (isPopupVisible) {
+        if (popup) {
             ScorePlayerLabelPopup(
                 text = stringResource(label.infoRes),
                 onDismiss = { onDismiss() }
@@ -195,11 +188,7 @@ private fun ScorePlayerScrollableRow(
         scrollState = scrollState,
         rowData = rowData,
     )
-    Divider(
-        modifier = Modifier.fillMaxWidth(),
-        color = dividerSecondaryColor(),
-        thickness = 1.dp
-    )
+    Divider(color = dividerSecondaryColor())
 }
 
 @Composable
@@ -217,13 +206,8 @@ private fun ScorePlayerRow(
                 .rippleClickable { viewModel.openPlayerInfo(rowData.player.playerId) }
                 .padding(top = 8.dp, bottom = 8.dp, start = 4.dp),
             playerName = rowData.player.nameAbbr,
-            color = MaterialTheme.colors.secondary,
         )
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .horizontalScroll(scrollState)
-        ) {
+        Row(modifier = Modifier.horizontalScroll(scrollState)) {
             Text(
                 modifier = Modifier
                     .size(40.dp)
@@ -234,10 +218,7 @@ private fun ScorePlayerRow(
                 color = MaterialTheme.colors.secondary,
             )
             rowData.data.forEach { data ->
-                ScorePlayerStatsText(
-                    data = data,
-                    color = MaterialTheme.colors.secondary,
-                )
+                ScorePlayerStatsText(data = data)
             }
         }
     }
@@ -247,23 +228,19 @@ private fun ScorePlayerRow(
 private fun ScorePlayerNameText(
     modifier: Modifier = Modifier,
     playerName: String,
-    color: Color,
 ) {
     Text(
         modifier = modifier,
         text = playerName,
         fontSize = 16.sp,
-        color = color,
+        color = MaterialTheme.colors.secondary,
         maxLines = 1,
         softWrap = false,
     )
 }
 
 @Composable
-private fun ScorePlayerStatsText(
-    data: BoxScorePlayerRowData.Data,
-    color: Color,
-) {
+private fun ScorePlayerStatsText(data: BoxScorePlayerRowData.Data) {
     Text(
         modifier = Modifier
             .size(data.width, 40.dp)
@@ -271,6 +248,6 @@ private fun ScorePlayerStatsText(
         text = data.value,
         textAlign = data.align,
         fontSize = 16.sp,
-        color = color,
+        color = MaterialTheme.colors.secondary,
     )
 }

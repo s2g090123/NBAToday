@@ -7,9 +7,9 @@ import com.jiachian.nbatoday.PlayingGameId
 import com.jiachian.nbatoday.UserAccount
 import com.jiachian.nbatoday.UserPassword
 import com.jiachian.nbatoday.UserPoints
+import com.jiachian.nbatoday.compose.screen.bet.models.TurnTablePoints
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.models.TestRepository
-import com.jiachian.nbatoday.models.local.bet.TurnTablePoints
 import com.jiachian.nbatoday.models.local.game.GameStatus
 import com.jiachian.nbatoday.rule.TestCoroutineEnvironment
 import com.jiachian.nbatoday.utils.launchAndCollect
@@ -52,21 +52,21 @@ class BetViewModelTest {
 
     @Test
     fun bet_clickFinalGame_askTurnTable() = coroutineEnvironment.testScope.runTest {
-        viewModel.betAndGame.launchAndCollect(coroutineEnvironment)
-        val betAndGames = viewModel.betAndGame.value
+        viewModel.betsAndGames.launchAndCollect(coroutineEnvironment)
+        val betAndGames = viewModel.betsAndGames.value
         val finalGame = betAndGames.firstOrNull { it.game.gameStatus == GameStatus.FINAL }
         assertThat(finalGame, notNullValue())
         viewModel.clickBetAndGame(finalGame!!)
-        assertThat(viewModel.askTurnTableVisible, notNullValue())
+        assertThat(viewModel.turnTablePoints, notNullValue())
         val points = repository.user.value?.points
         assertThat(points, `is`(UserPoints + BasicNumber * 2))
-        assertThat(viewModel.betAndGame.value.contains(finalGame), `is`(false))
+        assertThat(viewModel.betsAndGames.value.contains(finalGame), `is`(false))
     }
 
     @Test
     fun bet_clickPlayingGame_openBoxScore() {
-        viewModel.betAndGame.launchAndCollect(coroutineEnvironment)
-        val betAndGames = viewModel.betAndGame.value
+        viewModel.betsAndGames.launchAndCollect(coroutineEnvironment)
+        val betAndGames = viewModel.betsAndGames.value
         val playingGame = betAndGames.firstOrNull { it.game.gameStatus == GameStatus.PLAYING }
         assertThat(playingGame, notNullValue())
         viewModel.clickBetAndGame(playingGame!!)
@@ -75,8 +75,8 @@ class BetViewModelTest {
 
     @Test
     fun bet_clickComingSoonGame_openTeamScreen() {
-        viewModel.betAndGame.launchAndCollect(coroutineEnvironment)
-        val betAndGames = viewModel.betAndGame.value
+        viewModel.betsAndGames.launchAndCollect(coroutineEnvironment)
+        val betAndGames = viewModel.betsAndGames.value
         val comingGame =
             betAndGames.firstOrNull { it.game.gameStatus == GameStatus.COMING_SOON }
         assertThat(comingGame, notNullValue())
@@ -87,7 +87,7 @@ class BetViewModelTest {
     @Test
     fun bet_closeAskTurnTable_valueNull() {
         viewModel.closeAskTurnTable()
-        assertThat(viewModel.askTurnTableVisible.value, nullValue())
+        assertThat(viewModel.turnTablePoints.value, nullValue())
     }
 
     @Test
@@ -115,7 +115,7 @@ class BetViewModelTest {
             BasicNumber,
             viewModel.rewardedAngle.value
         )
-        assertThat(viewModel.rewardedPointsVisible.value, `is`(expected))
+        assertThat(viewModel.rewardedPoints.value, `is`(expected))
     }
 
     @Test
@@ -123,9 +123,9 @@ class BetViewModelTest {
         val data = TurnTablePoints(BasicNumber.toLong(), BasicNumber.toLong())
         viewModel.startTurnTable(data)
         advanceUntilIdle()
-        assertThat(viewModel.rewardedPointsVisible.value, notNullValue())
+        assertThat(viewModel.rewardedPoints.value, notNullValue())
         viewModel.closeRewardedPoints()
-        assertThat(viewModel.rewardedPointsVisible.value, nullValue())
+        assertThat(viewModel.rewardedPoints.value, nullValue())
     }
 
     private fun createViewModel(

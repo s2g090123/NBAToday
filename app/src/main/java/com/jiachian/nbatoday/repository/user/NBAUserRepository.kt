@@ -3,7 +3,7 @@ package com.jiachian.nbatoday.repository.user
 import com.jiachian.nbatoday.datasource.remote.user.UserRemoteSource
 import com.jiachian.nbatoday.datastore.BaseDataStore
 import com.jiachian.nbatoday.models.local.user.User
-import com.jiachian.nbatoday.models.remote.user.toUser
+import com.jiachian.nbatoday.models.remote.user.extensions.toUser
 import com.jiachian.nbatoday.utils.showErrorToast
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
@@ -21,7 +21,7 @@ class NBAUserRepository(
                 .takeIf { !it.isError() }
                 ?.body()
                 ?.toUser()
-                ?.takeIf { user -> user.isAvailable }
+                ?.takeIf { user -> user.available }
                 ?.let { user ->
                     dataStore.updateUser(user)
                 }
@@ -53,7 +53,7 @@ class NBAUserRepository(
         loading {
             user
                 .firstOrNull()
-                ?.takeIf { user -> user.isAvailable }
+                ?.takeIf { user -> user.available }
                 ?.let { user ->
                     userRemoteSource
                         .updatePoints(user.account, points, user.token)
@@ -70,7 +70,7 @@ class NBAUserRepository(
         loading {
             user
                 .firstOrNull()
-                ?.takeIf { user -> user.isAvailable }
+                ?.takeIf { user -> user.available }
                 ?.let { user ->
                     val updatedPoints = user.points + points
                     userRemoteSource

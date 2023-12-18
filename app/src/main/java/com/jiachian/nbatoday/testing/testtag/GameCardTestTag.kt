@@ -17,7 +17,7 @@ object GameCardTestTag {
     const val GameCardLeadersInfo_LeaderInfoRow_Home = "GameCardLeadersInfo_LeaderInfoRow_Home"
     const val GameCardLeadersInfo_LeaderInfoRow_Away = "GameCardLeadersInfo_LeaderInfoRow_Away"
 
-    const val LeaderInfoRow_Text_PlayerTitle = "LeaderInfoRow_Text_PlayerTitle"
+    const val LeaderInfoRow_Text_PlayerDetail = "LeaderInfoRow_Text_PlayerDetail"
     const val LeaderInfoRow_LeaderStatsText_Points = "LeaderInfoRow_LeaderStatsText_Points"
     const val LeaderInfoRow_LeaderStatsText_Rebounds = "LeaderInfoRow_LeaderStatsText_Rebounds"
     const val LeaderInfoRow_LeaderStatsText_Assists = "LeaderInfoRow_LeaderStatsText_Assists"

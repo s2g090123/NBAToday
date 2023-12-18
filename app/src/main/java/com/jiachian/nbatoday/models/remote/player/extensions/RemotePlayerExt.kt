@@ -1,6 +1,7 @@
-package com.jiachian.nbatoday.models.remote.player
+package com.jiachian.nbatoday.models.remote.player.extensions
 
 import com.jiachian.nbatoday.models.local.player.Player
+import com.jiachian.nbatoday.models.remote.player.RemotePlayer
 
 fun RemotePlayer.toPlayer(): Player? {
     val playerId = getPlayerId()

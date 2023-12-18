@@ -33,53 +33,50 @@ import androidx.compose.ui.unit.sp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
 import com.jiachian.nbatoday.R
+import com.jiachian.nbatoday.compose.screen.score.models.BoxScoreUI
 import com.jiachian.nbatoday.compose.screen.score.widgets.ScoreDetailPager
 import com.jiachian.nbatoday.compose.screen.score.widgets.ScorePeriod
 import com.jiachian.nbatoday.compose.screen.score.widgets.ScoreTabRow
 import com.jiachian.nbatoday.compose.screen.score.widgets.ScoreTotal
 import com.jiachian.nbatoday.compose.widget.IconButton
 import com.jiachian.nbatoday.compose.widget.LoadingScreen
-import com.jiachian.nbatoday.compose.widget.NullCheckScreen
-import com.jiachian.nbatoday.models.local.score.BoxScore
+import com.jiachian.nbatoday.compose.widget.UIStateScreen
 import com.jiachian.nbatoday.testing.testtag.BoxScoreTestTag
 
-private val TopMargin = 56.dp
+private val TopMargin = 81.dp
 
 @Composable
 fun BoxScoreScreen(viewModel: BoxScoreViewModel) {
-    val isLoading by viewModel.isLoading.collectAsState()
     val date by viewModel.date.collectAsState()
-    val notFound by viewModel.notFound.collectAsState()
+    val boxScoreUIState by viewModel.boxScoreUIState.collectAsState()
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colors.primary)
     ) {
         ScoreTopBar(
-            modifier = Modifier
-                .padding(top = 8.dp)
-                .fillMaxWidth(),
             title = date,
             onBack = viewModel::close
         )
-        when {
-            isLoading -> {
+        UIStateScreen(
+            state = boxScoreUIState,
+            loading = {
                 LoadingScreen(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.secondary,
                 )
-            }
-            notFound -> NotFoundScreen(modifier = Modifier.fillMaxSize())
-            else -> {
-                val scrollState = rememberScrollState()
-                ScoreScreen(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .verticalScroll(scrollState),
-                    viewModel = viewModel,
-                    scrollState = scrollState,
-                )
-            }
+            },
+            ifNull = { NotFoundScreen(modifier = Modifier.fillMaxSize()) }
+        ) { boxScoreUI ->
+            val scrollState = rememberScrollState()
+            ScoreScreen(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(scrollState),
+                viewModel = viewModel,
+                scrollState = scrollState,
+                boxScoreUI = boxScoreUI,
+            )
         }
     }
 }
@@ -89,40 +86,33 @@ private fun ScoreScreen(
     modifier: Modifier = Modifier,
     viewModel: BoxScoreViewModel,
     scrollState: ScrollState,
+    boxScoreUI: BoxScoreUI,
 ) {
-    val boxScore by viewModel.boxScore.collectAsState()
-    val labels by viewModel.periodLabels.collectAsState()
     val detailHeight = LocalConfiguration.current.screenHeightDp.dp - TopMargin
-    NullCheckScreen(
-        data = boxScore,
-        ifNull = { NotFoundScreen(modifier = modifier) },
-        ifNotNull = { score ->
-            Column(modifier = modifier) {
-                ScoreTotal(
-                    modifier = Modifier
-                        .padding(top = 16.dp)
-                        .fillMaxWidth(),
-                    score = score
-                )
-                ScorePeriod(
-                    modifier = Modifier
-                        .testTag(BoxScoreTestTag.ScoreScreen_ScorePeriod)
-                        .padding(top = 16.dp, start = 12.dp, end = 12.dp)
-                        .fillMaxWidth(),
-                    score = score,
-                    labels = labels
-                )
-                ScoreDetail(
-                    modifier = Modifier
-                        .padding(top = 16.dp)
-                        .height(detailHeight),
-                    viewModel = viewModel,
-                    score = score,
-                    scrollState = scrollState,
-                )
-            }
-        }
-    )
+    Column(modifier = modifier) {
+        ScoreTotal(
+            modifier = Modifier
+                .padding(top = 16.dp)
+                .fillMaxWidth(),
+            boxScore = boxScoreUI.boxScore,
+        )
+        ScorePeriod(
+            modifier = Modifier
+                .testTag(BoxScoreTestTag.ScoreScreen_ScorePeriod)
+                .padding(top = 16.dp, start = 12.dp, end = 12.dp)
+                .fillMaxWidth(),
+            score = boxScoreUI.boxScore,
+            labels = boxScoreUI.periods,
+        )
+        ScoreDetail(
+            modifier = Modifier
+                .padding(top = 16.dp)
+                .height(detailHeight),
+            viewModel = viewModel,
+            boxScoreUI = boxScoreUI,
+            scrollState = scrollState,
+        )
+    }
 }
 
 @Composable
@@ -131,11 +121,14 @@ private fun ScoreTopBar(
     title: String,
     onBack: () -> Unit
 ) {
-    Row(modifier = modifier) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
         IconButton(
             modifier = Modifier
                 .testTag(BoxScoreTestTag.ScoreTopBar_Button_Back)
-                .padding(start = 8.dp),
+                .padding(start = 8.dp, top = 8.dp),
             drawableRes = R.drawable.ic_black_back,
             tint = MaterialTheme.colors.secondary,
             onClick = onBack
@@ -144,7 +137,7 @@ private fun ScoreTopBar(
             modifier = Modifier
                 .testTag(BoxScoreTestTag.ScoreTopBar_Text_Date)
                 .align(Alignment.CenterVertically)
-                .padding(start = 16.dp),
+                .padding(start = 16.dp, top = 8.dp),
             text = title,
             fontSize = 18.sp,
             fontWeight = FontWeight.Medium,
@@ -158,7 +151,7 @@ private fun ScoreTopBar(
 private fun ScoreDetail(
     modifier: Modifier = Modifier,
     viewModel: BoxScoreViewModel,
-    score: BoxScore,
+    boxScoreUI: BoxScoreUI,
     scrollState: ScrollState,
 ) {
     val pagerState = rememberPagerState()
@@ -179,7 +172,8 @@ private fun ScoreDetail(
         ScoreTabRow(
             modifier = Modifier.fillMaxWidth(),
             pagerState = pagerState,
-            score = score
+            homeTeam = boxScoreUI.teams.home,
+            awayTeam = boxScoreUI.teams.away,
         )
         ScoreDetailPager(
             modifier = Modifier
@@ -188,7 +182,7 @@ private fun ScoreDetail(
                 .nestedScroll(nestedScrollConnection),
             viewModel = viewModel,
             pagerState = pagerState,
-            count = 4,
+            boxScoreUI = boxScoreUI,
         )
     }
 }

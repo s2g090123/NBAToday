@@ -10,8 +10,8 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface PlayerDao {
     @Query("SELECT * FROM player WHERE player_id == :playerId")
-    fun getPlayers(playerId: Int): Flow<Player?>
+    fun getPlayer(playerId: Int): Flow<Player?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertPlayers(stats: Player)
+    suspend fun insertPlayer(player: Player)
 }

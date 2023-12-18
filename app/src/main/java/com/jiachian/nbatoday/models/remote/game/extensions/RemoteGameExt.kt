@@ -1,9 +1,10 @@
-package com.jiachian.nbatoday.models.remote.game
+package com.jiachian.nbatoday.models.remote.game.extensions
 
 import com.jiachian.nbatoday.models.local.game.GameLeaders
 import com.jiachian.nbatoday.models.local.game.GameTeam
 import com.jiachian.nbatoday.models.local.game.GameUpdateData
 import com.jiachian.nbatoday.models.local.team.NBATeam
+import com.jiachian.nbatoday.models.remote.game.RemoteGame
 import com.jiachian.nbatoday.utils.getOrError
 import com.jiachian.nbatoday.utils.getOrZero
 
@@ -25,10 +26,10 @@ fun RemoteGame.RemoteScoreboard.toGameUpdateData(): List<GameUpdateData> {
         val awayTeam = game.awayTeam?.toGameTeam()
         val gameLeaders = game.gameLeaders?.toGameLeaders()
         val teamLeaders = game.teamLeaders?.toGameLeaders()
-        val isGameNull = gameId == null || gameStatus == null || gameStatusText == null
-        val isTeamNull = homeTeam == null || awayTeam == null
-        val isLeadersNull = gameLeaders == null || teamLeaders == null
-        if (isGameNull || isTeamNull || isLeadersNull) return@mapNotNull null
+        val gameNull = gameId == null || gameStatus == null || gameStatusText == null
+        val teamNull = homeTeam == null || awayTeam == null
+        val leaderNull = gameLeaders == null || teamLeaders == null
+        if (gameNull || teamNull || leaderNull) return@mapNotNull null
         GameUpdateData(
             gameId = gameId.getOrError(),
             gameStatus = gameStatus.getOrError(),

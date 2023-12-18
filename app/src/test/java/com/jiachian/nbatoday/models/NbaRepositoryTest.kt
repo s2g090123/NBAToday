@@ -68,7 +68,7 @@ class NbaRepositoryTest {
             )
         }
         assertThat(actual, `is`(expected))
-        assertThat(dataStore.lastAccessedDay.value, `is`(DateUtils.formatDate(2023, 1, 1)))
+        assertThat(dataStore.lastAccessedDate.value, `is`(DateUtils.formatDate(2023, 1, 1)))
     }
 
     @Test
@@ -95,7 +95,7 @@ class NbaRepositoryTest {
             )
         }
         assertThat(actual, `is`(expected))
-        assertThat(dataStore.lastAccessedDay.value, `is`(DateUtils.formatDate(2023, 1, 1)))
+        assertThat(dataStore.lastAccessedDate.value, `is`(DateUtils.formatDate(2023, 1, 1)))
     }
 
     @Test
@@ -117,7 +117,7 @@ class NbaRepositoryTest {
             )
         }
         assertThat(actual, `is`(expected))
-        assertThat(dataStore.lastAccessedDay.value, `is`(DateUtils.formatDate(2023, 1, 1)))
+        assertThat(dataStore.lastAccessedDate.value, `is`(DateUtils.formatDate(2023, 1, 1)))
     }
 
     @Test

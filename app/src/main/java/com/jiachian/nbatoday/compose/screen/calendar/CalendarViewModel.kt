@@ -2,14 +2,15 @@ package com.jiachian.nbatoday.compose.screen.calendar
 
 import com.jiachian.nbatoday.DaysPerWeek
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
+import com.jiachian.nbatoday.compose.screen.calendar.models.CalendarDate
 import com.jiachian.nbatoday.compose.screen.card.GameCardViewModel
+import com.jiachian.nbatoday.compose.screen.state.UIState
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
-import com.jiachian.nbatoday.models.local.calendar.CalendarDate
 import com.jiachian.nbatoday.models.local.game.Game
 import com.jiachian.nbatoday.models.local.game.GameAndBets
+import com.jiachian.nbatoday.navigation.MainRoute
 import com.jiachian.nbatoday.navigation.NavigationController
-import com.jiachian.nbatoday.navigation.Route
 import com.jiachian.nbatoday.repository.game.GameRepository
 import com.jiachian.nbatoday.utils.ComposeViewModelProvider
 import com.jiachian.nbatoday.utils.DateUtils
@@ -22,11 +23,11 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class CalendarViewModel(
     dateTime: Long,
@@ -38,7 +39,7 @@ class CalendarViewModel(
 ) : ComposeViewModel(
     coroutineScope = coroutineScope,
     navigationController = navigationController,
-    route = Route.CALENDAR
+    route = MainRoute.Calendar
 ) {
     private val currentCalendar: MutableStateFlow<Calendar>
 
@@ -49,30 +50,29 @@ class CalendarViewModel(
     val selectedGames = selectedGamesImp.asStateFlow()
 
     init {
-        DateUtils.getCalendar().apply {
-            timeInMillis = dateTime
-            currentCalendar = MutableStateFlow(this)
+        currentCalendar = DateUtils.getCalendar().let {
+            it.timeInMillis = dateTime
+            MutableStateFlow(it)
         }
         collectSelectedGames()
     }
 
-    private val isLoadingGamesImp = MutableStateFlow(false)
-    val isLoadingGames = isLoadingGamesImp.asStateFlow()
+    private val loadingGamesImp = MutableStateFlow(false)
+    val loadingGames = loadingGamesImp.asStateFlow()
 
-    private val isLoadingCalendarImp = MutableStateFlow(false)
-    val isLoadingCalendar = isLoadingCalendarImp.asStateFlow()
+    private val loadingCalendar = MutableStateFlow(false)
 
     private val lastGameDate = repository.getLastGameDateTime()
-        .stateIn(coroutineScope, SharingStarted.Eagerly, Date(dateTime))
+        .stateIn(coroutineScope, SharingStarted.Lazily, Date(dateTime))
     private val firstGameDate = repository.getFirstGameDateTime()
-        .stateIn(coroutineScope, SharingStarted.Eagerly, Date(dateTime))
+        .stateIn(coroutineScope, SharingStarted.Lazily, Date(dateTime))
 
     val selectedGamesVisible = combine(
         currentCalendar,
         selectedDate
     ) { cal, selectedDate ->
         isInCalendar(cal, selectedDate)
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, false)
+    }.stateIn(coroutineScope, SharingStarted.Lazily, false)
 
     val numberAndDateString = currentCalendar.map { cal ->
         val year = cal.get(Calendar.YEAR)
@@ -101,15 +101,24 @@ class CalendarViewModel(
 
     private val calendarDatesMap = mutableMapOf<String, List<CalendarDate>>()
 
-    val calendarDates = currentCalendar.map { cal ->
+    private val calendarDates = currentCalendar.map { cal ->
         getCalendarDates(cal)
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, emptyList())
+    }.flowOn(dispatcherProvider.io)
+    val calendarDatesState = combine(
+        loadingCalendar,
+        calendarDates
+    ) { loading, dates ->
+        if (loading) return@combine UIState.Loading()
+        UIState.Loaded(dates)
+    }.stateIn(coroutineScope, SharingStarted.Eagerly, UIState.Loading())
+
+    private val gameCardViewModelMap = mutableMapOf<GameAndBets, GameCardViewModel>()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun collectSelectedGames() {
         coroutineScope.launch(dispatcherProvider.io) {
             selectedDate
-                .onEach { isLoadingGamesImp.value = true }
+                .onEach { loadingGamesImp.value = true }
                 .flatMapLatest { selectedDate ->
                     DateUtils
                         .getCalendar()
@@ -127,7 +136,7 @@ class CalendarViewModel(
                 }
                 .collect { games ->
                     selectedGamesImp.value = games
-                    isLoadingGamesImp.value = false
+                    loadingGamesImp.value = false
                 }
         }
     }
@@ -154,14 +163,13 @@ class CalendarViewModel(
         }
     }
 
-    private suspend fun getCalendarDates(calendar: Calendar): List<CalendarDate> {
-        return withContext(dispatcherProvider.io) {
-            val year = calendar.get(Calendar.YEAR)
-            val month = calendar.get(Calendar.MONTH)
-            val key = "$year-$month"
-            if (calendarDatesMap.containsKey(key)) return@withContext calendarDatesMap[key] ?: emptyList()
-            isLoadingCalendarImp.value = true
-            val dates = DateUtils.getCalendar()
+    private fun getCalendarDates(calendar: Calendar): List<CalendarDate> {
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val key = "$year-$month"
+        return calendarDatesMap.getOrPut(key) {
+            loadingCalendar.value = true
+            DateUtils.getCalendar()
                 .apply {
                     set(year, month, 1, 0, 0, 0)
                     set(Calendar.MILLISECOND, 0)
@@ -170,42 +178,42 @@ class CalendarViewModel(
                 .run {
                     val calendarDates = mutableListOf<CalendarDate>()
                     while (true) {
-                        val isLastYear = get(Calendar.YEAR) < year && get(Calendar.MONTH) > month
-                        val isCurrentMonth = get(Calendar.YEAR) == year && get(Calendar.MONTH) <= month
-                        if (!isLastYear && !isCurrentMonth) break
+                        val lastYear = get(Calendar.YEAR) < year && get(Calendar.MONTH) > month
+                        val currentMonth = get(Calendar.YEAR) == year && get(Calendar.MONTH) <= month
+                        if (!lastYear && !currentMonth) break
                         repeat(DaysPerWeek) {
                             calendarDates.add(
                                 CalendarDate(
                                     date = time,
                                     day = get(Calendar.DAY_OF_MONTH),
-                                    isCurrentMonth = get(Calendar.MONTH) == month
+                                    currentMonth = get(Calendar.MONTH) == month
                                 )
                             )
                             add(Calendar.DAY_OF_MONTH, 1)
                         }
                     }
+                    loadingCalendar.value = false
                     calendarDates
                 }
-            calendarDatesMap[key] = dates
-            isLoadingCalendarImp.value = false
-            dates
         }
     }
 
     fun clickGameCard(game: Game) {
-        if (game.isGamePlayed) {
+        if (game.gamePlayed) {
             navigationController.navigateToBoxScore(game.gameId)
         } else {
             navigationController.navigateToTeam(game.homeTeamId)
         }
     }
 
-    fun createGameCardViewModel(gameAndBets: GameAndBets): GameCardViewModel {
-        return composeViewModelProvider.getGameCardViewModel(
-            gameAndBets = gameAndBets,
-            dispatcherProvider = dispatcherProvider,
-            coroutineScope = coroutineScope,
-        )
+    fun getGameCardViewModel(gameAndBets: GameAndBets): GameCardViewModel {
+        return gameCardViewModelMap.getOrPut(gameAndBets) {
+            composeViewModelProvider.getGameCardViewModel(
+                gameAndBets = gameAndBets,
+                dispatcherProvider = dispatcherProvider,
+                coroutineScope = coroutineScope,
+            )
+        }
     }
 
     private fun isInCalendar(calendar: Calendar, date: Date): Boolean {

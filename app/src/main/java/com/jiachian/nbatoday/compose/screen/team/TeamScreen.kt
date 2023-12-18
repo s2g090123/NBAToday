@@ -36,45 +36,48 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
 import com.jiachian.nbatoday.R
+import com.jiachian.nbatoday.compose.screen.team.models.TeamPlayerRowData
+import com.jiachian.nbatoday.compose.screen.team.models.TeamUI
 import com.jiachian.nbatoday.compose.screen.team.widgets.TeamGamePage
 import com.jiachian.nbatoday.compose.screen.team.widgets.TeamInformation
 import com.jiachian.nbatoday.compose.screen.team.widgets.TeamPlayerPage
-import com.jiachian.nbatoday.compose.widget.FocusableColumn
 import com.jiachian.nbatoday.compose.widget.IconButton
 import com.jiachian.nbatoday.compose.widget.LoadingScreen
-import com.jiachian.nbatoday.compose.widget.NullCheckScreen
+import com.jiachian.nbatoday.compose.widget.UIStateScreen
 import com.jiachian.nbatoday.testing.testtag.TeamTestTag
 import kotlinx.coroutines.launch
 
-private val TopMargin = 56.dp
+private val TopMargin = 81.dp
 
 @Composable
 fun TeamScreen(viewModel: TeamViewModel) {
-    val isLoading by viewModel.isLoading.collectAsState()
+    val teamUIState by viewModel.teamUIState.collectAsState()
     val scrollState = rememberScrollState()
-    FocusableColumn(modifier = Modifier.background(viewModel.colors.primary)) {
+    Column(modifier = Modifier.background(viewModel.colors.primary)) {
         IconButton(
             modifier = Modifier.padding(top = 8.dp, start = 8.dp),
             drawableRes = R.drawable.ic_black_back,
             tint = viewModel.colors.extra2,
             onClick = viewModel::close,
         )
-        when {
-            isLoading -> {
+        UIStateScreen(
+            state = teamUIState,
+            loading = {
                 LoadingScreen(
                     modifier = Modifier.fillMaxSize(),
                     color = viewModel.colors.secondary,
                 )
-            }
-            else -> {
-                TeamDetails(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .verticalScroll(scrollState),
-                    viewModel = viewModel,
-                    scrollState = scrollState,
-                )
-            }
+            },
+            ifNull = null
+        ) { teamUI ->
+            TeamDetails(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(scrollState),
+                viewModel = viewModel,
+                scrollState = scrollState,
+                teamUI = teamUI,
+            )
         }
     }
 }
@@ -85,31 +88,28 @@ private fun TeamDetails(
     modifier: Modifier = Modifier,
     viewModel: TeamViewModel,
     scrollState: ScrollState,
+    teamUI: TeamUI,
 ) {
     val pagerState = rememberPagerState()
-    val teamStats by viewModel.teamStats.collectAsState()
     val detailHeight = LocalConfiguration.current.screenHeightDp.dp - TopMargin
-    NullCheckScreen(
-        data = teamStats,
-        ifNull = null,
-    ) { stats ->
-        Column(modifier = modifier) {
-            TeamInformation(
+    Column(modifier = modifier) {
+        TeamInformation(
+            viewModel = viewModel,
+            team = teamUI.team,
+            rank = teamUI.rank,
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Column(modifier = Modifier.height(detailHeight)) {
+            TeamTabRow(
                 viewModel = viewModel,
-                stats = stats,
+                pagerState = pagerState
             )
-            Spacer(modifier = Modifier.height(16.dp))
-            Column(modifier = Modifier.height(detailHeight)) {
-                TeamTabRow(
-                    viewModel = viewModel,
-                    pagerState = pagerState
-                )
-                TeamPager(
-                    viewModel = viewModel,
-                    pagerState = pagerState,
-                    scrollState = scrollState,
-                )
-            }
+            TeamPager(
+                viewModel = viewModel,
+                pagerState = pagerState,
+                scrollState = scrollState,
+                teamPlayers = teamUI.players,
+            )
         }
     }
 }
@@ -135,7 +135,7 @@ private fun TeamTabRow(
         }
     ) {
         TeamTab(
-            isSelected = pagerState.currentPage == 0,
+            selected = pagerState.currentPage == 0,
             text = stringResource(R.string.team_page_tab_player),
             textColor = viewModel.colors.extra1,
             onClick = {
@@ -145,7 +145,7 @@ private fun TeamTabRow(
             }
         )
         TeamTab(
-            isSelected = pagerState.currentPage == 1,
+            selected = pagerState.currentPage == 1,
             text = stringResource(R.string.team_page_tab_before_game),
             textColor = viewModel.colors.extra1,
             onClick = {
@@ -155,7 +155,7 @@ private fun TeamTabRow(
             }
         )
         TeamTab(
-            isSelected = pagerState.currentPage == 2,
+            selected = pagerState.currentPage == 2,
             text = stringResource(R.string.team_page_tab_next_game),
             textColor = viewModel.colors.extra1,
             onClick = {
@@ -169,7 +169,7 @@ private fun TeamTabRow(
 
 @Composable
 private fun TeamTab(
-    isSelected: Boolean,
+    selected: Boolean,
     text: String,
     textColor: Color,
     onClick: () -> Unit
@@ -183,7 +183,7 @@ private fun TeamTab(
                 fontSize = 14.sp
             )
         },
-        selected = isSelected,
+        selected = selected,
         onClick = onClick
     )
 }
@@ -194,6 +194,7 @@ private fun TeamPager(
     viewModel: TeamViewModel,
     pagerState: PagerState,
     scrollState: ScrollState,
+    teamPlayers: List<TeamPlayerRowData>,
 ) {
     val nestedScrollConnection = remember {
         object : NestedScrollConnection {
@@ -220,21 +221,22 @@ private fun TeamPager(
             0 -> {
                 TeamPlayerPage(
                     modifier = Modifier.fillMaxHeight(),
-                    viewModel = viewModel
+                    viewModel = viewModel,
+                    teamPlayers = teamPlayers,
                 )
             }
             1 -> {
                 val gamesBefore by viewModel.gamesBefore.collectAsState()
                 TeamGamePage(
                     viewModel = viewModel,
-                    games = gamesBefore
+                    gamesState = gamesBefore
                 )
             }
             2 -> {
                 val gamesAfter by viewModel.gamesAfter.collectAsState()
                 TeamGamePage(
                     viewModel = viewModel,
-                    games = gamesAfter
+                    gamesState = gamesAfter
                 )
             }
         }

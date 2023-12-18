@@ -5,7 +5,7 @@ import com.jiachian.nbatoday.datasource.local.game.GameLocalSource
 import com.jiachian.nbatoday.datasource.remote.game.GameRemoteSource
 import com.jiachian.nbatoday.models.local.game.GameAndBets
 import com.jiachian.nbatoday.models.local.score.BoxScoreAndGame
-import com.jiachian.nbatoday.models.remote.score.toBoxScore
+import com.jiachian.nbatoday.models.remote.score.extensions.toBoxScore
 import com.jiachian.nbatoday.utils.showErrorToast
 import java.util.Date
 import kotlinx.coroutines.flow.Flow
@@ -15,7 +15,7 @@ class NBAGameRepository(
     private val boxScoreLocalSource: BoxScoreLocalSource,
     private val gameRemoteSource: GameRemoteSource,
 ) : GameRepository() {
-    override suspend fun updateBoxScore(gameId: String) {
+    override suspend fun insertBoxScore(gameId: String) {
         loading {
             gameRemoteSource
                 .getBoxScore(gameId)
@@ -42,12 +42,12 @@ class NBAGameRepository(
         return gameLocalSource.getGamesAndBets()
     }
 
-    override fun getGamesAndBetsBeforeByTeam(teamId: Int, from: Long): Flow<List<GameAndBets>> {
-        return gameLocalSource.getGamesAndBetsBeforeByTeam(teamId, from)
+    override fun getGamesAndBetsBefore(teamId: Int, from: Long): Flow<List<GameAndBets>> {
+        return gameLocalSource.getGamesAndBetsBefore(teamId, from)
     }
 
-    override fun getGamesAndBetsAfterByTeam(teamId: Int, from: Long): Flow<List<GameAndBets>> {
-        return gameLocalSource.getGamesAndBetsAfterByTeam(teamId, from)
+    override fun getGamesAndBetsAfter(teamId: Int, from: Long): Flow<List<GameAndBets>> {
+        return gameLocalSource.getGamesAndBetsAfter(teamId, from)
     }
 
     override fun getLastGameDateTime(): Flow<Date> {

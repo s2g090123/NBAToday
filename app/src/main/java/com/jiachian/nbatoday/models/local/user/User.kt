@@ -6,5 +6,5 @@ data class User(
     val points: Long,
     val password: String,
     val token: String,
-    val isAvailable: Boolean,
+    val available: Boolean,
 )

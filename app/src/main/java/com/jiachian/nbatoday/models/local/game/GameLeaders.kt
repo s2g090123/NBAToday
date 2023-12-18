@@ -40,7 +40,7 @@ data class GameLeaders(
             )
         }
 
-        val playerTitle
+        val detail
             get() = "$teamTricode | $jerseyNum | $position"
     }
 }

@@ -1,9 +1,10 @@
-package com.jiachian.nbatoday.models.remote.game
+package com.jiachian.nbatoday.models.remote.game.extensions
 
 import android.annotation.SuppressLint
 import com.jiachian.nbatoday.models.local.game.Game
 import com.jiachian.nbatoday.models.local.game.GameTeam
 import com.jiachian.nbatoday.models.local.team.NBATeam
+import com.jiachian.nbatoday.models.remote.game.RemoteSchedule
 import com.jiachian.nbatoday.utils.DateUtils
 import com.jiachian.nbatoday.utils.getOrError
 import com.jiachian.nbatoday.utils.getOrNA
@@ -49,18 +50,18 @@ private fun createNbaGame(
 ): Game? {
     val gameDate = DateUtils.parseDate(game.gameDateEst, dateFormat)
     val gameDateTime = DateUtils.parseDate(game.gameDateTimeEst, dateFormat)
-    val isDateValid = gameDate != null && gameDateTime != null
+    val dateValid = gameDate != null && gameDateTime != null
 
     val awayTeam = game.awayTeam?.toGameTeam()
     val homeTeam = game.homeTeam?.toGameTeam()
-    val isTeamValid = homeTeam != null && awayTeam != null
+    val teamValid = homeTeam != null && awayTeam != null
 
     val gameId = game.gameId
     val gameStatus = game.gameStatus
-    val isLeaderValid = game.pointsLeaders != null
-    val isGameValid = gameId != null && gameStatus != null && isLeaderValid
+    val leaderValid = game.pointsLeaders != null
+    val gameValid = gameId != null && gameStatus != null && leaderValid
 
-    if (!isDateValid || !isTeamValid || !isGameValid) return null
+    if (!dateValid || !teamValid || !gameValid) return null
 
     val leaders = game.pointsLeaders
         .getOrError()

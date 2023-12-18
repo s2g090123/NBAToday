@@ -5,17 +5,20 @@ import com.jiachian.nbatoday.compose.screen.label.LabelHelper
 import com.jiachian.nbatoday.compose.screen.player.models.PlayerStatsLabel
 import com.jiachian.nbatoday.compose.screen.player.models.PlayerStatsRowData
 import com.jiachian.nbatoday.compose.screen.player.models.PlayerStatsSorting
+import com.jiachian.nbatoday.compose.screen.player.models.PlayerUI
 import com.jiachian.nbatoday.compose.screen.player.utils.PlayerInfoHelper
+import com.jiachian.nbatoday.compose.screen.state.UIState
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
+import com.jiachian.nbatoday.navigation.MainRoute
 import com.jiachian.nbatoday.navigation.NavigationController
-import com.jiachian.nbatoday.navigation.Route
 import com.jiachian.nbatoday.repository.player.PlayerRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -29,25 +32,18 @@ class PlayerViewModel(
 ) : ComposeViewModel(
     coroutineScope = coroutineScope,
     navigationController = navigationController,
-    route = Route.PLAYER
+    route = MainRoute.Player
 ) {
-    val isLoading = repository.isLoading
-
     init {
         coroutineScope.launch(dispatcherProvider.io) {
-            repository.updatePlayer(playerId)
+            repository.insertPlayer(playerId)
         }
     }
 
-    val player = repository.getPlayer(playerId)
-        .stateIn(coroutineScope, SharingStarted.Lazily, null)
+    private val player = repository.getPlayer(playerId)
 
-    val notFound = player.map {
-        it == null
-    }.stateIn(coroutineScope, SharingStarted.Lazily, true)
-
-    private val statsSortingImp = MutableStateFlow(PlayerStatsSorting.TIME_FRAME)
-    val statsSorting = statsSortingImp.asStateFlow()
+    private val sortingImp = MutableStateFlow(PlayerStatsSorting.TIME_FRAME)
+    val sorting = sortingImp.asStateFlow()
 
     val statsLabels = PlayerStatsLabel.values()
 
@@ -66,23 +62,44 @@ class PlayerViewModel(
                     )
                 }
             )
-        } ?: emptyList()
-    }
+        }
+    }.flowOn(dispatcherProvider.io)
 
-    val sortedStatsRowData = combine(
+    private val sortedStatsRowData = combine(
         statsRowData,
-        statsSorting
+        sorting
     ) { rowData, sorting ->
-        rowData.sortedWith(sorting)
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, emptyList())
+        rowData?.sortedWith(sorting)
+    }.flowOn(dispatcherProvider.io)
 
-    val playerInfoTableData = player.map {
-        val info = it?.info ?: return@map null
-        PlayerInfoHelper.createPlayerInfoTableData(info)
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, null)
+    private val infoTableData = player.map { player ->
+        player?.info?.let { info ->
+            PlayerInfoHelper.getTableData(info)
+        }
+    }.flowOn(dispatcherProvider.io)
 
-    fun updateStatsSorting(sorting: PlayerStatsSorting) {
-        statsSortingImp.value = sorting
+    private val playerUI = combine(
+        player,
+        infoTableData,
+        sortedStatsRowData
+    ) { player, info, stats ->
+        if (player == null || info == null || stats == null) return@combine null
+        PlayerUI(
+            player = player,
+            infoTableData = info,
+            statsRowData = stats,
+        )
+    }
+    val playerUIState = combine(
+        repository.loading,
+        playerUI
+    ) { loading, playerUI ->
+        if (loading) return@combine UIState.Loading()
+        UIState.Loaded(playerUI)
+    }.stateIn(coroutineScope, SharingStarted.Eagerly, UIState.Loading())
+
+    fun updateSorting(sorting: PlayerStatsSorting) {
+        sortingImp.value = sorting
     }
 
     private fun List<PlayerStatsRowData>.sortedWith(sorting: PlayerStatsSorting): List<PlayerStatsRowData> {

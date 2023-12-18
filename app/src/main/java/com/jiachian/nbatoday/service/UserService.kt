@@ -3,7 +3,7 @@ package com.jiachian.nbatoday.service
 import com.jiachian.nbatoday.models.remote.user.LoginBody
 import com.jiachian.nbatoday.models.remote.user.RemoteUser
 import com.jiachian.nbatoday.models.remote.user.UpdatePasswordBody
-import com.jiachian.nbatoday.models.remote.user.UpdatePointBody
+import com.jiachian.nbatoday.models.remote.user.UpdatePointsBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
@@ -26,6 +26,6 @@ interface UserService {
 
     @POST("user/points")
     suspend fun updatePoints(
-        @Body updatePointBody: UpdatePointBody
+        @Body updatePointBody: UpdatePointsBody
     ): Response<String>
 }

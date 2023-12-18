@@ -18,8 +18,8 @@ class BetDialogViewModel(
     dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
     coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined),
 ) {
-    private val showWarningImp = MutableStateFlow(false)
-    val showWarning = showWarningImp.asStateFlow()
+    private val warningImp = MutableStateFlow(false)
+    val showWarning = warningImp.asStateFlow()
 
     private val homePointsImp = MutableStateFlow(0L)
     val homePoints = homePointsImp.asStateFlow()
@@ -27,20 +27,23 @@ class BetDialogViewModel(
     private val awayPointsImp = MutableStateFlow(0L)
     val awayPoints = awayPointsImp.asStateFlow()
 
-    val remainedPoints = combine(homePoints, awayPoints) { home, away ->
+    val remainedPoints = combine(
+        homePoints,
+        awayPoints
+    ) { home, away ->
         userPoints - home - away
-    }.stateIn(coroutineScope, SharingStarted.Lazily, userPoints)
+    }.stateIn(coroutineScope, SharingStarted.Eagerly, userPoints)
 
-    val confirmEnabled = remainedPoints.map { points ->
+    val enabled = remainedPoints.map { points ->
         points != userPoints && points >= 0
-    }.stateIn(coroutineScope, SharingStarted.Lazily, false)
+    }.stateIn(coroutineScope, SharingStarted.Eagerly, false)
 
     fun showWarning() {
-        showWarningImp.value = true
+        warningImp.value = true
     }
 
     fun hideWarning() {
-        showWarningImp.value = false
+        warningImp.value = false
     }
 
     fun updateHomePoints(points: Long) {

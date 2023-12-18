@@ -1,5 +1,7 @@
 package com.jiachian.nbatoday.models.local.team
 
+import androidx.annotation.StringRes
+import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.theme.NBAColors
 import com.jiachian.nbatoday.models.local.team.data.team76ers
 import com.jiachian.nbatoday.models.local.team.data.teamBlazers
@@ -52,15 +54,11 @@ interface NBATeam {
         }
     }
 
-    enum class Conference {
-        EAST, WEST;
-
-        override fun toString(): String {
-            return when (this) {
-                EAST -> "Eastern"
-                WEST -> "Western"
-            }
-        }
+    enum class Conference(
+        @StringRes val textRes: Int,
+    ) {
+        EAST(R.string.standing_conference_east),
+        WEST(R.string.standing_conference_west);
     }
 
     val teamId: Int // e.g. 1610612747

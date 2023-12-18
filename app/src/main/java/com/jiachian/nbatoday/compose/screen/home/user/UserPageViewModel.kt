@@ -1,5 +1,6 @@
 package com.jiachian.nbatoday.compose.screen.home.user
 
+import com.jiachian.nbatoday.compose.screen.state.UIState
 import com.jiachian.nbatoday.compose.theme.updateColors
 import com.jiachian.nbatoday.datastore.BaseDataStore
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
@@ -21,11 +22,15 @@ class UserPageViewModel(
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
     private val coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
 ) {
-    val user = repository.user
+    private val user = repository.user
+
+    val userState = user.map { user ->
+        UIState.Loaded(user)
+    }.stateIn(coroutineScope, SharingStarted.Lazily, UIState.Loading())
 
     private val account = user.map {
         it?.account
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, null)
+    }.stateIn(coroutineScope, SharingStarted.Lazily, null)
 
     val teams: List<NBATeam> = mutableListOf<NBATeam>().apply {
         add(teamOfficial)

@@ -2,6 +2,7 @@ package com.jiachian.nbatoday.compose.screen.bet
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -25,37 +26,33 @@ import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.screen.bet.dialog.RewardedPointsScreen
 import com.jiachian.nbatoday.compose.screen.bet.dialog.TurnTableScreen
 import com.jiachian.nbatoday.compose.screen.bet.widgets.BetCard
-import com.jiachian.nbatoday.compose.widget.BackHandle
-import com.jiachian.nbatoday.compose.widget.FocusableColumn
 import com.jiachian.nbatoday.compose.widget.IconButton
 import com.jiachian.nbatoday.compose.widget.LoadingScreen
-import com.jiachian.nbatoday.compose.widget.NullCheckScreen
+import com.jiachian.nbatoday.compose.widget.UIStateScreen
 import com.jiachian.nbatoday.testing.testtag.BetTestTag
 import com.jiachian.nbatoday.utils.rippleClickable
 
 @Composable
 fun BetScreen(viewModel: BetViewModel) {
-    BackHandle(onBack = viewModel::close) {
-        FocusableColumn(
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colors.primary)
+    ) {
+        BetTopBar(onBack = viewModel::close)
+        BetBody(
             modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colors.primary)
-        ) {
-            BetTop(onBack = viewModel::close)
-            BetBody(
-                modifier = Modifier
-                    .testTag(BetTestTag.BetScreen_BetBody)
-                    .fillMaxSize(),
-                viewModel = viewModel,
-            )
-        }
-        TurnTableScreen(viewModel = viewModel)
-        RewardedPointsScreen(viewModel = viewModel)
+                .testTag(BetTestTag.BetScreen_BetBody)
+                .fillMaxSize(),
+            viewModel = viewModel,
+        )
     }
+    TurnTableScreen(viewModel = viewModel)
+    RewardedPointsScreen(viewModel = viewModel)
 }
 
 @Composable
-private fun BetTop(onBack: () -> Unit) {
+private fun BetTopBar(onBack: () -> Unit) {
     IconButton(
         modifier = Modifier
             .testTag(BetTestTag.BetScreen_BetTop_Button_Back)
@@ -71,15 +68,16 @@ private fun BetBody(
     modifier: Modifier = Modifier,
     viewModel: BetViewModel,
 ) {
-    val betsAndGames by viewModel.betAndGame.collectAsState()
-    NullCheckScreen(
-        data = betsAndGames,
-        ifNull = {
+    val betsAndGamesState by viewModel.betsAndGamesState.collectAsState()
+    UIStateScreen(
+        state = betsAndGamesState,
+        loading = {
             LoadingScreen(
-                color = MaterialTheme.colors.secondary,
-                interceptBack = false
+                modifier = modifier,
+                color = MaterialTheme.colors.secondary
             )
-        }
+        },
+        ifNull = { BetEmptyScreen(modifier = modifier) },
     ) { list ->
         when {
             list.isEmpty() -> BetEmptyScreen(modifier = modifier)

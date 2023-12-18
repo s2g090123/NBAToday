@@ -7,11 +7,11 @@ import com.jiachian.nbatoday.compose.screen.player.models.PlayerInfoTableData
 import com.jiachian.nbatoday.models.local.player.Player
 
 object PlayerInfoHelper {
-    fun createPlayerInfoTableData(info: Player.PlayerInfo): PlayerInfoTableData {
-        return PlayerInfoTableData(getPlayerInfoRowData(info))
+    fun getTableData(info: Player.PlayerInfo): PlayerInfoTableData {
+        return PlayerInfoTableData(getRowData(info))
     }
 
-    private fun getPlayerInfoRowData(info: Player.PlayerInfo): List<PlayerInfoTableData.RowData> {
+    private fun getRowData(info: Player.PlayerInfo): List<PlayerInfoTableData.RowData> {
         return listOf(
             PlayerInfoTableData.RowData(
                 data = listOf(

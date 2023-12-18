@@ -41,35 +41,35 @@ data class Game(
         val teamId: Int, // 球員所屬球隊id, e.g. 1610612760
     )
 
-    val isGameFinal: Boolean
+    val gameFinal: Boolean
         get() = gameStatus == GameStatus.FINAL
 
-    val isGamePlayed: Boolean
+    val gamePlayed: Boolean
         get() = gameStatus != GameStatus.COMING_SOON
 
-    val isHomeTeamWin: Boolean
-        get() = homeTeam.score > awayTeam.score && isGameFinal
+    val homeWin: Boolean
+        get() = homeTeam.score > awayTeam.score && gameFinal
 
-    val isAwayTeamWin: Boolean
-        get() = homeTeam.score <= awayTeam.score && isGameFinal
+    val awayWin: Boolean
+        get() = homeTeam.score <= awayTeam.score && gameFinal
 
-    val gameStatusFormatText: String
+    val statusFormattedText: String
         get() = gameStatusText.replaceFirst(" ", "\n").trim()
 
-    val homeLeaderPlayerId: Int
+    val homeLeaderId: Int
         get() {
             return when {
-                isGamePlayed -> gameLeaders?.homeLeader?.playerId
+                gamePlayed -> gameLeaders?.homeLeader?.playerId
                 else -> teamLeaders?.homeLeader?.playerId
             } ?: pointsLeaders.firstOrNull {
                 it.teamId == homeTeam.team.teamId
             }?.playerId ?: 0
         }
 
-    val awayLeadersPlayerId: Int
+    val awayLeaderId: Int
         get() {
             return when {
-                isGamePlayed -> gameLeaders?.awayLeader?.playerId
+                gamePlayed -> gameLeaders?.awayLeader?.playerId
                 else -> teamLeaders?.awayLeader?.playerId
             } ?: pointsLeaders.firstOrNull {
                 it.teamId == awayTeam.team.teamId

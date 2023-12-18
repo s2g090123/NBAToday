@@ -6,7 +6,7 @@ import com.jiachian.nbatoday.repository.BaseRepository
 import kotlinx.coroutines.flow.Flow
 
 abstract class BetRepository : BaseRepository() {
-    abstract suspend fun bet(gameId: String, homePoints: Long, awayPoints: Long)
+    abstract suspend fun insertBet(gameId: String, homePoints: Long, awayPoints: Long)
     abstract suspend fun deleteBet(bet: Bet)
     abstract suspend fun settleBet(betAndGame: BetAndGame): Pair<Long, Long>
     abstract suspend fun addPoints(points: Long)

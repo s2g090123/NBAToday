@@ -71,7 +71,6 @@
     <string name="label_ba" translatable="false">BA</string>
     <string name="label_pts" translatable="false">PTS</string>
     <string name="label_eff" translatable="false">EFF</string>
-    <string name="box_score_comparison" translatable="false">%1$d - %2$d</string>
     <string name="box_score_about_min">MIN：Minutes played(m:s)</string>
     <string name="box_score_about_FGMA">FGM-A(FGM-FGA)：Field goals Made-Attempted</string>
     <string name="box_score_about_3PMA">3PM-A(3FGM-3FGA)：3-Point Made-Attempted</string>
@@ -176,7 +175,7 @@
     <string name="bet_ask_turn_table_continue">CONTINUE</string>
     <string name="bet_ask_turn_table_cancel">CANCEL</string>
     <string name="bet_turn_table_start">START</string>
-    <string name="bet_reward_lose_title">WOW</string>
+    <string name="bet_reward_lose_title">Damn</string>
     <string name="bet_reward_lose_text">You lost %1$d points due to the Lucky Wheel.</string>
     <string name="bet_reward_win_title">WOW</string>
     <string name="bet_reward_win_text">You won %1$d points due to the Lucky Wheel.</string>

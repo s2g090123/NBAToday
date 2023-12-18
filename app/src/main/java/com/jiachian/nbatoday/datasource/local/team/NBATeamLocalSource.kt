@@ -22,7 +22,7 @@ class NBATeamLocalSource(
 
     override fun getTeamRank(teamId: Int, conference: NBATeam.Conference): Flow<TeamRank> {
         return combine(
-            teamDao.getTeamRank(teamId, conference),
+            teamDao.getTeamStanding(teamId, conference),
             teamDao.getPointsRank(teamId),
             teamDao.getReboundsRank(teamId),
             teamDao.getAssistsRank(teamId),
@@ -38,12 +38,12 @@ class NBATeamLocalSource(
         }
     }
 
-    override suspend fun updateTeams(stats: List<Team>) {
-        teamDao.insertTeams(stats)
+    override suspend fun insertTeams(teams: List<Team>) {
+        teamDao.insertTeams(teams)
     }
 
-    override suspend fun updateTeamPlayers(stats: List<TeamPlayer>) {
-        teamDao.insertTeamPlayers(stats)
+    override suspend fun insertTeamPlayers(teamPlayers: List<TeamPlayer>) {
+        teamDao.insertTeamPlayers(teamPlayers)
     }
 
     override suspend fun deleteTeamPlayers(teamId: Int, playerIds: List<Int>) {

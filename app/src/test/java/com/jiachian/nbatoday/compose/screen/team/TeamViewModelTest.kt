@@ -197,13 +197,13 @@ class TeamViewModelTest {
 
     @Test
     fun team_openGameBoxScore_boxScoreState() {
-        viewModel.openGameBoxScore(NbaGameFactory.getComingSoonGame())
+        viewModel.onGameCardClick(NbaGameFactory.getComingSoonGame())
         assertThat(currentState, instanceOf(NbaState.BoxScore::class.java))
     }
 
     @Test
     fun team_openPlayerInfo_playerState() {
-        viewModel.openPlayerInfo(PlayerStatsFactory.getHomePlayerStats().playerId)
+        viewModel.onPlayerClick(PlayerStatsFactory.getHomePlayerStats().playerId)
         assertThat(currentState, instanceOf(NbaState.Player::class.java))
     }
 

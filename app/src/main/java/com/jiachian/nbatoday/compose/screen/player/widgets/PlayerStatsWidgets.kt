@@ -24,7 +24,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -39,13 +38,14 @@ import com.jiachian.nbatoday.compose.screen.player.models.PlayerStatsRowData
 import com.jiachian.nbatoday.compose.screen.player.models.PlayerStatsSorting
 import com.jiachian.nbatoday.testing.testtag.PlayerTestTag
 import com.jiachian.nbatoday.utils.dividerSecondaryColor
+import com.jiachian.nbatoday.utils.modifyIf
 import com.jiachian.nbatoday.utils.rippleClickable
 
 @OptIn(ExperimentalFoundationApi::class)
 fun LazyListScope.playerStats(
     viewModel: PlayerViewModel,
     scrollState: ScrollState,
-    statsRowData: List<PlayerStatsRowData>,
+    rowData: List<PlayerStatsRowData>,
     sorting: PlayerStatsSorting,
 ) {
     item {
@@ -57,23 +57,23 @@ fun LazyListScope.playerStats(
         )
     }
     stickyHeader {
-        PlayerStatsLabelDraggableRow(
+        PlayerStatsLabelScrollableRow(
             viewModel = viewModel,
             scrollState = scrollState,
             sorting = sorting,
         )
     }
-    items(statsRowData) { rowData ->
-        PlayerStatsDraggableRow(
+    items(rowData) {
+        PlayerStatsScrollableRow(
             scrollState = scrollState,
-            rowData = rowData,
+            rowData = it,
             sorting = sorting,
         )
     }
 }
 
 @Composable
-private fun PlayerStatsLabelDraggableRow(
+private fun PlayerStatsLabelScrollableRow(
     modifier: Modifier = Modifier,
     viewModel: PlayerViewModel,
     scrollState: ScrollState,
@@ -87,7 +87,6 @@ private fun PlayerStatsLabelDraggableRow(
             sorting = sorting,
         )
         Divider(
-            modifier = Modifier.fillMaxWidth(),
             color = dividerSecondaryColor(),
             thickness = 3.dp
         )
@@ -95,7 +94,7 @@ private fun PlayerStatsLabelDraggableRow(
 }
 
 @Composable
-private fun PlayerStatsDraggableRow(
+private fun PlayerStatsScrollableRow(
     modifier: Modifier = Modifier,
     scrollState: ScrollState,
     rowData: PlayerStatsRowData,
@@ -107,11 +106,7 @@ private fun PlayerStatsDraggableRow(
         rowData = rowData,
         sorting = sorting,
     )
-    Divider(
-        modifier = Modifier.fillMaxWidth(),
-        color = dividerSecondaryColor(),
-        thickness = 1.dp
-    )
+    Divider(color = dividerSecondaryColor())
 }
 
 @Composable
@@ -148,23 +143,19 @@ private fun PlayerStatsLabelRow(
                     if (selectTimeFrame) MaterialTheme.colors.secondary.copy(Transparency25)
                     else MaterialTheme.colors.primary,
                 )
-                .rippleClickable { viewModel.updateStatsSorting(PlayerStatsSorting.TIME_FRAME) }
+                .rippleClickable { viewModel.updateSorting(PlayerStatsSorting.TIME_FRAME) }
                 .padding(8.dp),
             text = stringResource(R.string.player_career_by_year),
             fontSize = 16.sp,
             fontWeight = FontWeight.Medium,
             color = MaterialTheme.colors.secondary
         )
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .horizontalScroll(scrollState)
-        ) {
+        Row(modifier = Modifier.horizontalScroll(scrollState)) {
             viewModel.statsLabels.forEach { label ->
                 PlayerStatsLabel(
                     label = label,
-                    isFocus = label.sorting == sorting,
-                    onClick = { viewModel.updateStatsSorting(label.sorting) }
+                    focus = label.sorting == sorting,
+                    onClick = { viewModel.updateSorting(label.sorting) }
                 )
             }
         }
@@ -193,11 +184,7 @@ private fun PlayerStatsRow(
             time = rowData.timeFrame,
             teamNameAbbr = rowData.teamAbbr
         )
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .horizontalScroll(scrollState)
-        ) {
+        Row(modifier = Modifier.horizontalScroll(scrollState)) {
             rowData.data.forEach { data ->
                 PlayerStatsText(
                     data = data,
@@ -217,10 +204,7 @@ private fun PlayerStatsText(
         modifier = Modifier
             .testTag(PlayerTestTag.PlayerStatsText_Text)
             .size(data.width, 40.dp)
-            .background(
-                if (focus) MaterialTheme.colors.secondary.copy(Transparency25)
-                else Color.Transparent
-            )
+            .modifyIf(focus, MaterialTheme.colors.secondary.copy(Transparency25)) { background(it) }
             .padding(8.dp),
         text = data.value,
         textAlign = if (focus) TextAlign.Center else data.align,
@@ -232,24 +216,21 @@ private fun PlayerStatsText(
 @Composable
 private fun PlayerStatsLabel(
     label: PlayerStatsLabel,
-    isFocus: Boolean,
+    focus: Boolean,
     onClick: () -> Unit
 ) {
     Box(
         modifier = Modifier
             .width(label.width)
             .height(40.dp)
-            .background(
-                if (isFocus) MaterialTheme.colors.secondary.copy(Transparency25)
-                else Color.Transparent
-            )
+            .modifyIf(focus, MaterialTheme.colors.secondary.copy(Transparency25)) { background(it) }
             .rippleClickable { onClick() }
             .padding(8.dp)
     ) {
         Text(
             modifier = Modifier.fillMaxSize(),
             text = stringResource(label.textRes),
-            textAlign = if (isFocus) TextAlign.Center else label.align,
+            textAlign = if (focus) TextAlign.Center else label.align,
             fontSize = 16.sp,
             fontWeight = FontWeight.Medium,
             color = MaterialTheme.colors.secondary

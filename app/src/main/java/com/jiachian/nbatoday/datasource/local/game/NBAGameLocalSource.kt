@@ -19,12 +19,12 @@ class NBAGameLocalSource(
         return gameDao.getGamesAndBetsDuring(from, to)
     }
 
-    override fun getGamesAndBetsBeforeByTeam(teamId: Int, from: Long): Flow<List<GameAndBets>> {
-        return gameDao.getGamesAndBetsBeforeByTeam(teamId, from)
+    override fun getGamesAndBetsBefore(teamId: Int, from: Long): Flow<List<GameAndBets>> {
+        return gameDao.getGamesAndBetsBefore(teamId, from)
     }
 
-    override fun getGamesAndBetsAfterByTeam(teamId: Int, from: Long): Flow<List<GameAndBets>> {
-        return gameDao.getGamesAndBetsAfterByTeam(teamId, from)
+    override fun getGamesAndBetsAfter(teamId: Int, from: Long): Flow<List<GameAndBets>> {
+        return gameDao.getGamesAndBetsAfter(teamId, from)
     }
 
     override fun getLastGameDateTime(): Flow<Date> {
@@ -43,11 +43,11 @@ class NBAGameLocalSource(
         gameDao.updateGames(games)
     }
 
-    override suspend fun updateGamesScore(games: List<GameScoreUpdateData>) {
+    override suspend fun updateGames(games: List<GameScoreUpdateData>) {
         gameDao.updateGameScores(games)
     }
 
-    override suspend fun existsGame(): Boolean {
-        return gameDao.exitsGame()
+    override suspend fun gameExists(): Boolean {
+        return gameDao.gameExists()
     }
 }

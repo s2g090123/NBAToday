@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -24,17 +25,22 @@ import com.jiachian.nbatoday.utils.showToast
 
 @Composable
 fun GameCardBetScreen(viewModel: GameCardViewModel) {
-    val isLogin by viewModel.isLogin.collectAsState()
+    val login by viewModel.login.collectAsState()
     val hasBet by viewModel.hasBet.collectAsState()
     when {
-        !isLogin -> {
+        !login -> {
             LoginDialog(
                 onLogin = viewModel::login,
                 onRegister = viewModel::register,
                 onDismiss = { viewModel.setBetDialogVisible(false) }
             )
         }
-        hasBet -> showToast(R.string.bet_toast_already_bet_before)
+        hasBet -> {
+            LaunchedEffect(Unit) {
+                showToast(R.string.bet_toast_already_bet_before)
+                viewModel.setBetDialogVisible(false)
+            }
+        }
         else -> {
             BetDialog(
                 viewModel = viewModel.createBetDialogViewModel(),
@@ -51,7 +57,7 @@ fun GameStatusAndBetButton(
     gameAndBets: GameAndBets,
     textColor: Color,
     betAvailable: Boolean,
-    onBetClick: () -> Unit
+    onBet: () -> Unit
 ) {
     Column(
         modifier = modifier,
@@ -59,7 +65,7 @@ fun GameStatusAndBetButton(
     ) {
         Text(
             modifier = Modifier.testTag(GameCardTestTag.GameStatusAndBetButton_Text_Status),
-            text = gameAndBets.game.gameStatusFormatText,
+            text = gameAndBets.game.statusFormattedText,
             textAlign = TextAlign.Center,
             color = textColor,
             fontSize = 16.sp,
@@ -72,7 +78,7 @@ fun GameStatusAndBetButton(
                     .padding(top = 8.dp),
                 drawableRes = R.drawable.ic_black_coin,
                 tint = textColor,
-                onClick = onBetClick
+                onClick = onBet
             )
         }
     }

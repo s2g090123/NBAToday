@@ -16,30 +16,30 @@ data class BetAndGame(
     )
     val game: Game
 ) {
-    val isGameFinal
-        get() = game.isGameFinal
+    val gameFinal
+        get() = game.gameFinal
 
-    val isGamePlayed
-        get() = game.isGamePlayed
+    val gamePlayed
+        get() = game.gamePlayed
 
-    val isHomeTeamWin
-        get() = game.isHomeTeamWin
+    val homeWin
+        get() = game.homeWin
 
-    val isAwayTeamWin
-        get() = game.isAwayTeamWin
+    val awayWin
+        get() = game.awayWin
 
     fun getHomePointsText(): String {
         return when {
-            !isGameFinal -> "${bet.homePoints}"
-            isHomeTeamWin -> "+${bet.homePoints * 2}"
+            !gameFinal -> "${bet.homePoints}"
+            homeWin -> "+${bet.homePoints * 2}"
             else -> "-${bet.homePoints}"
         }
     }
 
     fun getAwayPointsText(): String {
         return when {
-            !isGameFinal -> "${bet.awayPoints}"
-            !isHomeTeamWin -> "+${bet.awayPoints * 2}"
+            !gameFinal -> "${bet.awayPoints}"
+            !homeWin -> "+${bet.awayPoints * 2}"
             else -> "-${bet.awayPoints}"
         }
     }
@@ -47,8 +47,8 @@ data class BetAndGame(
     @Composable
     fun getHomePointsTextColor(): Color {
         return when {
-            !isGameFinal -> MaterialTheme.colors.primary
-            isHomeTeamWin -> MaterialTheme.colors.primaryVariant
+            !gameFinal -> MaterialTheme.colors.primary
+            homeWin -> MaterialTheme.colors.primaryVariant
             else -> MaterialTheme.colors.secondaryVariant
         }
     }
@@ -56,8 +56,8 @@ data class BetAndGame(
     @Composable
     fun getAwayPointsTextColor(): Color {
         return when {
-            !isGameFinal -> MaterialTheme.colors.primary
-            !isHomeTeamWin -> MaterialTheme.colors.primaryVariant
+            !gameFinal -> MaterialTheme.colors.primary
+            !homeWin -> MaterialTheme.colors.primaryVariant
             else -> MaterialTheme.colors.secondaryVariant
         }
     }
@@ -71,10 +71,10 @@ data class BetAndGame(
     }
 
     fun getWonPoints(): Long {
-        return if (isHomeTeamWin) bet.homePoints else bet.awayPoints
+        return if (homeWin) bet.homePoints else bet.awayPoints
     }
 
     fun getLostPoints(): Long {
-        return if (isHomeTeamWin) bet.awayPoints else bet.homePoints
+        return if (homeWin) bet.awayPoints else bet.homePoints
     }
 }

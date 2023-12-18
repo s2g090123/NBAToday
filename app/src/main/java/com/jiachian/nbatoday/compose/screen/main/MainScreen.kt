@@ -12,7 +12,6 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
@@ -48,7 +47,7 @@ import com.jiachian.nbatoday.compose.screen.home.HomeScreen
 import com.jiachian.nbatoday.compose.screen.player.PlayerScreen
 import com.jiachian.nbatoday.compose.screen.score.BoxScoreScreen
 import com.jiachian.nbatoday.compose.screen.team.TeamScreen
-import com.jiachian.nbatoday.navigation.Route
+import com.jiachian.nbatoday.navigation.MainRoute
 import com.jiachian.nbatoday.utils.getOrError
 
 private const val SplashOffsetAnimationDurationMs = 2000
@@ -61,9 +60,9 @@ fun MainScreen(
     NavHost(
         modifier = Modifier.fillMaxSize(),
         navController = navController,
-        startDestination = Route.SPLASH.route,
+        startDestination = MainRoute.Splash.route,
     ) {
-        composable(Route.SPLASH.route) {
+        composable(MainRoute.Splash.route) {
             SplashScreen(
                 colors = listOf(
                     MaterialTheme.colors.secondary.copy(Transparency25),
@@ -71,43 +70,43 @@ fun MainScreen(
                 )
             )
         }
-        composable(Route.HOME.route) {
+        composable(MainRoute.Home.route) {
             remember {
                 viewModel.viewModelProvider.getHomeViewModel()
             }.let { viewModel -> HomeScreen(viewModel = viewModel) }
         }
-        composable("${Route.BOX_SCORE.route}/{gameId}") {
+        composable(MainRoute.BoxScore.route) {
             remember {
                 viewModel.viewModelProvider.getBoxScoreViewModel(
-                    gameId = it.arguments?.getString("gameId").getOrError()
+                    gameId = it.arguments?.getString(MainRoute.BoxScore.param).getOrError()
                 )
             }.let { viewModel -> BoxScoreScreen(viewModel = viewModel) }
         }
-        composable("${Route.TEAM.route}/{teamId}") {
+        composable(MainRoute.Team.route) {
             remember {
                 viewModel.viewModelProvider.getTeamViewModel(
-                    teamId = it.arguments?.getStringToInt("teamId").getOrError()
+                    teamId = it.arguments?.getStringToInt(MainRoute.Team.param).getOrError()
                 )
             }.let { viewModel -> TeamScreen(viewModel = viewModel) }
         }
-        composable("${Route.PLAYER.route}/{playerId}") {
+        composable(MainRoute.Player.route) {
             remember {
                 viewModel.viewModelProvider.getPlayerViewModel(
-                    playerId = it.arguments?.getStringToInt("playerId").getOrError()
+                    playerId = it.arguments?.getStringToInt(MainRoute.Player.param).getOrError()
                 )
             }.let { viewModel -> PlayerScreen(viewModel = viewModel) }
         }
-        composable("${Route.CALENDAR.route}/{dateTime}") {
+        composable(MainRoute.Calendar.route) {
             remember {
                 viewModel.viewModelProvider.getCalendarViewModel(
-                    dateTime = it.arguments?.getStringToLong("dateTime").getOrError()
+                    dateTime = it.arguments?.getStringToLong(MainRoute.Calendar.param).getOrError()
                 )
             }.let { viewModel -> CalendarScreen(viewModel = viewModel) }
         }
-        composable("${Route.BET.route}/{account}") {
+        composable(MainRoute.Bet.route) {
             remember {
                 viewModel.viewModelProvider.getBetViewModel(
-                    account = it.arguments?.getString("account").getOrError()
+                    account = it.arguments?.getString(MainRoute.Bet.param).getOrError()
                 )
             }.let { viewModel -> BetScreen(viewModel = viewModel) }
         }
@@ -153,15 +152,13 @@ private fun SplashScreen(colors: List<Color>) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Row {
-            Text(
-                text = stringResource(R.string.app_name_splash),
-                fontSize = 64.sp,
-                fontWeight = FontWeight.Medium,
-                fontFamily = FontFamily.Cursive,
-                style = TextStyle(brush = brush)
-            )
-        }
+        Text(
+            text = stringResource(R.string.app_name_splash),
+            fontSize = 64.sp,
+            fontWeight = FontWeight.Medium,
+            fontFamily = FontFamily.Cursive,
+            style = TextStyle(brush = brush)
+        )
         Text(
             modifier = Modifier.padding(top = 8.dp),
             text = stringResource(R.string.is_loading_app),

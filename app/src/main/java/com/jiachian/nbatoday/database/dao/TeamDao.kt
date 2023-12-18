@@ -30,7 +30,7 @@ interface TeamDao {
             ORDER BY win_percentage
         """
     )
-    fun getTeamRank(teamId: Int, conference: NBATeam.Conference): Flow<Int>
+    fun getTeamStanding(teamId: Int, conference: NBATeam.Conference): Flow<Int>
 
     @Query(
         """

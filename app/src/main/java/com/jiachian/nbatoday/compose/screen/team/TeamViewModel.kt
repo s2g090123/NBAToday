@@ -3,27 +3,30 @@ package com.jiachian.nbatoday.compose.screen.team
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.compose.screen.card.GameCardViewModel
 import com.jiachian.nbatoday.compose.screen.label.LabelHelper
+import com.jiachian.nbatoday.compose.screen.state.UIState
 import com.jiachian.nbatoday.compose.screen.team.models.TeamPlayerLabel
 import com.jiachian.nbatoday.compose.screen.team.models.TeamPlayerRowData
 import com.jiachian.nbatoday.compose.screen.team.models.TeamPlayerSorting
+import com.jiachian.nbatoday.compose.screen.team.models.TeamUI
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.models.local.game.Game
 import com.jiachian.nbatoday.models.local.game.GameAndBets
 import com.jiachian.nbatoday.models.local.team.NBATeam
-import com.jiachian.nbatoday.models.local.team.TeamRank
+import com.jiachian.nbatoday.navigation.MainRoute
 import com.jiachian.nbatoday.navigation.NavigationController
-import com.jiachian.nbatoday.navigation.Route
 import com.jiachian.nbatoday.repository.game.GameRepository
 import com.jiachian.nbatoday.repository.team.TeamRepository
 import com.jiachian.nbatoday.utils.ComposeViewModelProvider
-import com.jiachian.nbatoday.utils.DateUtils
+import java.util.Calendar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -39,54 +42,54 @@ class TeamViewModel(
 ) : ComposeViewModel(
     coroutineScope = coroutineScope,
     navigationController = navigationController,
-    route = Route.TEAM
+    route = MainRoute.Team
 ) {
-    init {
-        coroutineScope.launch(dispatcherProvider.io) {
-            val deferred1 = async { teamRepository.updateTeamStats() }
-            val deferred2 = async { teamRepository.updateTeamPlayers(team.teamId) }
-            deferred1.await()
-            deferred2.await()
-        }
-    }
-
     private val team = NBATeam.getTeamById(teamId)
     val colors = team.colors
 
+    init {
+        coroutineScope.launch(dispatcherProvider.io) {
+            val deferred1 = async { teamRepository.insertTeams() }
+            val deferred2 = async { teamRepository.updateTeamPlayers(team.teamId) }
+            awaitAll(deferred1, deferred2)
+        }
+    }
+
     val labels = TeamPlayerLabel.values()
 
-    val gamesBefore = gameRepository.getGamesAndBetsBeforeByTeam(team.teamId, DateUtils.getCalendar().timeInMillis)
-        .stateIn(coroutineScope, SharingStarted.Eagerly, emptyList())
-    val gamesAfter = gameRepository.getGamesAndBetsAfterByTeam(team.teamId, DateUtils.getCalendar().timeInMillis)
-        .stateIn(coroutineScope, SharingStarted.Eagerly, emptyList())
-    private val teamAndPlayersStats = teamRepository.getTeamAndPlayers(team.teamId)
+    val gamesBefore = gameRepository.getGamesAndBetsBefore(
+        team.teamId,
+        Calendar.getInstance().apply {
+            set(Calendar.HOUR, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.MILLISECOND, 0)
+        }.timeInMillis
+    ).map {
+        UIState.Loaded(it)
+    }.stateIn(coroutineScope, SharingStarted.Lazily, UIState.Loading())
+    val gamesAfter = gameRepository.getGamesAndBetsAfter(
+        team.teamId,
+        Calendar.getInstance().apply {
+            set(Calendar.HOUR, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.MILLISECOND, 0)
+        }.timeInMillis
+    ).map {
+        UIState.Loaded(it)
+    }.stateIn(coroutineScope, SharingStarted.Lazily, UIState.Loading())
 
-    val teamStats = teamAndPlayersStats.map {
+    private val teamAndPlayers = teamRepository.getTeamAndPlayers(team.teamId)
+
+    private val teamStats = teamAndPlayers.map {
         it?.team
-    }.stateIn(coroutineScope, SharingStarted.Lazily, null)
+    }
 
     private val teamRank = teamRepository.getTeamRank(team.teamId, team.conference)
-        .stateIn(coroutineScope, SharingStarted.Eagerly, TeamRank.default())
-    val teamStanding = teamRank.map {
-        it.standing
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, 0)
-    val teamPointsRank = teamRank.map {
-        it.pointsRank
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, 0)
-    val teamReboundsRank = teamRank.map {
-        it.reboundsRank
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, 0)
-    val teamAssistsRank = teamRank.map {
-        it.assistsRank
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, 0)
-    val teamPlusMinusRank = teamRank.map {
-        it.plusMinusRank
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, 0)
 
     private val playerSortingImp = MutableStateFlow(TeamPlayerSorting.PTS)
     val playerSorting = playerSortingImp.asStateFlow()
 
-    private val playerRowData = teamAndPlayersStats.map { teamAndPlayers ->
+    private val playerRowData = teamAndPlayers.map { teamAndPlayers ->
         teamAndPlayers?.teamPlayers?.map { player ->
             TeamPlayerRowData(
                 player = player,
@@ -99,40 +102,57 @@ class TeamViewModel(
                 }
             )
         } ?: emptyList()
-    }
+    }.flowOn(dispatcherProvider.io)
 
-    val sortedPlayerRowData = combine(
+    private val sortedPlayerRowData = combine(
         playerRowData,
         playerSorting
     ) { rowData, sorting ->
         rowData.sortedWith(sorting)
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, emptyList())
+    }.flowOn(dispatcherProvider.io)
 
-    val isLoading = combine(
-        teamRepository.isLoading,
+    private val teamUI = combine(
         teamStats,
-    ) { loading, team ->
-        loading || team == null
-    }.stateIn(coroutineScope, SharingStarted.Lazily, false)
+        teamRank,
+        sortedPlayerRowData
+    ) { team, rank, players ->
+        team ?: return@combine null
+        TeamUI(
+            team = team,
+            rank = rank,
+            players = players,
+        )
+    }
+    val teamUIState = combine(
+        teamRepository.loading,
+        teamUI
+    ) { loading, teamUI ->
+        if (loading) return@combine UIState.Loading()
+        UIState.Loaded(teamUI)
+    }.stateIn(coroutineScope, SharingStarted.Eagerly, UIState.Loading())
+
+    private val gameCardViewModelMap = mutableMapOf<GameAndBets, GameCardViewModel>()
 
     fun updatePlayerSorting(sorting: TeamPlayerSorting) {
         playerSortingImp.value = sorting
     }
 
-    fun openGameBoxScore(game: Game) {
+    fun onGameCardClick(game: Game) {
         navigationController.navigateToBoxScore(game.gameId)
     }
 
-    fun openPlayerInfo(playerId: Int) {
+    fun onPlayerClick(playerId: Int) {
         navigationController.navigateToPlayer(playerId)
     }
 
-    fun createGameCardViewModel(gameAndBets: GameAndBets): GameCardViewModel {
-        return composeViewModelProvider.getGameCardViewModel(
-            gameAndBets = gameAndBets,
-            dispatcherProvider = dispatcherProvider,
-            coroutineScope = coroutineScope
-        )
+    fun getGameCardViewModel(gameAndBets: GameAndBets): GameCardViewModel {
+        return gameCardViewModelMap.getOrPut(gameAndBets) {
+            composeViewModelProvider.getGameCardViewModel(
+                gameAndBets = gameAndBets,
+                dispatcherProvider = dispatcherProvider,
+                coroutineScope = coroutineScope
+            )
+        }
     }
 
     private fun List<TeamPlayerRowData>.sortedWith(sorting: TeamPlayerSorting): List<TeamPlayerRowData> {

@@ -21,7 +21,7 @@ import com.jiachian.nbatoday.models.remote.team.RemoteTeam
 import com.jiachian.nbatoday.models.remote.team.RemoteTeamPlayer
 import com.jiachian.nbatoday.models.remote.user.LoginBody
 import com.jiachian.nbatoday.models.remote.user.UpdatePasswordBody
-import com.jiachian.nbatoday.models.remote.user.UpdatePointBody
+import com.jiachian.nbatoday.models.remote.user.UpdatePointsBody
 import io.mockk.every
 import io.mockk.mockkConstructor
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -125,7 +125,7 @@ class NbaRemoteDataSourceTest {
             return Response.success("success")
         }
 
-        override suspend fun updatePoints(updatePointBody: UpdatePointBody): Response<String> {
+        override suspend fun updatePoints(updatePointBody: UpdatePointsBody): Response<String> {
             return Response.success("success")
         }
     }
@@ -244,7 +244,7 @@ class NbaRemoteDataSourceTest {
     fun updatePoints_checksResponseBody() = runTest {
         val actual = remoteDataSource.updatePoints(UserAccount, UserPoints, "")
         val expected =
-            testNbaService.updatePoints(UpdatePointBody(UserAccount, "", UserPoints)).body()
+            testNbaService.updatePoints(UpdatePointsBody(UserAccount, "", UserPoints)).body()
         assertThat(actual, `is`(expected))
     }
 }

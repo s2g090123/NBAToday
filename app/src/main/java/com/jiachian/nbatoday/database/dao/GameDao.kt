@@ -18,10 +18,10 @@ interface GameDao {
     fun getGamesAndBets(): Flow<List<GameAndBets>>
 
     @Query("SELECT * FROM game WHERE game_date <= :from AND (home_team_id == :teamId OR away_team_id == :teamId)")
-    fun getGamesAndBetsBeforeByTeam(teamId: Int, from: Long): Flow<List<GameAndBets>>
+    fun getGamesAndBetsBefore(teamId: Int, from: Long): Flow<List<GameAndBets>>
 
     @Query("SELECT * FROM game WHERE game_date > :from AND (home_team_id == :teamId OR away_team_id == :teamId)")
-    fun getGamesAndBetsAfterByTeam(teamId: Int, from: Long): Flow<List<GameAndBets>>
+    fun getGamesAndBetsAfter(teamId: Int, from: Long): Flow<List<GameAndBets>>
 
     @Query("SELECT * FROM game WHERE game_date >= :from AND game_date <= :to")
     fun getGamesAndBetsDuring(from: Long, to: Long): Flow<List<GameAndBets>>
@@ -33,7 +33,7 @@ interface GameDao {
     fun getFirstGameDateTime(): Flow<Date>
 
     @Query("SELECT EXISTS (SELECT 1 FROM game)")
-    fun exitsGame(): Boolean
+    fun gameExists(): Boolean
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertGames(games: List<Game>)

@@ -14,7 +14,7 @@ import com.google.gson.reflect.TypeToken
 import com.jiachian.nbatoday.DataStoreName
 import com.jiachian.nbatoday.annotation.ExcludeFromJacocoGeneratedReport
 import com.jiachian.nbatoday.compose.theme.LakersColors
-import com.jiachian.nbatoday.datastore.NBADataStore.PreferencesKeys.LAST_ACCESSED_DAY
+import com.jiachian.nbatoday.datastore.NBADataStore.PreferencesKeys.LAST_ACCESSED_DATE
 import com.jiachian.nbatoday.datastore.NBADataStore.PreferencesKeys.THEME_COLORS_TEAM_ID
 import com.jiachian.nbatoday.datastore.NBADataStore.PreferencesKeys.USER
 import com.jiachian.nbatoday.models.local.team.NBATeam
@@ -27,7 +27,7 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = Dat
 class NBADataStore(private val application: Application) : BaseDataStore {
 
     object PreferencesKeys {
-        val LAST_ACCESSED_DAY = stringPreferencesKey("last_accessed_day")
+        val LAST_ACCESSED_DATE = stringPreferencesKey("last_accessed_date")
         val THEME_COLORS_TEAM_ID = intPreferencesKey("theme_colors_team_id")
         val USER = stringPreferencesKey("user")
     }
@@ -36,9 +36,9 @@ class NBADataStore(private val application: Application) : BaseDataStore {
         application.applicationContext.dataStore
     }
 
-    override val lastAccessedDay by lazy {
+    override val lastAccessedDate by lazy {
         dataStore.data.map { pref ->
-            pref[LAST_ACCESSED_DAY] ?: DateUtils.formatDate(1990, 1, 1)
+            pref[LAST_ACCESSED_DATE] ?: DateUtils.formatDate(1990, 1, 1)
         }
     }
 
@@ -53,14 +53,17 @@ class NBADataStore(private val application: Application) : BaseDataStore {
     override val user by lazy {
         dataStore.data.map { pref ->
             pref[USER].let { user ->
-                Gson().fromJson<User?>(user, object : TypeToken<User?>() {}.type)
+                Gson().fromJson<User?>(
+                    user,
+                    object : TypeToken<User?>() {}.type
+                )
             }
         }
     }
 
-    override suspend fun updateLastAccessedDay(year: Int, month: Int, day: Int) {
+    override suspend fun updateLastAccessedDate(year: Int, month: Int, day: Int) {
         dataStore.edit { pref ->
-            pref[LAST_ACCESSED_DAY] = DateUtils.formatDate(year, month, day)
+            pref[LAST_ACCESSED_DATE] = DateUtils.formatDate(year, month, day)
         }
     }
 

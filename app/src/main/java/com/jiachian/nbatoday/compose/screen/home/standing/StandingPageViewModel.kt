@@ -4,6 +4,7 @@ import com.jiachian.nbatoday.compose.screen.home.standing.models.StandingLabel
 import com.jiachian.nbatoday.compose.screen.home.standing.models.StandingRowData
 import com.jiachian.nbatoday.compose.screen.home.standing.models.StandingSorting
 import com.jiachian.nbatoday.compose.screen.label.LabelHelper
+import com.jiachian.nbatoday.compose.screen.state.UIState
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.models.local.team.NBATeam
@@ -15,10 +16,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class StandingPageViewModel(
     private val repository: TeamRepository,
@@ -39,44 +40,48 @@ class StandingPageViewModel(
 
     private val eastRowData = eastTeams.map { teams ->
         teams.toRowData()
-    }
+    }.flowOn(dispatcherProvider.io)
     private val westRowData = westTeams.map { teams ->
         teams.toRowData()
-    }
+    }.flowOn(dispatcherProvider.io)
 
-    val sortedEastRowData = combine(
+    val sortedEastRowDataState = combine(
         eastRowData,
         eastSorting
     ) { rowData, sorting ->
-        rowData.sortedWith(sorting)
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, null)
-    val sortedWestRowData = combine(
+        UIState.Loaded(rowData.sortedWith(sorting))
+    }
+        .flowOn(dispatcherProvider.io)
+        .stateIn(coroutineScope, SharingStarted.Lazily, UIState.Loading())
+    val sortedWestRowDataState = combine(
         westRowData,
         westSorting
     ) { rowData, sorting ->
-        rowData.sortedWith(sorting)
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, null)
+        UIState.Loaded(rowData.sortedWith(sorting))
+    }
+        .flowOn(dispatcherProvider.io)
+        .stateIn(coroutineScope, SharingStarted.Lazily, UIState.Loading())
 
-    private val isRefreshingImp = MutableStateFlow(false)
-    val isRefreshing = isRefreshingImp.asStateFlow()
+    private val refreshingImp = MutableStateFlow(false)
+    val refreshing = refreshingImp.asStateFlow()
 
-    private val selectedConference = MutableStateFlow(NBATeam.Conference.EAST)
+    private var selectedConference = NBATeam.Conference.EAST
 
     fun updateTeamStats() {
-        if (isRefreshing.value) return
+        if (refreshing.value) return
         coroutineScope.launch(dispatcherProvider.io) {
-            isRefreshingImp.value = true
-            repository.updateTeamStats()
-            isRefreshingImp.value = false
+            refreshingImp.value = true
+            repository.insertTeams()
+            refreshingImp.value = false
         }
     }
 
     fun selectConference(conference: NBATeam.Conference) {
-        selectedConference.value = conference
+        selectedConference = conference
     }
 
     fun updateSorting(sorting: StandingSorting) {
-        when (selectedConference.value) {
+        when (selectedConference) {
             NBATeam.Conference.EAST -> eastSortingImp.value = sorting
             NBATeam.Conference.WEST -> westSortingImp.value = sorting
         }
@@ -86,51 +91,39 @@ class StandingPageViewModel(
         navigationController.navigateToTeam(team.teamId)
     }
 
-    private suspend fun List<StandingRowData>.sortedWith(sorting: StandingSorting): List<StandingRowData> {
+    private fun List<StandingRowData>.sortedWith(sorting: StandingSorting): List<StandingRowData> {
         val comparator = when (sorting) {
             StandingSorting.GP -> compareByDescending { it.team.gamePlayed }
             StandingSorting.W -> compareByDescending { it.team.win }
             StandingSorting.L -> compareBy { it.team.lose }
             StandingSorting.WINP -> compareByDescending { it.team.winPercentage }
             StandingSorting.PTS -> compareByDescending { it.team.pointsAverage }
-            StandingSorting.FGM -> compareByDescending { it.team.fieldGoalsMadeAverage }
-            StandingSorting.FGA -> compareByDescending { it.team.fieldGoalsAttemptedAverage }
             StandingSorting.FGP -> compareByDescending { it.team.fieldGoalsPercentage }
-            StandingSorting.PM3 -> compareByDescending { it.team.threePointersMadeAverage }
-            StandingSorting.PA3 -> compareByDescending { it.team.threePointersAttemptedAverage }
             StandingSorting.PP3 -> compareByDescending { it.team.threePointersPercentage }
-            StandingSorting.FTM -> compareByDescending { it.team.freeThrowsMadeAverage }
-            StandingSorting.FTA -> compareByDescending { it.team.freeThrowsAttemptedAverage }
             StandingSorting.FTP -> compareByDescending { it.team.freeThrowsPercentage }
             StandingSorting.OREB -> compareByDescending { it.team.reboundsOffensiveAverage }
             StandingSorting.DREB -> compareByDescending { it.team.reboundsDefensiveAverage }
-            StandingSorting.REB -> compareByDescending { it.team.reboundsTotalAverage }
             StandingSorting.AST -> compareByDescending { it.team.assistsAverage }
             StandingSorting.TOV -> compareBy { it.team.turnoversAverage }
             StandingSorting.STL -> compareByDescending { it.team.stealsAverage }
-            StandingSorting.BLK -> compareByDescending { it.team.blocksAverage }
-            StandingSorting.PF -> compareBy<StandingRowData> { it.team.foulsPersonalAverage }
+            StandingSorting.BLK -> compareByDescending<StandingRowData> { it.team.blocksAverage }
         }.thenByDescending { it.team.winPercentage }
-        return withContext(dispatcherProvider.io) {
-            sortedWith(comparator)
-        }
+        return sortedWith(comparator)
     }
 
-    private suspend fun List<Team>.toRowData(): List<StandingRowData> {
-        return withContext(dispatcherProvider.io) {
-            map { team ->
-                StandingRowData(
-                    team = team,
-                    data = labels.map { label ->
-                        StandingRowData.Data(
-                            value = LabelHelper.getValueByLabel(label, team),
-                            width = label.width,
-                            align = label.align,
-                            sorting = label.sorting,
-                        )
-                    }
-                )
-            }
+    private fun List<Team>.toRowData(): List<StandingRowData> {
+        return map { team ->
+            StandingRowData(
+                team = team,
+                data = labels.map { label ->
+                    StandingRowData.Data(
+                        value = LabelHelper.getValueByLabel(label, team),
+                        width = label.width,
+                        align = label.align,
+                        sorting = label.sorting,
+                    )
+                }
+            )
         }
     }
 }

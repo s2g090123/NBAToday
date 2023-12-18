@@ -15,6 +15,5 @@ abstract class GameRemoteSource : RemoteSource() {
         day: Int,
         total: Int
     ): Response<List<RemoteGame>>
-
     abstract suspend fun getBoxScore(gameId: String): Response<RemoteBoxScore>
 }

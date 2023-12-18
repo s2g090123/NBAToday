@@ -8,10 +8,10 @@ class NBAPlayerLocalSource(
     private val playerDao: PlayerDao,
 ) : PlayerLocalSource() {
     override fun getPlayer(playerId: Int): Flow<Player?> {
-        return playerDao.getPlayers(playerId)
+        return playerDao.getPlayer(playerId)
     }
 
     override suspend fun insertPlayer(player: Player) {
-        playerDao.insertPlayers(player)
+        playerDao.insertPlayer(player)
     }
 }

@@ -4,8 +4,8 @@ import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.compose.screen.home.navigation.HomePage
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
+import com.jiachian.nbatoday.navigation.MainRoute
 import com.jiachian.nbatoday.navigation.NavigationController
-import com.jiachian.nbatoday.navigation.Route
 import com.jiachian.nbatoday.utils.ComposeViewModelProvider
 import kotlinx.coroutines.CoroutineScope
 
@@ -17,7 +17,7 @@ class HomeViewModel(
 ) : ComposeViewModel(
     coroutineScope = coroutineScope,
     navigationController = navigationController,
-    route = Route.HOME
+    route = MainRoute.Home
 ) {
     val pages = HomePage.values()
 

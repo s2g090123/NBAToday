@@ -8,8 +8,8 @@ import com.jiachian.nbatoday.datastore.BaseDataStore
 import com.jiachian.nbatoday.models.local.game.Game
 import com.jiachian.nbatoday.models.local.game.GameUpdateData
 import com.jiachian.nbatoday.models.local.game.toGameScoreUpdateData
-import com.jiachian.nbatoday.models.remote.game.toGameUpdateData
-import com.jiachian.nbatoday.models.remote.game.toGames
+import com.jiachian.nbatoday.models.remote.game.extensions.toGameUpdateData
+import com.jiachian.nbatoday.models.remote.game.extensions.toGames
 import com.jiachian.nbatoday.repository.team.TeamRepository
 import com.jiachian.nbatoday.utils.DateUtils
 import com.jiachian.nbatoday.utils.showErrorToast
@@ -35,7 +35,7 @@ class NBAScheduleRepository(
                             gameLocalSource.updateGames(gameUpdateData)
                         }
                         updateLastAccessedDay()
-                        teamRepository.updateTeamStats()
+                        teamRepository.insertTeams()
                     }
                 }
                 ?: showErrorToast()
@@ -96,7 +96,7 @@ class NBAScheduleRepository(
                     get(Calendar.DAY_OF_MONTH)
                 )?.time ?: 0L
                 val lastAccessedMs = DateUtils.parseDate(
-                    dataStore.lastAccessedDay.first()
+                    dataStore.lastAccessedDate.first()
                 )?.time ?: 0L
                 val differenceDays = TimeUnit.DAYS.convert(
                     todayMs - lastAccessedMs,
@@ -110,10 +110,10 @@ class NBAScheduleRepository(
 
     private suspend fun updateGames(games: List<Game>, currentDate: Date) {
         loading {
-            when (gameLocalSource.existsGame()) {
+            when (gameLocalSource.gameExists()) {
                 true -> {
                     val before = Date(currentDate.time - TimeUnit.DAYS.toMillis(1))
-                    val after = DateUtils.parseDate(dataStore.lastAccessedDay.first()) ?: Date(0)
+                    val after = DateUtils.parseDate(dataStore.lastAccessedDate.first()) ?: Date(0)
                     games
                         .filter { game ->
                             val gameDate = game.gameDateTime
@@ -123,7 +123,7 @@ class NBAScheduleRepository(
                             game.toGameScoreUpdateData()
                         }
                         .also { updatedGames ->
-                            gameLocalSource.updateGamesScore(updatedGames)
+                            gameLocalSource.updateGames(updatedGames)
                         }
                 }
                 false -> {
@@ -136,7 +136,7 @@ class NBAScheduleRepository(
     private suspend fun updateLastAccessedDay() {
         loading {
             DateUtils.getCalendar().apply {
-                dataStore.updateLastAccessedDay(
+                dataStore.updateLastAccessedDate(
                     get(Calendar.YEAR),
                     get(Calendar.MONTH) + 1,
                     get(Calendar.DAY_OF_MONTH)

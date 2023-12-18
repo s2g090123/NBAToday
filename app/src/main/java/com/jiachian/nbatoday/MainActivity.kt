@@ -18,8 +18,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.jiachian.nbatoday.compose.screen.main.MainScreen
 import com.jiachian.nbatoday.compose.theme.NBATodayTheme
+import com.jiachian.nbatoday.navigation.MainRoute
 import com.jiachian.nbatoday.navigation.NavigationController
-import com.jiachian.nbatoday.navigation.Route
 import com.jiachian.nbatoday.utils.LocalActivity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
@@ -62,35 +62,35 @@ class MainActivity : ComponentActivity() {
     private fun onNavigationEvent(event: NavigationController.Event?) {
         when (event) {
             is NavigationController.Event.BackScreen -> {
-                if (event.from == Route.HOME) {
+                if (event.departure is MainRoute.Home) {
                     finish()
                 }
-                viewModel.viewModelProvider.removeViewModel(event.from)
+                viewModel.viewModelProvider.removeViewModel(event.departure)
                 navController?.popBackStack()
             }
             is NavigationController.Event.NavigateToHome -> {
-                navController?.navigate(Route.HOME.route) {
-                    popUpTo(Route.SPLASH.route) {
+                navController?.navigate(MainRoute.Home.route) {
+                    popUpTo(MainRoute.Splash.route) {
                         inclusive = true
                     }
                 }
             }
             is NavigationController.Event.NavigateToBoxScore -> {
-                navController?.navigate("${Route.BOX_SCORE}/${event.gameId}")
+                navController?.navigate("${MainRoute.BoxScore.path}/${event.gameId}")
             }
             is NavigationController.Event.NavigateToTeam -> {
-                navController?.navigate("${Route.TEAM}/${event.teamId}")
+                navController?.navigate("${MainRoute.Team.path}/${event.teamId}")
             }
             is NavigationController.Event.NavigateToPlayer -> {
-                navController?.navigate("${Route.PLAYER}/${event.playerId}")
+                navController?.navigate("${MainRoute.Player.path}/${event.playerId}")
             }
             is NavigationController.Event.NavigateToCalendar -> {
-                navController?.navigate("${Route.CALENDAR}/${event.dateTime}")
+                navController?.navigate("${MainRoute.Calendar.path}/${event.dateTime}")
             }
             is NavigationController.Event.NavigateToBet -> {
-                navController?.navigate("${Route.BET}/${event.account}")
+                navController?.navigate("${MainRoute.Bet.path}/${event.account}")
             }
-            else -> {}
+            null -> {}
         }
         viewModel.consumeNavigationEvent(event)
     }
