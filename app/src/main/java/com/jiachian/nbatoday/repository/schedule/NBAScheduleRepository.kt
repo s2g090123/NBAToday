@@ -123,7 +123,7 @@ class NBAScheduleRepository(
                             game.toGameScoreUpdateData()
                         }
                         .also { updatedGames ->
-                            gameLocalSource.updateGames(updatedGames)
+                            gameLocalSource.updateGameScores(updatedGames)
                         }
                 }
                 false -> {

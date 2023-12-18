@@ -43,7 +43,7 @@ class NBAGameLocalSource(
         gameDao.updateGames(games)
     }
 
-    override suspend fun updateGames(games: List<GameScoreUpdateData>) {
+    override suspend fun updateGameScores(games: List<GameScoreUpdateData>) {
         gameDao.updateGameScores(games)
     }
 

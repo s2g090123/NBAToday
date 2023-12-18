@@ -17,7 +17,7 @@ abstract class GameLocalSource {
 
     abstract suspend fun insertGames(games: List<Game>)
     abstract suspend fun updateGames(games: List<GameUpdateData>)
-    abstract suspend fun updateGames(games: List<GameScoreUpdateData>)
+    abstract suspend fun updateGameScores(games: List<GameScoreUpdateData>)
 
     abstract suspend fun gameExists(): Boolean
 }
