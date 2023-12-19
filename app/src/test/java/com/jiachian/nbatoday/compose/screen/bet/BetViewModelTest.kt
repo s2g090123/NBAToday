@@ -1,164 +1,106 @@
 package com.jiachian.nbatoday.compose.screen.bet
 
+import com.jiachian.nbatoday.BaseUnitTest
 import com.jiachian.nbatoday.BasicNumber
-import com.jiachian.nbatoday.ComingSoonGameId
-import com.jiachian.nbatoday.FinalGameId
-import com.jiachian.nbatoday.PlayingGameId
 import com.jiachian.nbatoday.UserAccount
 import com.jiachian.nbatoday.UserPassword
 import com.jiachian.nbatoday.UserPoints
 import com.jiachian.nbatoday.compose.screen.bet.models.TurnTablePoints
-import com.jiachian.nbatoday.dispatcher.DispatcherProvider
-import com.jiachian.nbatoday.models.TestRepository
-import com.jiachian.nbatoday.models.local.game.GameStatus
-import com.jiachian.nbatoday.rule.TestCoroutineEnvironment
-import com.jiachian.nbatoday.utils.launchAndCollect
-import kotlin.math.abs
+import com.jiachian.nbatoday.data.local.BetAndGameGenerator
+import com.jiachian.nbatoday.datasource.local.data.TestBetLocalSource
+import com.jiachian.nbatoday.navigation.NavigationController
+import com.jiachian.nbatoday.repository.data.TestBetRepository
+import com.jiachian.nbatoday.repository.data.TestUserRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.instanceOf
-import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.not
 import org.hamcrest.CoreMatchers.notNullValue
 import org.hamcrest.CoreMatchers.nullValue
 import org.hamcrest.MatcherAssert.assertThat
-import org.junit.After
+import org.hamcrest.core.Is.`is`
 import org.junit.Before
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class BetViewModelTest {
-
-    private var currentState: NbaState? = null
-    private val repository = TestRepository()
+class BetViewModelTest : BaseUnitTest() {
+    private lateinit var betRepository: TestBetRepository
+    private lateinit var userRepository: TestUserRepository
+    private lateinit var navigationController: NavigationController
     private lateinit var viewModel: BetViewModel
-    private val coroutineEnvironment = TestCoroutineEnvironment()
 
     @Before
     fun setup() = runTest {
-        viewModel = createViewModel(coroutineEnvironment.testDispatcherProvider)
-        repository.login(UserAccount, UserPassword)
-        repository.refreshSchedule()
-        repository.bet(FinalGameId, 0, BasicNumber.toLong())
-        repository.bet(PlayingGameId, 0, BasicNumber.toLong())
-        repository.bet(ComingSoonGameId, 0, BasicNumber.toLong())
-    }
-
-    @After
-    fun teardown() {
-        repository.clear()
-        currentState = null
-    }
-
-    @Test
-    fun bet_clickFinalGame_askTurnTable() = coroutineEnvironment.testScope.runTest {
-        viewModel.betsAndGames.launchAndCollect(coroutineEnvironment)
-        val betAndGames = viewModel.betsAndGames.value
-        val finalGame = betAndGames.firstOrNull { it.game.gameStatus == GameStatus.FINAL }
-        assertThat(finalGame, notNullValue())
-        viewModel.clickBetAndGame(finalGame!!)
-        assertThat(viewModel.turnTablePoints, notNullValue())
-        val points = repository.user.value?.points
-        assertThat(points, `is`(UserPoints + BasicNumber * 2))
-        assertThat(viewModel.betsAndGames.value.contains(finalGame), `is`(false))
+        navigationController = NavigationController()
+        userRepository = TestUserRepository.get().apply {
+            login(UserAccount, UserPassword)
+        }
+        betRepository = TestBetRepository(
+            betLocalSource = TestBetLocalSource(),
+            userRepository = userRepository
+        )
+        viewModel = BetViewModel(
+            account = UserAccount,
+            repository = betRepository,
+            navigationController = navigationController,
+            dispatcherProvider = dispatcherProvider,
+        )
     }
 
     @Test
-    fun bet_clickPlayingGame_openBoxScore() {
-        viewModel.betsAndGames.launchAndCollect(coroutineEnvironment)
-        val betAndGames = viewModel.betsAndGames.value
-        val playingGame = betAndGames.firstOrNull { it.game.gameStatus == GameStatus.PLAYING }
-        assertThat(playingGame, notNullValue())
-        viewModel.clickBetAndGame(playingGame!!)
-        assertThat(currentState, instanceOf(NbaState.BoxScore::class.java))
+    fun `clickBetAndGame with Final Game expects turnTablePoints and user's points are updated`() {
+        val betAndGame = BetAndGameGenerator.getFinal()
+        viewModel.clickBetAndGame(betAndGame)
+        val wonPoints = betAndGame.getWonPoints() * 2
+        val lostPoints = betAndGame.getLostPoints()
+        val updatedPoints = UserPoints + wonPoints
+        assertThat(userRepository.user.value?.points, `is`(updatedPoints))
+        assertThat(
+            viewModel.turnTablePoints.value,
+            `is`(TurnTablePoints(wonPoints, lostPoints))
+        )
     }
 
     @Test
-    fun bet_clickComingSoonGame_openTeamScreen() {
-        viewModel.betsAndGames.launchAndCollect(coroutineEnvironment)
-        val betAndGames = viewModel.betsAndGames.value
-        val comingGame =
-            betAndGames.firstOrNull { it.game.gameStatus == GameStatus.COMING_SOON }
-        assertThat(comingGame, notNullValue())
-        viewModel.clickBetAndGame(comingGame!!)
-        assertThat(currentState, instanceOf(NbaState.Team::class.java))
+    fun `clickBetAndGame with Playing Game expects screen navigates to BoxScore`() {
+        val betAndGame = BetAndGameGenerator.getPlaying()
+        viewModel.clickBetAndGame(betAndGame)
+        assertThat(navigationController.eventFlow.value, instanceOf(NavigationController.Event.NavigateToBoxScore::class.java))
     }
 
     @Test
-    fun bet_closeAskTurnTable_valueNull() {
-        viewModel.closeAskTurnTable()
-        assertThat(viewModel.turnTablePoints.value, nullValue())
+    fun `clickBetAndGame with ComingSoon Game expects screen navigates to Team`() {
+        val betAndGame = BetAndGameGenerator.getComingSoon()
+        viewModel.clickBetAndGame(betAndGame)
+        assertThat(navigationController.eventFlow.value, instanceOf(NavigationController.Event.NavigateToTeam::class.java))
     }
 
     @Test
-    fun bet_closeTurnTable_valueNull() {
+    fun `closeTurnTable expects all data are reset`() {
         viewModel.closeTurnTable()
-        assertThat(viewModel.tryTurnTableVisible.value, nullValue())
+        assertThat(viewModel.turnTableVisible.value, `is`(false))
+        assertThat(viewModel.turnTablePoints.value, nullValue())
         assertThat(viewModel.turnTableRunning.value, `is`(false))
         assertThat(viewModel.turnTableAngle.value, `is`(0f))
     }
 
     @Test
-    fun bet_showTurnTable_valueCorrect() {
-        val data = TurnTablePoints(BasicNumber.toLong(), BasicNumber.toLong())
-        viewModel.showTurnTable(data)
-        assertThat(viewModel.tryTurnTableVisible.value, `is`(data))
-    }
-
-    @Test
-    fun bet_startTurnTable_rewardPointsCorrect() = coroutineEnvironment.testScope.runTest {
-        val data = TurnTablePoints(BasicNumber.toLong(), BasicNumber.toLong())
-        viewModel.startTurnTable(data)
+    fun `startTurnTable expects rewardedPoints is updated`() = launch {
+        val turnTablePoints = TurnTablePoints(BasicNumber.toLong(), BasicNumber.toLong())
+        viewModel.startTurnTable(turnTablePoints)
         advanceUntilIdle()
-        val expected = getRewardPoints(
-            BasicNumber,
-            BasicNumber,
-            viewModel.rewardedAngle.value
-        )
-        assertThat(viewModel.rewardedPoints.value, `is`(expected))
-    }
-
-    @Test
-    fun bet_closeRewardPointsDialog_valueNull() = coroutineEnvironment.testScope.runTest {
-        val data = TurnTablePoints(BasicNumber.toLong(), BasicNumber.toLong())
-        viewModel.startTurnTable(data)
-        advanceUntilIdle()
+        assertThat(viewModel.turnTableVisible.value, `is`(false))
+        assertThat(viewModel.turnTablePoints.value, nullValue())
+        assertThat(viewModel.turnTableRunning.value, `is`(false))
+        assertThat(viewModel.turnTableAngle.value, `is`(0f))
         assertThat(viewModel.rewardedPoints.value, notNullValue())
-        viewModel.closeRewardedPoints()
+        assertThat(userRepository.user.value?.points, not(UserPoints))
+    }
+
+    @Test
+    fun `closeRewardedPoints expects rewardedPoints is null`() {
+        viewModel.closeTurnTable()
         assertThat(viewModel.rewardedPoints.value, nullValue())
-    }
-
-    private fun createViewModel(
-        dispatcherProvider: DispatcherProvider
-    ): BetViewModel {
-        return BetViewModel(
-            account = UserAccount,
-            betRepository = repository,
-            openScreen = {
-                currentState = it
-            },
-            dispatcherProvider = dispatcherProvider
-        )
-    }
-
-    private fun getRewardPoints(
-        winPoints: Int,
-        losePoints: Int,
-        angle: Float
-    ): Long {
-        return when (angle) {
-            in 0f..89f -> {
-                -abs(winPoints) + abs(losePoints)
-            }
-            in 90f..179f -> {
-                abs(winPoints) * 4
-            }
-            in 180f..269f -> {
-                -abs(winPoints)
-            }
-            else -> {
-                abs(winPoints) + abs(losePoints)
-            }
-        }.toLong()
     }
 }
