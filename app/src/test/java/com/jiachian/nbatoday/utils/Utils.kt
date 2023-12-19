@@ -1,13 +1,13 @@
 package com.jiachian.nbatoday.utils
 
-import com.jiachian.nbatoday.rule.TestCoroutineEnvironment
+import com.jiachian.nbatoday.rule.CoroutineEnvironment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-fun <T> Flow<T>.launchAndCollect(coroutineEnvironment: TestCoroutineEnvironment): Job {
+fun <T> Flow<T>.launchAndCollect(coroutineEnvironment: CoroutineEnvironment): Job {
     return CoroutineScope(coroutineEnvironment.testDispatcherProvider.unconfined).launch {
         collect()
     }

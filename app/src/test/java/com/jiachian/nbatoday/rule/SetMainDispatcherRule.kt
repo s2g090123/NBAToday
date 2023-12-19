@@ -9,7 +9,7 @@ import org.junit.runner.Description
 
 @ExperimentalCoroutinesApi
 class SetMainDispatcherRule(
-    private val coroutineEnvironment: TestCoroutineEnvironment
+    private val coroutineEnvironment: CoroutineEnvironment
 ) : TestWatcher() {
 
     override fun starting(description: Description) {
