@@ -66,6 +66,9 @@ class BetViewModel(
     private val turnTableAngleImp = MutableStateFlow(0f)
     val turnTableAngle = turnTableAngleImp.asStateFlow()
 
+    private val turnTableVisibleImp = MutableStateFlow(false)
+    val turnTableVisible = turnTableVisibleImp.asStateFlow()
+
     private val rewardedPointsImp = MutableStateFlow<Long?>(null)
     val rewardedPoints = rewardedPointsImp.asStateFlow()
 
@@ -83,10 +86,6 @@ class BetViewModel(
         }
     }
 
-    fun closeAskTurnTable() {
-        turnTablePointsImp.value = null
-    }
-
     private fun settleBet(betAndGame: BetAndGame) {
         coroutineScope.launch(dispatcherProvider.io) {
             val (win, lose) = repository.settleBet(betAndGame)
@@ -98,9 +97,14 @@ class BetViewModel(
     }
 
     fun closeTurnTable() {
+        turnTableVisibleImp.value = false
         turnTablePointsImp.value = null
         turnTableRunningImp.value = false
         turnTableAngleImp.value = 0f
+    }
+
+    fun showTurnTable() {
+        turnTableVisibleImp.value = true
     }
 
     fun startTurnTable(turnTablePoints: TurnTablePoints) {

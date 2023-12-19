@@ -46,7 +46,7 @@ fun BetDialog(
     onConfirm: (homePoints: Long, awayPoints: Long) -> Unit,
     onDismiss: () -> Unit
 ) {
-    val warning by viewModel.showWarning.collectAsState()
+    val warning by viewModel.warning.collectAsState()
     val homePoints by viewModel.homePoints.collectAsState()
     val awayPoints by viewModel.awayPoints.collectAsState()
     val enabled by viewModel.enabled.collectAsState()

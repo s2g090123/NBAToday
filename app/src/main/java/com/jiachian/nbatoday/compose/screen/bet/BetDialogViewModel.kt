@@ -19,7 +19,7 @@ class BetDialogViewModel(
     coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined),
 ) {
     private val warningImp = MutableStateFlow(false)
-    val showWarning = warningImp.asStateFlow()
+    val warning = warningImp.asStateFlow()
 
     private val homePointsImp = MutableStateFlow(0L)
     val homePoints = homePointsImp.asStateFlow()
