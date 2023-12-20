@@ -1,6 +1,5 @@
 package com.jiachian.nbatoday.models.remote.game
 
-import androidx.room.ColumnInfo
 import com.google.gson.annotations.SerializedName
 import com.jiachian.nbatoday.models.local.game.GameStatus
 
@@ -20,7 +19,7 @@ data class RemoteSchedule(
                 @SerializedName("gameStatusText") val gameStatusText: String?,
                 @SerializedName("gameSequence") val gameSequence: Int?, // 今天的第幾場比賽(起始為1), e.g. 1
                 @SerializedName("homeTeam") val homeTeam: RemoteTeam?,
-                @ColumnInfo(name = "gameDateEst") val gameDateEst: String?,
+                @SerializedName("gameDateEst") val gameDateEst: String?,
                 @SerializedName("gameDateTimeEst") val gameDateTimeEst: String?, // 比賽開始時間, e.g. 2022-10-30T12:00:00Z
                 @SerializedName("pointsLeaders") val pointsLeaders: List<RemotePointsLeader?>?,
             ) {

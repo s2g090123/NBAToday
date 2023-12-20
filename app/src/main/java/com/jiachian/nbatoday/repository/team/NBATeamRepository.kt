@@ -9,7 +9,6 @@ import com.jiachian.nbatoday.models.local.team.TeamPlayer
 import com.jiachian.nbatoday.models.local.team.TeamRank
 import com.jiachian.nbatoday.models.remote.team.extensions.toTeamPlayerStats
 import com.jiachian.nbatoday.models.remote.team.extensions.toTeamStats
-import com.jiachian.nbatoday.utils.showErrorToast
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 
@@ -27,7 +26,7 @@ class NBATeamRepository(
                 ?.let { teams ->
                     teamLocalSource.insertTeams(teams)
                 }
-                ?: showErrorToast()
+                ?: onError()
         }
     }
 
@@ -41,7 +40,7 @@ class NBATeamRepository(
                 ?.let { teams ->
                     teamLocalSource.insertTeams(teams)
                 }
-                ?: showErrorToast()
+                ?: onError()
         }
     }
 
@@ -56,7 +55,7 @@ class NBATeamRepository(
                     deleteTradedPlayers(teamId, remoteTeamPlayers)
                     teamLocalSource.insertTeamPlayers(remoteTeamPlayers)
                 }
-                ?: showErrorToast()
+                ?: onError()
         }
     }
 

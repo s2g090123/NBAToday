@@ -1,5 +1,7 @@
 package com.jiachian.nbatoday.repository
 
+import com.jiachian.nbatoday.event.ToastEvent
+import com.jiachian.nbatoday.event.send
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import retrofit2.Response
@@ -24,5 +26,9 @@ abstract class BaseRepository {
                 loadingImp.value = false
             }
         }
+    }
+
+    protected fun onError() {
+        ToastEvent.onError.send()
     }
 }

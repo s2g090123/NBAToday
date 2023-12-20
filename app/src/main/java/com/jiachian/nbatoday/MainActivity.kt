@@ -18,9 +18,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.jiachian.nbatoday.compose.screen.main.MainScreen
 import com.jiachian.nbatoday.compose.theme.NBATodayTheme
+import com.jiachian.nbatoday.event.ToastEvent
+import com.jiachian.nbatoday.event.consume
+import com.jiachian.nbatoday.event.toastEventManager
 import com.jiachian.nbatoday.navigation.MainRoute
 import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.utils.LocalActivity
+import com.jiachian.nbatoday.utils.showErrorToast
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.launch
@@ -57,6 +61,7 @@ class MainActivity : ComponentActivity() {
             }
         }
         viewModel.navigationEvent.collectWithLifecycle(this::onNavigationEvent)
+        toastEventManager.eventFlow.collectWithLifecycle(this::onToastEvent)
     }
 
     private fun onNavigationEvent(event: NavigationController.Event?) {
@@ -93,6 +98,14 @@ class MainActivity : ComponentActivity() {
             null -> {}
         }
         viewModel.consumeNavigationEvent(event)
+    }
+
+    private fun onToastEvent(event: ToastEvent?) {
+        when (event) {
+            ToastEvent.onError -> showErrorToast()
+            null -> {}
+        }
+        event.consume()
     }
 
     private fun <T> Flow<T>.collectWithLifecycle(collector: FlowCollector<T>) {
