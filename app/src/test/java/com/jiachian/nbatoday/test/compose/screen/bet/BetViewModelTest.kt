@@ -52,14 +52,20 @@ class BetViewModelTest : BaseUnitTest() {
     fun `clickBetAndGame with Playing Game expects screen navigates to BoxScore`() {
         val betAndGame = BetAndGameGenerator.getPlaying()
         viewModel.clickBetAndGame(betAndGame)
-        assertThat(navigationController.eventFlow.value, instanceOf(NavigationController.Event.NavigateToBoxScore::class.java))
+        assertThat(
+            navigationController.eventFlow.value,
+            instanceOf(NavigationController.Event.NavigateToBoxScore::class.java)
+        )
     }
 
     @Test
     fun `clickBetAndGame with ComingSoon Game expects screen navigates to Team`() {
         val betAndGame = BetAndGameGenerator.getComingSoon()
         viewModel.clickBetAndGame(betAndGame)
-        assertThat(navigationController.eventFlow.value, instanceOf(NavigationController.Event.NavigateToTeam::class.java))
+        assertThat(
+            navigationController.eventFlow.value,
+            instanceOf(NavigationController.Event.NavigateToTeam::class.java)
+        )
     }
 
     @Test

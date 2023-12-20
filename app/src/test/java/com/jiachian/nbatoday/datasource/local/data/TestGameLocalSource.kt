@@ -32,8 +32,7 @@ class TestGameLocalSource(
         return gamesAndBets.map { gamesAndBets ->
             gamesAndBets.filter { gameAndBets ->
                 gameAndBets.game.gameDate.time <= from &&
-                    (gameAndBets.game.homeTeam.team.teamId == teamId ||
-                        gameAndBets.game.awayTeam.team.teamId == teamId)
+                    (gameAndBets.game.homeTeam.team.teamId == teamId || gameAndBets.game.awayTeam.team.teamId == teamId)
             }
         }
     }
@@ -42,8 +41,7 @@ class TestGameLocalSource(
         return gamesAndBets.map { gamesAndBets ->
             gamesAndBets.filter { gameAndBets ->
                 gameAndBets.game.gameDate.time >= from &&
-                    (gameAndBets.game.homeTeam.team.teamId == teamId ||
-                        gameAndBets.game.awayTeam.team.teamId == teamId)
+                    (gameAndBets.game.homeTeam.team.teamId == teamId || gameAndBets.game.awayTeam.team.teamId == teamId)
             }
         }
     }
