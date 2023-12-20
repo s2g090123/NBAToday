@@ -1,6 +1,6 @@
 package com.jiachian.nbatoday.utils
 
-import com.jiachian.nbatoday.rule.CoroutineEnvironment
+import com.jiachian.nbatoday.coroutine.CoroutineEnvironment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow

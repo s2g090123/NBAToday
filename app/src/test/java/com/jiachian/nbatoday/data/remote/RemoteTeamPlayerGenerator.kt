@@ -1,5 +1,7 @@
 package com.jiachian.nbatoday.data.remote
 
+import com.jiachian.nbatoday.AwayPlayerId
+import com.jiachian.nbatoday.AwayPlayerLastName
 import com.jiachian.nbatoday.BasicNumber
 import com.jiachian.nbatoday.HomePlayerFullName
 import com.jiachian.nbatoday.HomePlayerId
@@ -7,20 +9,22 @@ import com.jiachian.nbatoday.HomeTeamId
 import com.jiachian.nbatoday.models.remote.team.RemoteTeamPlayer
 
 object RemoteTeamPlayerGenerator {
-    fun getHome(): RemoteTeamPlayer {
+    fun get(teamId: Int): RemoteTeamPlayer {
         return RemoteTeamPlayer(
-            parameters = getHomeParameters(),
-            data = listOf(getResult())
+            parameters = getParameters(teamId),
+            data = listOf(getResult(teamId))
         )
     }
 
-    private fun getHomeParameters(): RemoteTeamPlayer.RemoteParameters {
+    private fun getParameters(teamId: Int): RemoteTeamPlayer.RemoteParameters {
         return RemoteTeamPlayer.RemoteParameters(
-            teamId = HomeTeamId
+            teamId = teamId
         )
     }
 
-    private fun getResult(): RemoteTeamPlayer.RemoteResult {
+    private fun getResult(teamId: Int): RemoteTeamPlayer.RemoteResult {
+        val playerId = if (teamId == HomeTeamId) HomePlayerId else AwayPlayerId
+        val playerName = if (teamId == HomeTeamId) HomePlayerFullName else AwayPlayerLastName
         return RemoteTeamPlayer.RemoteResult(
             name = "PlayersSeasonTotals",
             headers = listOf(
@@ -53,9 +57,9 @@ object RemoteTeamPlayerGenerator {
             ),
             rowData = listOf(
                 listOf(
-                    HomePlayerId.toString(),
-                    HomePlayerFullName,
-                    HomePlayerFullName,
+                    playerId.toString(),
+                    playerName,
+                    playerName,
                     BasicNumber.toString(),
                     BasicNumber.toString(),
                     BasicNumber.toString(),

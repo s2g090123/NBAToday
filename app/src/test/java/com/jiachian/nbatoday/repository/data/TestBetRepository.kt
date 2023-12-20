@@ -1,25 +1,17 @@
 package com.jiachian.nbatoday.repository.data
 
-import com.jiachian.nbatoday.datasource.local.data.TestBetLocalSource
+import com.jiachian.nbatoday.datasource.local.bet.BetLocalSource
 import com.jiachian.nbatoday.models.local.bet.Bet
 import com.jiachian.nbatoday.models.local.bet.BetAndGame
 import com.jiachian.nbatoday.repository.bet.BetRepository
+import com.jiachian.nbatoday.repository.user.UserRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 
 class TestBetRepository(
-    private val betLocalSource: TestBetLocalSource,
-    private val userRepository: TestUserRepository,
+    private val betLocalSource: BetLocalSource,
+    private val userRepository: UserRepository,
 ) : BetRepository() {
-    companion object {
-        fun get(): TestBetRepository {
-            return TestBetRepository(
-                betLocalSource = TestBetLocalSource(),
-                userRepository = TestUserRepository.get(),
-            )
-        }
-    }
-
     override suspend fun insertBet(gameId: String, homePoints: Long, awayPoints: Long) {
         val usedPoints = homePoints + awayPoints
         userRepository

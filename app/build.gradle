@@ -109,6 +109,7 @@ dependencies {
     // testing
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutine_version"
     testImplementation "io.mockk:mockk:$mockk_version"
+    testImplementation "io.insert-koin:koin-test-junit4:$koin_version"
 
     // android testing
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"

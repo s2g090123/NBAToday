@@ -1,25 +1,15 @@
 package com.jiachian.nbatoday.repository.data
 
-import com.jiachian.nbatoday.datasource.remote.data.TestUserRemoteSource
-import com.jiachian.nbatoday.datastore.data.TestDataStore
+import com.jiachian.nbatoday.datasource.remote.user.UserRemoteSource
+import com.jiachian.nbatoday.datastore.BaseDataStore
 import com.jiachian.nbatoday.models.remote.user.extensions.toUser
 import com.jiachian.nbatoday.repository.user.UserRepository
 import kotlinx.coroutines.flow.firstOrNull
 
 class TestUserRepository(
-    private val userRemoteSource: TestUserRemoteSource,
-    private val dataStore: TestDataStore,
+    private val userRemoteSource: UserRemoteSource,
+    private val dataStore: BaseDataStore,
 ) : UserRepository() {
-
-    companion object {
-        fun get(): TestUserRepository {
-            return TestUserRepository(
-                userRemoteSource = TestUserRemoteSource(),
-                dataStore = TestDataStore()
-            )
-        }
-    }
-
     override val user = dataStore.user
 
     override suspend fun login(account: String, password: String) {

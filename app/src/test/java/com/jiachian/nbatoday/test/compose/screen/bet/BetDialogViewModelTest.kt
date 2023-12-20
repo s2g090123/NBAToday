@@ -1,8 +1,9 @@
-package com.jiachian.nbatoday.compose.screen.bet
+package com.jiachian.nbatoday.test.compose.screen.bet
 
 import com.jiachian.nbatoday.BaseUnitTest
 import com.jiachian.nbatoday.BasicNumber
 import com.jiachian.nbatoday.UserPoints
+import com.jiachian.nbatoday.compose.screen.bet.BetDialogViewModel
 import com.jiachian.nbatoday.data.local.GameAndBetsGenerator
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat

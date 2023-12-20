@@ -1,17 +1,24 @@
 package com.jiachian.nbatoday.data.remote
 
+import com.jiachian.nbatoday.AwayTeamId
 import com.jiachian.nbatoday.BasicNumber
 import com.jiachian.nbatoday.HomeTeamId
 import com.jiachian.nbatoday.models.remote.team.RemoteTeam
 
 object RemoteTeamGenerator {
-    fun getHome(): RemoteTeam {
+    fun get(): RemoteTeam {
         return RemoteTeam(
-            data = listOf(getResult())
+            data = listOf(getResult(HomeTeamId), getResult(AwayTeamId))
         )
     }
 
-    private fun getResult(): RemoteTeam.RemoteResult {
+    fun get(teamId: Int): RemoteTeam {
+        return RemoteTeam(
+            data = listOf(getResult(teamId))
+        )
+    }
+
+    private fun getResult(teamId: Int): RemoteTeam.RemoteResult {
         return RemoteTeam.RemoteResult(
             name = "LeagueDashTeamStats",
             headers = listOf(
@@ -42,7 +49,7 @@ object RemoteTeamGenerator {
             ),
             rowData = listOf(
                 listOf(
-                    HomeTeamId.toString(),
+                    teamId.toString(),
                     BasicNumber.toString(),
                     BasicNumber.toString(),
                     BasicNumber.toString(),

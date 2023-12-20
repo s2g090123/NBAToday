@@ -1,4 +1,4 @@
-package com.jiachian.nbatoday.rule
+package com.jiachian.nbatoday.coroutine
 
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import kotlinx.coroutines.CoroutineDispatcher

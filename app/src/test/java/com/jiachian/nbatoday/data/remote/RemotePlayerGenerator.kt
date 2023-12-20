@@ -1,5 +1,10 @@
 package com.jiachian.nbatoday.data.remote
 
+import com.jiachian.nbatoday.AwayPlayerFirstName
+import com.jiachian.nbatoday.AwayPlayerLastName
+import com.jiachian.nbatoday.AwayTeamAbbr
+import com.jiachian.nbatoday.AwayTeamId
+import com.jiachian.nbatoday.AwayTeamName
 import com.jiachian.nbatoday.BasicNumber
 import com.jiachian.nbatoday.BasicPosition
 import com.jiachian.nbatoday.HomePlayerFirstName
@@ -14,21 +19,23 @@ import com.jiachian.nbatoday.models.remote.player.RemotePlayerInfo
 import com.jiachian.nbatoday.models.remote.player.RemotePlayerStats
 
 object RemotePlayerGenerator {
-    fun getHome(): RemotePlayer {
+    fun get(playerId: Int): RemotePlayer {
         return RemotePlayer(
-            info = getHomePlayerInfo(),
-            stats = getHomePlayerStats()
+            info = getPlayerInfo(playerId),
+            stats = getPlayerStats(playerId)
         )
     }
 
-    private fun getHomePlayerStats(): RemotePlayerStats {
+    private fun getPlayerStats(playerId: Int): RemotePlayerStats {
         return RemotePlayerStats(
-            parameters = RemotePlayerStats.RemoteParameter(HomePlayerId),
-            resultSets = listOf(getPlayerStatsResult())
+            parameters = RemotePlayerStats.RemoteParameter(playerId),
+            resultSets = listOf(getPlayerStatsResult(playerId))
         )
     }
 
-    private fun getPlayerStatsResult(): RemotePlayerStats.RemoteResult {
+    private fun getPlayerStatsResult(playerId: Int): RemotePlayerStats.RemoteResult {
+        val teamId = if (playerId == HomePlayerId) HomeTeamId else AwayTeamId
+        val teamAbbr = if (playerId == HomePlayerId) HomeTeamAbbr else AwayTeamAbbr
         return RemotePlayerStats.RemoteResult(
             name = "ByYearPlayerDashboard",
             headers = listOf(
@@ -85,8 +92,8 @@ object RemotePlayerGenerator {
             rowData = listOf(
                 listOf(
                     BasicNumber.toString(),
-                    HomeTeamId.toString(),
-                    HomeTeamAbbr,
+                    teamId.toString(),
+                    teamAbbr,
                     BasicNumber.toString(),
                     BasicNumber.toString(),
                     BasicNumber.toString(),
@@ -138,13 +145,18 @@ object RemotePlayerGenerator {
         )
     }
 
-    private fun getHomePlayerInfo(): RemotePlayerInfo {
+    private fun getPlayerInfo(playerId: Int): RemotePlayerInfo {
         return RemotePlayerInfo(
-            resultSets = getPlayerInfoResults()
+            resultSets = getPlayerInfoResults(playerId)
         )
     }
 
-    private fun getPlayerInfoResults(): List<RemotePlayerInfo.RemoteResult> {
+    private fun getPlayerInfoResults(playerId: Int): List<RemotePlayerInfo.RemoteResult> {
+        val firstName = if (playerId == HomePlayerId) HomePlayerFirstName else AwayPlayerFirstName
+        val lastName = if (playerId == HomePlayerId) HomePlayerLastName else AwayPlayerLastName
+        val teamId = if (playerId == HomePlayerId) HomeTeamId else AwayTeamId
+        val teamName = if (playerId == HomePlayerId) HomeTeamName else AwayTeamName
+        val teamAbbr = if (playerId == HomePlayerId) HomeTeamAbbr else AwayTeamAbbr
         return listOf(
             RemotePlayerInfo.RemoteResult(
                 name = "CommonPlayerInfo",
@@ -172,9 +184,9 @@ object RemotePlayerGenerator {
                 ),
                 rowData = listOf(
                     listOf(
-                        HomePlayerId.toString(),
-                        HomePlayerFirstName,
-                        HomePlayerLastName,
+                        playerId.toString(),
+                        firstName,
+                        lastName,
                         TeamCity,
                         TeamCity,
                         BasicNumber.toString(),
@@ -182,9 +194,9 @@ object RemotePlayerGenerator {
                         BasicNumber.toString(),
                         BasicNumber.toString(),
                         BasicPosition,
-                        HomeTeamId.toString(),
-                        HomeTeamName,
-                        HomeTeamAbbr,
+                        teamId.toString(),
+                        teamName,
+                        teamAbbr,
                         TeamCity,
                         BasicNumber.toString(),
                         BasicNumber.toString(),

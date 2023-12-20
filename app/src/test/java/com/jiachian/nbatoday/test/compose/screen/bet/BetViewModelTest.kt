@@ -1,16 +1,14 @@
-package com.jiachian.nbatoday.compose.screen.bet
+package com.jiachian.nbatoday.test.compose.screen.bet
 
 import com.jiachian.nbatoday.BaseUnitTest
 import com.jiachian.nbatoday.BasicNumber
 import com.jiachian.nbatoday.UserAccount
 import com.jiachian.nbatoday.UserPassword
 import com.jiachian.nbatoday.UserPoints
+import com.jiachian.nbatoday.compose.screen.bet.BetViewModel
 import com.jiachian.nbatoday.compose.screen.bet.models.TurnTablePoints
 import com.jiachian.nbatoday.data.local.BetAndGameGenerator
-import com.jiachian.nbatoday.datasource.local.data.TestBetLocalSource
 import com.jiachian.nbatoday.navigation.NavigationController
-import com.jiachian.nbatoday.repository.data.TestBetRepository
-import com.jiachian.nbatoday.repository.data.TestUserRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
@@ -25,25 +23,13 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class BetViewModelTest : BaseUnitTest() {
-    private lateinit var betRepository: TestBetRepository
-    private lateinit var userRepository: TestUserRepository
-    private lateinit var navigationController: NavigationController
     private lateinit var viewModel: BetViewModel
 
     @Before
     fun setup() = runTest {
-        navigationController = NavigationController()
-        userRepository = TestUserRepository.get().apply {
-            login(UserAccount, UserPassword)
-        }
-        betRepository = TestBetRepository(
-            betLocalSource = TestBetLocalSource(),
-            userRepository = userRepository
-        )
-        viewModel = BetViewModel(
+        repositoryProvider.user.login(UserAccount, UserPassword)
+        viewModel = composeViewModelProvider.getBetViewModel(
             account = UserAccount,
-            repository = betRepository,
-            navigationController = navigationController,
             dispatcherProvider = dispatcherProvider,
         )
     }
@@ -55,7 +41,7 @@ class BetViewModelTest : BaseUnitTest() {
         val wonPoints = betAndGame.getWonPoints() * 2
         val lostPoints = betAndGame.getLostPoints()
         val updatedPoints = UserPoints + wonPoints
-        assertThat(userRepository.user.value?.points, `is`(updatedPoints))
+        assertThat(dataHolder.user.value?.points, `is`(updatedPoints))
         assertThat(
             viewModel.turnTablePoints.value,
             `is`(TurnTablePoints(wonPoints, lostPoints))
@@ -87,7 +73,7 @@ class BetViewModelTest : BaseUnitTest() {
 
     @Test
     fun `startTurnTable expects rewardedPoints is updated`() = launch {
-        val turnTablePoints = TurnTablePoints(BasicNumber.toLong(), BasicNumber.toLong())
+        val turnTablePoints = TurnTablePoints(BasicNumber.toLong(), BasicNumber.toLong() + 1)
         viewModel.startTurnTable(turnTablePoints)
         advanceUntilIdle()
         assertThat(viewModel.turnTableVisible.value, `is`(false))
@@ -95,7 +81,7 @@ class BetViewModelTest : BaseUnitTest() {
         assertThat(viewModel.turnTableRunning.value, `is`(false))
         assertThat(viewModel.turnTableAngle.value, `is`(0f))
         assertThat(viewModel.rewardedPoints.value, notNullValue())
-        assertThat(userRepository.user.value?.points, not(UserPoints))
+        assertThat(dataHolder.user.value?.points, not(UserPoints))
     }
 
     @Test
