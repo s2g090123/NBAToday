@@ -27,11 +27,11 @@ class NBAGameLocalSource(
         return gameDao.getGamesAndBetsAfter(teamId, from)
     }
 
-    override fun getLastGameDateTime(): Flow<Date> {
+    override fun getLastGameDateTime(): Flow<Date?> {
         return gameDao.getLastGameDateTime()
     }
 
-    override fun getFirstGameDateTime(): Flow<Date> {
+    override fun getFirstGameDateTime(): Flow<Date?> {
         return gameDao.getFirstGameDateTime()
     }
 

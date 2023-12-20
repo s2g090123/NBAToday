@@ -9,6 +9,7 @@ import com.jiachian.nbatoday.models.remote.score.extensions.toBoxScore
 import com.jiachian.nbatoday.repository.game.GameRepository
 import java.util.Date
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class TestGameRepository(
     private val gameLocalSource: GameLocalSource,
@@ -48,10 +49,14 @@ class TestGameRepository(
     }
 
     override fun getLastGameDateTime(): Flow<Date> {
-        return gameLocalSource.getLastGameDateTime()
+        return gameLocalSource.getLastGameDateTime().map {
+            it ?: Date()
+        }
     }
 
     override fun getFirstGameDateTime(): Flow<Date> {
-        return gameLocalSource.getFirstGameDateTime()
+        return gameLocalSource.getFirstGameDateTime().map {
+            it ?: Date()
+        }
     }
 }

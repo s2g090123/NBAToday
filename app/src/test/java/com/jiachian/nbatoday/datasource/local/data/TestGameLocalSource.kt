@@ -46,19 +46,19 @@ class TestGameLocalSource(
         }
     }
 
-    override fun getLastGameDateTime(): Flow<Date> {
+    override fun getLastGameDateTime(): Flow<Date?> {
         return gamesAndBets.map { gamesAndBets ->
-            gamesAndBets.maxBy { gameAndBets ->
+            gamesAndBets.maxByOrNull { gameAndBets ->
                 gameAndBets.game.gameDateTime.time
-            }.game.gameDateTime
+            }?.game?.gameDateTime
         }
     }
 
-    override fun getFirstGameDateTime(): Flow<Date> {
+    override fun getFirstGameDateTime(): Flow<Date?> {
         return gamesAndBets.map { gamesAndBets ->
-            gamesAndBets.minBy { gameAndBets ->
+            gamesAndBets.minByOrNull { gameAndBets ->
                 gameAndBets.game.gameDateTime.time
-            }.game.gameDateTime
+            }?.game?.gameDateTime
         }
     }
 

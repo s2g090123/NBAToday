@@ -27,10 +27,10 @@ interface GameDao {
     fun getGamesAndBetsDuring(from: Long, to: Long): Flow<List<GameAndBets>>
 
     @Query("SELECT MAX(game_date_time) FROM game")
-    fun getLastGameDateTime(): Flow<Date>
+    fun getLastGameDateTime(): Flow<Date?>
 
     @Query("SELECT MIN(game_date_time) FROM game")
-    fun getFirstGameDateTime(): Flow<Date>
+    fun getFirstGameDateTime(): Flow<Date?>
 
     @Query("SELECT EXISTS (SELECT 1 FROM game)")
     fun gameExists(): Boolean

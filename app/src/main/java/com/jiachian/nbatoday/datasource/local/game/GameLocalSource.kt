@@ -12,8 +12,8 @@ abstract class GameLocalSource {
     abstract fun getGamesAndBetsDuring(from: Long, to: Long): Flow<List<GameAndBets>>
     abstract fun getGamesAndBetsBefore(teamId: Int, from: Long): Flow<List<GameAndBets>>
     abstract fun getGamesAndBetsAfter(teamId: Int, from: Long): Flow<List<GameAndBets>>
-    abstract fun getLastGameDateTime(): Flow<Date>
-    abstract fun getFirstGameDateTime(): Flow<Date>
+    abstract fun getLastGameDateTime(): Flow<Date?>
+    abstract fun getFirstGameDateTime(): Flow<Date?>
 
     abstract suspend fun insertGames(games: List<Game>)
     abstract suspend fun updateGames(games: List<GameUpdateData>)

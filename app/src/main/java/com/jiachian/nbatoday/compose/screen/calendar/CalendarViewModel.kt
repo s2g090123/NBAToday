@@ -49,14 +49,6 @@ class CalendarViewModel(
     private val selectedGamesImp = MutableStateFlow(emptyList<GameAndBets>())
     val selectedGames = selectedGamesImp.asStateFlow()
 
-    init {
-        currentCalendar = DateUtils.getCalendar().let {
-            it.timeInMillis = dateTime
-            MutableStateFlow(it)
-        }
-        collectSelectedGames()
-    }
-
     private val loadingGamesImp = MutableStateFlow(false)
     val loadingGames = loadingGamesImp.asStateFlow()
 
@@ -66,6 +58,14 @@ class CalendarViewModel(
         .stateIn(coroutineScope, SharingStarted.Lazily, Date(dateTime))
     private val firstGameDate = repository.getFirstGameDateTime()
         .stateIn(coroutineScope, SharingStarted.Lazily, Date(dateTime))
+
+    init {
+        currentCalendar = DateUtils.getCalendar().let {
+            it.timeInMillis = dateTime
+            MutableStateFlow(it)
+        }
+        collectSelectedGames()
+    }
 
     val selectedGamesVisible = combine(
         currentCalendar,
