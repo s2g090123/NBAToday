@@ -29,6 +29,6 @@ abstract class BaseRepository {
     }
 
     protected fun onError() {
-        ToastEvent.onError.send()
+        ToastEvent.OnError.send()
     }
 }

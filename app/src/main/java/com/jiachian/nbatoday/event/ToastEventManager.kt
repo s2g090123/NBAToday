@@ -1,7 +1,7 @@
 package com.jiachian.nbatoday.event
 
 sealed class ToastEvent {
-    object onError : ToastEvent()
+    object OnError : ToastEvent()
 }
 
 val toastEventManager = EventManager<ToastEvent>()

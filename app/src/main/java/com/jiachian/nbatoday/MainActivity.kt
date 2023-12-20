@@ -102,7 +102,7 @@ class MainActivity : ComponentActivity() {
 
     private fun onToastEvent(event: ToastEvent?) {
         when (event) {
-            ToastEvent.onError -> showErrorToast()
+            ToastEvent.OnError -> showErrorToast()
             null -> {}
         }
         event.consume()
