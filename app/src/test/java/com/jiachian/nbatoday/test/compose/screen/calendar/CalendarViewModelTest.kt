@@ -34,8 +34,11 @@ class CalendarViewModelTest : BaseUnitTest() {
     @Before
     fun setup() = runTest {
         repositoryProvider.schedule.updateSchedule()
-        viewModel = composeViewModelProvider.getCalendarViewModel(
+        viewModel = CalendarViewModel(
             dateTime = GameTimeMs,
+            repository = repositoryProvider.game,
+            navigationController = navigationController,
+            composeViewModelProvider = composeViewModelProvider,
             dispatcherProvider = dispatcherProvider,
         )
     }

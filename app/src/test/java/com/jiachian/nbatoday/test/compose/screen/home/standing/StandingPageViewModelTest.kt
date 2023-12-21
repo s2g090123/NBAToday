@@ -44,8 +44,10 @@ class StandingPageViewModelTest : BaseUnitTest() {
     @Before
     fun setup() = runTest {
         repositoryProvider.team.insertTeams()
-        viewModel = composeViewModelProvider.getStandingPageViewModel(
-            dispatcherProvider = dispatcherProvider
+        viewModel = StandingPageViewModel(
+            repository = repositoryProvider.team,
+            navigationController = navigationController,
+            dispatcherProvider = dispatcherProvider,
         )
     }
 

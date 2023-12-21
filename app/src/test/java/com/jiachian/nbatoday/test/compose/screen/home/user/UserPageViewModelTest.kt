@@ -32,7 +32,7 @@ class UserPageViewModelTest : BaseUnitTest() {
             repository = repositoryProvider.user,
             dataStore = dataStore,
             navigationController = navigationController,
-            dispatcherProvider = dispatcherProvider
+            dispatcherProvider = dispatcherProvider,
         )
     }
 

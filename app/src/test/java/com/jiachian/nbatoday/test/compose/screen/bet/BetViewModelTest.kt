@@ -28,8 +28,10 @@ class BetViewModelTest : BaseUnitTest() {
     @Before
     fun setup() = runTest {
         repositoryProvider.user.login(UserAccount, UserPassword)
-        viewModel = composeViewModelProvider.getBetViewModel(
+        viewModel = BetViewModel(
             account = UserAccount,
+            repository = repositoryProvider.bet,
+            navigationController = navigationController,
             dispatcherProvider = dispatcherProvider,
         )
     }

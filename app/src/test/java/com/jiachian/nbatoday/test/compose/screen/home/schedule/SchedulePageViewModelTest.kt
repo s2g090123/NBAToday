@@ -25,7 +25,11 @@ class SchedulePageViewModelTest : BaseUnitTest() {
     @Before
     fun setup() = runTest {
         repositoryProvider.schedule.updateSchedule()
-        viewModel = composeViewModelProvider.getSchedulePageViewModel(
+        viewModel = SchedulePageViewModel(
+            scheduleRepository = repositoryProvider.schedule,
+            gameRepository = repositoryProvider.game,
+            navigationController = navigationController,
+            composeViewModelProvider = composeViewModelProvider,
             dispatcherProvider = dispatcherProvider
         )
     }

@@ -112,22 +112,28 @@ class GameCardViewModelTest : BaseUnitTest() {
     }
 
     private fun getFinalViewModel(): GameCardViewModel {
-        return composeViewModelProvider.getGameCardViewModel(
+        return GameCardViewModel(
             gameAndBets = GameAndBetsGenerator.getFinal(),
+            betRepository = repositoryProvider.bet,
+            userRepository = repositoryProvider.user,
             dispatcherProvider = dispatcherProvider,
         )
     }
 
     private fun getPlayingViewModel(): GameCardViewModel {
-        return composeViewModelProvider.getGameCardViewModel(
+        return GameCardViewModel(
             gameAndBets = GameAndBetsGenerator.getPlaying(),
+            betRepository = repositoryProvider.bet,
+            userRepository = repositoryProvider.user,
             dispatcherProvider = dispatcherProvider,
         )
     }
 
     private fun getComingSoonViewModel(): GameCardViewModel {
-        return composeViewModelProvider.getGameCardViewModel(
+        return GameCardViewModel(
             gameAndBets = GameAndBetsGenerator.getComingSoon(),
+            betRepository = repositoryProvider.bet,
+            userRepository = repositoryProvider.user,
             dispatcherProvider = dispatcherProvider,
         )
     }
