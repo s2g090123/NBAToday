@@ -1,6 +1,8 @@
 package com.jiachian.nbatoday.compose.screen.calendar
 
+import androidx.annotation.VisibleForTesting
 import com.jiachian.nbatoday.DaysPerWeek
+import com.jiachian.nbatoday.annotation.ExcludeFromJacocoGeneratedReport
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.compose.screen.calendar.models.CalendarDate
 import com.jiachian.nbatoday.compose.screen.card.GameCardViewModel
@@ -146,7 +148,7 @@ class CalendarViewModel(
     }
 
     fun nextMonth() {
-        if (hasNextMonth.value) {
+        if (hasNextMonth()) {
             currentCalendar.value = DateUtils.getCalendar().apply {
                 time = currentCalendar.value.time
                 add(Calendar.MONTH, 1)
@@ -155,7 +157,7 @@ class CalendarViewModel(
     }
 
     fun lastMonth() {
-        if (hasLastMonth.value) {
+        if (hasLastMonth()) {
             currentCalendar.value = DateUtils.getCalendar().apply {
                 time = currentCalendar.value.time
                 add(Calendar.MONTH, -1)
@@ -227,4 +229,12 @@ class CalendarViewModel(
             get(Calendar.YEAR) == year && get(Calendar.MONTH) == month
         }
     }
+
+    @VisibleForTesting
+    @ExcludeFromJacocoGeneratedReport
+    fun hasNextMonth() = hasNextMonth.value
+
+    @VisibleForTesting
+    @ExcludeFromJacocoGeneratedReport
+    fun hasLastMonth() = hasLastMonth.value
 }

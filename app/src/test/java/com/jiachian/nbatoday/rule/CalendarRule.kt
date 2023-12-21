@@ -15,13 +15,14 @@ class CalendarRule : TestWatcher() {
 
     override fun starting(description: Description) {
         super.starting(description)
-        mockkObject(DateUtils)
-        every {
-            DateUtils.getCalendar()
-        } answers {
-            Calendar.getInstance().apply {
-                timeZone = TimeZone.getTimeZone("EST")
-                time = Date(BasicTime)
+        mockkObject(DateUtils) {
+            every {
+                DateUtils.getCalendar()
+            } answers {
+                Calendar.getInstance().apply {
+                    timeZone = TimeZone.getTimeZone("EST")
+                    time = Date(BasicTime)
+                }
             }
         }
     }

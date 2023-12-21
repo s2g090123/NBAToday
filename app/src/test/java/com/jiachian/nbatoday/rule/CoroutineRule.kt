@@ -11,7 +11,8 @@ import org.junit.runner.Description
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class CoroutineRule : TestWatcher() {
-    private lateinit var coroutineEnvironment: CoroutineEnvironment
+    lateinit var coroutineEnvironment: CoroutineEnvironment
+        private set
 
     val dispatcherProvider: DispatcherProvider
         get() = coroutineEnvironment.testDispatcherProvider
