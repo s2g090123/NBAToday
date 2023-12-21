@@ -1,5 +1,10 @@
 package com.jiachian.nbatoday
 
+import com.jiachian.nbatoday.compose.theme.CelticsColors
+import com.jiachian.nbatoday.compose.theme.LakersColors
+import com.jiachian.nbatoday.models.local.team.data.teamCeltics
+import com.jiachian.nbatoday.models.local.team.data.teamLakers
+
 const val FinalGameId = "0"
 const val PlayingGameId = "1"
 const val ComingSoonGameId = "2"
@@ -14,8 +19,8 @@ const val GameDay = "Sun"
 const val GameSeason = "2022-23"
 const val GameSeasonNext = "2023-24"
 
-const val HomeTeamId = 123456
-const val AwayTeamId = 654321
+val HomeTeamId = teamLakers.teamId
+val AwayTeamId = teamCeltics.teamId
 
 const val TeamCity = "TW"
 const val HomeTeamFullName = "Taiwan Home"
@@ -26,6 +31,8 @@ const val HomeTeamAbbr = "TWH"
 const val AwayTeamAbbr = "TWA"
 const val HomeTeamLocation = "Home"
 const val AwayTeamLocation = "Away"
+val HomeTeamColors = LakersColors
+val AwayTeamColors = CelticsColors
 
 const val HomePlayerId = 123456
 const val AwayPlayerId = 654321
