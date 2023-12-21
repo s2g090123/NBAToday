@@ -1,7 +1,9 @@
 package com.jiachian.nbatoday.compose.screen.home.schedule
 
 import android.annotation.SuppressLint
+import androidx.annotation.VisibleForTesting
 import com.jiachian.nbatoday.ScheduleDateRange
+import com.jiachian.nbatoday.annotation.ExcludeFromJacocoGeneratedReport
 import com.jiachian.nbatoday.compose.screen.card.GameCardViewModel
 import com.jiachian.nbatoday.compose.screen.home.schedule.models.DateData
 import com.jiachian.nbatoday.compose.screen.state.UIState
@@ -130,4 +132,8 @@ class SchedulePageViewModel(
             )
         }
     }
+
+    @VisibleForTesting
+    @ExcludeFromJacocoGeneratedReport
+    fun getSelectedDate() = selectedDate
 }

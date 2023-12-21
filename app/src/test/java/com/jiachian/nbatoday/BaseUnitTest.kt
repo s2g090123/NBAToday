@@ -1,6 +1,5 @@
 package com.jiachian.nbatoday
 
-import com.jiachian.nbatoday.coroutine.CoroutineEnvironment
 import com.jiachian.nbatoday.datastore.BaseDataStore
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.koin.testModule
@@ -8,6 +7,7 @@ import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.repository.RepositoryProvider
 import com.jiachian.nbatoday.rule.CalendarRule
 import com.jiachian.nbatoday.rule.CoroutineRule
+import com.jiachian.nbatoday.rule.NBATeamRule
 import com.jiachian.nbatoday.utils.ComposeViewModelProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -33,12 +33,12 @@ open class BaseUnitTest : KoinTest {
     val calendarRule = CalendarRule()
 
     @get:Rule
+    val nbaTeamRule = NBATeamRule()
+
+    @get:Rule
     val koinTestRule = KoinTestRule.create {
         modules(testModule)
     }
-
-    protected val coroutineEnvironment: CoroutineEnvironment
-        get() = coroutineRule.coroutineEnvironment
 
     protected val dispatcherProvider: DispatcherProvider
         get() = coroutineRule.dispatcherProvider
@@ -68,7 +68,7 @@ open class BaseUnitTest : KoinTest {
         }
     }
 
-    protected fun <T> Flow<T>.stateIn(initValue: T?): StateFlow<T?> {
+    protected fun <T> Flow<T>.stateIn(initValue: T): StateFlow<T> {
         return stateIn(
             CoroutineScope(dispatcherProvider.unconfined),
             SharingStarted.Eagerly,

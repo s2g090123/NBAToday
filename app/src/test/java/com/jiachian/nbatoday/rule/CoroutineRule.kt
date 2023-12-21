@@ -18,12 +18,10 @@ class CoroutineRule : TestWatcher() {
         get() = coroutineEnvironment.testDispatcherProvider
 
     override fun starting(description: Description) {
-        super.starting(description)
         coroutineEnvironment = CoroutineEnvironment()
     }
 
     override fun finished(description: Description) {
-        super.finished(description)
         coroutineEnvironment.testScope.cancel()
     }
 
