@@ -3,12 +3,14 @@ package com.jiachian.nbatoday.data.remote
 import com.jiachian.nbatoday.AwayPlayerId
 import com.jiachian.nbatoday.AwayTeamId
 import com.jiachian.nbatoday.BasicNumber
+import com.jiachian.nbatoday.ComingSoonGameId
 import com.jiachian.nbatoday.FinalGameId
-import com.jiachian.nbatoday.GameDate
 import com.jiachian.nbatoday.GameDateTime
 import com.jiachian.nbatoday.GameStatusFinal
+import com.jiachian.nbatoday.GameStatusPrepare
 import com.jiachian.nbatoday.HomePlayerId
 import com.jiachian.nbatoday.HomeTeamId
+import com.jiachian.nbatoday.PlayingGameId
 import com.jiachian.nbatoday.models.local.game.GameStatus
 import com.jiachian.nbatoday.models.remote.game.RemoteSchedule
 
@@ -30,7 +32,9 @@ object RemoteScheduleGenerator {
     private fun getGameDate(): RemoteSchedule.RemoteLeagueSchedule.RemoteGameDate {
         return RemoteSchedule.RemoteLeagueSchedule.RemoteGameDate(
             games = listOf(
-                getFinalGame()
+                getFinalGame(),
+                getPlayingGame(),
+                getComingSoonGame()
             )
         )
     }
@@ -43,7 +47,41 @@ object RemoteScheduleGenerator {
             gameStatusText = GameStatusFinal,
             gameSequence = 0,
             homeTeam = getHomeTeam(),
-            gameDateEst = GameDate,
+            gameDateEst = GameDateTime,
+            gameDateTimeEst = GameDateTime,
+            pointsLeaders = listOf(
+                getHomeLeader(),
+                getAwayLeader()
+            )
+        )
+    }
+
+    private fun getPlayingGame(): RemoteSchedule.RemoteLeagueSchedule.RemoteGameDate.RemoteGame {
+        return RemoteSchedule.RemoteLeagueSchedule.RemoteGameDate.RemoteGame(
+            awayTeam = getAwayTeam(),
+            gameId = PlayingGameId,
+            gameStatus = GameStatus.PLAYING,
+            gameStatusText = GameStatusPrepare,
+            gameSequence = 0,
+            homeTeam = getHomeTeam(),
+            gameDateEst = GameDateTime,
+            gameDateTimeEst = GameDateTime,
+            pointsLeaders = listOf(
+                getHomeLeader(),
+                getAwayLeader()
+            )
+        )
+    }
+
+    private fun getComingSoonGame(): RemoteSchedule.RemoteLeagueSchedule.RemoteGameDate.RemoteGame {
+        return RemoteSchedule.RemoteLeagueSchedule.RemoteGameDate.RemoteGame(
+            awayTeam = getAwayTeam(),
+            gameId = ComingSoonGameId,
+            gameStatus = GameStatus.COMING_SOON,
+            gameStatusText = GameStatusPrepare,
+            gameSequence = 0,
+            homeTeam = getHomeTeam(),
+            gameDateEst = GameDateTime,
             gameDateTimeEst = GameDateTime,
             pointsLeaders = listOf(
                 getHomeLeader(),

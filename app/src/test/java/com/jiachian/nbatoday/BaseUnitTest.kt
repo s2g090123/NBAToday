@@ -13,7 +13,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
 import org.junit.Rule
@@ -60,8 +63,16 @@ open class BaseUnitTest : KoinTest {
     }
 
     protected fun <T> Flow<T>.launchAndCollect(): Job {
-        return CoroutineScope(coroutineEnvironment.testDispatcherProvider.unconfined).launch {
+        return CoroutineScope(dispatcherProvider.unconfined).launch {
             collect()
         }
+    }
+
+    protected fun <T> Flow<T>.stateIn(initValue: T?): StateFlow<T?> {
+        return stateIn(
+            CoroutineScope(dispatcherProvider.unconfined),
+            SharingStarted.Eagerly,
+            initValue
+        )
     }
 }

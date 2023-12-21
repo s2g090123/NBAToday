@@ -19,7 +19,7 @@ fun RemoteSchedule.RemoteLeagueSchedule.toGames(): List<Game> {
     }
     return gameDates?.mapNotNull { gameDate ->
         gameDate.games?.mapNotNull { game ->
-            createNbaGame(game, dateFormat)
+            createGame(game, dateFormat)
         }
     }?.flatten() ?: emptyList()
 }
@@ -44,7 +44,7 @@ private fun RemoteSchedule.RemoteLeagueSchedule.RemoteGameDate.RemoteGame.Remote
     )
 }
 
-private fun createNbaGame(
+private fun createGame(
     game: RemoteSchedule.RemoteLeagueSchedule.RemoteGameDate.RemoteGame,
     dateFormat: SimpleDateFormat
 ): Game? {
