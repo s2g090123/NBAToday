@@ -8,17 +8,17 @@ import com.jiachian.nbatoday.models.remote.team.RemoteTeam
 object RemoteTeamGenerator {
     fun get(): RemoteTeam {
         return RemoteTeam(
-            data = listOf(getResult(HomeTeamId), getResult(AwayTeamId))
+            data = listOf(getResult(listOf(HomeTeamId, AwayTeamId)))
         )
     }
 
     fun get(teamId: Int): RemoteTeam {
         return RemoteTeam(
-            data = listOf(getResult(teamId))
+            data = listOf(getResult(listOf(teamId)))
         )
     }
 
-    private fun getResult(teamId: Int): RemoteTeam.RemoteResult {
+    private fun getResult(teamId: List<Int>): RemoteTeam.RemoteResult {
         return RemoteTeam.RemoteResult(
             name = "LeagueDashTeamStats",
             headers = listOf(
@@ -47,34 +47,36 @@ object RemoteTeamGenerator {
                 "PTS",
                 "PLUS_MINUS"
             ),
-            rowData = listOf(
-                listOf(
-                    teamId.toString(),
-                    BasicNumber.toString(),
-                    BasicNumber.toString(),
-                    BasicNumber.toString(),
-                    BasicNumber.toString(),
-                    BasicNumber.toString(),
-                    BasicNumber.toString(),
-                    BasicNumber.toString(),
-                    BasicNumber.toString(),
-                    BasicNumber.toString(),
-                    BasicNumber.toString(),
-                    BasicNumber.toString(),
-                    BasicNumber.toString(),
-                    BasicNumber.toString(),
-                    BasicNumber.toString(),
-                    BasicNumber.toString(),
-                    BasicNumber.toString(),
-                    BasicNumber.toString(),
-                    BasicNumber.toString(),
-                    BasicNumber.toString(),
-                    BasicNumber.toString(),
-                    BasicNumber.toString(),
-                    BasicNumber.toString(),
-                    BasicNumber.toString()
-                )
-            )
+            rowData = teamId.map { getRowData(it) }
+        )
+    }
+
+    private fun getRowData(teamId: Int): List<String> {
+        return listOf(
+            teamId.toString(),
+            BasicNumber.toString(),
+            BasicNumber.toString(),
+            BasicNumber.toString(),
+            BasicNumber.toString(),
+            BasicNumber.toString(),
+            BasicNumber.toString(),
+            BasicNumber.toString(),
+            BasicNumber.toString(),
+            BasicNumber.toString(),
+            BasicNumber.toString(),
+            BasicNumber.toString(),
+            BasicNumber.toString(),
+            BasicNumber.toString(),
+            BasicNumber.toString(),
+            BasicNumber.toString(),
+            BasicNumber.toString(),
+            BasicNumber.toString(),
+            BasicNumber.toString(),
+            BasicNumber.toString(),
+            BasicNumber.toString(),
+            BasicNumber.toString(),
+            BasicNumber.toString(),
+            BasicNumber.toString()
         )
     }
 }

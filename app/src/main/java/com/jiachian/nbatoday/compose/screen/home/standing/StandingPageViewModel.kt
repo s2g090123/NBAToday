@@ -1,5 +1,7 @@
 package com.jiachian.nbatoday.compose.screen.home.standing
 
+import androidx.annotation.VisibleForTesting
+import com.jiachian.nbatoday.annotation.ExcludeFromJacocoGeneratedReport
 import com.jiachian.nbatoday.compose.screen.home.standing.models.StandingLabel
 import com.jiachian.nbatoday.compose.screen.home.standing.models.StandingRowData
 import com.jiachian.nbatoday.compose.screen.home.standing.models.StandingSorting
@@ -126,4 +128,8 @@ class StandingPageViewModel(
             )
         }
     }
+
+    @VisibleForTesting
+    @ExcludeFromJacocoGeneratedReport
+    fun getSelectedConference() = selectedConference
 }

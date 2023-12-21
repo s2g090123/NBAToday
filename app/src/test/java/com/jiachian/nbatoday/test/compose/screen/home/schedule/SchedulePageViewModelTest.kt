@@ -49,6 +49,10 @@ class SchedulePageViewModelTest : BaseUnitTest() {
 
     @Test
     fun `groupedGamesState expects correct`() {
+        assertIsA(
+            viewModel.groupedGamesState.value,
+            UIState.Loading::class.java
+        )
         viewModel.groupedGamesState.launchAndCollect()
         val gamesAndBets = dataHolder.gamesAndBets.stateIn(emptyList())
         assertIsA(
@@ -79,6 +83,10 @@ class SchedulePageViewModelTest : BaseUnitTest() {
     fun `updateSelectedSchedule() expects groupedGamesState is updated`() = runTest {
         viewModel.updateSelectedSchedule()
         advanceUntilIdle()
+        assertIsA(
+            viewModel.groupedGamesState.value,
+            UIState.Loading::class.java
+        )
         viewModel.groupedGamesState.launchAndCollect()
         val gamesAndBets = dataHolder.gamesAndBets.stateIn(emptyList())
         assertIsA(

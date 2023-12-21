@@ -31,10 +31,10 @@ fun <T> assertIsNotNull(actual: T) {
     assertThat(actual, notNullValue())
 }
 
-fun <T> assertIsTrue(actual: T) {
+fun assertIsTrue(actual: Boolean?) {
     assertThat(actual, `is`(true))
 }
 
-fun <T> assertIsFalse(actual: T) {
+fun assertIsFalse(actual: Boolean?) {
     assertThat(actual, `is`(false))
 }
