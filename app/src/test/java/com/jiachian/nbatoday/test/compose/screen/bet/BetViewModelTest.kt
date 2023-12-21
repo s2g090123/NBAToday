@@ -11,6 +11,7 @@ import com.jiachian.nbatoday.data.local.BetAndGameGenerator
 import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsA
+import com.jiachian.nbatoday.utils.assertIsFalse
 import com.jiachian.nbatoday.utils.assertIsNot
 import com.jiachian.nbatoday.utils.assertIsNotNull
 import com.jiachian.nbatoday.utils.assertIsNull
@@ -70,9 +71,9 @@ class BetViewModelTest : BaseUnitTest() {
     @Test
     fun `closeTurnTable() expects all data are reset`() {
         viewModel.closeTurnTable()
-        assertIs(viewModel.turnTableVisible.value, false)
+        assertIsFalse(viewModel.turnTableVisible.value)
         assertIsNull(viewModel.turnTablePoints.value)
-        assertIs(viewModel.turnTableRunning.value, false)
+        assertIsFalse(viewModel.turnTableRunning.value)
         assertIs(viewModel.turnTableAngle.value, 0f)
     }
 
@@ -81,9 +82,9 @@ class BetViewModelTest : BaseUnitTest() {
         val turnTablePoints = TurnTablePoints(BasicNumber.toLong(), BasicNumber.toLong() + 1)
         viewModel.startTurnTable(turnTablePoints)
         advanceUntilIdle()
-        assertIs(viewModel.turnTableVisible.value, false)
+        assertIsFalse(viewModel.turnTableVisible.value)
         assertIsNull(viewModel.turnTablePoints.value)
-        assertIs(viewModel.turnTableRunning.value, false)
+        assertIsFalse(viewModel.turnTableRunning.value)
         assertIs(viewModel.turnTableAngle.value, 0f)
         assertIsNotNull(viewModel.rewardedPoints.value)
         assertIsNot(dataHolder.user.value?.points, UserPoints)

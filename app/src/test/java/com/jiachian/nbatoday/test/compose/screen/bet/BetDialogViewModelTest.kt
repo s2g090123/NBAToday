@@ -6,6 +6,8 @@ import com.jiachian.nbatoday.UserPoints
 import com.jiachian.nbatoday.compose.screen.bet.BetDialogViewModel
 import com.jiachian.nbatoday.data.local.GameAndBetsGenerator
 import com.jiachian.nbatoday.utils.assertIs
+import com.jiachian.nbatoday.utils.assertIsFalse
+import com.jiachian.nbatoday.utils.assertIsTrue
 import org.junit.Before
 import org.junit.Test
 
@@ -24,13 +26,13 @@ class BetDialogViewModelTest : BaseUnitTest() {
     @Test
     fun `showWarning() expects warning is true`() {
         viewModel.showWarning()
-        assertIs(viewModel.warning.value, true)
+        assertIsTrue(viewModel.warning.value)
     }
 
     @Test
     fun `hideWarning() expects warning is false`() {
         viewModel.hideWarning()
-        assertIs(viewModel.warning.value, false)
+        assertIsFalse(viewModel.warning.value)
     }
 
     @Test

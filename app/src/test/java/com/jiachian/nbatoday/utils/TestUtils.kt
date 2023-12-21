@@ -30,3 +30,11 @@ fun <T> assertIsNull(actual: T) {
 fun <T> assertIsNotNull(actual: T) {
     assertThat(actual, notNullValue())
 }
+
+fun <T> assertIsTrue(actual: T) {
+    assertThat(actual, `is`(true))
+}
+
+fun <T> assertIsFalse(actual: T) {
+    assertThat(actual, `is`(false))
+}

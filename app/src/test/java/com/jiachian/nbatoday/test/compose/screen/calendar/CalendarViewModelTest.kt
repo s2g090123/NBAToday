@@ -9,6 +9,8 @@ import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.utils.DateUtils
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsA
+import com.jiachian.nbatoday.utils.assertIsFalse
+import com.jiachian.nbatoday.utils.assertIsTrue
 import io.mockk.every
 import io.mockk.spyk
 import java.util.Calendar
@@ -138,13 +140,13 @@ class CalendarViewModelTest : BaseUnitTest() {
     fun `selectedGamesVisible with selecting today expects visible`() {
         viewModel.selectedGamesVisible.launchAndCollect()
         viewModel.selectDate(Date(GameTimeMs))
-        assertIs(viewModel.selectedGamesVisible.value, true)
+        assertIsTrue(viewModel.selectedGamesVisible.value)
     }
 
     @Test
     fun `selectedGamesVisible with selecting next two month expects invisible`() {
         viewModel.selectedGamesVisible.launchAndCollect()
         viewModel.selectDate(Date(GameTimeMs + 24 * 60 * 60 * 1000 * 60L))
-        assertIs(viewModel.selectedGamesVisible.value, false)
+        assertIsFalse(viewModel.selectedGamesVisible.value)
     }
 }
