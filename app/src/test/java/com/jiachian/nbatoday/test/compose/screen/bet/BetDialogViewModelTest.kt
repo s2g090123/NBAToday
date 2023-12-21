@@ -5,8 +5,7 @@ import com.jiachian.nbatoday.BasicNumber
 import com.jiachian.nbatoday.UserPoints
 import com.jiachian.nbatoday.compose.screen.bet.BetDialogViewModel
 import com.jiachian.nbatoday.data.local.GameAndBetsGenerator
-import org.hamcrest.CoreMatchers.`is`
-import org.hamcrest.MatcherAssert.assertThat
+import com.jiachian.nbatoday.utils.assertIs
 import org.junit.Before
 import org.junit.Test
 
@@ -23,26 +22,26 @@ class BetDialogViewModelTest : BaseUnitTest() {
     }
 
     @Test
-    fun `showWarning expects warning is true`() {
+    fun `showWarning() expects warning is true`() {
         viewModel.showWarning()
-        assertThat(viewModel.warning.value, `is`(true))
+        assertIs(viewModel.warning.value, true)
     }
 
     @Test
-    fun `hideWarning expects warning is false`() {
+    fun `hideWarning() expects warning is false`() {
         viewModel.hideWarning()
-        assertThat(viewModel.warning.value, `is`(false))
+        assertIs(viewModel.warning.value, false)
     }
 
     @Test
-    fun `updateHomePoints expects homePoints is updated`() {
+    fun `updateHomePoints() expects homePoints is updated`() {
         viewModel.updateHomePoints(BasicNumber.toLong())
-        assertThat(viewModel.homePoints.value, `is`(BasicNumber.toLong()))
+        assertIs(viewModel.homePoints.value, BasicNumber.toLong())
     }
 
     @Test
-    fun `updateAwayPoints expects awayPoints is updated`() {
+    fun `updateAwayPoints() expects awayPoints is updated`() {
         viewModel.updateAwayPoints(BasicNumber.toLong())
-        assertThat(viewModel.awayPoints.value, `is`(BasicNumber.toLong()))
+        assertIs(viewModel.awayPoints.value, BasicNumber.toLong())
     }
 }

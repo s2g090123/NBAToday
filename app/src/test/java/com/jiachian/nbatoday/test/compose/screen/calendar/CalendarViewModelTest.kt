@@ -39,14 +39,14 @@ class CalendarViewModelTest : BaseUnitTest() {
     }
 
     @Test
-    fun `selectDate expects selectedDate is updated`() {
+    fun `selectDate() expects selectedDate is updated`() {
         val date = Date()
         viewModel.selectDate(date)
         assertIs(viewModel.selectedDate.value, date)
     }
 
     @Test
-    fun `nextMonth with hasNextMonth expects numberAndDateString is updated`() {
+    fun `nextMonth() with hasNextMonth expects numberAndDateString is updated`() {
         val spy = spyk(viewModel) {
             every { hasNextMonth() } returns true
         }
@@ -61,7 +61,7 @@ class CalendarViewModelTest : BaseUnitTest() {
     }
 
     @Test
-    fun `nextMonth with not hasNextMonth expects numberAndDateString is not updated`() {
+    fun `nextMonth() with not hasNextMonth expects numberAndDateString is not updated`() {
         val spy = spyk(viewModel) {
             every { hasNextMonth() } returns false
         }
@@ -71,7 +71,7 @@ class CalendarViewModelTest : BaseUnitTest() {
     }
 
     @Test
-    fun `lastMonth with hasLastMonth expects numberAndDateString is updated`() {
+    fun `lastMonth() with hasLastMonth expects numberAndDateString is updated`() {
         val spy = spyk(viewModel) {
             every { hasLastMonth() } returns true
         }
@@ -86,7 +86,7 @@ class CalendarViewModelTest : BaseUnitTest() {
     }
 
     @Test
-    fun `lastMonth with not hasLastMonth expects numberAndDateString is not updated`() {
+    fun `lastMonth() with not hasLastMonth expects numberAndDateString is not updated`() {
         val spy = spyk(viewModel) {
             every { hasLastMonth() } returns false
         }
@@ -96,7 +96,7 @@ class CalendarViewModelTest : BaseUnitTest() {
     }
 
     @Test
-    fun `clickGameCard with playedGame expects screen navigates to BoxScore`() {
+    fun `clickGameCard(playedGame) expects screen navigates to BoxScore`() {
         viewModel.clickGameCard(GameGenerator.getFinal())
         assertIsA(
             navigationController.eventFlow.value,
@@ -105,7 +105,7 @@ class CalendarViewModelTest : BaseUnitTest() {
     }
 
     @Test
-    fun `clickGameCard with unPlayedGame expects screen navigates to Team`() {
+    fun `clickGameCard(unPlayedGame) expects screen navigates to Team`() {
         viewModel.clickGameCard(GameGenerator.getComingSoon())
         assertIsA(
             navigationController.eventFlow.value,
@@ -114,21 +114,21 @@ class CalendarViewModelTest : BaseUnitTest() {
     }
 
     @Test
-    fun `getGameCardViewModel with finalGame expects gameAndBets is correct`() {
+    fun `getGameCardViewModel(finalGame) expects gameAndBets is correct`() {
         val expected = GameAndBetsGenerator.getFinal()
         val cardViewModel = viewModel.getGameCardViewModel(expected)
         assertIs(cardViewModel.gameAndBets, expected)
     }
 
     @Test
-    fun `getGameCardViewModel with playingGame expects gameAndBets is correct`() {
+    fun `getGameCardViewModel(playingGame) expects gameAndBets is correct`() {
         val expected = GameAndBetsGenerator.getPlaying()
         val cardViewModel = viewModel.getGameCardViewModel(expected)
         assertIs(cardViewModel.gameAndBets, expected)
     }
 
     @Test
-    fun `getGameCardViewModel with comingSoonGame expects gameAndBets is correct`() {
+    fun `getGameCardViewModel(comingSoonGame) expects gameAndBets is correct`() {
         val expected = GameAndBetsGenerator.getComingSoon()
         val cardViewModel = viewModel.getGameCardViewModel(expected)
         assertIs(cardViewModel.gameAndBets, expected)
