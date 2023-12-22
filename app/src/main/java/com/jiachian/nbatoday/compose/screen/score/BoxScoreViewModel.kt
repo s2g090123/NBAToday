@@ -187,7 +187,7 @@ class BoxScoreViewModel(
     ) { loading, boxScoreUI ->
         if (loading) return@combine UIState.Loading()
         UIState.Loaded(boxScoreUI)
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, UIState.Loading())
+    }.stateIn(coroutineScope, SharingStarted.Lazily, UIState.Loading())
 
     private val selectedPlayerLabelImp = MutableStateFlow<BoxScorePlayerLabel?>(null)
     val selectedPlayerLabel = selectedPlayerLabelImp.asStateFlow()
