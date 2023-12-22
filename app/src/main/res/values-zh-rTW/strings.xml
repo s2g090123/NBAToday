@@ -96,7 +96,6 @@
     <string name="player_career_info_experience">經歷</string>
     <string name="player_career_stats_split">歷年數據</string>
     <string name="player_career_rank_split">歷年排名</string>
-    <string name="player_career_info_draft_format">%1$d 第%2$d輪 第%3$d順位</string>
     <string name="user_login_hint">登入後解鎖更多功能</string>
     <string name="user_login">登入</string>
     <string name="user_logout">登出</string>

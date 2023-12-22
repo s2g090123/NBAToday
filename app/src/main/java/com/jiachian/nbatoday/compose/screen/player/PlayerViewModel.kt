@@ -96,7 +96,7 @@ class PlayerViewModel(
     ) { loading, playerUI ->
         if (loading) return@combine UIState.Loading()
         UIState.Loaded(playerUI)
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, UIState.Loading())
+    }.stateIn(coroutineScope, SharingStarted.Lazily, UIState.Loading())
 
     fun updateSorting(sorting: PlayerStatsSorting) {
         sortingImp.value = sorting

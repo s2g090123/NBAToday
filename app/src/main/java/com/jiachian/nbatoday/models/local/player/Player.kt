@@ -52,6 +52,15 @@ data class Player(
 
         val detail: String
             get() = "${team.location} ${team.teamName} | #$jersey | $position"
+
+        val heightFormatted: String
+            get() = "$height(m)"
+
+        val weightFormatted: String
+            get() = "$weight(kg)"
+
+        val draftFormatted: String
+            get() = "$draftYear R$draftRound Pick $draftNumber"
     }
 
     data class PlayerStats(

@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -158,7 +159,7 @@ private fun PlayerInfoRowContent(
         rowData.data.forEachIndexed { index, data ->
             PlayerInfoBox(
                 modifier = Modifier.weight(1f),
-                title = data.title,
+                title = stringResource(data.titleRes),
                 value = data.value
             )
             if (index < rowData.data.size - 1) {

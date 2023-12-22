@@ -139,9 +139,7 @@
     <string name="player_career_info_apg">APG</string>
     <string name="player_career_info_pie">PIE</string>
     <string name="player_career_info_height">HEIGHT</string>
-    <string name="player_career_info_height_value" translatable="false">%1$s(m)</string>
     <string name="player_career_info_weight">WEIGHT</string>
-    <string name="player_career_info_weight_value" translatable="false">%1$s(kg)</string>
     <string name="player_career_info_country">COUNTRY</string>
     <string name="player_career_info_attended">LAST ATTENDED</string>
     <string name="player_career_info_age">AGE</string>
@@ -150,7 +148,6 @@
     <string name="player_career_info_experience">EXPERIENCE</string>
     <string name="player_career_stats_split">STATS SPLIT</string>
     <string name="player_career_rank_split">RANK SPLIT</string>
-    <string name="player_career_info_draft_format">%1$d R%2$d Pick %3$d</string>
     <string name="user_login_hint">Log in to access exclusive features</string>
     <string name="user_login">LOGIN</string>
     <string name="user_logout">LOGOUT</string>

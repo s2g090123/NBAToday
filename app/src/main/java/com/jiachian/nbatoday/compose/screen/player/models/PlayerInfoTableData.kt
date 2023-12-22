@@ -1,5 +1,7 @@
 package com.jiachian.nbatoday.compose.screen.player.models
 
+import androidx.annotation.StringRes
+
 data class PlayerInfoTableData(
     val rowData: List<RowData>,
 ) {
@@ -7,7 +9,7 @@ data class PlayerInfoTableData(
         val data: List<Data>,
     ) {
         data class Data(
-            val title: String,
+            @StringRes val titleRes: Int,
             val value: String,
         )
     }
