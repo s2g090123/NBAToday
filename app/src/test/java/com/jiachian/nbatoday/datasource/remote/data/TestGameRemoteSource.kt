@@ -15,11 +15,11 @@ class TestGameRemoteSource : GameRemoteSource() {
     }
 
     override suspend fun getGame(leagueId: String, gameDate: String): Response<RemoteGame> {
-        return Response.success(RemoteGameGenerator.getFinal())
+        return Response.success(RemoteGameGenerator.get())
     }
 
     override suspend fun getGames(year: Int, month: Int, day: Int, total: Int): Response<List<RemoteGame>> {
-        return Response.success(listOf(RemoteGameGenerator.getFinal()))
+        return Response.success(listOf(RemoteGameGenerator.get()))
     }
 
     override suspend fun getBoxScore(gameId: String): Response<RemoteBoxScore> {

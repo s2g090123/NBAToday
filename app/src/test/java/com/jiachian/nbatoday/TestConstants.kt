@@ -42,6 +42,7 @@ const val HomePlayerLastName = "Allen"
 const val AwayPlayerFullName = "Jia Chian"
 const val AwayPlayerFirstName = "Jia"
 const val AwayPlayerLastName = "Chian"
+const val PlayerBirthDateTime = "2013-01-01T00:00:00"
 
 const val BasicNumber = 10
 const val BasicPercentage = 100.0

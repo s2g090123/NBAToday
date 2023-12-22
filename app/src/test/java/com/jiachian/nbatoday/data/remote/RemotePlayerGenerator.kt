@@ -13,6 +13,7 @@ import com.jiachian.nbatoday.HomePlayerLastName
 import com.jiachian.nbatoday.HomeTeamAbbr
 import com.jiachian.nbatoday.HomeTeamId
 import com.jiachian.nbatoday.HomeTeamName
+import com.jiachian.nbatoday.PlayerBirthDateTime
 import com.jiachian.nbatoday.TeamCity
 import com.jiachian.nbatoday.models.remote.player.RemotePlayer
 import com.jiachian.nbatoday.models.remote.player.RemotePlayerInfo
@@ -180,7 +181,8 @@ object RemotePlayerGenerator {
                     "DRAFT_YEAR",
                     "DRAFT_ROUND",
                     "DRAFT_NUMBER",
-                    "GREATEST_75_FLAG"
+                    "GREATEST_75_FLAG",
+                    "BIRTHDATE",
                 ),
                 rowData = listOf(
                     listOf(
@@ -203,7 +205,8 @@ object RemotePlayerGenerator {
                         BasicNumber.toString(),
                         BasicNumber.toString(),
                         BasicNumber.toString(),
-                        "Y"
+                        "Y",
+                        PlayerBirthDateTime
                     )
                 )
             ),

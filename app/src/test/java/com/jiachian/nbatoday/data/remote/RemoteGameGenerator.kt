@@ -8,23 +8,25 @@ import com.jiachian.nbatoday.BasicNumber
 import com.jiachian.nbatoday.BasicPosition
 import com.jiachian.nbatoday.FinalGameId
 import com.jiachian.nbatoday.GameStatusFinal
+import com.jiachian.nbatoday.GameStatusPrepare
 import com.jiachian.nbatoday.HomePlayerFullName
 import com.jiachian.nbatoday.HomePlayerId
 import com.jiachian.nbatoday.HomeTeamAbbr
 import com.jiachian.nbatoday.HomeTeamId
+import com.jiachian.nbatoday.PlayingGameId
 import com.jiachian.nbatoday.models.local.game.GameStatus
 import com.jiachian.nbatoday.models.remote.game.RemoteGame
 
 object RemoteGameGenerator {
-    fun getFinal(): RemoteGame {
+    fun get(): RemoteGame {
         return RemoteGame(
-            scoreboard = getFinalScoreboard()
+            scoreboard = getScoreboard()
         )
     }
 
-    private fun getFinalScoreboard(): RemoteGame.RemoteScoreboard {
+    private fun getScoreboard(): RemoteGame.RemoteScoreboard {
         return RemoteGame.RemoteScoreboard(
-            games = listOf(getFinalGameDetail())
+            games = listOf(getFinalGameDetail(), getPlayingGameDetail())
         )
     }
 
@@ -33,6 +35,18 @@ object RemoteGameGenerator {
             gameId = FinalGameId,
             gameStatus = GameStatus.FINAL.code,
             gameStatusText = GameStatusFinal,
+            gameLeaders = getGameLeaders(),
+            teamLeaders = getGameLeaders(),
+            homeTeam = getHomeGameTeam(),
+            awayTeam = getAwayGameTeam()
+        )
+    }
+
+    private fun getPlayingGameDetail(): RemoteGame.RemoteScoreboard.RemoteGameDetail {
+        return RemoteGame.RemoteScoreboard.RemoteGameDetail(
+            gameId = PlayingGameId,
+            gameStatus = GameStatus.PLAYING.code,
+            gameStatusText = GameStatusPrepare,
             gameLeaders = getGameLeaders(),
             teamLeaders = getGameLeaders(),
             homeTeam = getHomeGameTeam(),
