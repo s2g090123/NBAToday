@@ -18,6 +18,7 @@ import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.repository.game.GameRepository
 import com.jiachian.nbatoday.repository.team.TeamRepository
 import com.jiachian.nbatoday.utils.ComposeViewModelProvider
+import com.jiachian.nbatoday.utils.DateUtils
 import java.util.Calendar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
@@ -59,7 +60,7 @@ class TeamViewModel(
 
     val gamesBefore = gameRepository.getGamesAndBetsBefore(
         team.teamId,
-        Calendar.getInstance().apply {
+        DateUtils.getCalendar().apply {
             set(Calendar.HOUR, 0)
             set(Calendar.MINUTE, 0)
             set(Calendar.MILLISECOND, 0)
@@ -69,7 +70,7 @@ class TeamViewModel(
     }.stateIn(coroutineScope, SharingStarted.Lazily, UIState.Loading())
     val gamesAfter = gameRepository.getGamesAndBetsAfter(
         team.teamId,
-        Calendar.getInstance().apply {
+        DateUtils.getCalendar().apply {
             set(Calendar.HOUR, 0)
             set(Calendar.MINUTE, 0)
             set(Calendar.MILLISECOND, 0)
