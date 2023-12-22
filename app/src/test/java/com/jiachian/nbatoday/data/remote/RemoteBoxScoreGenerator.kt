@@ -7,8 +7,8 @@ import com.jiachian.nbatoday.BasicMinutes
 import com.jiachian.nbatoday.BasicNumber
 import com.jiachian.nbatoday.BasicPercentage
 import com.jiachian.nbatoday.BasicPosition
+import com.jiachian.nbatoday.FinalGameDateTime
 import com.jiachian.nbatoday.FinalGameId
-import com.jiachian.nbatoday.GameDateTime
 import com.jiachian.nbatoday.GameStatusFinal
 import com.jiachian.nbatoday.HomePlayerId
 import com.jiachian.nbatoday.HomePlayerLastName
@@ -27,7 +27,7 @@ object RemoteBoxScoreGenerator {
     private fun getFinalGame(): RemoteBoxScore.RemoteGame {
         return RemoteBoxScore.RemoteGame(
             gameId = FinalGameId,
-            gameEt = "$GameDateTime-",
+            gameEt = "$FinalGameDateTime-",
             gameStatusText = GameStatusFinal,
             gameStatus = GameStatus.FINAL,
             homeTeam = getHomeTeam(),

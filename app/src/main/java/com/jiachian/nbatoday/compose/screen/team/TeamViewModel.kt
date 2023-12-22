@@ -130,7 +130,7 @@ class TeamViewModel(
     ) { loading, teamUI ->
         if (loading) return@combine UIState.Loading()
         UIState.Loaded(teamUI)
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, UIState.Loading())
+    }.stateIn(coroutineScope, SharingStarted.Lazily, UIState.Loading())
 
     private val gameCardViewModelMap = mutableMapOf<GameAndBets, GameCardViewModel>()
 

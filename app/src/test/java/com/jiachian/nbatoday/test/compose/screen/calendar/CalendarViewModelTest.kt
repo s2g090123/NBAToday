@@ -1,7 +1,7 @@
 package com.jiachian.nbatoday.test.compose.screen.calendar
 
 import com.jiachian.nbatoday.BaseUnitTest
-import com.jiachian.nbatoday.GameTimeMs
+import com.jiachian.nbatoday.BasicTime
 import com.jiachian.nbatoday.compose.screen.calendar.CalendarViewModel
 import com.jiachian.nbatoday.data.local.GameAndBetsGenerator
 import com.jiachian.nbatoday.data.local.GameGenerator
@@ -27,7 +27,7 @@ class CalendarViewModelTest : BaseUnitTest() {
     private val currentCalendar: Calendar
         get() {
             return DateUtils.getCalendar().apply {
-                timeInMillis = GameTimeMs
+                timeInMillis = BasicTime
             }
         }
 
@@ -35,7 +35,7 @@ class CalendarViewModelTest : BaseUnitTest() {
     fun setup() = runTest {
         repositoryProvider.schedule.updateSchedule()
         viewModel = CalendarViewModel(
-            dateTime = GameTimeMs,
+            dateTime = BasicTime,
             repository = repositoryProvider.game,
             navigationController = navigationController,
             composeViewModelProvider = composeViewModelProvider,
@@ -142,14 +142,14 @@ class CalendarViewModelTest : BaseUnitTest() {
     @Test
     fun `selectedGamesVisible with selecting today expects visible`() {
         viewModel.selectedGamesVisible.launchAndCollect()
-        viewModel.selectDate(Date(GameTimeMs))
+        viewModel.selectDate(Date(BasicTime))
         assertIsTrue(viewModel.selectedGamesVisible.value)
     }
 
     @Test
     fun `selectedGamesVisible with selecting next two month expects invisible`() {
         viewModel.selectedGamesVisible.launchAndCollect()
-        viewModel.selectDate(Date(GameTimeMs + 24 * 60 * 60 * 1000 * 60L))
+        viewModel.selectDate(Date(BasicTime + 24 * 60 * 60 * 1000 * 60L))
         assertIsFalse(viewModel.selectedGamesVisible.value)
     }
 }

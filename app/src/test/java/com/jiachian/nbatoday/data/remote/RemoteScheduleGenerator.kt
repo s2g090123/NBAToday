@@ -3,13 +3,15 @@ package com.jiachian.nbatoday.data.remote
 import com.jiachian.nbatoday.AwayPlayerId
 import com.jiachian.nbatoday.AwayTeamId
 import com.jiachian.nbatoday.BasicNumber
+import com.jiachian.nbatoday.ComingSoonGameDateTime
 import com.jiachian.nbatoday.ComingSoonGameId
+import com.jiachian.nbatoday.FinalGameDateTime
 import com.jiachian.nbatoday.FinalGameId
-import com.jiachian.nbatoday.GameDateTime
 import com.jiachian.nbatoday.GameStatusFinal
 import com.jiachian.nbatoday.GameStatusPrepare
 import com.jiachian.nbatoday.HomePlayerId
 import com.jiachian.nbatoday.HomeTeamId
+import com.jiachian.nbatoday.PlayingGameDateTime
 import com.jiachian.nbatoday.PlayingGameId
 import com.jiachian.nbatoday.models.local.game.GameStatus
 import com.jiachian.nbatoday.models.remote.game.RemoteSchedule
@@ -47,8 +49,8 @@ object RemoteScheduleGenerator {
             gameStatusText = GameStatusFinal,
             gameSequence = 0,
             homeTeam = getHomeTeam(),
-            gameDateEst = GameDateTime,
-            gameDateTimeEst = GameDateTime,
+            gameDateEst = FinalGameDateTime,
+            gameDateTimeEst = FinalGameDateTime,
             pointsLeaders = listOf(
                 getHomeLeader(),
                 getAwayLeader()
@@ -64,8 +66,8 @@ object RemoteScheduleGenerator {
             gameStatusText = GameStatusPrepare,
             gameSequence = 0,
             homeTeam = getHomeTeam(),
-            gameDateEst = GameDateTime,
-            gameDateTimeEst = GameDateTime,
+            gameDateEst = PlayingGameDateTime,
+            gameDateTimeEst = PlayingGameDateTime,
             pointsLeaders = listOf(
                 getHomeLeader(),
                 getAwayLeader()
@@ -81,8 +83,8 @@ object RemoteScheduleGenerator {
             gameStatusText = GameStatusPrepare,
             gameSequence = 0,
             homeTeam = getHomeTeam(),
-            gameDateEst = GameDateTime,
-            gameDateTimeEst = GameDateTime,
+            gameDateEst = ComingSoonGameDateTime,
+            gameDateTimeEst = ComingSoonGameDateTime,
             pointsLeaders = listOf(
                 getHomeLeader(),
                 getAwayLeader()
