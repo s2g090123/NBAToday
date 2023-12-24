@@ -23,6 +23,6 @@ class TestGameRemoteSource : GameRemoteSource() {
     }
 
     override suspend fun getBoxScore(gameId: String): Response<RemoteBoxScore> {
-        return Response.success(RemoteBoxScoreGenerator.getFinal())
+        return Response.success(RemoteBoxScoreGenerator.get(gameId))
     }
 }
