@@ -1,6 +1,16 @@
 package com.jiachian.nbatoday.koin
 
 import com.jiachian.nbatoday.DataHolder
+import com.jiachian.nbatoday.database.dao.BetDao
+import com.jiachian.nbatoday.database.dao.BoxScoreDao
+import com.jiachian.nbatoday.database.dao.GameDao
+import com.jiachian.nbatoday.database.dao.PlayerDao
+import com.jiachian.nbatoday.database.dao.TeamDao
+import com.jiachian.nbatoday.database.dao.TestBetDao
+import com.jiachian.nbatoday.database.dao.TestBoxScoreDao
+import com.jiachian.nbatoday.database.dao.TestGameDao
+import com.jiachian.nbatoday.database.dao.TestPlayerDao
+import com.jiachian.nbatoday.database.dao.TestTeamDao
 import com.jiachian.nbatoday.datasource.local.bet.BetLocalSource
 import com.jiachian.nbatoday.datasource.local.boxscore.BoxScoreLocalSource
 import com.jiachian.nbatoday.datasource.local.data.TestBetLocalSource
@@ -39,6 +49,11 @@ import com.jiachian.nbatoday.utils.ComposeViewModelProvider
 import org.koin.dsl.module
 
 val testModule = module {
+    factory { TestGameDao(get()) as GameDao }
+    factory { TestBoxScoreDao(get()) as BoxScoreDao }
+    factory { TestTeamDao(get()) as TeamDao }
+    factory { TestPlayerDao(get()) as PlayerDao }
+    factory { TestBetDao(get()) as BetDao }
     factory { TestGameRemoteSource() as GameRemoteSource }
     factory { TestTeamRemoteSource() as TeamRemoteSource }
     factory { TestPlayerRemoteSource() as PlayerRemoteSource }
