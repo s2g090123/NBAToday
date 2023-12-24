@@ -13,4 +13,12 @@ object BoxScoreGenerator {
             ?.toBoxScore()
             .getOrAssert()
     }
+
+    fun getPlaying(): BoxScore {
+        return RemoteBoxScoreGenerator
+            .getPlaying()
+            .game
+            ?.toBoxScore()
+            .getOrAssert()
+    }
 }

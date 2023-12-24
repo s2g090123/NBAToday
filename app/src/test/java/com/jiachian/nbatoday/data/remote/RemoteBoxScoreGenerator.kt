@@ -7,8 +7,6 @@ import com.jiachian.nbatoday.BasicMinutes
 import com.jiachian.nbatoday.BasicNumber
 import com.jiachian.nbatoday.BasicPercentage
 import com.jiachian.nbatoday.BasicPosition
-import com.jiachian.nbatoday.ComingSoonGameDateTime
-import com.jiachian.nbatoday.ComingSoonGameId
 import com.jiachian.nbatoday.FinalGameDateTime
 import com.jiachian.nbatoday.FinalGameId
 import com.jiachian.nbatoday.GameStatusFinal
@@ -26,8 +24,7 @@ object RemoteBoxScoreGenerator {
     fun get(gameId: String): RemoteBoxScore {
         return when (gameId) {
             FinalGameId -> getFinal()
-            PlayingGameId -> getPlaying()
-            else -> getComingSoon()
+            else -> getPlaying()
         }
     }
 
@@ -40,12 +37,6 @@ object RemoteBoxScoreGenerator {
     fun getPlaying(): RemoteBoxScore {
         return RemoteBoxScore(
             game = getPlayingGame()
-        )
-    }
-
-    fun getComingSoon(): RemoteBoxScore {
-        return RemoteBoxScore(
-            game = getComingSoonGame()
         )
     }
 
@@ -66,17 +57,6 @@ object RemoteBoxScoreGenerator {
             gameEt = "$PlayingGameDateTime-",
             gameStatusText = GameStatusPrepare,
             gameStatus = GameStatus.PLAYING,
-            homeTeam = getHomeTeam(),
-            awayTeam = getAwayTeam(),
-        )
-    }
-
-    private fun getComingSoonGame(): RemoteBoxScore.RemoteGame {
-        return RemoteBoxScore.RemoteGame(
-            gameId = ComingSoonGameId,
-            gameEt = "$ComingSoonGameDateTime-",
-            gameStatusText = GameStatusPrepare,
-            gameStatus = GameStatus.COMING_SOON,
             homeTeam = getHomeTeam(),
             awayTeam = getAwayTeam(),
         )
