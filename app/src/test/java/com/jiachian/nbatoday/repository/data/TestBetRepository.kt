@@ -1,5 +1,10 @@
 package com.jiachian.nbatoday.repository.data
 
+import com.jiachian.nbatoday.ComingSoonBetId
+import com.jiachian.nbatoday.FinalBetId
+import com.jiachian.nbatoday.FinalGameId
+import com.jiachian.nbatoday.PlayingBetId
+import com.jiachian.nbatoday.PlayingGameId
 import com.jiachian.nbatoday.datasource.local.bet.BetLocalSource
 import com.jiachian.nbatoday.models.local.bet.Bet
 import com.jiachian.nbatoday.models.local.bet.BetAndGame
@@ -20,8 +25,14 @@ class TestBetRepository(
             ?.takeIf { user -> user.available }
             ?.takeIf { user -> user.points - usedPoints >= 0 }
             ?.let { user ->
+                val betId = when (gameId) {
+                    FinalGameId -> FinalBetId
+                    PlayingGameId -> PlayingBetId
+                    else -> ComingSoonBetId
+                }
                 betLocalSource.insertBet(
                     Bet(
+                        betId = betId,
                         account = user.account,
                         gameId = gameId,
                         homePoints = homePoints,

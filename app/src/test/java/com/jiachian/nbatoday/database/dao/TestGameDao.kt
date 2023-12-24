@@ -28,7 +28,7 @@ class TestGameDao(
     override fun getGamesAndBetsAfter(teamId: Int, from: Long): Flow<List<GameAndBets>> {
         return dataHolder.gamesAndBets.map { gamesAndBets ->
             gamesAndBets.filter { gameAndBets ->
-                gameAndBets.game.gameDate.time >= from &&
+                gameAndBets.game.gameDate.time > from &&
                     (gameAndBets.game.homeTeam.team.teamId == teamId || gameAndBets.game.awayTeam.team.teamId == teamId)
             }
         }
@@ -58,7 +58,7 @@ class TestGameDao(
         }
     }
 
-    override fun gameExists(): Boolean {
+    override suspend fun gameExists(): Boolean {
         return dataHolder.games.value.isNotEmpty()
     }
 

@@ -3,24 +3,24 @@ package com.jiachian.nbatoday.data.local
 import com.jiachian.nbatoday.models.local.game.GameAndBets
 
 object GameAndBetsGenerator {
-    fun getFinal(): GameAndBets {
+    fun getFinal(includeBet: Boolean = true): GameAndBets {
         return GameAndBets(
             game = GameGenerator.getFinal(),
-            bets = listOf(BetGenerator.getFinal())
+            bets = if (includeBet) listOf(BetGenerator.getFinal()) else emptyList()
         )
     }
 
-    fun getPlaying(): GameAndBets {
+    fun getPlaying(includeBet: Boolean = true): GameAndBets {
         return GameAndBets(
             game = GameGenerator.getPlaying(),
-            bets = listOf(BetGenerator.getPlaying())
+            bets = if (includeBet) listOf(BetGenerator.getPlaying()) else emptyList()
         )
     }
 
-    fun getComingSoon(): GameAndBets {
+    fun getComingSoon(includeBet: Boolean = true): GameAndBets {
         return GameAndBets(
             game = GameGenerator.getComingSoon(),
-            bets = listOf(BetGenerator.getComingSoon())
+            bets = if (includeBet) listOf(BetGenerator.getComingSoon()) else emptyList()
         )
     }
 }

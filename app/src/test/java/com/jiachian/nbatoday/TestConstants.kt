@@ -60,3 +60,8 @@ const val UserPassword = "0000"
 const val UserName = "Account"
 const val UserPoints = 1000L
 const val UserToken = "123456"
+
+const val FinalBetId = 0L
+const val PlayingBetId = 1L
+const val ComingSoonBetId = 2L
+const val BetPoints = 1L

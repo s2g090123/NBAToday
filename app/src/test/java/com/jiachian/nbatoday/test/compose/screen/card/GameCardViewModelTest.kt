@@ -1,7 +1,7 @@
 package com.jiachian.nbatoday.test.compose.screen.card
 
 import com.jiachian.nbatoday.BaseUnitTest
-import com.jiachian.nbatoday.BasicNumber
+import com.jiachian.nbatoday.BetPoints
 import com.jiachian.nbatoday.FinalGameId
 import com.jiachian.nbatoday.UserAccount
 import com.jiachian.nbatoday.UserName
@@ -53,10 +53,10 @@ class GameCardViewModelTest : BaseUnitTest() {
     fun `bet() expects the bet is saved`() {
         val viewModel = getFinalViewModel()
         viewModel.login(UserAccount, UserPassword)
-        viewModel.bet(BasicNumber.toLong(), BasicNumber.toLong())
+        viewModel.bet(BetPoints, BetPoints)
         val betsAndGames = dataHolder.betsAndGames.stateIn(emptyList())
         assertIsTrue(dataHolder.bets.value.isNotEmpty())
-        assertIsTrue(betsAndGames.value?.any { it.game.gameId == FinalGameId })
+        assertIsTrue(betsAndGames.value.any { it.game.gameId == FinalGameId })
     }
 
     @Test

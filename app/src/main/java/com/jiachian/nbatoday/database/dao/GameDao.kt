@@ -33,7 +33,7 @@ interface GameDao {
     fun getFirstGameDateTime(): Flow<Date?>
 
     @Query("SELECT EXISTS (SELECT 1 FROM game)")
-    fun gameExists(): Boolean
+    suspend fun gameExists(): Boolean
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertGames(games: List<Game>)
