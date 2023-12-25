@@ -1,8 +1,11 @@
 package com.jiachian.nbatoday.test.datasource.remote.team
 
 import com.jiachian.nbatoday.HomeTeamId
+import com.jiachian.nbatoday.data.remote.RemoteTeamGenerator
+import com.jiachian.nbatoday.data.remote.RemoteTeamPlayerGenerator
 import com.jiachian.nbatoday.datasource.remote.team.NBATeamRemoteSource
 import com.jiachian.nbatoday.service.TeamService
+import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsTrue
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -32,22 +35,28 @@ class NBATeamRemoteSourceTest {
 
     @Test
     fun `getTeam() expects the response is successful`() = runTest {
-        coEvery { mockedService.getTeam(any(), null) } returns Response.success(null)
+        val expected = RemoteTeamGenerator.get()
+        coEvery { mockedService.getTeam(any(), null) } returns Response.success(expected)
         val response = remoteSource.getTeam()
         assertIsTrue(response.isSuccessful)
+        assertIs(response.body(), expected)
     }
 
     @Test
     fun `getTeam(home) expects the response is successful`() = runTest {
-        coEvery { mockedService.getTeam(any(), any()) } returns Response.success(null)
+        val expected = RemoteTeamGenerator.get()
+        coEvery { mockedService.getTeam(any(), any()) } returns Response.success(expected)
         val response = remoteSource.getTeam(HomeTeamId)
         assertIsTrue(response.isSuccessful)
+        assertIs(response.body(), expected)
     }
 
     @Test
     fun `getTeamPlayer(home) expects the response is successful`() = runTest {
-        coEvery { mockedService.getTeamPlayer(any(), any()) } returns Response.success(null)
+        val expected = RemoteTeamPlayerGenerator.get(HomeTeamId)
+        coEvery { mockedService.getTeamPlayer(any(), any()) } returns Response.success(expected)
         val response = remoteSource.getTeamPlayer(HomeTeamId)
         assertIsTrue(response.isSuccessful)
+        assertIs(response.body(), expected)
     }
 }

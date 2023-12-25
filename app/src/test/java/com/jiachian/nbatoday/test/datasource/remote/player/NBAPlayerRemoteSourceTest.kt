@@ -1,8 +1,10 @@
 package com.jiachian.nbatoday.test.datasource.remote.player
 
 import com.jiachian.nbatoday.HomePlayerId
+import com.jiachian.nbatoday.data.remote.RemotePlayerGenerator
 import com.jiachian.nbatoday.datasource.remote.player.NBAPlayerRemoteSource
 import com.jiachian.nbatoday.service.PlayerService
+import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsTrue
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -32,8 +34,10 @@ class NBAPlayerRemoteSourceTest {
 
     @Test
     fun `getPlayer(home) expects the response is successful`() = runTest {
-        coEvery { mockedService.getPlayer(any(), any()) } returns Response.success(null)
+        val expected = RemotePlayerGenerator.get(HomePlayerId)
+        coEvery { mockedService.getPlayer(any(), any()) } returns Response.success(expected)
         val response = remoteSource.getPlayer(HomePlayerId)
         assertIsTrue(response.isSuccessful)
+        assertIs(response.body(), expected)
     }
 }

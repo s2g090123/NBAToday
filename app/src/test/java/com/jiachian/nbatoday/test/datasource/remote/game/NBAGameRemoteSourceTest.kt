@@ -2,8 +2,12 @@ package com.jiachian.nbatoday.test.datasource.remote.game
 
 import com.jiachian.nbatoday.FinalGameId
 import com.jiachian.nbatoday.NBALeagueId
+import com.jiachian.nbatoday.data.remote.RemoteBoxScoreGenerator
+import com.jiachian.nbatoday.data.remote.RemoteGameGenerator
+import com.jiachian.nbatoday.data.remote.RemoteScheduleGenerator
 import com.jiachian.nbatoday.datasource.remote.game.NBAGameRemoteSource
 import com.jiachian.nbatoday.service.GameService
+import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsTrue
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -33,29 +37,37 @@ class NBAGameRemoteSourceTest {
 
     @Test
     fun `getSchedule() expects the response is successful`() = runTest {
-        coEvery { mockedService.getSchedule() } returns Response.success(null)
+        val expected = RemoteScheduleGenerator.get()
+        coEvery { mockedService.getSchedule() } returns Response.success(expected)
         val response = remoteSource.getSchedule()
         assertIsTrue(response.isSuccessful)
+        assertIs(response.body(), expected)
     }
 
     @Test
     fun `getGame() expects the response is successful`() = runTest {
-        coEvery { mockedService.getGame(any(), any()) } returns Response.success(null)
+        val expected = RemoteGameGenerator.get()
+        coEvery { mockedService.getGame(any(), any()) } returns Response.success(expected)
         val response = remoteSource.getGame(NBALeagueId, "")
         assertIsTrue(response.isSuccessful)
+        assertIs(response.body(), expected)
     }
 
     @Test
     fun `getGames() expects the response is successful`() = runTest {
-        coEvery { mockedService.getGames(any(), any(), any(), any()) } returns Response.success(null)
+        val expected = listOf(RemoteGameGenerator.get())
+        coEvery { mockedService.getGames(any(), any(), any(), any()) } returns Response.success(expected)
         val response = remoteSource.getGames(0, 0, 0, 0)
         assertIsTrue(response.isSuccessful)
+        assertIs(response.body(), expected)
     }
 
     @Test
     fun `getBoxScore() expects the response is successful`() = runTest {
-        coEvery { mockedService.getBoxScore(any()) } returns Response.success(null)
+        val expected = RemoteBoxScoreGenerator.get(FinalGameId)
+        coEvery { mockedService.getBoxScore(any()) } returns Response.success(expected)
         val response = remoteSource.getBoxScore(FinalGameId)
         assertIsTrue(response.isSuccessful)
+        assertIs(response.body(), expected)
     }
 }
