@@ -13,6 +13,8 @@ abstract class RemoteSource {
         private const val ReadTimeOut = 20L
 
         private val gson = GsonBuilder().setLenient().create()
+
+        @Volatile
         private var retrofit: Retrofit? = null
 
         fun <T> createService(c: Class<T>): T {
@@ -20,8 +22,8 @@ abstract class RemoteSource {
         }
 
         private fun getRetrofit(): Retrofit {
-            return retrofit ?: synchronized(Unit) {
-                Retrofit.Builder()
+            return synchronized(Unit) {
+                retrofit ?: Retrofit.Builder()
                     .baseUrl(NBAServerUrl)
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .client(buildHttpClient())
