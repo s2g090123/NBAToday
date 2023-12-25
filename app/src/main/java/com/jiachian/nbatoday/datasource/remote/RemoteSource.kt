@@ -11,7 +11,9 @@ object RemoteSource {
     private const val ConnectTimeOut = 5L
     private const val ReadTimeOut = 20L
 
-    private val gson = GsonBuilder().setLenient().create()
+    private val gson by lazy {
+        GsonBuilder().setLenient().create()
+    }
 
     @Volatile
     private var retrofit: Retrofit? = null
