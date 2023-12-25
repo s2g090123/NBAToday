@@ -22,7 +22,6 @@ import com.jiachian.nbatoday.utils.assertIsFalse
 import com.jiachian.nbatoday.utils.assertIsTrue
 import com.jiachian.nbatoday.utils.getOrAssert
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 import org.koin.core.component.get
@@ -284,7 +283,7 @@ class NBAGameLocalSourceTest : BaseUnitTest() {
     }
 
     @Test
-    fun `gameExists() with not updateSchedule expects false`() = runTest {
+    fun `gameExists() with not updateSchedule expects false`() = launch {
         val actual = localSource.gameExists()
         assertIsFalse(actual)
     }

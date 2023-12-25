@@ -88,7 +88,7 @@ class SchedulePageViewModelTest : BaseUnitTest() {
     }
 
     @Test
-    fun `updateSelectedSchedule() expects groupedGamesState is updated`() = runTest {
+    fun `updateSelectedSchedule() expects groupedGamesState is updated`() = launch {
         viewModel.updateSelectedSchedule()
         advanceUntilIdle()
         assertIsA(
