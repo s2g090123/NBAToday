@@ -7,8 +7,10 @@ import com.jiachian.nbatoday.service.GameService
 import com.jiachian.nbatoday.utils.assertIsTrue
 import io.mockk.coEvery
 import io.mockk.mockk
+import io.mockk.unmockkObject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import retrofit2.Response
@@ -16,11 +18,17 @@ import retrofit2.Response
 @OptIn(ExperimentalCoroutinesApi::class)
 class NBAGameRemoteSourceTest {
     private lateinit var remoteSource: NBAGameRemoteSource
-    private val mockedService = mockk<GameService>()
+    private lateinit var mockedService: GameService
 
     @Before
     fun setup() {
+        mockedService = mockk()
         remoteSource = NBAGameRemoteSource(mockedService)
+    }
+
+    @After
+    fun teardown() {
+        unmockkObject(mockedService)
     }
 
     @Test
