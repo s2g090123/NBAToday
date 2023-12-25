@@ -7,12 +7,9 @@ import com.jiachian.nbatoday.models.remote.user.UpdatePointsBody
 import com.jiachian.nbatoday.service.UserService
 import retrofit2.Response
 
-class NBAUserRemoteSource : UserRemoteSource() {
-
-    private val userService by lazy {
-        retrofit.create(UserService::class.java)
-    }
-
+class NBAUserRemoteSource(
+    private val userService: UserService
+) : UserRemoteSource() {
     override suspend fun login(account: String, password: String): Response<RemoteUser> {
         return userService.login(LoginBody(account, password))
     }

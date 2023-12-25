@@ -12,6 +12,7 @@ import com.jiachian.nbatoday.datasource.local.player.NBAPlayerLocalSource
 import com.jiachian.nbatoday.datasource.local.player.PlayerLocalSource
 import com.jiachian.nbatoday.datasource.local.team.NBATeamLocalSource
 import com.jiachian.nbatoday.datasource.local.team.TeamLocalSource
+import com.jiachian.nbatoday.datasource.remote.RemoteSource
 import com.jiachian.nbatoday.datasource.remote.game.GameRemoteSource
 import com.jiachian.nbatoday.datasource.remote.game.NBAGameRemoteSource
 import com.jiachian.nbatoday.datasource.remote.player.NBAPlayerRemoteSource
@@ -36,6 +37,10 @@ import com.jiachian.nbatoday.repository.team.NBATeamRepository
 import com.jiachian.nbatoday.repository.team.TeamRepository
 import com.jiachian.nbatoday.repository.user.NBAUserRepository
 import com.jiachian.nbatoday.repository.user.UserRepository
+import com.jiachian.nbatoday.service.GameService
+import com.jiachian.nbatoday.service.PlayerService
+import com.jiachian.nbatoday.service.TeamService
+import com.jiachian.nbatoday.service.UserService
 import com.jiachian.nbatoday.utils.ComposeViewModelProvider
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
@@ -48,10 +53,10 @@ val module = module {
     factory { (get() as NBADatabase).getTeamDao() }
     factory { (get() as NBADatabase).getPlayerDao() }
     factory { (get() as NBADatabase).getBetDao() }
-    factory { NBAGameRemoteSource() as GameRemoteSource }
-    factory { NBATeamRemoteSource() as TeamRemoteSource }
-    factory { NBAPlayerRemoteSource() as PlayerRemoteSource }
-    factory { NBAUserRemoteSource() as UserRemoteSource }
+    factory { NBAGameRemoteSource(RemoteSource.createService(GameService::class.java)) as GameRemoteSource }
+    factory { NBATeamRemoteSource(RemoteSource.createService(TeamService::class.java)) as TeamRemoteSource }
+    factory { NBAPlayerRemoteSource(RemoteSource.createService(PlayerService::class.java)) as PlayerRemoteSource }
+    factory { NBAUserRemoteSource(RemoteSource.createService(UserService::class.java)) as UserRemoteSource }
     factory { NBAGameLocalSource(get()) as GameLocalSource }
     factory { NBABoxScoreLocalSource(get()) as BoxScoreLocalSource }
     factory { NBATeamLocalSource(get()) as TeamLocalSource }

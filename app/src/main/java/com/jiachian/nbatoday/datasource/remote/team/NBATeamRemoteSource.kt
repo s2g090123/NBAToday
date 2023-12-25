@@ -6,12 +6,9 @@ import com.jiachian.nbatoday.models.remote.team.RemoteTeamPlayer
 import com.jiachian.nbatoday.service.TeamService
 import retrofit2.Response
 
-class NBATeamRemoteSource : TeamRemoteSource() {
-
-    private val teamService by lazy {
-        retrofit.create(TeamService::class.java)
-    }
-
+class NBATeamRemoteSource(
+    private val teamService: TeamService
+) : TeamRemoteSource() {
     override suspend fun getTeam(): Response<RemoteTeam> {
         return teamService.getTeam(season = CurrentSeason, teamId = null)
     }

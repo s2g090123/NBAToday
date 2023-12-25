@@ -6,12 +6,9 @@ import com.jiachian.nbatoday.models.remote.score.RemoteBoxScore
 import com.jiachian.nbatoday.service.GameService
 import retrofit2.Response
 
-class NBAGameRemoteSource : GameRemoteSource() {
-
-    private val gameService by lazy {
-        retrofit.create(GameService::class.java)
-    }
-
+class NBAGameRemoteSource(
+    private val gameService: GameService
+) : GameRemoteSource() {
     override suspend fun getSchedule(): Response<RemoteSchedule> {
         return gameService.getSchedule()
     }

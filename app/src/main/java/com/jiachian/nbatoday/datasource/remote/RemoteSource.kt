@@ -11,20 +11,30 @@ abstract class RemoteSource {
     companion object {
         private const val ConnectTimeOut = 5L
         private const val ReadTimeOut = 20L
-    }
 
-    private val gson = GsonBuilder().setLenient().create()
+        private val gson = GsonBuilder().setLenient().create()
+        private var retrofit: Retrofit? = null
 
-    protected val retrofit: Retrofit = Retrofit.Builder()
-        .baseUrl(NBAServerUrl)
-        .addConverterFactory(GsonConverterFactory.create(gson))
-        .client(buildHttpClient())
-        .build()
+        fun <T> createService(c: Class<T>): T {
+            return getRetrofit().create(c)
+        }
 
-    private fun buildHttpClient(): OkHttpClient {
-        return OkHttpClient.Builder()
-            .connectTimeout(ConnectTimeOut, TimeUnit.SECONDS)
-            .readTimeout(ReadTimeOut, TimeUnit.SECONDS)
-            .build()
+        private fun getRetrofit(): Retrofit {
+            return retrofit ?: synchronized(Unit) {
+                Retrofit.Builder()
+                    .baseUrl(NBAServerUrl)
+                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .client(buildHttpClient())
+                    .build()
+                    .also { retrofit = it }
+            }
+        }
+
+        private fun buildHttpClient(): OkHttpClient {
+            return OkHttpClient.Builder()
+                .connectTimeout(ConnectTimeOut, TimeUnit.SECONDS)
+                .readTimeout(ReadTimeOut, TimeUnit.SECONDS)
+                .build()
+        }
     }
 }
