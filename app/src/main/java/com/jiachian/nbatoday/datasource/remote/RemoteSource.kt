@@ -7,36 +7,34 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-abstract class RemoteSource {
-    companion object {
-        private const val ConnectTimeOut = 5L
-        private const val ReadTimeOut = 20L
+object RemoteSource {
+    private const val ConnectTimeOut = 5L
+    private const val ReadTimeOut = 20L
 
-        private val gson = GsonBuilder().setLenient().create()
+    private val gson = GsonBuilder().setLenient().create()
 
-        @Volatile
-        private var retrofit: Retrofit? = null
+    @Volatile
+    private var retrofit: Retrofit? = null
 
-        fun <T> createService(c: Class<T>): T {
-            return getRetrofit().create(c)
-        }
+    fun <T> createService(c: Class<T>): T {
+        return getRetrofit().create(c)
+    }
 
-        private fun getRetrofit(): Retrofit {
-            return synchronized(Unit) {
-                retrofit ?: Retrofit.Builder()
-                    .baseUrl(NBAServerUrl)
-                    .addConverterFactory(GsonConverterFactory.create(gson))
-                    .client(buildHttpClient())
-                    .build()
-                    .also { retrofit = it }
-            }
-        }
-
-        private fun buildHttpClient(): OkHttpClient {
-            return OkHttpClient.Builder()
-                .connectTimeout(ConnectTimeOut, TimeUnit.SECONDS)
-                .readTimeout(ReadTimeOut, TimeUnit.SECONDS)
+    private fun getRetrofit(): Retrofit {
+        return synchronized(Unit) {
+            retrofit ?: Retrofit.Builder()
+                .baseUrl(NBAServerUrl)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .client(buildHttpClient())
                 .build()
+                .also { retrofit = it }
         }
+    }
+
+    private fun buildHttpClient(): OkHttpClient {
+        return OkHttpClient.Builder()
+            .connectTimeout(ConnectTimeOut, TimeUnit.SECONDS)
+            .readTimeout(ReadTimeOut, TimeUnit.SECONDS)
+            .build()
     }
 }
