@@ -25,16 +25,16 @@ import retrofit2.Response
 @OptIn(ExperimentalCoroutinesApi::class)
 class NBATeamRepositoryTest : BaseUnitTest() {
     private lateinit var localSource: TeamLocalSource
-    private lateinit var remotesource: TeamRemoteSource
+    private lateinit var remoteSource: TeamRemoteSource
     private lateinit var repository: NBATeamRepository
 
     @Before
     fun setup() {
         localSource = get()
-        remotesource = spyk(get<TeamRemoteSource>())
+        remoteSource = spyk(get<TeamRemoteSource>())
         repository = NBATeamRepository(
             teamLocalSource = localSource,
-            teamRemoteSource = remotesource
+            teamRemoteSource = remoteSource
         )
     }
 
@@ -60,7 +60,7 @@ class NBATeamRepositoryTest : BaseUnitTest() {
     @Test
     fun `insertTeams() with error response expects onError is triggered`() = launch {
         coEvery {
-            remotesource.getTeam()
+            remoteSource.getTeam()
         } returns Response.error(404, "".toResponseBody())
         repository.insertTeams()
         dataHolder
@@ -81,7 +81,7 @@ class NBATeamRepositoryTest : BaseUnitTest() {
     @Test
     fun `insertTeam(home) with error response expects onError is triggered`() = launch {
         coEvery {
-            remotesource.getTeam(any())
+            remoteSource.getTeam(any())
         } returns Response.error(404, "".toResponseBody())
         repository.insertTeam(HomeTeamId)
         dataHolder
@@ -102,7 +102,7 @@ class NBATeamRepositoryTest : BaseUnitTest() {
     @Test
     fun `updateTeamPlayers(home) with error response expects players are updated`() = launch {
         coEvery {
-            remotesource.getTeamPlayer(any())
+            remoteSource.getTeamPlayer(any())
         } returns Response.error(404, "".toResponseBody())
         repository.updateTeamPlayers(HomeTeamId)
         dataHolder
