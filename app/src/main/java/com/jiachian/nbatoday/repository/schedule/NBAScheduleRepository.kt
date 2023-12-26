@@ -46,7 +46,7 @@ class NBAScheduleRepository(
                 ?.body()
                 ?.scoreboard
                 ?.toGameUpdateData()
-                ?.let { gamesUpdateData ->
+                ?.also { gamesUpdateData ->
                     gameLocalSource.updateGames(gamesUpdateData)
                 }
                 ?: onError()
