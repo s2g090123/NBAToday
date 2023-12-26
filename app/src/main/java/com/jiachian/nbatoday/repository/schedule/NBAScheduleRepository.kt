@@ -10,7 +10,6 @@ import com.jiachian.nbatoday.models.local.game.GameUpdateData
 import com.jiachian.nbatoday.models.local.game.toGameScoreUpdateData
 import com.jiachian.nbatoday.models.remote.game.extensions.toGameUpdateData
 import com.jiachian.nbatoday.models.remote.game.extensions.toGames
-import com.jiachian.nbatoday.repository.team.TeamRepository
 import com.jiachian.nbatoday.utils.DateUtils
 import java.util.Calendar
 import java.util.Date
@@ -21,7 +20,6 @@ class NBAScheduleRepository(
     private val gameLocalSource: GameLocalSource,
     private val gameRemoteSource: GameRemoteSource,
     private val dataStore: BaseDataStore,
-    private val teamRepository: TeamRepository,
 ) : ScheduleRepository() {
     override suspend fun updateSchedule() {
         loading {
@@ -34,7 +32,6 @@ class NBAScheduleRepository(
                             gameLocalSource.updateGames(gameUpdateData)
                         }
                         updateLastAccessedDay()
-                        teamRepository.insertTeams()
                     }
                 }
                 ?: onError()

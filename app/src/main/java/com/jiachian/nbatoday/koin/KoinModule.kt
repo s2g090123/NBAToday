@@ -67,7 +67,7 @@ val module = module {
 
     single { NBADatabase.getInstance(androidContext()) }
     single { NBADataStore(androidApplication()) as BaseDataStore }
-    single { NBAScheduleRepository(get(), get(), get(), get()) as ScheduleRepository }
+    single { NBAScheduleRepository(get(), get(), get()) as ScheduleRepository }
     single { NBAGameRepository(get(), get(), get()) as GameRepository }
     single { NBATeamRepository(get(), get()) as TeamRepository }
     single { NBAPlayerRepository(get(), get()) as PlayerRepository }

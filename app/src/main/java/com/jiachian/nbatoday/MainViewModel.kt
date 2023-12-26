@@ -33,6 +33,9 @@ class MainViewModel(
             val updateScheduleDeferred = async {
                 repositoryProvider.schedule.updateSchedule()
             }
+            val updateTeamsDeferred = async {
+                repositoryProvider.team.insertTeams()
+            }
             val updateColorsDeferred = async {
                 dataStore
                     .themeColors
@@ -49,6 +52,7 @@ class MainViewModel(
             }
             awaitAll(
                 updateScheduleDeferred,
+                updateTeamsDeferred,
                 updateColorsDeferred,
                 loginUserDeferred
             )
