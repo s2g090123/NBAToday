@@ -96,9 +96,18 @@ class NBAScheduleRepositoryTest : BaseUnitTest() {
             .value
             .assertIs(
                 listOf(
-                    GameAndBets(game = GameGenerator.getFinal().copy(gameLeaders = null, teamLeaders = null), bets = emptyList()),
-                    GameAndBets(game = GameGenerator.getPlaying().copy(gameLeaders = null, teamLeaders = null), bets = emptyList()),
-                    GameAndBets(game = GameGenerator.getComingSoon().copy(gameLeaders = null, teamLeaders = null), bets = emptyList())
+                    GameAndBets(
+                        game = GameGenerator.getFinal().copy(gameLeaders = null, teamLeaders = null),
+                        bets = emptyList()
+                    ),
+                    GameAndBets(
+                        game = GameGenerator.getPlaying().copy(gameLeaders = null, teamLeaders = null),
+                        bets = emptyList()
+                    ),
+                    GameAndBets(
+                        game = GameGenerator.getComingSoon().copy(gameLeaders = null, teamLeaders = null),
+                        bets = emptyList()
+                    )
                 )
             )
     }
