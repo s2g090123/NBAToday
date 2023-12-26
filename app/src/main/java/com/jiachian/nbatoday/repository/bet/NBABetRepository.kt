@@ -19,7 +19,7 @@ class NBABetRepository(
                 .firstOrNull()
                 ?.takeIf { user -> user.available }
                 ?.takeIf { user -> user.points - usedPoints >= 0 }
-                ?.let { user ->
+                ?.also { user ->
                     betLocalSource.insertBet(
                         Bet(
                             account = user.account,

@@ -23,7 +23,7 @@ class NBAGameRepository(
                 ?.body()
                 ?.game
                 ?.toBoxScore()
-                ?.let { boxScore ->
+                ?.also { boxScore ->
                     boxScoreLocalSource.insertBoxScore(boxScore)
                 }
                 ?: onError()

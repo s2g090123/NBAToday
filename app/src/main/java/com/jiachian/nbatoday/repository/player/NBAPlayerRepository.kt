@@ -16,12 +16,9 @@ class NBAPlayerRepository(
                 .getPlayer(playerId)
                 .takeIf { !it.isError() }
                 ?.body()
-                ?.let { remotePlayer ->
-                    remotePlayer
-                        .toPlayer()
-                        ?.let { player ->
-                            playerLocalSource.insertPlayer(player)
-                        }
+                ?.toPlayer()
+                ?.also { player ->
+                    playerLocalSource.insertPlayer(player)
                 }
                 ?: onError()
         }
