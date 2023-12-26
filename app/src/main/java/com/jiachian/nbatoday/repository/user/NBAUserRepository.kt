@@ -21,7 +21,7 @@ class NBAUserRepository(
                 ?.body()
                 ?.toUser()
                 ?.takeIf { user -> user.available }
-                ?.let { user ->
+                ?.also { user ->
                     dataStore.updateUser(user)
                 }
                 ?: onError()
@@ -41,7 +41,8 @@ class NBAUserRepository(
                 .takeIf { !it.isError() }
                 ?.body()
                 ?.toUser()
-                ?.let { user ->
+                ?.takeIf { user -> user.available }
+                ?.also { user ->
                     dataStore.updateUser(user)
                 }
                 ?: onError()
