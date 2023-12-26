@@ -19,9 +19,11 @@ import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsNull
 import io.mockk.every
 import io.mockk.spyk
+import io.mockk.unmockkAll
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.koin.core.component.get
@@ -43,6 +45,11 @@ class NBABetRepositoryTest : BaseUnitTest() {
             betLocalSource = localSource,
             userRepository = userRepository
         )
+    }
+
+    @After
+    fun teardown() {
+        unmockkAll()
     }
 
     @Test
