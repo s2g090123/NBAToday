@@ -23,7 +23,7 @@ class NBATeamRepository(
                 .takeIf { !it.isError() }
                 ?.body()
                 ?.toTeamStats()
-                ?.let { teams ->
+                ?.also { teams ->
                     teamLocalSource.insertTeams(teams)
                 }
                 ?: onError()
@@ -37,7 +37,7 @@ class NBATeamRepository(
                 .takeIf { !it.isError() }
                 ?.body()
                 ?.toTeamStats()
-                ?.let { teams ->
+                ?.also { teams ->
                     teamLocalSource.insertTeams(teams)
                 }
                 ?: onError()

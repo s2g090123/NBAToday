@@ -25,6 +25,7 @@ class TestTeamDao(
             getTeam(teamId),
             getTeamPlayers(teamId)
         ) { team, players ->
+            team ?: return@combine null
             TeamAndPlayers(
                 team = team,
                 teamPlayers = players
@@ -68,9 +69,9 @@ class TestTeamDao(
         }
     }
 
-    private fun getTeam(teamId: Int): Flow<Team> {
+    private fun getTeam(teamId: Int): Flow<Team?> {
         return dataHolder.teams.map { teams ->
-            teams.first { team ->
+            teams.firstOrNull { team ->
                 team.teamId == teamId
             }
         }
