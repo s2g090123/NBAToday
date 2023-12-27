@@ -4,9 +4,7 @@ import android.content.Context
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 
-class SvgRequest private constructor(
-    val context: Context
-) {
+class SvgRequest private constructor() {
     class Builder(context: Context) {
 
         private val requestBuilder = ImageRequest.Builder(context)
