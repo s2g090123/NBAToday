@@ -12,7 +12,7 @@ fun SemanticsNodeInteraction.onNodeWithTag(tag: String, index: Int): SemanticsNo
         .also {
             try {
                 it.performScrollTo()
-            } catch (t: Throwable) {
+            } catch (_: Throwable) {
             }
         }
 }

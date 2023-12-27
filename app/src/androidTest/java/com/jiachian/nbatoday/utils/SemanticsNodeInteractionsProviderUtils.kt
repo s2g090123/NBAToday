@@ -1,7 +1,5 @@
 package com.jiachian.nbatoday.utils
 
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.SemanticsNodeInteraction
 import androidx.compose.ui.test.SemanticsNodeInteractionCollection
 import androidx.compose.ui.test.SemanticsNodeInteractionsProvider
@@ -12,7 +10,6 @@ import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onLast
 import androidx.compose.ui.test.onNodeWithTag
-import com.jiachian.nbatoday.compose.BorderColorKey
 
 fun SemanticsNodeInteractionsProvider.onNodeWithMergedTag(
     testTag: String
@@ -47,6 +44,3 @@ fun SemanticsNodeInteractionsProvider.assertPopupDoesNotExist(): SemanticsNodeIn
     onAllNodes(isPopup()).assertCountEquals(0)
     return this
 }
-
-fun SemanticsNodeInteractionsProvider.onNodeWithBorderColor(expectedColor: Color) =
-    onNode(SemanticsMatcher.expectValue(BorderColorKey, expectedColor))
