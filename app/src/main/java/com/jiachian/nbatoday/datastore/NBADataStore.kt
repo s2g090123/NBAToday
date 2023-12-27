@@ -22,9 +22,11 @@ import com.jiachian.nbatoday.models.local.user.User
 import com.jiachian.nbatoday.utils.DateUtils
 import kotlinx.coroutines.flow.map
 
-val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = DataStoreName)
-
-class NBADataStore(private val application: Application) : BaseDataStore {
+class NBADataStore(
+    private val application: Application,
+    dataStoreName: String = DataStoreName,
+) : BaseDataStore {
+    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = dataStoreName)
 
     object PreferencesKeys {
         val LAST_ACCESSED_DATE = stringPreferencesKey("last_accessed_date")
