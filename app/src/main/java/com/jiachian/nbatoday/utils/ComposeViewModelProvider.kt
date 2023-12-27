@@ -1,5 +1,7 @@
 package com.jiachian.nbatoday.utils
 
+import androidx.annotation.VisibleForTesting
+import com.jiachian.nbatoday.annotation.ExcludeFromJacocoGeneratedReport
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.compose.screen.bet.BetViewModel
 import com.jiachian.nbatoday.compose.screen.calendar.CalendarViewModel
@@ -180,4 +182,8 @@ class ComposeViewModelProvider(
     fun removeViewModel(route: MainRoute) {
         viewModelMap.remove(route)
     }
+
+    @VisibleForTesting
+    @ExcludeFromJacocoGeneratedReport
+    fun getViewModelMap() = viewModelMap
 }

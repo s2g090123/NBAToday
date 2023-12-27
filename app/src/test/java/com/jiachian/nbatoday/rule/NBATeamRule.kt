@@ -11,7 +11,7 @@ import org.junit.runner.Description
 
 class NBATeamRule : TestWatcher() {
     override fun starting(description: Description) {
-        mockkObject(NBATeam)
+        mockkObject(NBATeam.Companion)
         every {
             NBATeam.getTeamById(any())
         } answers {
@@ -23,6 +23,6 @@ class NBATeamRule : TestWatcher() {
     }
 
     override fun finished(description: Description) {
-        unmockkObject(NBATeam)
+        unmockkObject(NBATeam.Companion)
     }
 }

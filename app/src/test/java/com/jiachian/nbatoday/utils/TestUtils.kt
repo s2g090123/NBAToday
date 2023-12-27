@@ -39,6 +39,14 @@ fun Boolean?.assertIsFalse() = apply {
     assertThat(this, `is`(false))
 }
 
+fun <T> T.assertIsTrue(runnable: (T) -> Boolean) = apply {
+    assertThat(runnable(this), `is`(true))
+}
+
+fun <T> T.assertIsFalse(runnable: (T) -> Boolean) = apply {
+    assertThat(runnable(this), `is`(false))
+}
+
 fun <T> assertIs(actual: T, expected: T) {
     assertThat(actual, `is`(expected))
 }
