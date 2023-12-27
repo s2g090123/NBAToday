@@ -11,7 +11,7 @@ import com.jiachian.nbatoday.repository.RepositoryProvider
 import com.jiachian.nbatoday.utils.ComposeViewModelProvider
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class MainViewModel(
@@ -39,13 +39,13 @@ class MainViewModel(
             val updateColorsDeferred = async {
                 dataStore
                     .themeColors
-                    .firstOrNull()
-                    ?.also { updateColors(it) }
+                    .first()
+                    .also { updateColors(it) }
             }
             val loginUserDeferred = async {
                 dataStore
                     .user
-                    .firstOrNull()
+                    .first()
                     ?.also { user ->
                         repositoryProvider.user.login(user.account, user.password)
                     }

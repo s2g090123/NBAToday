@@ -62,7 +62,6 @@ val module = module {
     factory { NBATeamLocalSource(get()) as TeamLocalSource }
     factory { NBAPlayerLocalSource(get()) as PlayerLocalSource }
     factory { NBABetLocalSource(get()) as BetLocalSource }
-    factory { ComposeViewModelProvider(get(), get(), get()) }
     factory { RepositoryProvider(get(), get(), get(), get(), get(), get()) }
 
     single { NBADatabase.getInstance(androidContext()) }
@@ -74,6 +73,7 @@ val module = module {
     single { NBABetRepository(get(), get()) as BetRepository }
     single { NBAUserRepository(get(), get()) as UserRepository }
     single { NavigationController() }
+    single { ComposeViewModelProvider(get(), get(), get()) }
 
     viewModel { MainViewModel(get(), get(), get(), get()) }
 }

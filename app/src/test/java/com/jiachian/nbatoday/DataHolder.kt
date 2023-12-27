@@ -1,6 +1,6 @@
 package com.jiachian.nbatoday
 
-import com.jiachian.nbatoday.compose.theme.LakersColors
+import com.jiachian.nbatoday.compose.theme.OfficialColors
 import com.jiachian.nbatoday.models.local.bet.Bet
 import com.jiachian.nbatoday.models.local.bet.BetAndGame
 import com.jiachian.nbatoday.models.local.game.Game
@@ -24,7 +24,7 @@ class DataHolder {
     val players = MutableStateFlow(listOf<Player>())
 
     val lastAccessedDate = MutableStateFlow(DateUtils.formatDate(1990, 1, 1))
-    val themeColors = MutableStateFlow(LakersColors)
+    val themeColors = MutableStateFlow(OfficialColors)
     val user = MutableStateFlow<User?>(null)
 
     val gamesAndBets = combine(

@@ -63,7 +63,6 @@ val testModule = module {
     factory { TestTeamLocalSource(get()) as TeamLocalSource }
     factory { TestPlayerLocalSource(get()) as PlayerLocalSource }
     factory { TestBetLocalSource(get()) as BetLocalSource }
-    factory { ComposeViewModelProvider(get(), get(), get()) }
     factory { RepositoryProvider(get(), get(), get(), get(), get(), get()) }
 
     single { DataHolder() }
@@ -75,4 +74,5 @@ val testModule = module {
     single { TestBetRepository(get(), get()) as BetRepository }
     single { TestUserRepository(get(), get()) as UserRepository }
     single { NavigationController() }
+    single { ComposeViewModelProvider(get(), get(), get()) }
 }
