@@ -1,5 +1,6 @@
 package com.jiachian.nbatoday.test.compose.screen.bet
 
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.performClick
@@ -20,32 +21,28 @@ import com.jiachian.nbatoday.utils.onNodeWithTag
 import com.jiachian.nbatoday.utils.onNodeWithUnmergedTree
 import com.jiachian.nbatoday.utils.pressBack
 import org.junit.After
-import org.junit.Before
 import org.junit.Test
 
 class BetDialogTest : BaseAndroidTest() {
-    private lateinit var viewModel: BetDialogViewModel
     private var homePoints: Long? = null
     private var awayPoints: Long? = null
     private var dialogDismissed: Boolean? = null
 
-    @Before
-    fun setup() {
-        viewModel = BetDialogViewModel(
-            gameAndBets = GameAndBetsGenerator.getComingSoon(false),
-            userPoints = UserPoints,
-            dispatcherProvider = dispatcherProvider,
+    @Composable
+    override fun provideComposable(): Any {
+        BetDialog(
+            viewModel = BetDialogViewModel(
+                gameAndBets = GameAndBetsGenerator.getComingSoon(false),
+                userPoints = UserPoints,
+                dispatcherProvider = dispatcherProvider,
+            ),
+            onConfirm = { home, away ->
+                homePoints = home
+                awayPoints = away
+            },
+            onDismiss = { dialogDismissed = true }
         )
-        composeTestRule.setContent {
-            BetDialog(
-                viewModel = viewModel,
-                onConfirm = { home, away ->
-                    homePoints = home
-                    awayPoints = away
-                },
-                onDismiss = { dialogDismissed = true }
-            )
-        }
+        return super.provideComposable()
     }
 
     @After
@@ -56,9 +53,8 @@ class BetDialogTest : BaseAndroidTest() {
     }
 
     @Test
-    fun betDialog_expectsUICorrect() {
-        composeTestRule
-            .onNodeWithUnmergedTree(BetTestTag.BetDialog)
+    fun betDialog_expectsUICorrect() = inCompose {
+        onNodeWithUnmergedTree(BetTestTag.BetDialog)
             .apply {
                 onNodeWithTag(BetTestTag.BetDialogDetail_TeamInfo_Home).apply {
                     onNodeWithTag(BetTestTag.BetDialogTeamInfo_Text_Record)
@@ -80,9 +76,8 @@ class BetDialogTest : BaseAndroidTest() {
     }
 
     @Test
-    fun betDialog_betAndConfirm_dialogDismissed() {
-        composeTestRule
-            .onNodeWithUnmergedTree(BetTestTag.BetDialog)
+    fun betDialog_betAndConfirm_dialogDismissed() = inCompose {
+        onNodeWithUnmergedTree(BetTestTag.BetDialog)
             .apply {
                 onNodeWithTag(BetTestTag.BetDialogDetail_TeamInfo_Away)
                     .onNodeWithTag(BetTestTag.BetDialogTeamInfo_TextField_Bet)
@@ -95,8 +90,7 @@ class BetDialogTest : BaseAndroidTest() {
                 onNodeWithTag(BetTestTag.BetDialogConfirmButton_Text_Confirm)
                     .performClick()
             }
-        composeTestRule
-            .onNodeWithUnmergedTree(BetTestTag.BetWarningDialog)
+        onNodeWithUnmergedTree(BetTestTag.BetWarningDialog)
             .onNodeWithTag(BetTestTag.BetWarningDialogButtons_Text_Confirm)
             .performClick()
         dialogDismissed.assertIsTrue()
@@ -105,9 +99,8 @@ class BetDialogTest : BaseAndroidTest() {
     }
 
     @Test
-    fun betDialog_cancelWarningDialog_nothingChanged() {
-        composeTestRule
-            .onNodeWithUnmergedTree(BetTestTag.BetDialog)
+    fun betDialog_cancelWarningDialog_nothingChanged() = inCompose {
+        onNodeWithUnmergedTree(BetTestTag.BetDialog)
             .apply {
                 onNodeWithTag(BetTestTag.BetDialogDetail_TeamInfo_Home)
                     .onNodeWithTag(BetTestTag.BetDialogTeamInfo_TextField_Bet)
@@ -120,8 +113,7 @@ class BetDialogTest : BaseAndroidTest() {
                 onNodeWithTag(BetTestTag.BetDialogConfirmButton_Text_Confirm)
                     .performClick()
             }
-        composeTestRule
-            .onNodeWithUnmergedTree(BetTestTag.BetWarningDialog)
+        onNodeWithUnmergedTree(BetTestTag.BetWarningDialog)
             .apply {
                 onNodeWithTag("BetWarningDialogButtons_Text_Cancel")
                     .performClick()
@@ -133,7 +125,7 @@ class BetDialogTest : BaseAndroidTest() {
     }
 
     @Test
-    fun betDialog_backPressed_dialogDismissed() {
+    fun betDialog_backPressed_dialogDismissed() = inCompose {
         pressBack()
         dialogDismissed.assertIsTrue()
     }
