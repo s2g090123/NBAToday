@@ -55,7 +55,7 @@ class BetViewModel(
     val betsAndGamesState = repository
         .getBetsAndGames(account)
         .map { UIState.Loaded(it) }
-        .stateIn(coroutineScope, SharingStarted.Eagerly, UIState.Loading())
+        .stateIn(coroutineScope, SharingStarted.Lazily, UIState.Loading())
 
     private val turnTablePointsImp = MutableStateFlow<TurnTablePoints?>(null)
     val turnTablePoints = turnTablePointsImp.asStateFlow()

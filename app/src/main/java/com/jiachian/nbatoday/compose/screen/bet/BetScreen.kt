@@ -30,6 +30,7 @@ import com.jiachian.nbatoday.compose.widget.IconButton
 import com.jiachian.nbatoday.compose.widget.LoadingScreen
 import com.jiachian.nbatoday.compose.widget.UIStateScreen
 import com.jiachian.nbatoday.testing.testtag.BetTestTag
+import com.jiachian.nbatoday.testing.testtag.BetTestTag.BetScreen_BetBody_Loading
 import com.jiachian.nbatoday.utils.rippleClickable
 
 @Composable
@@ -73,7 +74,9 @@ private fun BetBody(
         state = betsAndGamesState,
         loading = {
             LoadingScreen(
-                modifier = modifier,
+                modifier = Modifier
+                    .testTag(BetScreen_BetBody_Loading)
+                    .then(modifier),
                 color = MaterialTheme.colors.secondary
             )
         },
@@ -86,6 +89,7 @@ private fun BetBody(
                     itemsIndexed(list) { index, betAndGame ->
                         BetCard(
                             modifier = Modifier
+                                .testTag(BetTestTag.BetScreen_BetBody_BetCard)
                                 .padding(
                                     top = if (index == 0) 8.dp else 16.dp,
                                     bottom = if (index >= list.size - 1) 16.dp else 0.dp,
@@ -112,7 +116,9 @@ private fun BetBody(
 @Composable
 private fun BetEmptyScreen(modifier: Modifier = Modifier) {
     Box(
-        modifier = modifier,
+        modifier = Modifier
+            .testTag(BetTestTag.BetScreen_BetEmptyScreen)
+            .then(modifier),
         contentAlignment = Alignment.Center
     ) {
         Text(

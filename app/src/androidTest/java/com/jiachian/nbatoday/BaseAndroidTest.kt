@@ -2,6 +2,8 @@ package com.jiachian.nbatoday
 
 import android.content.Context
 import androidx.annotation.StringRes
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.core.app.ApplicationProvider
 import com.jiachian.nbatoday.datastore.BaseDataStore
@@ -89,5 +91,15 @@ open class BaseAndroidTest {
 
     protected fun getString(@StringRes res: Int, vararg params: Any): String {
         return context.getString(res, *params)
+    }
+
+    @Composable
+    protected open fun provideComposable(): Any = Unit
+
+    protected fun inCompose(execution: suspend ComposeTestRule.() -> Unit) = launch {
+        composeTestRule.setContent {
+            provideComposable()
+        }
+        execution(composeTestRule)
     }
 }

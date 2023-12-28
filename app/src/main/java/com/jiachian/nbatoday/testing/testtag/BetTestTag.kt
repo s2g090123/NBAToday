@@ -14,6 +14,9 @@ object BetTestTag {
 
     const val BetScreen_BetBody = "BetScreen_BetBody"
     const val BetScreen_BetTop_Button_Back = "BetScreen_BetTop_Button_Back"
+    const val BetScreen_BetEmptyScreen = "BetScreen_BetEmptyScreen"
+    const val BetScreen_BetBody_BetCard = "BetScreen_BetBody_BetCard"
+    const val BetScreen_BetBody_Loading = "BetScreen_BetBody_Loading"
 
     const val BetCard_BetCardTeamInfo_Home = "BetCard_BetCardTeamInfo_Home"
     const val BetCard_BetCardTeamInfo_Away = "BetCard_BetCardTeamInfo_Away"
