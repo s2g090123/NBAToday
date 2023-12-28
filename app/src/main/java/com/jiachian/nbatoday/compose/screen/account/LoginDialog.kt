@@ -58,16 +58,12 @@ fun LoginDialog(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             AccountTextField(
-                modifier = Modifier
-                    .testTag(UserTestTag.LoginDialog_AccountTextField)
-                    .padding(top = 24.dp, start = 16.dp, end = 16.dp),
+                modifier = Modifier.padding(top = 24.dp, start = 16.dp, end = 16.dp),
                 value = account,
                 onValueChanged = { account = it }
             )
             PasswordTextField(
-                modifier = Modifier
-                    .testTag(UserTestTag.LoginDialog_PasswordTextField)
-                    .padding(top = 16.dp, start = 16.dp, end = 16.dp),
+                modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
                 value = password,
                 onValueChanged = { password = it }
             )

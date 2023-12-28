@@ -14,8 +14,6 @@ object UserTestTag {
     const val UserTopBar_Button_Bet = "UserTopBar_Button_Bet"
     const val UserTopBar_Button_Logout = "UserTopBar_Button_Logout"
 
-    const val LoginDialog_AccountTextField = "LoginDialog_AccountTextField"
-    const val LoginDialog_PasswordTextField = "LoginDialog_PasswordTextField"
     const val AccountTextField_TextField = "AccountTextField_TextField"
     const val PasswordTextField_TextField = "PasswordTextField_TextField"
     const val BottomButtons_Button_Register = "BottomButtons_Button_Register"
