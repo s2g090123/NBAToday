@@ -54,6 +54,9 @@ android {
   lintOptions {
     error("VisibleForTests")
   }
+  testOptions {
+    animationsDisabled = true
+  }
 }
 
 dependencies {

@@ -273,6 +273,7 @@ private fun BetWarningDialogButtons(
     ) {
         Text(
             modifier = Modifier
+                .testTag(BetTestTag.BetWarningDialogButtons_Text_Cancel)
                 .padding(bottom = 8.dp)
                 .rippleClickable { onCancel() }
                 .padding(10.dp),

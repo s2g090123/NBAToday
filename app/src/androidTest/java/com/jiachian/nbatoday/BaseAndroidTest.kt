@@ -1,6 +1,7 @@
 package com.jiachian.nbatoday
 
 import android.content.Context
+import androidx.annotation.StringRes
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.core.app.ApplicationProvider
 import com.jiachian.nbatoday.datastore.BaseDataStore
@@ -75,5 +76,13 @@ open class BaseAndroidTest {
             SharingStarted.Eagerly,
             initValue
         )
+    }
+
+    protected fun getString(@StringRes res: Int): String {
+        return context.getString(res)
+    }
+
+    protected fun getString(@StringRes res: Int, vararg params: Any): String {
+        return context.getString(res, *params)
     }
 }

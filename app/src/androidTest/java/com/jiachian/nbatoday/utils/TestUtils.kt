@@ -1,5 +1,6 @@
 package com.jiachian.nbatoday.utils
 
+import androidx.test.espresso.Espresso
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.CoreMatchers.notNullValue
@@ -73,4 +74,8 @@ fun assertIsTrue(actual: Boolean?) {
 
 fun assertIsFalse(actual: Boolean?) {
     assertThat(actual, `is`(false))
+}
+
+fun pressBack() {
+    Espresso.pressBack()
 }

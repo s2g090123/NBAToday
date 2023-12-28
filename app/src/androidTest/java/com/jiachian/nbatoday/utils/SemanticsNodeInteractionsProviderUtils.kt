@@ -11,16 +11,19 @@ import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.onLast
 import androidx.compose.ui.test.onNodeWithTag
 
-fun SemanticsNodeInteractionsProvider.onNodeWithMergedTag(
+fun SemanticsNodeInteractionsProvider.onNodeWithUnmergedTree(
     testTag: String
 ): SemanticsNodeInteraction = onNodeWithTag(testTag, true)
 
-fun SemanticsNodeInteractionsProvider.onAllNodesWithMergedTag(
+fun SemanticsNodeInteractionsProvider.onAllNodesWithUnmergedTree(
     testTag: String
 ): SemanticsNodeInteractionCollection = onAllNodesWithTag(testTag, true)
 
 fun SemanticsNodeInteractionsProvider.onDialog(): SemanticsNodeInteraction =
     onAllNodes(isDialog()).onLast()
+
+fun SemanticsNodeInteractionsProvider.onDialogWithUnMergedTree(): SemanticsNodeInteraction =
+    onAllNodes(isDialog(), true).onLast()
 
 fun SemanticsNodeInteractionsProvider.assertDialogExist(): SemanticsNodeInteractionsProvider {
     onAllNodes(isDialog()).onFirst().assertExists()

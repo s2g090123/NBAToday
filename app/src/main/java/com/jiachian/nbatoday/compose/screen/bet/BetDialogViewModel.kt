@@ -32,11 +32,11 @@ class BetDialogViewModel(
         awayPoints
     ) { home, away ->
         userPoints - home - away
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, userPoints)
+    }.stateIn(coroutineScope, SharingStarted.Lazily, userPoints)
 
     val enabled = remainedPoints.map { points ->
         points != userPoints && points >= 0
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, false)
+    }.stateIn(coroutineScope, SharingStarted.Lazily, false)
 
     fun showWarning() {
         warningImp.value = true
