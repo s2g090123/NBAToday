@@ -6,10 +6,12 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.core.app.ApplicationProvider
 import com.jiachian.nbatoday.datastore.BaseDataStore
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
+import com.jiachian.nbatoday.koin.testModule
 import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.repository.RepositoryProvider
 import com.jiachian.nbatoday.rule.CalendarRule
 import com.jiachian.nbatoday.rule.CoroutineRule
+import com.jiachian.nbatoday.rule.KoinTestRule
 import com.jiachian.nbatoday.rule.NBATeamRule
 import com.jiachian.nbatoday.utils.ComposeViewModelProvider
 import kotlinx.coroutines.CoroutineScope
@@ -38,6 +40,9 @@ open class BaseAndroidTest {
 
     @get:Rule
     val nbaTeamRule = NBATeamRule()
+
+    @get:Rule
+    val koinRule = KoinTestRule(listOf(testModule))
 
     protected val context: Context
         get() = ApplicationProvider.getApplicationContext()
