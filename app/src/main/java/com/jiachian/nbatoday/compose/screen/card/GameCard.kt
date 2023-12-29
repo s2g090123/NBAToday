@@ -169,7 +169,6 @@ private fun GameExpandedContent(
             Column(modifier = Modifier.fillMaxWidth()) {
                 GameCardLeadersInfo(
                     modifier = Modifier
-                        .testTag(GameCardTestTag.GameExpandedContent_GameCardLeadersInfo)
                         .padding(top = 8.dp)
                         .fillMaxWidth()
                         .wrapContentHeight(),

@@ -73,7 +73,9 @@ fun SchedulePage(
                 state = dateAndGamesState,
                 loading = {
                     LoadingScreen(
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier
+                            .testTag(ScheduleTestTag.SchedulePage_LoadingScreen)
+                            .fillMaxSize(),
                         color = MaterialTheme.colors.secondary,
                     )
                 },
@@ -179,6 +181,7 @@ private fun ScheduleTabRow(
     ) {
         dates.forEachIndexed { page, date ->
             Tab(
+                modifier = Modifier.testTag(ScheduleTestTag.ScheduleTabRow_Tab),
                 text = {
                     Text(
                         text = date.monthAndDay,

@@ -6,6 +6,7 @@ import com.jiachian.nbatoday.AwayTeamAbbr
 import com.jiachian.nbatoday.AwayTeamId
 import com.jiachian.nbatoday.BasicNumber
 import com.jiachian.nbatoday.BasicPosition
+import com.jiachian.nbatoday.ComingSoonGameId
 import com.jiachian.nbatoday.FinalGameId
 import com.jiachian.nbatoday.GameStatusFinal
 import com.jiachian.nbatoday.GameStatusPrepare
@@ -26,7 +27,7 @@ object RemoteGameGenerator {
 
     private fun getScoreboard(): RemoteGame.RemoteScoreboard {
         return RemoteGame.RemoteScoreboard(
-            games = listOf(getFinalGameDetail(), getPlayingGameDetail())
+            games = listOf(getFinalGameDetail(), getPlayingGameDetail(), getComingSoonGameDetail())
         )
     }
 
@@ -46,6 +47,18 @@ object RemoteGameGenerator {
         return RemoteGame.RemoteScoreboard.RemoteGameDetail(
             gameId = PlayingGameId,
             gameStatus = GameStatus.PLAYING.code,
+            gameStatusText = GameStatusPrepare,
+            gameLeaders = getGameLeaders(),
+            teamLeaders = getGameLeaders(),
+            homeTeam = getHomeGameTeam(),
+            awayTeam = getAwayGameTeam()
+        )
+    }
+
+    private fun getComingSoonGameDetail(): RemoteGame.RemoteScoreboard.RemoteGameDetail {
+        return RemoteGame.RemoteScoreboard.RemoteGameDetail(
+            gameId = ComingSoonGameId,
+            gameStatus = GameStatus.COMING_SOON.code,
             gameStatusText = GameStatusPrepare,
             gameLeaders = getGameLeaders(),
             teamLeaders = getGameLeaders(),

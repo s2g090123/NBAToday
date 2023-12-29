@@ -124,6 +124,7 @@ private fun LeaderInfoRow(
         )
         Column(modifier = Modifier.padding(start = 4.dp)) {
             Text(
+                modifier = Modifier.testTag(GameCardTestTag.LeaderInfoRow_Text_PlayerName),
                 text = player.name,
                 color = color,
                 fontSize = 12.sp
