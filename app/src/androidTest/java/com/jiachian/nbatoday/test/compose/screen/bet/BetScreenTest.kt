@@ -21,8 +21,8 @@ import com.jiachian.nbatoday.compose.screen.state.UIState
 import com.jiachian.nbatoday.navigation.MainRoute
 import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.testing.testtag.BetTestTag
+import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsA
-import com.jiachian.nbatoday.utils.assertIsTrue
 import com.jiachian.nbatoday.utils.onAllNodesWithUnmergedTree
 import com.jiachian.nbatoday.utils.onNodeWithTag
 import com.jiachian.nbatoday.utils.onNodeWithUnmergedTree
@@ -158,7 +158,8 @@ class BetScreenTest : BaseAndroidTest() {
             .eventFlow
             .value
             .assertIsA(NavigationController.Event.NavigateToBoxScore::class.java)
-            .assertIsTrue { it?.gameId == PlayingGameId }
+            ?.gameId
+            .assertIs(PlayingGameId)
     }
 
     @Test
@@ -198,7 +199,8 @@ class BetScreenTest : BaseAndroidTest() {
             .eventFlow
             .value
             .assertIsA(NavigationController.Event.NavigateToTeam::class.java)
-            .assertIsTrue { it?.teamId == HomeTeamId }
+            ?.teamId
+            .assertIs(HomeTeamId)
     }
 
     @Test
@@ -209,7 +211,8 @@ class BetScreenTest : BaseAndroidTest() {
             .eventFlow
             .value
             .assertIsA(NavigationController.Event.BackScreen::class.java)
-            .assertIsTrue { it?.departure == MainRoute.Bet }
+            ?.departure
+            .assertIs(MainRoute.Bet)
     }
 
     private suspend fun insertBets() {

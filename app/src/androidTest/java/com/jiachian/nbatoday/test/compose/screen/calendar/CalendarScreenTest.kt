@@ -29,8 +29,8 @@ import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.testing.testtag.CalendarTestTag
 import com.jiachian.nbatoday.testing.testtag.GameCardTestTag
 import com.jiachian.nbatoday.utils.DateUtils
+import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsA
-import com.jiachian.nbatoday.utils.assertIsTrue
 import com.jiachian.nbatoday.utils.onAllNodesWithUnmergedTree
 import com.jiachian.nbatoday.utils.onNodeWithTag
 import com.jiachian.nbatoday.utils.onNodeWithUnmergedTree
@@ -144,7 +144,8 @@ class CalendarScreenTest : BaseAndroidTest() {
             .eventFlow
             .value
             .assertIsA(NavigationController.Event.NavigateToBoxScore::class.java)
-            .assertIsTrue { it?.gameId == PlayingGameId }
+            ?.gameId
+            .assertIs(PlayingGameId)
     }
 
     @Test
@@ -178,7 +179,8 @@ class CalendarScreenTest : BaseAndroidTest() {
             .eventFlow
             .value
             .assertIsA(NavigationController.Event.NavigateToBoxScore::class.java)
-            .assertIsTrue { it?.gameId == FinalGameId }
+            ?.gameId
+            .assertIs(FinalGameId)
     }
 
     @Test
@@ -213,7 +215,8 @@ class CalendarScreenTest : BaseAndroidTest() {
             .eventFlow
             .value
             .assertIsA(NavigationController.Event.NavigateToTeam::class.java)
-            .assertIsTrue { it?.teamId == HomeTeamId }
+            ?.teamId
+            .assertIs(HomeTeamId)
     }
 
     @Test
@@ -258,7 +261,8 @@ class CalendarScreenTest : BaseAndroidTest() {
             .eventFlow
             .value
             .assertIsA(NavigationController.Event.BackScreen::class.java)
-            .assertIsTrue { it?.departure == MainRoute.Calendar }
+            ?.departure
+            .assertIs(MainRoute.Calendar)
     }
 
     private fun insertNextMonthGame() {

@@ -8,7 +8,6 @@ import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsA
 import com.jiachian.nbatoday.utils.assertIsNull
-import com.jiachian.nbatoday.utils.assertIsTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Test
 
@@ -66,7 +65,8 @@ class MainViewModelTest : BaseUnitTest() {
             .navigationEvent
             .value
             .assertIsA(NavigationController.Event.NavigateToTeam::class.java)
-            .assertIsTrue { it?.teamId == HomeTeamId }
+            ?.teamId
+            .assertIs(HomeTeamId)
     }
 
     @Test
