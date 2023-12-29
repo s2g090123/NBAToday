@@ -116,9 +116,7 @@ class BetScreenTest : BaseAndroidTest() {
     fun betScreen_clicksFinalGame_displaysAskTurnTable() = inCompose {
         insertBets()
         onAllNodesWithUnmergedTree(BetTestTag.BetScreen_BetBody_BetCard)[0]
-            .apply {
-                performClick()
-            }
+            .performClick()
         onNodeWithUnmergedTree(BetTestTag.AskTurnTableDialog)
             .assertIsDisplayed()
     }
@@ -160,6 +158,7 @@ class BetScreenTest : BaseAndroidTest() {
             .eventFlow
             .value
             .assertIsA(NavigationController.Event.NavigateToBoxScore::class.java)
+            .assertIsTrue { it?.gameId == PlayingGameId }
     }
 
     @Test
@@ -199,7 +198,7 @@ class BetScreenTest : BaseAndroidTest() {
             .eventFlow
             .value
             .assertIsA(NavigationController.Event.NavigateToTeam::class.java)
-            .assertIsTrue { (it as? NavigationController.Event.NavigateToTeam)?.teamId == HomeTeamId }
+            .assertIsTrue { it?.teamId == HomeTeamId }
     }
 
     @Test
@@ -210,7 +209,7 @@ class BetScreenTest : BaseAndroidTest() {
             .eventFlow
             .value
             .assertIsA(NavigationController.Event.BackScreen::class.java)
-            .assertIsTrue { (it as? NavigationController.Event.BackScreen)?.departure == MainRoute.Bet }
+            .assertIsTrue { it?.departure == MainRoute.Bet }
     }
 
     private suspend fun insertBets() {
