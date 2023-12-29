@@ -172,7 +172,9 @@ private fun CalendarContent(
         state = calendarDatesState,
         loading = {
             LoadingScreen(
-                modifier = modifier,
+                modifier = Modifier
+                    .testTag(CalendarTestTag.CalendarContent_LoadingScreen_Calendar)
+                    .then(modifier),
                 color = MaterialTheme.colors.secondary,
             )
         },
@@ -191,7 +193,9 @@ private fun CalendarContent(
                 if (loadingGames) {
                     item(span = { GridItemSpan(DaysPerWeek) }) {
                         LoadingScreen(
-                            modifier = Modifier.padding(top = 24.dp),
+                            modifier = Modifier
+                                .testTag(CalendarTestTag.CalendarContent_LoadingScreen_Games)
+                                .padding(top = 24.dp),
                             color = MaterialTheme.colors.secondary,
                         )
                     }
@@ -230,6 +234,7 @@ private fun LazyGridScope.calendarGameCards(
 ) { index, game ->
     CalendarGameCard(
         modifier = Modifier
+            .testTag(CalendarTestTag.CalendarGameCard)
             .padding(
                 start = 16.dp,
                 end = 16.dp,
@@ -295,6 +300,7 @@ private fun DateBox(
 ) {
     Box(
         modifier = Modifier
+            .testTag(CalendarTestTag.DateBox)
             .aspectRatio(1f)
             .border(
                 BorderStroke(
