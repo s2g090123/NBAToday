@@ -6,9 +6,9 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.assertTextEquals
-import androidx.compose.ui.test.onAllNodesWithText
+import androidx.compose.ui.test.filter
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.onFirst
-import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.jiachian.nbatoday.AwayTeamAbbr
 import com.jiachian.nbatoday.BaseAndroidTest
@@ -24,6 +24,7 @@ import com.jiachian.nbatoday.compose.screen.calendar.CalendarScreen
 import com.jiachian.nbatoday.compose.screen.calendar.CalendarViewModel
 import com.jiachian.nbatoday.compose.screen.state.UIState
 import com.jiachian.nbatoday.data.local.GameGenerator
+import com.jiachian.nbatoday.navigation.MainRoute
 import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.testing.testtag.CalendarTestTag
 import com.jiachian.nbatoday.testing.testtag.GameCardTestTag
@@ -150,8 +151,9 @@ class CalendarScreenTest : BaseAndroidTest() {
     fun calendarScreen_checksFinalGameCard() = inCompose {
         onNodeWithUnmergedTree(CalendarTestTag.CalendarNavigationBar_CalendarArrowButton_Last)
             .performClick()
-        onNodeWithText("31")
-            .performClick()
+        onAllNodesWithUnmergedTree(CalendarTestTag.DateBox_Text_Date)
+            .filter(hasText("31"))
+            .onFirst().performClick()
         onAllNodesWithUnmergedTree(CalendarTestTag.CalendarGameCard)[0].apply {
             onNodeWithTag(GameCardTestTag.GameDetail_GameTeamInfo_Home).apply {
                 onNodeWithTag(GameCardTestTag.GameTeamInfo_Text_TeamAbbr)
@@ -183,9 +185,9 @@ class CalendarScreenTest : BaseAndroidTest() {
     fun calendarScreen_checksComingSoonGameCard() = inCompose {
         onNodeWithUnmergedTree(CalendarTestTag.CalendarNavigationBar_CalendarArrowButton_Next)
             .performClick()
-        onAllNodesWithText("1")
-            .onFirst()
-            .performClick()
+        onAllNodesWithUnmergedTree(CalendarTestTag.DateBox_Text_Date)
+            .filter(hasText("1"))
+            .onFirst().performClick()
         onAllNodesWithUnmergedTree(CalendarTestTag.CalendarGameCard)[0].apply {
             onNodeWithTag(GameCardTestTag.GameDetail_GameTeamInfo_Home).apply {
                 onNodeWithTag(GameCardTestTag.GameTeamInfo_Text_TeamAbbr)
@@ -246,6 +248,17 @@ class CalendarScreenTest : BaseAndroidTest() {
             onAllNodesWithUnmergedTree(CalendarTestTag.CalendarGameCard)
                 .assertCountEquals(0)
         }
+    }
+
+    @Test
+    fun calendarScreen_closes_expectsBackScreen() = inCompose {
+        onNodeWithUnmergedTree(CalendarTestTag.CalendarTopBar_Btn_Close)
+            .performClick()
+        navigationController
+            .eventFlow
+            .value
+            .assertIsA(NavigationController.Event.BackScreen::class.java)
+            .assertIsTrue { it?.departure == MainRoute.Calendar }
     }
 
     private fun insertNextMonthGame() {
