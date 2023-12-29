@@ -35,6 +35,7 @@ import com.jiachian.nbatoday.utils.rippleClickable
 
 @Composable
 fun BetScreen(viewModel: BetViewModel) {
+    val rewardedPoints by viewModel.rewardedPoints.collectAsState()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -49,7 +50,10 @@ fun BetScreen(viewModel: BetViewModel) {
         )
     }
     TurnTableScreen(viewModel = viewModel)
-    RewardedPointsScreen(viewModel = viewModel)
+    RewardedPointsScreen(
+        rewardedPoints = rewardedPoints,
+        onDismiss = viewModel::closeRewardedPoints
+    )
 }
 
 @Composable

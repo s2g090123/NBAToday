@@ -9,8 +9,6 @@ import androidx.compose.material.AlertDialog
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -18,22 +16,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.R
-import com.jiachian.nbatoday.compose.screen.bet.BetViewModel
 import com.jiachian.nbatoday.compose.widget.NullCheckScreen
 import com.jiachian.nbatoday.testing.testtag.BetTestTag
 import com.jiachian.nbatoday.utils.rippleClickable
 import kotlin.math.abs
 
 @Composable
-fun RewardedPointsScreen(viewModel: BetViewModel) {
-    val pointsImp by viewModel.rewardedPoints.collectAsState()
+fun RewardedPointsScreen(
+    rewardedPoints: Long?,
+    onDismiss: () -> Unit,
+) {
     NullCheckScreen(
-        data = pointsImp,
+        data = rewardedPoints,
         ifNull = null
     ) { points ->
         RewardedPointsDialog(
             points = points,
-            onDismiss = { viewModel.closeRewardedPoints() }
+            onDismiss = onDismiss
         )
     }
 }
