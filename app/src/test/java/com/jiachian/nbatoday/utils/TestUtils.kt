@@ -15,8 +15,9 @@ fun <T> T.assertIs(expected: T) = apply {
     assertThat(this, `is`(expected))
 }
 
-fun <T> T.assertIsA(type: Class<*>?) = apply {
-    assertThat(this, instanceOf(type))
+inline fun <T, reified V : T> T.assertIsA(targetType: Class<V>): V? {
+    assertThat(this, instanceOf(targetType))
+    return this as? V
 }
 
 fun <T> T.assertIsNot(not: T) = apply {

@@ -66,7 +66,7 @@ class MainViewModelTest : BaseUnitTest() {
             .navigationEvent
             .value
             .assertIsA(NavigationController.Event.NavigateToTeam::class.java)
-            .assertIsTrue { (it as? NavigationController.Event.NavigateToTeam)?.teamId == HomeTeamId }
+            .assertIsTrue { it?.teamId == HomeTeamId }
     }
 
     @Test
