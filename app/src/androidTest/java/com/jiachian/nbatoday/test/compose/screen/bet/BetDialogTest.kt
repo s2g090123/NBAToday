@@ -115,7 +115,7 @@ class BetDialogTest : BaseAndroidTest() {
             }
         onNodeWithUnmergedTree(BetTestTag.BetWarningDialog)
             .apply {
-                onNodeWithTag("BetWarningDialogButtons_Text_Cancel")
+                onNodeWithTag(BetTestTag.BetWarningDialogButtons_Text_Cancel)
                     .performClick()
                 assertDoesNotExist()
             }

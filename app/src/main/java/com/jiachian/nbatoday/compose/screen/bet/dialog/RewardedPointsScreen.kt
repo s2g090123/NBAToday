@@ -43,7 +43,6 @@ private fun RewardedPointsDialog(
     onDismiss: () -> Unit
 ) {
     AlertDialog(
-        modifier = Modifier.testTag(BetTestTag.RewardedPointsDialog),
         shape = RoundedCornerShape(8.dp),
         backgroundColor = MaterialTheme.colors.secondary,
         onDismissRequest = onDismiss,

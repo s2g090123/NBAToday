@@ -12,7 +12,6 @@ object BetTestTag {
     const val BetWarningDialogButtons_Text_Confirm = "BetWarningDialogButtons_Text_Confirm"
     const val BetWarningDialogButtons_Text_Cancel = "BetWarningDialogButtons_Text_Cancel"
 
-    const val BetScreen_BetBody = "BetScreen_BetBody"
     const val BetScreen_BetTop_Button_Back = "BetScreen_BetTop_Button_Back"
     const val BetScreen_BetEmptyScreen = "BetScreen_BetEmptyScreen"
     const val BetScreen_BetBody_BetCard = "BetScreen_BetBody_BetCard"
@@ -25,7 +24,6 @@ object BetTestTag {
     const val BetCardTeamInfo_Text_Scores = "BetCardTeamInfo_Text_Scores"
     const val BetCardTeamInfo_Icon_Crown = "BetCardTeamInfo_Icon_Crown"
 
-    const val RewardedPointsDialog = "RewardedPointsDialog"
     const val RewardedPointsDialog_Text_Title = "RewardedPointsDialog_Text_Title"
     const val RewardedPointsDialog_Text_Body = "RewardedPointsDialog_Text_Body"
     const val RewardPointDialog_Text_OK = "RewardPointDialog_Text_OK"

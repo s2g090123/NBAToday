@@ -43,9 +43,7 @@ fun BetScreen(viewModel: BetViewModel) {
     ) {
         BetTopBar(onBack = viewModel::close)
         BetBody(
-            modifier = Modifier
-                .testTag(BetTestTag.BetScreen_BetBody)
-                .fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
             viewModel = viewModel,
         )
     }
