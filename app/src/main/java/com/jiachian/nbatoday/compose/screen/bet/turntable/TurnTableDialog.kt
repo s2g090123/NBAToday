@@ -33,7 +33,6 @@ fun AskTurnTableDialog(
         onDismissRequest = onCancel,
         title = {
             Text(
-                modifier = Modifier.testTag(BetTestTag.AskTurnTableDialog_Text_Title),
                 text = stringResource(R.string.bet_ask_turn_table_title),
                 color = MaterialTheme.colors.primary,
                 fontSize = 24.sp,
@@ -74,6 +73,7 @@ private fun AskTurnTableButtons(
     ) {
         Text(
             modifier = Modifier
+                .testTag(BetTestTag.AskTurnTableButtons_Text_Cancel)
                 .padding(bottom = 8.dp)
                 .rippleClickable { onCancel() }
                 .padding(10.dp),

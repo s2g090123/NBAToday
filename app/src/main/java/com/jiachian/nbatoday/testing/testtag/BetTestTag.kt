@@ -30,11 +30,13 @@ object BetTestTag {
     const val RewardedPointsDialog_Text_Body = "RewardedPointsDialog_Text_Body"
     const val RewardPointDialog_Text_OK = "RewardPointDialog_Text_OK"
 
-    const val TurnTableScreen = "TurnTableScreen"
+    const val BetTurnTable = "BetTurnTable"
     const val TurnTableStartButton_Text_Start = "TurnTableStartButton_Text_Start"
 
     const val AskTurnTableDialog = "AskTurnTableDialog"
-    const val AskTurnTableDialog_Text_Title = "AskTurnTableDialog_Text_Title"
     const val AskTurnTableDialog_Text_Body = "AskTurnTableDialog_Text_Body"
+    const val AskTurnTableButtons_Text_Cancel = "AskTurnTableButtons_Text_Cancel"
     const val AskTurnTableButtons_Text_Continue = "AskTurnTableButtons_Text_Continue"
+
+    const val BetTurnTable_Button_Cancel = "BetTurnTable_Button_Cancel"
 }

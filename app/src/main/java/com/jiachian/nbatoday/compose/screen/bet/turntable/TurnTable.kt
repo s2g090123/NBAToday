@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.text.rememberTextMeasurer
@@ -25,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.jiachian.nbatoday.compose.screen.bet.BetViewModel
+import com.jiachian.nbatoday.testing.testtag.BetTestTag
 import com.jiachian.nbatoday.utils.drawText
 import com.jiachian.nbatoday.utils.drawTurnTableArc
 import com.jiachian.nbatoday.utils.drawTurnTableBottom
@@ -69,6 +71,7 @@ fun BetTurnTable(
             if (!running) {
                 TurnTableCancelButton(
                     modifier = Modifier
+                        .testTag(BetTestTag.BetTurnTable_Button_Cancel)
                         .padding(8.dp)
                         .align(Alignment.TopEnd)
                         .size(48.dp),

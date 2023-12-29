@@ -24,7 +24,7 @@ fun TurnTableScreen(viewModel: BetViewModel) {
             true -> {
                 BetTurnTable(
                     modifier = Modifier
-                        .testTag(BetTestTag.TurnTableScreen)
+                        .testTag(BetTestTag.BetTurnTable)
                         .fillMaxSize(),
                     viewModel = viewModel,
                     onStart = { viewModel.startTurnTable(points) },
