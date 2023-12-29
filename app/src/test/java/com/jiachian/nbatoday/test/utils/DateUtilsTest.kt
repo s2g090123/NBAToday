@@ -10,10 +10,9 @@ import java.util.TimeZone
 import org.junit.Test
 
 class DateUtilsTest {
-
     @Test
     fun `getCalendar() expects correct`() {
-        val cal = Calendar.getInstance()
+        val cal = Calendar.getInstance(TimeZone.getTimeZone("EST"))
         DateUtils
             .getCalendar()
             .assertIsTrue { it.get(Calendar.YEAR) == cal.get(Calendar.YEAR) }
@@ -37,15 +36,16 @@ class DateUtilsTest {
 
     @Test
     fun `parseDate(date) expects correct`() {
-        val cal = Calendar.getInstance().apply {
+        val cal = Calendar.Builder().apply {
+            setTimeZone(TimeZone.getTimeZone("EST"))
             set(Calendar.YEAR, 2023)
             set(Calendar.MONTH, 0)
             set(Calendar.DAY_OF_MONTH, 1)
-            set(Calendar.HOUR, 1)
+            set(Calendar.HOUR, 0)
             set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
-        }
+        }.build()
         DateUtils
             .parseDate(2023, 1, 1)
             .assertIs(cal.time)
@@ -53,15 +53,16 @@ class DateUtilsTest {
 
     @Test
     fun `parseDate(format) expects correct`() {
-        val cal = Calendar.getInstance().apply {
+        val cal = Calendar.Builder().apply {
+            setTimeZone(TimeZone.getTimeZone("EST"))
             set(Calendar.YEAR, 2023)
             set(Calendar.MONTH, 0)
             set(Calendar.DAY_OF_MONTH, 1)
-            set(Calendar.HOUR, 1)
+            set(Calendar.HOUR, 0)
             set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
-        }
+        }.build()
         DateUtils
             .parseDate("2023-1-1")
             .assertIs(cal.time)
@@ -69,15 +70,16 @@ class DateUtilsTest {
 
     @Test
     fun `parseDate(dateString, dateFormat) expects correct`() {
-        val cal = Calendar.getInstance().apply {
+        val cal = Calendar.Builder().apply {
+            setTimeZone(TimeZone.getTimeZone("EST"))
             set(Calendar.YEAR, 2023)
             set(Calendar.MONTH, 0)
             set(Calendar.DAY_OF_MONTH, 1)
-            set(Calendar.HOUR, 1)
+            set(Calendar.HOUR, 0)
             set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
-        }
+        }.build()
         val dateFormat = SimpleDateFormat("yyyy-MM-dd").apply {
             timeZone = TimeZone.getTimeZone("EST")
         }
