@@ -153,7 +153,7 @@ inline fun FocusableBox(
     modifier: Modifier = Modifier,
     content: @Composable BoxScope.() -> Unit
 ) {
-    Box(modifier = modifier.noRippleClickable { }) {
+    Box(modifier = modifier.then(Modifier.noRippleClickable { })) {
         content()
     }
 }
@@ -168,9 +168,11 @@ fun IconButton(
     onClick: () -> Unit
 ) {
     androidx.compose.material.IconButton(
-        modifier = modifier
-            .size(48.dp)
-            .padding(padding),
+        modifier = modifier.then(
+            Modifier
+                .size(48.dp)
+                .padding(padding)
+        ),
         enabled = enabled,
         onClick = onClick
     ) {

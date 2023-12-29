@@ -248,14 +248,16 @@ private fun CalendarGameCard(
     onClick: () -> Unit,
 ) {
     GameCard(
-        modifier = modifier
-            .clip(RoundedCornerShape(16.dp))
-            .shadow(8.dp)
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .background(MaterialTheme.colors.secondary)
-            .rippleClickable { onClick() }
-            .padding(bottom = 8.dp),
+        modifier = modifier.then(
+            Modifier
+                .clip(RoundedCornerShape(16.dp))
+                .shadow(8.dp)
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .background(MaterialTheme.colors.secondary)
+                .rippleClickable { onClick() }
+                .padding(bottom = 8.dp)
+        ),
         viewModel = viewModel,
         expandable = false,
         color = MaterialTheme.colors.primary,
@@ -287,13 +289,12 @@ private fun DayAbbrTextRow(modifier: Modifier = Modifier) {
 
 @Composable
 private fun DateBox(
-    modifier: Modifier = Modifier,
     calendarDate: CalendarDate,
     selected: Boolean,
     onClick: (Date) -> Unit
 ) {
     Box(
-        modifier = modifier
+        modifier = Modifier
             .aspectRatio(1f)
             .border(
                 BorderStroke(

@@ -318,10 +318,12 @@ private fun ColorCircle(
     color: Color
 ) {
     Box(
-        modifier = modifier
-            .size(18.dp)
-            .border(1.dp, Color.White, CircleShape)
-            .shadow(4.dp, CircleShape)
-            .background(color)
+        modifier = modifier.then(
+            Modifier
+                .size(18.dp)
+                .border(1.dp, Color.White, CircleShape)
+                .shadow(4.dp, CircleShape)
+                .background(color)
+        )
     )
 }
