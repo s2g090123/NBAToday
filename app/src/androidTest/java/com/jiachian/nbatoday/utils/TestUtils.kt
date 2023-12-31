@@ -1,5 +1,6 @@
 package com.jiachian.nbatoday.utils
 
+import androidx.navigation.NavController
 import androidx.test.espresso.Espresso
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.not
@@ -79,4 +80,8 @@ fun assertIsFalse(actual: Boolean?) {
 
 fun pressBack() {
     Espresso.pressBack()
+}
+
+fun NavController.assertCurrentRoute(expectedRouteName: String) {
+    expectedRouteName.assertIs(currentBackStackEntry?.destination?.route)
 }

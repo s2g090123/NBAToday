@@ -12,9 +12,11 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -23,12 +25,15 @@ import com.jiachian.nbatoday.compose.screen.home.navigation.HomePage
 import com.jiachian.nbatoday.compose.screen.home.schedule.SchedulePage
 import com.jiachian.nbatoday.compose.screen.home.standing.StandingPage
 import com.jiachian.nbatoday.compose.screen.home.user.UserPage
+import com.jiachian.nbatoday.testing.testtag.HomeTestTag
 
 @Composable
-fun HomeScreen(viewModel: HomeViewModel) {
-    val navController = rememberNavController().apply {
+fun HomeScreen(
+    viewModel: HomeViewModel,
+    navController: NavHostController = rememberNavController().apply {
         enableOnBackPressed(false)
     }
+) {
     Scaffold(
         bottomBar = {
             HomeBottomNavigation(
@@ -78,6 +83,7 @@ private fun HomeBottomNavigation(
     ) {
         pages.forEach { page ->
             BottomNavigationItem(
+                modifier = Modifier.testTag(HomeTestTag.HomeBottomNavigation_BottomNavigationItem),
                 selected = page.route == currentRoute,
                 alwaysShowLabel = page.route == currentRoute,
                 selectedContentColor = MaterialTheme.colors.primary,

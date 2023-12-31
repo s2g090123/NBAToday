@@ -121,4 +121,5 @@ dependencies {
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
     androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutine_version"
     androidTestImplementation "io.mockk:mockk-android:$mockk_version"
+    androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"
 }
