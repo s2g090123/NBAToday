@@ -1,5 +1,6 @@
 package com.jiachian.nbatoday.compose.theme
 
+import androidx.annotation.VisibleForTesting
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
@@ -12,7 +13,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 
-private var ColorPalette by mutableStateOf(LakersColors)
+var ColorPalette by mutableStateOf(LakersColors)
+    @VisibleForTesting get
 
 @Composable
 fun NBATodayTheme(content: @Composable () -> Unit) {

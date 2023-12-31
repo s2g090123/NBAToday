@@ -6,6 +6,13 @@ import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.onChildren
 import androidx.compose.ui.test.performScrollTo
 
+fun SemanticsNodeInteraction.tryScrollTo() = apply {
+    try {
+        performScrollTo()
+    } catch (_: Throwable) {
+    }
+}
+
 fun SemanticsNodeInteraction.onNodeWithTag(tag: String, index: Int): SemanticsNodeInteraction {
     return findNode(tag, index) ?: onNodeWithTag2(tag, index)
 }
@@ -13,12 +20,7 @@ fun SemanticsNodeInteraction.onNodeWithTag(tag: String, index: Int): SemanticsNo
 fun SemanticsNodeInteraction.onNodeWithTag2(tag: String, index: Int): SemanticsNodeInteraction {
     return onChildren()
         .filter(hasTestTag(tag))[index]
-        .also {
-            try {
-                it.performScrollTo()
-            } catch (_: Throwable) {
-            }
-        }
+        .tryScrollTo()
 }
 
 fun SemanticsNodeInteraction.onNodeWithTag2(tag: String) = onNodeWithTag2(tag, 0)
@@ -31,12 +33,7 @@ private fun SemanticsNodeInteraction.findNode(tag: String, index: Int): Semantic
         children
             .filter(hasTestTag(tag))[index]
             .assertExists()
-            .also {
-                try {
-                    it.performScrollTo()
-                } catch (_: Throwable) {
-                }
-            }
+            .tryScrollTo()
     } catch (e: AssertionError) {
         null
     }

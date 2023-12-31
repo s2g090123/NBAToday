@@ -7,8 +7,6 @@ object UserTestTag {
 
     const val LoginScreen_Button_Login = "LoginScreen_Button_Login"
 
-    const val ThemeCard_Text_TeamName = "ThemeCard_Text_TeamName"
-
     const val UserTopBar_Text_AccountName = "UserTopBar_Text_AccountName"
     const val UserTopBar_Text_Credits = "UserTopBar_Text_Credits"
     const val UserTopBar_Button_Bet = "UserTopBar_Button_Bet"
@@ -20,4 +18,6 @@ object UserTestTag {
     const val BottomButtons_Button_Login = "BottomButtons_Button_Login"
 
     const val LoginDialog = "LoginDialog"
+
+    const val UserPage_LoginScreen = "UserPage_LoginScreen"
 }

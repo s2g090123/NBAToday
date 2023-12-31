@@ -69,7 +69,9 @@ fun UserPage(
         },
         ifNull = {
             LoginScreen(
-                modifier = modifier,
+                modifier = Modifier
+                    .testTag(UserTestTag.UserPage_LoginScreen)
+                    .then(modifier),
                 onLogin = viewModel::login,
                 onRegister = viewModel::register
             )
@@ -203,7 +205,6 @@ private fun ThemeCard(
         )
         Column(modifier = Modifier.padding(top = 8.dp, start = 8.dp, end = 8.dp)) {
             Text(
-                modifier = Modifier.testTag(UserTestTag.ThemeCard_Text_TeamName),
                 text = team.teamName,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Medium,
