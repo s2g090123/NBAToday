@@ -18,4 +18,6 @@ object UserTestTag {
     const val PasswordTextField_TextField = "PasswordTextField_TextField"
     const val BottomButtons_Button_Register = "BottomButtons_Button_Register"
     const val BottomButtons_Button_Login = "BottomButtons_Button_Login"
+
+    const val LoginDialog = "LoginDialog"
 }

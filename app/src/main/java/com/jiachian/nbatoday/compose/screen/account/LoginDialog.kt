@@ -52,6 +52,7 @@ fun LoginDialog(
     Dialog(onDismissRequest = onDismiss) {
         Column(
             modifier = Modifier
+                .testTag(UserTestTag.LoginDialog)
                 .clip(RoundedCornerShape(8.dp))
                 .width(IntrinsicSize.Min)
                 .background(Color.White),
