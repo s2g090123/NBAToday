@@ -2,6 +2,7 @@ package com.jiachian.nbatoday.data.remote
 
 import com.jiachian.nbatoday.AwayTeamId
 import com.jiachian.nbatoday.BasicNumber
+import com.jiachian.nbatoday.GamePlayed
 import com.jiachian.nbatoday.HomeTeamId
 import com.jiachian.nbatoday.models.remote.team.RemoteTeam
 
@@ -54,19 +55,19 @@ object RemoteTeamGenerator {
     private fun getRowData(teamId: Int): List<String> {
         return listOf(
             teamId.toString(),
+            GamePlayed.toString(),
             BasicNumber.toString(),
             BasicNumber.toString(),
+            (BasicNumber / GamePlayed.toDouble()).toString(),
             BasicNumber.toString(),
             BasicNumber.toString(),
+            (BasicNumber / GamePlayed.toDouble()).toString(),
             BasicNumber.toString(),
             BasicNumber.toString(),
+            (BasicNumber / GamePlayed.toDouble()).toString(),
             BasicNumber.toString(),
             BasicNumber.toString(),
-            BasicNumber.toString(),
-            BasicNumber.toString(),
-            BasicNumber.toString(),
-            BasicNumber.toString(),
-            BasicNumber.toString(),
+            (BasicNumber / GamePlayed.toDouble()).toString(),
             BasicNumber.toString(),
             BasicNumber.toString(),
             BasicNumber.toString(),

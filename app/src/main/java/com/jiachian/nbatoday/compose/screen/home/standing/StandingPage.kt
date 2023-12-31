@@ -79,7 +79,11 @@ fun StandingPage(
             count = viewModel.conferences.size,
             userScrollEnabled = false
         ) { page ->
-            Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
+            Box(
+                modifier = Modifier
+                    .testTag(StandingTestTag.StandingPage_Content)
+                    .pullRefresh(pullRefreshState)
+            ) {
                 StandingScreen(
                     modifier = Modifier.fillMaxHeight(),
                     viewModel = viewModel,
@@ -237,6 +241,7 @@ private fun StandingLabel(
 ) {
     Box(
         modifier = Modifier
+            .testTag(StandingTestTag.StandingLabel)
             .size(label.width, 36.dp)
             .modifyIf(focus, MaterialTheme.colors.secondary.copy(Transparency25)) { background(it) }
             .rippleClickable { onClick() }
@@ -282,7 +287,7 @@ private fun StandingStatsRow(
     rowData: StandingRowData,
     sorting: StandingSorting,
 ) {
-    Row {
+    Row(modifier = Modifier.testTag(StandingTestTag.StandingStatsRow)) {
         StandingTeamRow(
             modifier = Modifier
                 .size(135.dp, 40.dp)
@@ -346,6 +351,7 @@ private fun StandingStatsText(
 ) {
     Text(
         modifier = Modifier
+            .testTag(StandingTestTag.StandingStatsText)
             .size(data.width, 40.dp)
             .modifyIf(focus, MaterialTheme.colors.secondary.copy(Transparency25)) { background(it) }
             .padding(8.dp),

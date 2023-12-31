@@ -54,6 +54,7 @@ const val BasicPosition = "G"
 const val BasicTime = 1672549200000L
 const val NextTime = 1672635600000L
 const val BasicMinutes = "10:00"
+const val GamePlayed = BasicNumber * 2
 
 const val UserAccount = "allen.du"
 const val UserPassword = "0000"
