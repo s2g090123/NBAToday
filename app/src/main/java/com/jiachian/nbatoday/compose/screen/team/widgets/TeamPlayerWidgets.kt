@@ -207,6 +207,7 @@ private fun TeamPlayerStatsText(
 ) {
     Text(
         modifier = Modifier
+            .testTag(TeamTestTag.TeamPlayerStatsText)
             .size(data.width, 40.dp)
             .modifyIf(focus) { background(color.copy(Transparency25)) }
             .padding(8.dp),

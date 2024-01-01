@@ -55,7 +55,9 @@ fun TeamScreen(viewModel: TeamViewModel) {
     val scrollState = rememberScrollState()
     Column(modifier = Modifier.background(viewModel.colors.primary)) {
         IconButton(
-            modifier = Modifier.padding(top = 8.dp, start = 8.dp),
+            modifier = Modifier
+                .testTag(TeamTestTag.TeamScreen_Button_Back)
+                .padding(top = 8.dp, start = 8.dp),
             drawableRes = R.drawable.ic_black_back,
             tint = viewModel.colors.extra2,
             onClick = viewModel::close,
@@ -64,7 +66,9 @@ fun TeamScreen(viewModel: TeamViewModel) {
             state = teamUIState,
             loading = {
                 LoadingScreen(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .testTag(TeamTestTag.TeamScreen_LoadingScreen)
+                        .fillMaxSize(),
                     color = viewModel.colors.secondary,
                 )
             },
@@ -175,9 +179,9 @@ private fun TeamTab(
     onClick: () -> Unit
 ) {
     Tab(
+        modifier = Modifier.testTag(TeamTestTag.TeamTab),
         text = {
             Text(
-                modifier = Modifier.testTag(TeamTestTag.TeamTab_Text),
                 text = text,
                 color = textColor,
                 fontSize = 14.sp
@@ -228,6 +232,7 @@ private fun TeamPager(
             1 -> {
                 val gamesBefore by viewModel.gamesBefore.collectAsState()
                 TeamGamePage(
+                    modifier = Modifier.fillMaxHeight(),
                     viewModel = viewModel,
                     gamesState = gamesBefore
                 )
@@ -235,6 +240,7 @@ private fun TeamPager(
             2 -> {
                 val gamesAfter by viewModel.gamesAfter.collectAsState()
                 TeamGamePage(
+                    modifier = Modifier.fillMaxHeight(),
                     viewModel = viewModel,
                     gamesState = gamesAfter
                 )

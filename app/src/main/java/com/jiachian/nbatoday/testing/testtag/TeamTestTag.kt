@@ -1,7 +1,7 @@
 package com.jiachian.nbatoday.testing.testtag
 
 object TeamTestTag {
-    const val TeamTab_Text = "TeamTab_Text"
+    const val TeamTab = "TeamTab"
 
     const val TeamGamePage_GameCard = "TeamGamePage_GameCard"
 
@@ -17,4 +17,9 @@ object TeamTestTag {
     const val TeamRankBox_Text_Average = "TeamRankBox_Text_Average"
 
     const val TeamPlayerRow_Text_PlayerName = "TeamPlayerRow_Text_PlayerName"
+
+    const val TeamPlayerStatsText = "TeamPlayerStatsText"
+
+    const val TeamScreen_Button_Back = "TeamScreen_Button_Back"
+    const val TeamScreen_LoadingScreen = "TeamScreen_LoadingScreen"
 }
