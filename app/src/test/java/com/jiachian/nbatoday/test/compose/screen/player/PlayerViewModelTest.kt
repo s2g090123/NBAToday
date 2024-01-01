@@ -7,8 +7,8 @@ import com.jiachian.nbatoday.compose.screen.player.models.PlayerInfoTableData
 import com.jiachian.nbatoday.compose.screen.player.models.PlayerStatsLabel
 import com.jiachian.nbatoday.compose.screen.player.models.PlayerStatsRowData
 import com.jiachian.nbatoday.compose.screen.player.models.PlayerStatsSorting
+import com.jiachian.nbatoday.compose.screen.player.models.PlayerTableLabel
 import com.jiachian.nbatoday.compose.screen.player.models.PlayerUI
-import com.jiachian.nbatoday.compose.screen.player.utils.PlayerInfoHelper
 import com.jiachian.nbatoday.compose.screen.state.UIState
 import com.jiachian.nbatoday.data.local.PlayerGenerator
 import com.jiachian.nbatoday.models.local.player.Player
@@ -43,7 +43,18 @@ class PlayerViewModelTest : BaseUnitTest() {
         }
 
     private val infoTableData: PlayerInfoTableData
-        get() = PlayerInfoHelper.getTableData(player.info)
+        get() = PlayerInfoTableData(
+            rowData = PlayerTableLabel.values().map { label ->
+                PlayerInfoTableData.RowData.Data(
+                    titleRes = label.titleRes,
+                    value = LabelHelper.getValueByLabel(label, player.info)
+                )
+            }
+                .chunked(3)
+                .map {
+                    PlayerInfoTableData.RowData(it)
+                }
+        )
 
     @Before
     fun setup() {

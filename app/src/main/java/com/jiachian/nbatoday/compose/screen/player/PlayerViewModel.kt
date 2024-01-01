@@ -2,11 +2,12 @@ package com.jiachian.nbatoday.compose.screen.player
 
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.compose.screen.label.LabelHelper
+import com.jiachian.nbatoday.compose.screen.player.models.PlayerInfoTableData
 import com.jiachian.nbatoday.compose.screen.player.models.PlayerStatsLabel
 import com.jiachian.nbatoday.compose.screen.player.models.PlayerStatsRowData
 import com.jiachian.nbatoday.compose.screen.player.models.PlayerStatsSorting
+import com.jiachian.nbatoday.compose.screen.player.models.PlayerTableLabel
 import com.jiachian.nbatoday.compose.screen.player.models.PlayerUI
-import com.jiachian.nbatoday.compose.screen.player.utils.PlayerInfoHelper
 import com.jiachian.nbatoday.compose.screen.state.UIState
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
@@ -46,6 +47,7 @@ class PlayerViewModel(
     val sorting = sortingImp.asStateFlow()
 
     val statsLabels = PlayerStatsLabel.values()
+    private val tableLabels = PlayerTableLabel.values()
 
     private val statsRowData = player.map { player ->
         player?.stats?.stats?.map { stats ->
@@ -74,7 +76,18 @@ class PlayerViewModel(
 
     private val infoTableData = player.map { player ->
         player?.info?.let { info ->
-            PlayerInfoHelper.getTableData(info)
+            PlayerInfoTableData(
+                rowData = tableLabels.map { label ->
+                    PlayerInfoTableData.RowData.Data(
+                        titleRes = label.titleRes,
+                        value = LabelHelper.getValueByLabel(label, info)
+                    )
+                }
+                    .chunked(3)
+                    .map {
+                        PlayerInfoTableData.RowData(it)
+                    }
+            )
         }
     }.flowOn(dispatcherProvider.io)
 

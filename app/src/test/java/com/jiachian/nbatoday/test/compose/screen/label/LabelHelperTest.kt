@@ -4,6 +4,7 @@ import com.jiachian.nbatoday.NA
 import com.jiachian.nbatoday.compose.screen.home.standing.models.StandingLabel
 import com.jiachian.nbatoday.compose.screen.label.LabelHelper
 import com.jiachian.nbatoday.compose.screen.player.models.PlayerStatsLabel
+import com.jiachian.nbatoday.compose.screen.player.models.PlayerTableLabel
 import com.jiachian.nbatoday.compose.screen.score.models.BoxScoreLeaderLabel
 import com.jiachian.nbatoday.compose.screen.score.models.BoxScorePlayerLabel
 import com.jiachian.nbatoday.compose.screen.score.models.BoxScoreTeamLabel
@@ -381,5 +382,29 @@ class LabelHelperTest {
             LabelHelper.getValueByLabel(TeamPlayerLabel.PLUSMINUS, stats),
             stats.plusMinus.toString()
         )
+    }
+
+    @Test
+    fun `getValueByLabel(PlayerTableLabel) expects correct`() {
+        val info = PlayerGenerator.getHome().info
+        PlayerTableLabel.values().forEach { label ->
+            val expected = when (label) {
+                PlayerTableLabel.PPG -> info.points
+                PlayerTableLabel.RPG -> info.rebounds
+                PlayerTableLabel.APG -> info.assists
+                PlayerTableLabel.PIE -> info.impact
+                PlayerTableLabel.HEIGHT -> info.heightFormatted
+                PlayerTableLabel.WEIGHT -> info.weightFormatted
+                PlayerTableLabel.COUNTRY -> info.country
+                PlayerTableLabel.LAST_ATTENDED -> info.school
+                PlayerTableLabel.AGE -> info.playerAge
+                PlayerTableLabel.BIRTHDATE -> info.birthDate
+                PlayerTableLabel.DRAFT -> info.draftFormatted
+                PlayerTableLabel.EXPERIENCE -> info.seasonExperience
+            }.toString()
+            LabelHelper
+                .getValueByLabel(label, info)
+                .assertIs(expected)
+        }
     }
 }
