@@ -47,9 +47,7 @@ fun ScoreLeaderPage(
         }
         items(leadersUI.rowData) { rowData ->
             ScoreLeaderRow(
-                modifier = Modifier
-                    .testTag(BoxScoreTestTag.ScoreLeaderPage_ScoreLeaderRow)
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 rowData = rowData
             )
         }

@@ -62,11 +62,19 @@ fun BoxScoreScreen(viewModel: BoxScoreViewModel) {
             state = boxScoreUIState,
             loading = {
                 LoadingScreen(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .testTag(BoxScoreTestTag.ScoreScreen_Loading)
+                        .fillMaxSize(),
                     color = MaterialTheme.colors.secondary,
                 )
             },
-            ifNull = { NotFoundScreen(modifier = Modifier.fillMaxSize()) }
+            ifNull = {
+                NotFoundScreen(
+                    modifier = Modifier
+                        .testTag(BoxScoreTestTag.ScoreScreen_NotFoundScreen)
+                        .fillMaxSize()
+                )
+            }
         ) { boxScoreUI ->
             val scrollState = rememberScrollState()
             ScoreScreen(
@@ -98,7 +106,6 @@ private fun ScoreScreen(
         )
         ScorePeriod(
             modifier = Modifier
-                .testTag(BoxScoreTestTag.ScoreScreen_ScorePeriod)
                 .padding(top = 16.dp, start = 12.dp, end = 12.dp)
                 .fillMaxWidth(),
             score = boxScoreUI.boxScore,
@@ -177,7 +184,6 @@ private fun ScoreDetail(
         )
         ScoreDetailPager(
             modifier = Modifier
-                .testTag(BoxScoreTestTag.ScoreDetail_ScoreDetailPager)
                 .fillMaxHeight()
                 .nestedScroll(nestedScrollConnection),
             viewModel = viewModel,

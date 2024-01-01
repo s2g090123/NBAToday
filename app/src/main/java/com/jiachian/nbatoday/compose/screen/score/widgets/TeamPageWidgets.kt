@@ -47,9 +47,7 @@ fun ScoreTeamPage(
         }
         items(teamsUI.rowData) { rowData ->
             TeamStatsRow(
-                modifier = Modifier
-                    .testTag(BoxScoreTestTag.ScoreTeamPage_TeamStatsRow)
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 rowData = rowData
             )
         }

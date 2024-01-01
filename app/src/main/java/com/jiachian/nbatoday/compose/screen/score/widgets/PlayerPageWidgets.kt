@@ -210,6 +210,7 @@ private fun ScorePlayerRow(
         Row(modifier = Modifier.horizontalScroll(scrollState)) {
             Text(
                 modifier = Modifier
+                    .testTag(BoxScoreTestTag.ScorePlayerRow_Text_Position)
                     .size(40.dp)
                     .padding(8.dp),
                 text = if (rowData.player.starter) rowData.player.position else "",
@@ -243,6 +244,7 @@ private fun ScorePlayerNameText(
 private fun ScorePlayerStatsText(data: BoxScorePlayerRowData.Data) {
     Text(
         modifier = Modifier
+            .testTag(BoxScoreTestTag.ScorePlayerStatsText)
             .size(data.width, 40.dp)
             .padding(8.dp),
         text = data.value,

@@ -1,14 +1,11 @@
 package com.jiachian.nbatoday.testing.testtag
 
 object BoxScoreTestTag {
-    const val ScoreScreen_ScorePeriod = "ScoreScreen_ScorePeriod"
+    const val ScoreScreen_Loading = "ScoreScreen_Loading"
+    const val ScoreScreen_NotFoundScreen = "ScoreScreen_NotFoundScreen"
 
     const val ScoreTopBar_Button_Back = "ScoreTopBar_Button_Back"
     const val ScoreTopBar_Text_Date = "ScoreTopBar_Text_Date"
-
-    const val ScoreDetail_ScoreDetailPager = "ScoreDetail_ScoreDetailPager"
-
-    const val ScoreLeaderPage_ScoreLeaderRow = "ScoreLeaderPage_ScoreLeaderRow"
 
     const val ScoreLeaderRow_LeaderStatsText_Home = "ScoreLeaderRow_LeaderStatsText_Home"
     const val ScoreLeaderRow_LeaderStatsText_Away = "ScoreLeaderRow_LeaderStatsText_Away"
@@ -18,6 +15,7 @@ object BoxScoreTestTag {
     const val ScorePlayerLabelPopup_Text_About = "ScorePlayerLabelPopup_Text_About"
 
     const val ScorePlayerRow_ScorePlayerNameText = "ScorePlayerRow_ScorePlayerNameText"
+    const val ScorePlayerRow_Text_Position = "ScorePlayerRow_Text_Position"
 
     const val ScoreDetailPager_ScorePlayerPage_Home = "ScoreDetailPager_ScorePlayerPage_Home"
     const val ScoreDetailPager_ScorePlayerPage_Away = "ScoreDetailPager_ScorePlayerPage_Away"
@@ -41,10 +39,10 @@ object BoxScoreTestTag {
 
     const val TeamInfo_Text_TeamName = "TeamInfo_Text_TeamName"
 
+    const val ScorePlayerStatsText = "ScorePlayerStatsText"
+
     const val GameScoreStatus_Text_ScoreComparison = "GameScoreStatus_Text_ScoreComparison"
     const val GameScoreStatus_Text_Status = "GameScoreStatus_Text_Status"
-
-    const val ScoreTeamPage_TeamStatsRow = "ScoreTeamPage_TeamStatsRow"
 
     const val TeamStatsRow_ScoreTeamStatsText_Home = "TeamStatsRow_ScoreTeamStatsText_Home"
     const val TeamStatsRow_ScoreTeamStatsText_Away = "TeamStatsRow_ScoreTeamStatsText_Away"
