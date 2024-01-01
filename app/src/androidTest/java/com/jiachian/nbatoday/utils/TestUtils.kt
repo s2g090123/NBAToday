@@ -2,6 +2,13 @@ package com.jiachian.nbatoday.utils
 
 import androidx.navigation.NavController
 import androidx.test.espresso.Espresso
+import java.util.concurrent.CountDownLatch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.test.TestScope
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.CoreMatchers.notNullValue
@@ -84,4 +91,23 @@ fun pressBack() {
 
 fun NavController.assertCurrentRoute(expectedRouteName: String) {
     expectedRouteName.assertIs(currentBackStackEntry?.destination?.route)
+}
+
+@OptIn(ExperimentalCoroutinesApi::class)
+suspend fun <T> Flow<T>.collectOnce(
+    scope: TestScope,
+    collector: (T) -> Unit
+) {
+    val latch = CountDownLatch(1)
+    val job = scope.async(Dispatchers.IO) {
+        collect {
+            try {
+                collector(it)
+            } finally {
+                latch.countDown()
+            }
+        }
+    }
+    latch.await()
+    job.cancelAndJoin()
 }

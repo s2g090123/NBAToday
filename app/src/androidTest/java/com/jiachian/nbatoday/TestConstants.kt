@@ -62,7 +62,7 @@ const val UserName = "Account"
 const val UserPoints = 1000L
 const val UserToken = "123456"
 
-const val FinalBetId = 0L
-const val PlayingBetId = 1L
-const val ComingSoonBetId = 2L
+const val FinalBetId = 1L
+const val PlayingBetId = 2L
+const val ComingSoonBetId = 3L
 const val BetPoints = 1L
