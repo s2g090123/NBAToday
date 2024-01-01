@@ -175,7 +175,6 @@ private fun PlayerStatsRow(
     Row(modifier = modifier) {
         PlayerStatsYearText(
             modifier = Modifier
-                .testTag(PlayerTestTag.PlayerStatsRow_PlayerStatsYearText)
                 .size(120.dp, 40.dp)
                 .background(
                     if (selectTimeFrame) MaterialTheme.colors.secondary.copy(Transparency25)

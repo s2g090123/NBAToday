@@ -48,11 +48,19 @@ fun PlayerScreen(viewModel: PlayerViewModel) {
             state = playerUIState,
             loading = {
                 LoadingScreen(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .testTag(PlayerTestTag.PlayerScreen_Loading)
+                        .fillMaxSize(),
                     color = MaterialTheme.colors.secondary,
                 )
             },
-            ifNull = { PlayerNotFound(modifier = Modifier.fillMaxSize()) }
+            ifNull = {
+                PlayerNotFound(
+                    modifier = Modifier
+                        .testTag(PlayerTestTag.PlayerScreen_PlayerNotFound)
+                        .fillMaxSize()
+                )
+            }
         ) { playerUI ->
             PlayerDetail(
                 modifier = Modifier.fillMaxSize(),
