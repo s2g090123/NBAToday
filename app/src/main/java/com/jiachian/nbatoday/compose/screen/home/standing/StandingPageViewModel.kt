@@ -109,7 +109,9 @@ class StandingPageViewModel(
             StandingSorting.TOV -> compareBy { it.team.turnoversAverage }
             StandingSorting.STL -> compareByDescending { it.team.stealsAverage }
             StandingSorting.BLK -> compareByDescending<StandingRowData> { it.team.blocksAverage }
-        }.thenByDescending { it.team.winPercentage }
+        }
+            .thenByDescending { it.team.winPercentage }
+            .thenByDescending { it.team.gamePlayed }
         return sortedWith(comparator)
     }
 
