@@ -11,6 +11,7 @@ import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.koin.testModule
 import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.repository.RepositoryProvider
+import com.jiachian.nbatoday.rule.ApplicationRule
 import com.jiachian.nbatoday.rule.CalendarRule
 import com.jiachian.nbatoday.rule.CoroutineRule
 import com.jiachian.nbatoday.rule.KoinTestRule
@@ -27,6 +28,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
 import org.junit.Rule
+import org.koin.dsl.module
 import org.koin.java.KoinJavaComponent.get
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -44,7 +46,15 @@ open class BaseAndroidTest {
     val nbaTeamRule = NBATeamRule()
 
     @get:Rule
-    val koinRule = KoinTestRule(listOf(testModule))
+    val applicationRule = ApplicationRule()
+
+    @get:Rule
+    val koinRule = KoinTestRule(
+        module = module {
+            single { dispatcherProvider }
+            includes(testModule)
+        }
+    )
 
     protected val context: Context
         get() = ApplicationProvider.getApplicationContext()

@@ -9,12 +9,12 @@ import org.koin.core.context.stopKoin
 import org.koin.core.module.Module
 
 class KoinTestRule(
-    private val modules: List<Module>
+    private val module: Module
 ) : TestWatcher() {
     override fun starting(description: Description) {
         startKoin {
             androidContext(ApplicationProvider.getApplicationContext())
-            modules(modules)
+            modules(module)
         }
     }
 

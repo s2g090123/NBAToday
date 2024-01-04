@@ -1,6 +1,7 @@
 package com.jiachian.nbatoday.koin
 
 import com.jiachian.nbatoday.DataHolder
+import com.jiachian.nbatoday.MainViewModel
 import com.jiachian.nbatoday.database.dao.BetDao
 import com.jiachian.nbatoday.database.dao.BoxScoreDao
 import com.jiachian.nbatoday.database.dao.GameDao
@@ -46,6 +47,7 @@ import com.jiachian.nbatoday.repository.schedule.ScheduleRepository
 import com.jiachian.nbatoday.repository.team.TeamRepository
 import com.jiachian.nbatoday.repository.user.UserRepository
 import com.jiachian.nbatoday.utils.ComposeViewModelProvider
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val testModule = module {
@@ -75,4 +77,6 @@ val testModule = module {
     single { TestUserRepository(get(), get()) as UserRepository }
     single { NavigationController() }
     single { ComposeViewModelProvider(get(), get(), get()) }
+
+    viewModel { MainViewModel(get(), get(), get(), get(), get()) }
 }
