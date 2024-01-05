@@ -31,7 +31,7 @@ class GameCardViewModel(
 
     val login = user
         .map { it != null }
-        .stateIn(coroutineScope, SharingStarted.Eagerly, false)
+        .stateIn(coroutineScope, SharingStarted.Lazily, false)
 
     private val expandedImp = MutableStateFlow(false)
     val expanded = expandedImp.asStateFlow()

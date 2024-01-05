@@ -80,7 +80,7 @@ class CalendarViewModel(
         val year = cal.get(Calendar.YEAR)
         val month = cal.get(Calendar.MONTH)
         year * 100 + month to DateUtils.getDateString(year, month)
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, 0 to "")
+    }.stateIn(coroutineScope, SharingStarted.Lazily, 0 to "")
 
     val hasNextMonth = combine(
         currentCalendar, lastGameDate
@@ -90,7 +90,7 @@ class CalendarViewModel(
             .run {
                 get(Calendar.YEAR) > cal.get(Calendar.YEAR) || get(Calendar.MONTH) > cal.get(Calendar.MONTH)
             }
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, false)
+    }.stateIn(coroutineScope, SharingStarted.Lazily, false)
     val hasLastMonth = combine(
         currentCalendar, firstGameDate
     ) { cal, lastDate ->
@@ -99,7 +99,7 @@ class CalendarViewModel(
             .run {
                 get(Calendar.YEAR) < cal.get(Calendar.YEAR) || get(Calendar.MONTH) < cal.get(Calendar.MONTH)
             }
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, false)
+    }.stateIn(coroutineScope, SharingStarted.Lazily, false)
 
     private val calendarDatesMap = mutableMapOf<String, List<CalendarDate>>()
 
@@ -112,7 +112,7 @@ class CalendarViewModel(
     ) { loading, dates ->
         if (loading) return@combine UIState.Loading()
         UIState.Loaded(dates)
-    }.stateIn(coroutineScope, SharingStarted.Eagerly, UIState.Loading())
+    }.stateIn(coroutineScope, SharingStarted.Lazily, UIState.Loading())
 
     private val gameCardViewModelMap = mutableMapOf<GameAndBets, GameCardViewModel>()
 
