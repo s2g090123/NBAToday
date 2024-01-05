@@ -1,45 +1,68 @@
 package com.jiachian.nbatoday
 
-const val FINAL_GAME_ID = "0"
-const val PLAYING_GAME_ID = "1"
-const val COMING_SOON_GAME_ID = "2"
+import com.jiachian.nbatoday.compose.theme.CelticsColors
+import com.jiachian.nbatoday.compose.theme.LakersColors
+import com.jiachian.nbatoday.models.local.team.data.teamCeltics
+import com.jiachian.nbatoday.models.local.team.data.teamLakers
 
-const val GAME_CODE = "20230101/TWHTWA"
-const val GAME_STATUS_PREPARE = "3:00 pm ET"
-const val GAME_STATUS_FINAL = "Final"
-const val GAME_DATE = "2023-01-01"
-const val GAME_SEASON = "2022-23"
-const val GAME_SEASON_NEXT = "2023-24"
+const val FinalGameId = "0"
+const val PlayingGameId = "1"
+const val ComingSoonGameId = "2"
 
-const val HOME_TEAM_ID = 123456
-const val AWAY_TEAM_ID = 654321
+const val GameCode = "20230101/TWHTWA"
+const val GameStatusPrepare = "3:00 pm ET"
+const val GameStatusFinal = "Final"
+const val GameDate = "2023-01-01"
+const val FinalGameDateTime = "2022-12-31T12:00:00"
+const val PlayingGameDateTime = "2023-01-01T12:00:00"
+const val ComingSoonGameDateTime = "2023-01-02T12:00:00"
+const val FinalGameTimeMs = 1672506000000L
+const val PlayingGameTimeMs = 1672592400000L
+const val ComingSoonGameTimeMs = 1672678800000L
+const val GameDay = "Sun"
+const val GameSeason = "2022-23"
+const val GameSeasonNext = "2023-24"
 
-const val TEAM_CITY = "TW"
-const val HOME_TEAM_FULL_NAME = "Taiwan Home"
-const val AWAY_TEAM_FULL_NAME = "Taiwan Away"
-const val HOME_TEAM_NAME = "Home"
-const val AWAY_TEAM_NAME = "Away"
-const val HOME_TEAM_ABBR = "TWH"
-const val AWAY_TEAM_ABBR = "TWA"
+val HomeTeamId = teamLakers.teamId
+val AwayTeamId = teamCeltics.teamId
 
-const val HOME_PLAYER_ID = 123456
-const val AWAY_PLAYER_ID = 654321
-const val HOME_PLAYER_FULL_NAME = "Du Allen"
-const val HOME_PLAYER_FIRST_NAME = "Du"
-const val HOME_PLAYER_LAST_NAME = "Allen"
-const val AWAY_PLAYER_FULL_NAME = "Jia Chian"
-const val AWAY_PLAYER_FIRST_NAME = "Jia"
-const val AWAY_PLAYER_LAST_NAME = "Chian"
+const val TeamCity = "TW"
+const val HomeTeamFullName = "Taiwan Home"
+const val AwayTeamFullName = "Taiwan Away"
+const val HomeTeamName = "Home"
+const val AwayTeamName = "Away"
+const val HomeTeamAbbr = "TWH"
+const val AwayTeamAbbr = "TWA"
+const val HomeTeamLocation = "Home"
+const val AwayTeamLocation = "Away"
+val HomeTeamColors = LakersColors
+val AwayTeamColors = CelticsColors
 
-const val BASIC_NUMBER = 10
-const val BASIC_PERCENTAGE = 100.0
-const val BASIC_POSITION = "G"
-const val BASIC_TIME = 1672549200000L
-const val NEXT_TIME = 1672635600000L
-const val BASIC_MINUTES = "10:00"
+const val HomePlayerId = 123456
+const val AwayPlayerId = 654321
+const val HomePlayerFullName = "Du Allen"
+const val HomePlayerFirstName = "Du"
+const val HomePlayerLastName = "Allen"
+const val AwayPlayerFullName = "Jia Chian"
+const val AwayPlayerFirstName = "Jia"
+const val AwayPlayerLastName = "Chian"
+const val PlayerBirthDateTime = "2013-01-01T00:00:00"
 
-const val USER_ACCOUNT = "allen.du"
-const val USER_PASSWORD = "0000"
-const val USER_NAME = "Account"
-const val USER_POINTS = 1000L
-const val USER_TOKEN = "123456"
+const val BasicNumber = 10
+const val BasicPercentage = 100.0
+const val BasicPosition = "G"
+const val BasicTime = 1672549200000L
+const val NextTime = 1672635600000L
+const val BasicMinutes = "10:00"
+const val GamePlayed = BasicNumber * 2
+
+const val UserAccount = "allen.du"
+const val UserPassword = "0000"
+const val UserName = "Account"
+const val UserPoints = 1000L
+const val UserToken = "123456"
+
+const val FinalBetId = 1L
+const val PlayingBetId = 2L
+const val ComingSoonBetId = 3L
+const val BetPoints = 1L

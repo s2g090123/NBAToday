@@ -1,5 +1,6 @@
 package com.jiachian.nbatoday.rule
 
+import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.resetMain
@@ -7,14 +8,14 @@ import kotlinx.coroutines.test.setMain
 import org.junit.rules.TestWatcher
 import org.junit.runner.Description
 
-@ExperimentalCoroutinesApi
+@OptIn(ExperimentalCoroutinesApi::class)
 class SetMainDispatcherRule(
-    private val coroutineEnvironment: TestCoroutineEnvironment
+    private val dispatcherProvider: DispatcherProvider
 ) : TestWatcher() {
 
     override fun starting(description: Description) {
         super.starting(description)
-        Dispatchers.setMain(coroutineEnvironment.testDispatcherProvider.main)
+        Dispatchers.setMain(dispatcherProvider.main)
     }
 
     override fun finished(description: Description) {

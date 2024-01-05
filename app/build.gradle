@@ -17,7 +17,7 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "com.jiachian.nbatoday.AndroidTestRunner"
         vectorDrawables {
             useSupportLibrary true
         }
@@ -42,15 +42,21 @@ android {
     buildFeatures {
         compose true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion compose_version
+  composeOptions {
+    kotlinCompilerExtensionVersion compose_version
+  }
+  packagingOptions {
+    resources {
+      excludes += '/META-INF/{AL2.0,LGPL2.1}'
+      excludes += '/META-INF/*.md'
     }
-    packagingOptions {
-        resources {
-            excludes += '/META-INF/{AL2.0,LGPL2.1}'
-            excludes += '/META-INF/*.md'
-        }
-    }
+  }
+  lintOptions {
+    error("VisibleForTests")
+  }
+  testOptions {
+    animationsDisabled = true
+  }
 }
 
 dependencies {
@@ -109,9 +115,11 @@ dependencies {
     // testing
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutine_version"
     testImplementation "io.mockk:mockk:$mockk_version"
+    testImplementation "io.insert-koin:koin-test-junit4:$koin_version"
 
     // android testing
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
     androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutine_version"
     androidTestImplementation "io.mockk:mockk-android:$mockk_version"
+    androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"
 }

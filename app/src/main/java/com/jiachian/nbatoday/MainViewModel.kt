@@ -2,100 +2,65 @@ package com.jiachian.nbatoday
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jiachian.nbatoday.compose.screen.home.HomeViewModel
-import com.jiachian.nbatoday.compose.state.NbaState
 import com.jiachian.nbatoday.compose.theme.updateColors
-import com.jiachian.nbatoday.data.BaseRepository
-import com.jiachian.nbatoday.data.datastore.BaseDataStore
+import com.jiachian.nbatoday.datastore.BaseDataStore
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
-import com.jiachian.nbatoday.event.EventBroadcaster
-import com.jiachian.nbatoday.event.EventManager
+import com.jiachian.nbatoday.navigation.NavigationController
+import com.jiachian.nbatoday.repository.RepositoryProvider
+import com.jiachian.nbatoday.utils.ComposeViewModelProvider
 import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class MainViewModel(
-    private val repository: BaseRepository,
+    private val repositoryProvider: RepositoryProvider,
     private val dataStore: BaseDataStore,
+    private val navigationController: NavigationController,
+    val viewModelProvider: ComposeViewModelProvider,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
-    private val eventManager: EventManager<Event> = EventManager()
-) : ViewModel(), EventBroadcaster<MainViewModel.Event> by eventManager {
+) : ViewModel() {
 
-    sealed class Event {
-        object Exit : Event()
+    val navigationEvent = navigationController.eventFlow
+
+    init {
+        loadData()
     }
 
-    private fun Event.send() {
-        eventManager.send(this)
-    }
-
-    private val initState: NbaState by lazy {
-        NbaState.Home(
-            HomeViewModel(
-                repository = repository,
-                dataStore = dataStore,
-                openScreen = this::updateState
-            )
-        )
-    }
-
-    private val isLoading = MutableStateFlow(false)
-
-    private val isLoadedImp = MutableStateFlow(false)
-    val isLoaded = isLoadedImp.asStateFlow()
-
-    private val stateStackImp by lazy { MutableStateFlow(listOf(initState)) }
-    val stateStack by lazy { stateStackImp.asStateFlow() }
-    val currentState by lazy {
-        stateStack.map { it.last() }
-            .stateIn(viewModelScope, SharingStarted.Eagerly, initState)
-    }
-
-    fun loadData() {
-        if (isLoading.value || isLoaded.value) return
+    private fun loadData() {
         viewModelScope.launch(dispatcherProvider.io) {
-            isLoading.value = true
-            val refreshScheduleDeferred = async {
-                repository.refreshSchedule()
+            val updateScheduleDeferred = async {
+                repositoryProvider.schedule.updateSchedule()
+            }
+            val updateTeamsDeferred = async {
+                repositoryProvider.team.insertTeams()
             }
             val updateColorsDeferred = async {
-                val colors = dataStore.themeColors.first()
-                updateColors(colors)
+                dataStore
+                    .themeColors
+                    .first()
+                    .also { updateColors(it) }
             }
-            val loginDeferred = async {
-                val user = dataStore.userData.firstOrNull() ?: return@async
-                val account = user.account ?: return@async
-                val password = user.password ?: return@async
-                repository.login(account, password)
+            val loginUserDeferred = async {
+                dataStore
+                    .user
+                    .first()
+                    ?.also { user ->
+                        repositoryProvider.user.login(user.account, user.password)
+                    }
             }
-            refreshScheduleDeferred.await()
-            updateColorsDeferred.await()
-            loginDeferred.await()
-            isLoading.value = false
-            isLoadedImp.value = true
+            awaitAll(
+                updateScheduleDeferred,
+                updateTeamsDeferred,
+                updateColorsDeferred,
+                loginUserDeferred
+            )
+            navigationController.navigateToHome()
         }
     }
 
-    fun updateState(state: NbaState) {
-        if (currentState.value == state) return
-        val stack = stateStack.value.toMutableList().apply {
-            add(state)
-        }
-        stateStackImp.value = stack
-    }
-
-    fun backState() {
-        if (currentState.value == initState) {
-            Event.Exit.send()
-        } else {
-            stateStackImp.value = stateStack.value.dropLast(1)
-        }
+    fun consumeNavigationEvent(event: NavigationController.Event?) {
+        navigationController.onEventConsumed(event)
     }
 }

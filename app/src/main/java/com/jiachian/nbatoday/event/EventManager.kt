@@ -1,5 +1,7 @@
 package com.jiachian.nbatoday.event
 
+import androidx.annotation.VisibleForTesting
+import com.jiachian.nbatoday.annotation.ExcludeFromJacocoGeneratedReport
 import java.util.concurrent.ConcurrentLinkedQueue
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,11 +24,17 @@ class EventManager<T> : EventBroadcaster<T> {
 
     @Synchronized
     override fun onEventConsumed(event: T?) {
-        if (event == null) return
-        if (event != currentEvent) return
-        currentEvent = queue.poll()
-        if (currentEvent != null || eventFlow.value != null) {
-            eventFlowImp.value = currentEvent
+        if (event == null || event != currentEvent) return
+        eventFlowImp.value = queue.poll().also {
+            currentEvent = it
         }
+    }
+
+    @VisibleForTesting
+    @ExcludeFromJacocoGeneratedReport
+    fun reset() {
+        queue.clear()
+        currentEvent = null
+        eventFlowImp.value = null
     }
 }

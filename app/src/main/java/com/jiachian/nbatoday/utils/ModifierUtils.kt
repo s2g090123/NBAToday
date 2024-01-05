@@ -31,4 +31,16 @@ fun Modifier.noRippleClickable(enabled: Boolean = true, onClick: () -> Unit) = c
 fun Modifier.modifyIf(
     condition: Boolean,
     modify: Modifier.() -> Modifier
-) = if (condition) modify() else this
+) = if (condition) this.then(modify()) else this
+
+fun <T> Modifier.modifyIf(
+    condition: Boolean,
+    value: T,
+    modify: Modifier.(T) -> Modifier
+) = if (condition) this.then(modify(value)) else this
+
+fun Modifier.modifyIf(
+    condition: Boolean,
+    modify: Modifier.() -> Modifier,
+    elseModify: Modifier.() -> Modifier
+) = if (condition) this.then(modify()) else this.then(elseModify())

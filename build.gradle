@@ -8,7 +8,7 @@ buildscript {
         koin_version = '3.3.0'
         coil_version = '2.2.2'
         nav_version = '2.5.3'
-        mockk_version = '1.13.4'
+        mockk_version = '1.13.3'
         jacoco_version = '0.8.10'
         jacoco_android_version = "0.2"
         detekt_version = "1.23.1"
