@@ -52,6 +52,7 @@ class CalendarViewModelTest : BaseUnitTest() {
 
     @Test
     fun `nextMonth() with hasNextMonth expects numberAndDateString is updated`() {
+        viewModel.numberAndDateString.launchAndCollect()
         val spy = spyk(viewModel) {
             every { hasNextMonth() } returns true
         }
@@ -77,6 +78,7 @@ class CalendarViewModelTest : BaseUnitTest() {
 
     @Test
     fun `lastMonth() with hasLastMonth expects numberAndDateString is updated`() {
+        viewModel.numberAndDateString.launchAndCollect()
         val spy = spyk(viewModel) {
             every { hasLastMonth() } returns true
         }
