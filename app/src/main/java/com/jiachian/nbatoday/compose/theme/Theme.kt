@@ -21,22 +21,18 @@ fun NBATodayTheme(content: @Composable () -> Unit) {
     val primaryColor by animateColorAsState(
         targetValue = ColorPalette.primary,
         animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing),
-        label = ""
     )
     val secondaryColor by animateColorAsState(
         targetValue = ColorPalette.secondary,
         animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing),
-        label = ""
     )
     val extraColor1 by animateColorAsState(
         targetValue = ColorPalette.extra1,
         animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing),
-        label = ""
     )
     val extraColor2 by animateColorAsState(
         targetValue = ColorPalette.extra2,
         animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing),
-        label = ""
     )
     val colors by remember(primaryColor, secondaryColor) {
         derivedStateOf {
