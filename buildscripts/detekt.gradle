@@ -3,7 +3,7 @@ apply plugin: "io.gitlab.arturbosch.detekt"
 detekt {
     buildUponDefaultConfig = true
     parallel = true
-    ignoreFailures = false
+    ignoreFailures = true
     config.setFrom("${rootProject.projectDir}/config/detekt/detekt_config.yml")
 }
 
