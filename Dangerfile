@@ -10,9 +10,6 @@ warn("Please provide a summary in the PR description to make it easier to review
 # Warn to encourage that labels should have been used on the PR
 warn("Please add labels to this PR") if github.pr_labels.empty?
 
-# Check commits lint and warn on all checks (instead of failing)
-commit_lint.check warn: :all, disable: [:subject_length]
-
 # Detekt output check
 detekt_dir = "**/build/reports/detekt/detekt.xml"
 Dir[detekt_dir].each do |file_name|
