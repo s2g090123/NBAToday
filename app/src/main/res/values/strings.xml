@@ -168,14 +168,11 @@
     <string name="bet_point_require">Please bet on at least one team</string>
     <string name="bet_no_record">No betting record found.</string>
     <string name="bet_ask_turn_table_title">Use Lucky Wheel</string>
-    <string name="bet_ask_turn_table_text">You have won %1$d points and lost %2$d points. Do you want to continue betting on the Lucky Wheel?</string>
     <string name="bet_ask_turn_table_continue">CONTINUE</string>
     <string name="bet_ask_turn_table_cancel">CANCEL</string>
     <string name="bet_turn_table_start">START</string>
     <string name="bet_reward_lose_title">Damn</string>
-    <string name="bet_reward_lose_text">You lost %1$d points due to the Lucky Wheel.</string>
     <string name="bet_reward_win_title">WOW</string>
-    <string name="bet_reward_win_text">You won %1$d points due to the Lucky Wheel.</string>
     <string name="bet_reward_ok">OK</string>
     <string name="bet_toast_already_bet_before">You had placed a bet before</string>
     <string name="bet_odds" translatable="false">%1$d:%2$d</string>
@@ -186,4 +183,17 @@
     <string name="day_friday_abbr" translatable="false">FRI</string>
     <string name="day_saturday_abbr" translatable="false">SAT</string>
     <string name="day_sunday_abbr" translatable="false">SUN</string>
+
+    <plurals name="bet_ask_turn_table_text">
+        <item quantity="one">You have won %1$d point and lost %2$d point. Do you want to continue betting on the Lucky Wheel?</item>
+        <item quantity="other">You have won %1$d points and lost %2$d points. Do you want to continue betting on the Lucky Wheel?</item>
+    </plurals>
+    <plurals name="bet_reward_lose_text">
+        <item quantity="one">You lost %1$d point due to the Lucky Wheel.</item>
+        <item quantity="other">You lost %1$d points due to the Lucky Wheel.</item>
+    </plurals>
+    <plurals name="bet_reward_win_text">
+        <item quantity="one">You won %1$d point due to the Lucky Wheel.</item>
+        <item quantity="other">You won %1$d points due to the Lucky Wheel.</item>
+    </plurals>
 </resources>

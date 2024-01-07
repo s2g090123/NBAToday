@@ -40,8 +40,9 @@ class TurnTableScreenTest : BaseAndroidTest() {
         viewModel.clickBetAndGame(BetAndGameGenerator.getFinal())
         onNodeWithUnmergedTree(BetTestTag.AskTurnTableDialog_Text_Body)
             .assertTextEquals(
-                getString(
-                    R.string.bet_ask_turn_table_text,
+                context.resources.getQuantityString(
+                    R.plurals.bet_ask_turn_table_text,
+                    0,
                     BetPoints * 2,
                     BetPoints
                 )
