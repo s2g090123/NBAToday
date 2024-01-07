@@ -4,7 +4,6 @@
     <string name="is_loading_app">比賽賽程載入中…</string>
     <string name="home_bottom_schedule">賽程</string>
     <string name="home_bottom_standings">排行</string>
-    <string name="home_bottom_theme">主題</string>
     <string name="home_bottom_user">用戶</string>
     <string name="player_info_pts_abbr">得分</string>
     <string name="player_info_reb_abbr">籃板</string>
@@ -79,8 +78,6 @@
     <string name="team_page_tab_player">球員</string>
     <string name="team_page_tab_before_game">先前的</string>
     <string name="team_page_tab_next_game">之後的</string>
-    <string name="team_game_status_win">贏</string>
-    <string name="team_game_status_lose">輸</string>
     <string name="player_career_not_found">找不到此球員的資料或可能發生了一些問題</string>
     <string name="player_career_info_ppg">均得分</string>
     <string name="player_career_info_rpg">均籃板</string>
@@ -95,12 +92,9 @@
     <string name="player_career_info_draft">選秀順序</string>
     <string name="player_career_info_experience">經歷</string>
     <string name="player_career_stats_split">歷年數據</string>
-    <string name="player_career_rank_split">歷年排名</string>
     <string name="user_login_hint">登入後解鎖更多功能</string>
     <string name="user_login">登入</string>
-    <string name="user_logout">登出</string>
     <string name="user_register">註冊</string>
-    <string name="user_login_warning">帳號或密碼不可為空</string>
     <string name="user_login_account_hint">帳號</string>
     <string name="user_login_password_hint">密碼</string>
     <string name="user_points">持有點數：%1$d</string>
@@ -111,8 +105,6 @@
     <string name="bet_warning_text">下注後將無法撤銷或更改下注金額，是否要進行下注？</string>
     <string name="bet_warning_confirm">確認</string>
     <string name="bet_warning_cancel">取消</string>
-    <string name="bet_not_enough">點數不足</string>
-    <string name="bet_point_require">請至少下注一隊</string>
     <string name="bet_no_record">沒有任何下注紀錄</string>
     <string name="bet_ask_turn_table_title">使用幸運轉盤</string>
     <string name="bet_ask_turn_table_continue">繼續</string>

@@ -6,7 +6,6 @@
     <string name="is_loading_app">Fetching all game schedules…</string>
     <string name="home_bottom_schedule">Schedule</string>
     <string name="home_bottom_standings">Standing</string>
-    <string name="home_bottom_theme">Theme</string>
     <string name="home_bottom_user">User</string>
     <string name="player_info_pts_abbr">PTS</string>
     <string name="player_info_reb_abbr">REB</string>
@@ -87,15 +86,6 @@
     <string name="box_score_about_BA">BA：Blocked</string>
     <string name="box_score_about_PTS">PTS：Points</string>
     <string name="box_score_about_EFF">EFF：Efficiency</string>
-    <string name="box_score_player_dnp" translatable="false">DNP</string>
-    <string name="box_score_player_FGM" translatable="false">%1$d/%2$d(%3$.1f)\%%</string>
-    <string name="box_score_player_2PM" translatable="false">%1$d/%2$d(%3$.1f)\%%</string>
-    <string name="box_score_player_3PM" translatable="false">%1$d/%2$d(%3$.1f)\%%</string>
-    <string name="box_score_player_FTM" translatable="false">%1$d/%2$d(%3$.1f)\%%</string>
-    <string name="box_score_team_FGM" translatable="false">%1$d/%2$d(%3$.1f)\%%</string>
-    <string name="box_score_team_2PM" translatable="false">%1$d/%2$d(%3$.1f)\%%</string>
-    <string name="box_score_team_3PM" translatable="false">%1$d/%2$d(%3$.1f)\%%</string>
-    <string name="box_score_team_FTM" translatable="false">%1$d/%2$d(%3$.1f)\%%</string>
     <string name="game_is_coming_soon">Game starts soon</string>
     <string name="standing_conference_east">East</string>
     <string name="standing_conference_west">West</string>
@@ -106,8 +96,6 @@
     <string name="team_page_tab_player">Players</string>
     <string name="team_page_tab_before_game">Previous</string>
     <string name="team_page_tab_next_game">Next</string>
-    <string name="team_game_status_win">Win</string>
-    <string name="team_game_status_lose">Lose</string>
     <string name="stats_label_gp" translatable="false">GP</string>
     <string name="stats_label_w" translatable="false">W</string>
     <string name="stats_label_l" translatable="false">L</string>
@@ -132,7 +120,6 @@
     <string name="stats_label_pf" translatable="false">PF</string>
     <string name="stats_label_plusMinus" translatable="false">+/-</string>
     <string name="player_career_not_found">Player not found or Something went wrong.</string>
-    <string name="player_career_info" translatable="false"> %1$s %2$s | #%3$d | %4$s</string>
     <string name="player_career_by_year" translatable="false">By Year</string>
     <string name="player_career_info_ppg">PPG</string>
     <string name="player_career_info_rpg">RPG</string>
@@ -147,12 +134,9 @@
     <string name="player_career_info_draft">DRAFT</string>
     <string name="player_career_info_experience">EXPERIENCE</string>
     <string name="player_career_stats_split">STATS SPLIT</string>
-    <string name="player_career_rank_split">RANK SPLIT</string>
     <string name="user_login_hint">Log in to access exclusive features</string>
     <string name="user_login">LOGIN</string>
-    <string name="user_logout">LOGOUT</string>
     <string name="user_register">REGISTER</string>
-    <string name="user_login_warning">Account or password can not blank</string>
     <string name="user_login_account_hint">Account</string>
     <string name="user_login_password_hint">Password</string>
     <string name="user_points">Credits held：%1$d</string>
@@ -164,8 +148,6 @@
     <string name="bet_warning_text">After placing a bet, it cannot be cancelled or changed. Are you sure you want to place the bet?</string>
     <string name="bet_warning_confirm">CONFIRM</string>
     <string name="bet_warning_cancel">CANCEL</string>
-    <string name="bet_not_enough">Not enough credits</string>
-    <string name="bet_point_require">Please bet on at least one team</string>
     <string name="bet_no_record">No betting record found.</string>
     <string name="bet_ask_turn_table_title">Use Lucky Wheel</string>
     <string name="bet_ask_turn_table_continue">CONTINUE</string>
