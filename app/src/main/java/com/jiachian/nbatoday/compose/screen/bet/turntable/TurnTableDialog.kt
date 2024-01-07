@@ -15,6 +15,8 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.R
@@ -81,7 +83,7 @@ private fun AskTurnTableButtons(
                 .padding(bottom = 8.dp)
                 .rippleClickable { onCancel() }
                 .padding(10.dp),
-            text = stringResource(R.string.bet_ask_turn_table_cancel),
+            text = stringResource(R.string.bet_ask_turn_table_cancel).toUpperCase(Locale.current),
             color = MaterialTheme.colors.primary,
             fontSize = 16.sp,
             fontWeight = FontWeight.Medium

@@ -147,11 +147,11 @@
     <string name="bet_warning_title">Warning</string>
     <string name="bet_warning_text">After placing a bet, it cannot be cancelled or changed. Are you sure you want to place the bet?</string>
     <string name="bet_warning_confirm">CONFIRM</string>
-    <string name="bet_warning_cancel">CANCEL</string>
+    <string name="bet_warning_cancel">@android:string/cancel</string>
     <string name="bet_no_record">No betting record found.</string>
     <string name="bet_ask_turn_table_title">Use Lucky Wheel</string>
     <string name="bet_ask_turn_table_continue">CONTINUE</string>
-    <string name="bet_ask_turn_table_cancel">CANCEL</string>
+    <string name="bet_ask_turn_table_cancel">@android:string/cancel</string>
     <string name="bet_turn_table_start">START</string>
     <string name="bet_reward_lose_title">Damn</string>
     <string name="bet_reward_win_title">WOW</string>
