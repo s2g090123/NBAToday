@@ -44,7 +44,7 @@ jobs:
         with:
           name: android-lint-report
           path: |
-            app/build/reports/lint-result-debug.html
+            app/build/reports/lint-results-debug.html
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
