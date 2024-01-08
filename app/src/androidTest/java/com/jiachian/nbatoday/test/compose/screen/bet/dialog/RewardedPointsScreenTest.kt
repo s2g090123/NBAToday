@@ -32,7 +32,13 @@ class RewardedPointsScreenTest : BaseAndroidTest() {
             onNodeWithUnmergedTree(BetTestTag.RewardedPointsDialog_Text_Title)
                 .assertTextEquals(getString(R.string.bet_reward_win_title))
             onNodeWithUnmergedTree(BetTestTag.RewardedPointsDialog_Text_Body)
-                .assertTextEquals(getString(R.string.bet_reward_win_text, BetPoints))
+                .assertTextEquals(
+                    context.resources.getQuantityString(
+                        R.plurals.bet_reward_win_text,
+                        BetPoints.toInt(),
+                        BetPoints
+                    )
+                )
         }
     }
 
@@ -48,7 +54,13 @@ class RewardedPointsScreenTest : BaseAndroidTest() {
             onNodeWithUnmergedTree(BetTestTag.RewardedPointsDialog_Text_Title)
                 .assertTextEquals(getString(R.string.bet_reward_lose_title))
             onNodeWithUnmergedTree(BetTestTag.RewardedPointsDialog_Text_Body)
-                .assertTextEquals(getString(R.string.bet_reward_lose_text, BetPoints))
+                .assertTextEquals(
+                    context.resources.getQuantityString(
+                        R.plurals.bet_reward_lose_text,
+                        BetPoints.toInt(),
+                        BetPoints
+                    )
+                )
         }
     }
 

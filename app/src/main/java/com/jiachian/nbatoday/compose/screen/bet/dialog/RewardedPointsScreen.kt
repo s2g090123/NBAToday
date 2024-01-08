@@ -9,8 +9,10 @@ import androidx.compose.material.AlertDialog
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -37,6 +39,7 @@ fun RewardedPointsScreen(
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun RewardedPointsDialog(
     points: Long,
@@ -61,8 +64,9 @@ private fun RewardedPointsDialog(
         text = {
             Text(
                 modifier = Modifier.testTag(BetTestTag.RewardedPointsDialog_Text_Body),
-                text = stringResource(
-                    if (points >= 0) R.string.bet_reward_win_text else R.string.bet_reward_lose_text,
+                text = pluralStringResource(
+                    id = if (points >= 0) R.plurals.bet_reward_win_text else R.plurals.bet_reward_lose_text,
+                    count = abs(points).toInt(),
                     abs(points)
                 ),
                 color = MaterialTheme.colors.primary,

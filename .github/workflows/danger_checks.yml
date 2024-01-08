@@ -19,6 +19,9 @@ jobs:
       - name: Check detekt
         run: ./gradlew detekt
 
+      - name: Check Android lint
+        run: ./gradlew lint
+
       - name: Archive ktlint Reports
         if: always()
         uses: actions/upload-artifact@v2
@@ -34,6 +37,14 @@ jobs:
           name: detekt-report
           path: |
             app/build/reports/detekt/detekt.html
+
+      - name: Archive android lint Reports
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: android-lint-report
+          path: |
+            app/build/reports/lint-results-debug.html
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1

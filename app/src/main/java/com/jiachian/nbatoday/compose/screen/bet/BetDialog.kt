@@ -27,7 +27,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -277,7 +279,7 @@ private fun BetWarningDialogButtons(
                 .padding(bottom = 8.dp)
                 .rippleClickable { onCancel() }
                 .padding(10.dp),
-            text = stringResource(R.string.bet_warning_cancel),
+            text = stringResource(R.string.bet_warning_cancel).toUpperCase(Locale.current),
             color = MaterialTheme.colors.primary,
             fontSize = 16.sp,
             fontWeight = FontWeight.Medium
