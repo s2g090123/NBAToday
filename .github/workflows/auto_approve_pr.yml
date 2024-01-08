@@ -1,0 +1,19 @@
+name: Auto Approve PR
+
+on:
+  pull_request:
+    branches:
+      - '*'
+    types:
+      - opened
+
+jobs:
+  auto_approve:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    if: github.actor == 's2g090123'
+    steps:
+      - uses: hmarr/auto-approve-action@v3
+        with:
+          review-message: "My friend, I approved this PR."
