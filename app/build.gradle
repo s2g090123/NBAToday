@@ -59,6 +59,7 @@ android {
 
   lintOptions {
     error("VisibleForTests")
+    textReport null
   }
 
   testOptions {
