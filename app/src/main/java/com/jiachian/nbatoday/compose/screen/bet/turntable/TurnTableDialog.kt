@@ -9,10 +9,14 @@ import androidx.compose.material.AlertDialog
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.R
@@ -20,6 +24,7 @@ import com.jiachian.nbatoday.compose.screen.bet.models.TurnTablePoints
 import com.jiachian.nbatoday.testing.testtag.BetTestTag
 import com.jiachian.nbatoday.utils.rippleClickable
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun AskTurnTableDialog(
     points: TurnTablePoints,
@@ -42,8 +47,9 @@ fun AskTurnTableDialog(
         text = {
             Text(
                 modifier = Modifier.testTag(BetTestTag.AskTurnTableDialog_Text_Body),
-                text = stringResource(
-                    R.string.bet_ask_turn_table_text,
+                text = pluralStringResource(
+                    id = R.plurals.bet_ask_turn_table_text,
+                    count = if (points.win <= 1 && points.lose <= 1) 1 else 0,
                     points.win,
                     points.lose
                 ),
@@ -77,7 +83,7 @@ private fun AskTurnTableButtons(
                 .padding(bottom = 8.dp)
                 .rippleClickable { onCancel() }
                 .padding(10.dp),
-            text = stringResource(R.string.bet_ask_turn_table_cancel),
+            text = stringResource(R.string.bet_ask_turn_table_cancel).toUpperCase(Locale.current),
             color = MaterialTheme.colors.primary,
             fontSize = 16.sp,
             fontWeight = FontWeight.Medium
