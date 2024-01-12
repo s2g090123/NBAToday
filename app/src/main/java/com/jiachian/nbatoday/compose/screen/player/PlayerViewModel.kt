@@ -24,6 +24,15 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
+/**
+ * ViewModel for handling business logic related to [PlayerScreen].
+ *
+ * @param playerId The ID of the player for whom details are displayed.
+ * @param repository The repository for interacting with [Player].
+ * @property navigationController The controller for navigation within the app.
+ * @property dispatcherProvider The provider for obtaining dispatchers for coroutines (default is [DefaultDispatcherProvider]).
+ * @property coroutineScope The coroutine scope for managing coroutines (default is [CoroutineScope] with unconfined dispatcher).
+ */
 class PlayerViewModel(
     private val playerId: Int,
     private val repository: PlayerRepository,
@@ -35,6 +44,7 @@ class PlayerViewModel(
     navigationController = navigationController,
     route = MainRoute.Player
 ) {
+    // Update player data into the repository
     init {
         coroutineScope.launch(dispatcherProvider.io) {
             repository.insertPlayer(playerId)
@@ -46,6 +56,7 @@ class PlayerViewModel(
     private val sortingImp = MutableStateFlow(PlayerStatsSorting.TIME_FRAME)
     val sorting = sortingImp.asStateFlow()
 
+    // labels for player stats and info
     val statsLabels = PlayerStatsLabel.values()
     private val tableLabels = PlayerTableLabel.values()
 
@@ -111,6 +122,11 @@ class PlayerViewModel(
         UIState.Loaded(playerUI)
     }.stateIn(coroutineScope, SharingStarted.Lazily, UIState.Loading())
 
+    /**
+     * Update the sorting criteria for player stats.
+     *
+     * @param sorting The new sorting criteria.
+     */
     fun updateSorting(sorting: PlayerStatsSorting) {
         sortingImp.value = sorting
     }

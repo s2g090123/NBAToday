@@ -38,12 +38,14 @@ class NBADataStore(
         application.applicationContext.dataStore
     }
 
+    // Retrieve the last accessed date from DataStore
     override val lastAccessedDate by lazy {
         dataStore.data.map { pref ->
             pref[LAST_ACCESSED_DATE] ?: DateUtils.formatDate(1990, 1, 1)
         }
     }
 
+    // Retrieve theme colors based on the team ID from DataStore
     override val themeColors by lazy {
         dataStore.data.map { pref ->
             pref[THEME_COLORS_TEAM_ID]?.let { teamId ->
@@ -52,6 +54,7 @@ class NBADataStore(
         }
     }
 
+    // Retrieve user information from DataStore
     override val user by lazy {
         dataStore.data.map { pref ->
             pref[USER].let { user ->

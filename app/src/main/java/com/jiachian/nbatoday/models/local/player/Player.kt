@@ -35,7 +35,7 @@ data class Player(
             @ColumnInfo(name = "points") val points: Double,
             @ColumnInfo(name = "assists") val assists: Double,
             @ColumnInfo(name = "rebounds") val rebounds: Double,
-            @ColumnInfo(name = "impact_estimate") val impact: Double // 球員影響值(%)
+            @ColumnInfo(name = "impact_estimate") val impact: Double // Player Impact Percentage
         )
 
         val points: Double
@@ -73,7 +73,7 @@ data class Player(
             @ColumnInfo(name = "game_played") val gamePlayed: Int,
             @ColumnInfo(name = "win") val win: Int,
             @ColumnInfo(name = "lose") val lose: Int,
-            @ColumnInfo(name = "win_percentage") val winPercentage: Double, // 勝敗場百分比, e.g. 50.0
+            @ColumnInfo(name = "win_percentage") val winPercentage: Double, // Win-Loss Percentage, e.g. 50.0
             @ColumnInfo(name = "field_goals_made") val fieldGoalsMade: Int,
             @ColumnInfo(name = "field_goals_attempted") val fieldGoalsAttempted: Int,
             @ColumnInfo(name = "field_goals_percentage") val fieldGoalsPercentage: Double,

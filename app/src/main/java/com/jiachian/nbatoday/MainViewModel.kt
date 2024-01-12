@@ -28,6 +28,15 @@ class MainViewModel(
         loadData()
     }
 
+    /**
+     * Loads data asynchronously.
+     * 1. update schedules
+     * 2. update teams
+     * 3. update theme colors
+     * 4. log in the user (if available)
+     *
+     * Finally, navigate to the home screen after loading data
+     */
     private fun loadData() {
         viewModelScope.launch(dispatcherProvider.io) {
             val updateScheduleDeferred = async {

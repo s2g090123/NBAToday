@@ -27,6 +27,16 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
+/**
+ * ViewModel for handling business logic related to [SchedulePage].
+ *
+ * @property scheduleRepository The repository for interacting with [GameAndBets].
+ * @property gameRepository The repository for interacting with [GameAndBets].
+ * @property navigationController The controller for navigation within the app.
+ * @property composeViewModelProvider The provider for creating ComposeViewModel instances.
+ * @property dispatcherProvider The provider for obtaining dispatchers for coroutines (default is [DefaultDispatcherProvider]).
+ * @property coroutineScope The coroutine scope for managing coroutines (default is [CoroutineScope] with unconfined dispatcher).
+ */
 class SchedulePageViewModel(
     private val scheduleRepository: ScheduleRepository,
     private val gameRepository: GameRepository,
@@ -35,10 +45,13 @@ class SchedulePageViewModel(
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
     private val coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
 ) {
+    // the date data for the schedule page on the TabBar
     val dateData = createDateData()
 
+    // selected date for the schedule page
     private var selectedDate = dateData[dateData.size / 2]
 
+    // the list of games within the specified date range
     private val games = DateUtils.getCalendar().run {
         set(Calendar.HOUR, 0)
         set(Calendar.MINUTE, 0)
@@ -49,6 +62,7 @@ class SchedulePageViewModel(
         )
     }
 
+    // the grouped games based on their date
     val groupedGamesState = games
         .map { UIState.Loaded(getGroupedGames(it)) }
         .flowOn(dispatcherProvider.io)
@@ -59,6 +73,11 @@ class SchedulePageViewModel(
 
     private val gameCardViewModelMap = mutableMapOf<GameAndBets, GameCardViewModel>()
 
+    /**
+     * Creates a list of date data based on the specified date range.
+     *
+     * @return List of DateData instances.
+     */
     private fun createDateData(): List<DateData> {
         val range = ScheduleDateRange * 2 + 1
         return DateUtils.getCalendar().run {
@@ -75,6 +94,12 @@ class SchedulePageViewModel(
         }
     }
 
+    /**
+     * Groups the games based on their date.
+     *
+     * @param games List of GameAndBets instances.
+     * @return Map with DateData as keys and lists of GameAndBets as values.
+     */
     private fun getGroupedGames(games: List<GameAndBets>): Map<DateData, List<GameAndBets>> {
         return DateUtils.getCalendar().run {
             games.groupBy { game ->
@@ -92,6 +117,9 @@ class SchedulePageViewModel(
         selectedDate = dateData
     }
 
+    /**
+     * Updates the selected schedule based on the chosen date.
+     */
     fun updateSelectedSchedule() {
         if (refreshing.value) return
         coroutineScope.launch(dispatcherProvider.io) {
@@ -105,6 +133,11 @@ class SchedulePageViewModel(
         }
     }
 
+    /**
+     * Handles click event for a game, navigating to the team or box score screen.
+     *
+     * @param game The selected GameAndBets instance.
+     */
     fun onClickGame(game: GameAndBets) {
         if (!game.game.gamePlayed) {
             navigationController.navigateToTeam(game.game.homeTeam.team.teamId)
@@ -113,6 +146,9 @@ class SchedulePageViewModel(
         }
     }
 
+    /**
+     * Handles click event for the calendar, navigating to the selected date on the calendar screen.
+     */
     @SuppressLint("SimpleDateFormat")
     fun onClickCalendar() {
         SimpleDateFormat("yyyy/MM/dd").let { format ->

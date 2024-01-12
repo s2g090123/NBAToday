@@ -50,7 +50,7 @@ data class BoxScore(
 
         data class Period(
             @ColumnInfo(name = "period_label")
-            val periodLabel: String, // 第幾節標籤, e.g. 1st or OT1
+            val periodLabel: String, // Quarter Label, e.g. 1st or OT1
             @ColumnInfo(name = "score")
             val score: Int // e.g. 33
         )
@@ -59,13 +59,13 @@ data class BoxScore(
             @ColumnInfo(name = "status")
             val status: PlayerActiveStatus,
             @ColumnInfo(name = "not_playing_reason")
-            val notPlayingReason: String, // status為INACTIVE時才有值, e.g. INACTIVE_INJURY
+            val notPlayingReason: String, // e.g. INACTIVE_INJURY, or empty if the status is not INACTIVE
             @ColumnInfo(name = "player_id")
             val playerId: Int, // e.g. 1626162
             @ColumnInfo(name = "position")
             val position: String, // e.g. SF
             @ColumnInfo(name = "starter")
-            val starter: Boolean, // 是否為先發
+            val starter: Boolean, // Is starting player
             @ColumnInfo(name = "statistics")
             val statistics: Statistics,
             @ColumnInfo(name = "name_abbr")
@@ -73,57 +73,57 @@ data class BoxScore(
         ) {
             data class Statistics(
                 @ColumnInfo(name = "assists")
-                val assists: Int, // 助攻數
+                val assists: Int,
                 @ColumnInfo(name = "blocks")
-                val blocks: Int, // 阻攻數,
+                val blocks: Int,
                 @ColumnInfo(name = "blocks_received")
-                val blocksReceived: Int, // 被阻攻數
+                val blocksReceived: Int,
                 @ColumnInfo(name = "field_goals_attempted")
-                val fieldGoalsAttempted: Int, // 出手次數
+                val fieldGoalsAttempted: Int,
                 @ColumnInfo(name = "field_goals_made")
-                val fieldGoalsMade: Int, // 進球數
+                val fieldGoalsMade: Int,
                 @ColumnInfo(name = "field_goals_percentage")
-                val fieldGoalsPercentage: Double, // 41.2
+                val fieldGoalsPercentage: Double,
                 @ColumnInfo(name = "fouls_offensive")
-                val foulsOffensive: Int, // 進攻犯規數
+                val foulsOffensive: Int,
                 @ColumnInfo(name = "fouls_personal")
-                val foulsPersonal: Int, // 防守犯規數
+                val foulsPersonal: Int,
                 @ColumnInfo(name = "fouls_technical")
-                val foulsTechnical: Int, // 技術犯規數
+                val foulsTechnical: Int,
                 @ColumnInfo(name = "free_throws_attempted")
-                val freeThrowsAttempted: Int, // 罰球出手次數
+                val freeThrowsAttempted: Int,
                 @ColumnInfo(name = "free_throws_made")
-                val freeThrowsMade: Int, // 罰球進球數
+                val freeThrowsMade: Int,
                 @ColumnInfo(name = "free_throws_percentage")
-                val freeThrowsPercentage: Double, // 66.6
+                val freeThrowsPercentage: Double,
                 @ColumnInfo(name = "minutes")
-                val minutes: String, // 上場總時間, e.g. 36:12 (分：秒)
+                val minutes: String, // e.g. 36:12 (分：秒)
                 @ColumnInfo(name = "plus_minus_points")
-                val plusMinusPoints: Int, // 加減評分
+                val plusMinusPoints: Int,
                 @ColumnInfo(name = "points")
-                val points: Int, // 得分數
+                val points: Int,
                 @ColumnInfo(name = "rebounds_defensive")
-                val reboundsDefensive: Int, // 防守籃板數
+                val reboundsDefensive: Int,
                 @ColumnInfo(name = "rebounds_offensive")
-                val reboundsOffensive: Int, // 進攻籃板數
+                val reboundsOffensive: Int,
                 @ColumnInfo(name = "rebounds_total")
-                val reboundsTotal: Int, // 總籃板數
+                val reboundsTotal: Int,
                 @ColumnInfo(name = "steals")
-                val steals: Int, // 抄截數
+                val steals: Int,
                 @ColumnInfo(name = "three_pointers_attempted")
-                val threePointersAttempted: Int, // 三分出手次數
+                val threePointersAttempted: Int,
                 @ColumnInfo(name = "three_pointers_made")
-                val threePointersMade: Int, // 三分進球次數
+                val threePointersMade: Int,
                 @ColumnInfo(name = "three_pointers_percentage")
-                val threePointersPercentage: Double, // 66.6
+                val threePointersPercentage: Double,
                 @ColumnInfo(name = "turnovers")
-                val turnovers: Int, // 失誤次數
+                val turnovers: Int,
                 @ColumnInfo(name = "two_pointers_attempted")
-                val twoPointersAttempted: Int, // 兩分出手數
+                val twoPointersAttempted: Int,
                 @ColumnInfo(name = "two_pointers_made")
-                val twoPointersMade: Int, // 兩分進球數
+                val twoPointersMade: Int,
                 @ColumnInfo(name = "two_pointers_percentage")
-                val twoPointersPercentage: Double // 66.6
+                val twoPointersPercentage: Double
             ) {
                 private val indicator
                     get() = points + reboundsTotal + assists + steals + blocks
@@ -157,59 +157,59 @@ data class BoxScore(
 
         data class Statistics(
             @ColumnInfo(name = "assists")
-            val assists: Int, // 球隊總助攻數
+            val assists: Int,
             @ColumnInfo(name = "blocks")
-            val blocks: Int, // 球隊總阻攻數
+            val blocks: Int,
             @ColumnInfo(name = "field_goals_attempted")
-            val fieldGoalsAttempted: Int, // 球隊出手次數
+            val fieldGoalsAttempted: Int,
             @ColumnInfo(name = "field_goals_made")
-            val fieldGoalsMade: Int, // 球隊進球次數
+            val fieldGoalsMade: Int,
             @ColumnInfo(name = "field_goals_percentage")
-            val fieldGoalsPercentage: Double, // 66.6
+            val fieldGoalsPercentage: Double,
             @ColumnInfo(name = "fouls_personal")
-            val foulsPersonal: Int, // 球隊防守犯規總數
+            val foulsPersonal: Int,
             @ColumnInfo(name = "fouls_technical")
-            val foulsTechnical: Int, // 球隊技術犯規數
+            val foulsTechnical: Int,
             @ColumnInfo(name = "free_throws_attempted")
-            val freeThrowsAttempted: Int, // 球隊罰球出手次數
+            val freeThrowsAttempted: Int,
             @ColumnInfo(name = "free_throws_made")
-            val freeThrowsMade: Int, // 球隊罰球進球次數
+            val freeThrowsMade: Int,
             @ColumnInfo(name = "free_throws_percentage")
-            val freeThrowsPercentage: Double, // 66.6
+            val freeThrowsPercentage: Double,
             @ColumnInfo(name = "points")
-            val points: Int, // 球隊得分
+            val points: Int,
             @ColumnInfo(name = "rebounds_defensive")
-            val reboundsDefensive: Int, // 球隊防守籃板總數
+            val reboundsDefensive: Int,
             @ColumnInfo(name = "rebounds_offensive")
-            val reboundsOffensive: Int, // 球隊進攻籃板總數
+            val reboundsOffensive: Int,
             @ColumnInfo(name = "rebounds_total")
-            val reboundsTotal: Int, // 球隊籃板總數 (total)
+            val reboundsTotal: Int,
             @ColumnInfo(name = "steals")
-            val steals: Int, // 球隊抄截總數
+            val steals: Int,
             @ColumnInfo(name = "three_pointers_attempted")
-            val threePointersAttempted: Int, // 球隊三分出手次數
+            val threePointersAttempted: Int,
             @ColumnInfo(name = "three_pointers_made")
-            val threePointersMade: Int, // 球隊三分進球次數
+            val threePointersMade: Int,
             @ColumnInfo(name = "three_pointers_percentage")
-            val threePointersPercentage: Double, // 66.6
+            val threePointersPercentage: Double,
             @ColumnInfo(name = "turnovers")
-            val turnovers: Int, // 個人失誤總數
+            val turnovers: Int,
             @ColumnInfo(name = "two_pointers_attempted")
-            val twoPointersAttempted: Int, // 球隊兩分出手總數
+            val twoPointersAttempted: Int,
             @ColumnInfo(name = "two_pointers_made")
-            val twoPointersMade: Int, // 球隊兩分進球總數
+            val twoPointersMade: Int,
             @ColumnInfo(name = "two_pointers_percentage")
-            val twoPointersPercentage: Double, // 66.6
+            val twoPointersPercentage: Double,
             @ColumnInfo(name = "points_fast_break")
-            val pointsFastBreak: Int, // 快攻得分, e.g. 10
+            val pointsFastBreak: Int,
             @ColumnInfo(name = "points_from_turnovers")
-            val pointsFromTurnovers: Int, // 因對方失誤得分, e.g 10
+            val pointsFromTurnovers: Int,
             @ColumnInfo(name = "points_in_the_paint")
-            val pointsInThePaint: Int, // 禁區得分, e.g. 10
+            val pointsInThePaint: Int,
             @ColumnInfo(name = "points_second_chance")
-            val pointsSecondChance: Int, // 二次進攻得分, e.g. 10
+            val pointsSecondChance: Int,
             @ColumnInfo(name = "bench_points")
-            val benchPoints: Int, // 板凳得分, e.g. 10
+            val benchPoints: Int,
         ) {
             val fieldGoalsFormat: String
                 get() = "$fieldGoalsMade/$fieldGoalsAttempted($fieldGoalsPercentage%)"

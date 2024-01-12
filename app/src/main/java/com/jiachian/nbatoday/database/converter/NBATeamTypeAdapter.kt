@@ -12,6 +12,9 @@ import com.google.gson.JsonSerializer
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import java.lang.reflect.Type
 
+/**
+ * Gson instance with a custom TypeAdapter for serializing and deserializing NBATeam objects.
+ */
 val typeAdapterGson: Gson = GsonBuilder()
     .registerTypeAdapter(NBATeam::class.java, NBATeamTypeAdapter())
     .create()

@@ -23,6 +23,14 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
+/**
+ * ViewModel for handling business logic related to [StandingPage].
+ *
+ * @property repository The repository for interacting with [Team].
+ * @property navigationController The controller for navigation within the app.
+ * @property dispatcherProvider The provider for obtaining dispatchers for coroutines (default is [DefaultDispatcherProvider]).
+ * @property coroutineScope The coroutine scope for managing coroutines (default is [CoroutineScope] with unconfined dispatcher).
+ */
 class StandingPageViewModel(
     private val repository: TeamRepository,
     private val navigationController: NavigationController,
@@ -32,14 +40,17 @@ class StandingPageViewModel(
     private val eastTeams = repository.getTeams(NBATeam.Conference.EAST)
     private val westTeams = repository.getTeams(NBATeam.Conference.WEST)
 
+    // list of available labels for the standing page
     val labels = StandingLabel.values()
     val conferences = NBATeam.Conference.values()
 
+    // the sorting criteria for the Eastern and Western conferences
     private val eastSortingImp = MutableStateFlow(StandingSorting.WINP)
     private val westSortingImp = MutableStateFlow(StandingSorting.WINP)
     val eastSorting = eastSortingImp.asStateFlow()
     val westSorting = westSortingImp.asStateFlow()
 
+    // the row data for the Eastern and Western conferences
     private val eastRowData = eastTeams.map { teams ->
         teams.toRowData()
     }.flowOn(dispatcherProvider.io)
@@ -47,6 +58,7 @@ class StandingPageViewModel(
         teams.toRowData()
     }.flowOn(dispatcherProvider.io)
 
+    // the sorted row data for the Eastern and Western conference.
     val sortedEastRowDataState = combine(
         eastRowData,
         eastSorting
@@ -64,11 +76,15 @@ class StandingPageViewModel(
         .flowOn(dispatcherProvider.io)
         .stateIn(coroutineScope, SharingStarted.Lazily, UIState.Loading())
 
+    // the refreshing status of the standing page
     private val refreshingImp = MutableStateFlow(false)
     val refreshing = refreshingImp.asStateFlow()
 
     private var selectedConference = NBATeam.Conference.EAST
 
+    /**
+     * Updates team statistics by fetching the latest data from the repository.
+     */
     fun updateTeamStats() {
         if (refreshing.value) return
         coroutineScope.launch(dispatcherProvider.io) {
@@ -82,6 +98,11 @@ class StandingPageViewModel(
         selectedConference = conference
     }
 
+    /**
+     * Updates the sorting criteria based on the selected conference.
+     *
+     * @param sorting The selected sorting criteria.
+     */
     fun updateSorting(sorting: StandingSorting) {
         when (selectedConference) {
             NBATeam.Conference.EAST -> eastSortingImp.value = sorting
@@ -89,6 +110,11 @@ class StandingPageViewModel(
         }
     }
 
+    /**
+     * Handles click event for a team, navigating to the team details screen.
+     *
+     * @param team The selected NBATeam instance.
+     */
     fun onClickTeam(team: NBATeam) {
         navigationController.navigateToTeam(team.teamId)
     }

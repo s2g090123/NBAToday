@@ -14,31 +14,31 @@ data class Game(
     @ColumnInfo(name = "away_team")
     val awayTeam: GameTeam,
     @PrimaryKey @ColumnInfo(name = "game_id")
-    val gameId: String, // 比賽id, e.g. 0022200089
+    val gameId: String, // e.g. 0022200089
     @ColumnInfo(name = "game_status")
     val gameStatus: GameStatus,
     @ColumnInfo(name = "game_status_text")
-    val gameStatusText: String, // 比賽狀態(Final或開始時間), e.g. Final or 3:00 pm ET
+    val gameStatusText: String, // e.g. Final or 3:00 pm ET
     @ColumnInfo(name = "home_team")
     val homeTeam: GameTeam,
     @ColumnInfo(name = "game_date")
-    val gameDate: Date, // 比賽開始日期(固定為13:00), e.g. 2022-11-20T13:00:00Z (GMT+8)
+    val gameDate: Date, // Start date of the game (the time is always 13:00), e.g. 2022-11-20T13:00:00Z (GMT+8)
     @ColumnInfo(name = "game_date_time")
-    val gameDateTime: Date, // 比賽開始時間, e.g. 2022-11-20T15:30:00Z (GMT+8)
+    val gameDateTime: Date, // Start time of the game, e.g. 2022-11-20T15:30:00Z (GMT+8)
     @ColumnInfo(name = "points_leader")
-    val pointsLeaders: List<PointsLeader>,
+    val pointsLeaders: List<PointsLeader>, // Leaders in scoring
     @ColumnInfo(name = "game_leaders")
-    val gameLeaders: GameLeaders?,
+    val gameLeaders: GameLeaders?, // Leaders in this game
     @ColumnInfo(name = "team_leaders")
-    val teamLeaders: GameLeaders?
+    val teamLeaders: GameLeaders? // Leaders in the team
 ) {
     data class PointsLeader(
         @ColumnInfo(name = "player_id")
-        val playerId: Int, // 球員id, e.g. 1628983
+        val playerId: Int, // e.g. 1628983
         @ColumnInfo(name = "points")
-        val points: Double, // 球員當場得分, e.g. 38.0
+        val points: Double, // e.g. 38.0
         @ColumnInfo(name = "team_id")
-        val teamId: Int, // 球員所屬球隊id, e.g. 1610612760
+        val teamId: Int, // e.g. 1610612760
     )
 
     val gameFinal: Boolean

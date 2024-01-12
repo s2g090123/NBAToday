@@ -9,9 +9,9 @@ import org.koin.core.context.startKoin
 class MainApplication : Application() {
 
     companion object {
-        private var instance: Application? = null
+        private lateinit var instance: Application
         val context: Context
-            get() = instance!!.applicationContext
+            get() = instance.applicationContext
     }
 
     override fun onCreate() {

@@ -32,6 +32,17 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
+/**
+ * ViewModel for handling business logic related to [TeamScreen].
+ *
+ * @param teamId The ID of the team for which details are displayed.
+ * @param teamRepository The repository for interacting with [Team].
+ * @param gameRepository The repository for interacting with [Game].
+ * @property navigationController The controller for navigation within the app.
+ * @property composeViewModelProvider The provider for creating ComposeViewModel instances.
+ * @property dispatcherProvider The provider for obtaining dispatchers for coroutines (default is [DefaultDispatcherProvider]).
+ * @property coroutineScope The coroutine scope for managing coroutines (default is [CoroutineScope] with unconfined dispatcher).
+ */
 class TeamViewModel(
     teamId: Int,
     private val teamRepository: TeamRepository,
@@ -48,6 +59,8 @@ class TeamViewModel(
     private val team = NBATeam.getTeamById(teamId)
     val colors = team.colors
 
+
+    // Asynchronous initialization to update teams and team players.
     init {
         coroutineScope.launch(dispatcherProvider.io) {
             val deferred1 = async { teamRepository.insertTeams() }
@@ -58,6 +71,9 @@ class TeamViewModel(
 
     val labels = TeamPlayerLabel.values()
 
+    /**
+     * the games before/after today.
+     */
     val gamesBefore = gameRepository.getGamesAndBetsBefore(
         team.teamId,
         DateUtils.getCalendar().apply {
@@ -134,14 +150,29 @@ class TeamViewModel(
 
     private val gameCardViewModelMap = mutableMapOf<GameAndBets, GameCardViewModel>()
 
+    /**
+     * Update the player sorting based on the provided [sorting] criteria.
+     *
+     * @param sorting The sorting criteria for team players.
+     */
     fun updatePlayerSorting(sorting: TeamPlayerSorting) {
         playerSortingImp.value = sorting
     }
 
+    /**
+     * Handle the click event on a game card and navigates to the box score screen.
+     *
+     * @param game The clicked game.
+     */
     fun onGameCardClick(game: Game) {
         navigationController.navigateToBoxScore(game.gameId)
     }
 
+    /**
+     * Handle the click event on a player and navigates to the player screen.
+     *
+     * @param playerId The ID of the clicked player.
+     */
     fun onPlayerClick(playerId: Int) {
         navigationController.navigateToPlayer(playerId)
     }

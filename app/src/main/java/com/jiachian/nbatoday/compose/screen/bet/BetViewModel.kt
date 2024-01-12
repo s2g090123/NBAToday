@@ -41,6 +41,15 @@ private const val ThirdSectorMaxAngle = 269f
 
 private const val MaxMagnification = 4
 
+/**
+ * ViewModel for handling business logic related to [BetScreen].
+ *
+ * @property account The user account associated with the logged-in user.
+ * @property repository The repository for interacting with [BetAndGame].
+ * @property navigationController The controller for navigation within the app.
+ * @property dispatcherProvider The provider for obtaining dispatchers for coroutines (default is [DefaultDispatcherProvider]).
+ * @property coroutineScope The coroutine scope for managing coroutines (default is [CoroutineScope] with unconfined dispatcher).
+ */
 class BetViewModel(
     account: String,
     private val repository: BetRepository,
@@ -52,26 +61,37 @@ class BetViewModel(
     navigationController = navigationController,
     route = MainRoute.Bet
 ) {
+    // state representing the stats of [BetAndGame]
     val betsAndGamesState = repository
         .getBetsAndGames(account)
         .map { UIState.Loaded(it) }
         .stateIn(coroutineScope, SharingStarted.Lazily, UIState.Loading())
 
+    // the current points on the turn table
     private val turnTablePointsImp = MutableStateFlow<TurnTablePoints?>(null)
     val turnTablePoints = turnTablePointsImp.asStateFlow()
 
+    // whether the turn table is currently running
     private val turnTableRunningImp = MutableStateFlow(false)
     val turnTableRunning = turnTableRunningImp.asStateFlow()
 
+    // the current angle of the turn table
     private val turnTableAngleImp = MutableStateFlow(0f)
     val turnTableAngle = turnTableAngleImp.asStateFlow()
 
+    // the visibility of the turn table
     private val turnTableVisibleImp = MutableStateFlow(false)
     val turnTableVisible = turnTableVisibleImp.asStateFlow()
 
+    // the points rewarded after the turn table animation
     private val rewardedPointsImp = MutableStateFlow<Long?>(null)
     val rewardedPoints = rewardedPointsImp.asStateFlow()
 
+    /**
+     * Handles the click event on a specific [BetAndGame].
+     *
+     * @param betAndGame The clicked [BetAndGame].
+     */
     fun clickBetAndGame(betAndGame: BetAndGame) {
         when (betAndGame.game.gameStatus) {
             GameStatus.COMING_SOON -> {
@@ -107,6 +127,11 @@ class BetViewModel(
         turnTableVisibleImp.value = true
     }
 
+    /**
+     * Starts the turn table animation with the specified points configuration.
+     *
+     * @param turnTablePoints The points configuration for the turn table.
+     */
     fun startTurnTable(turnTablePoints: TurnTablePoints) {
         coroutineScope.launch(dispatcherProvider.io) {
             turnTableRunningImp.value = true

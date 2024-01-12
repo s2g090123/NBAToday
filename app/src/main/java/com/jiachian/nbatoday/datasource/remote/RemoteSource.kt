@@ -7,6 +7,9 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+/**
+ * Creating and managing Retrofit instances for remote data sources.
+ */
 object RemoteSource {
     private const val ConnectTimeOut = 5L
     private const val ReadTimeOut = 20L

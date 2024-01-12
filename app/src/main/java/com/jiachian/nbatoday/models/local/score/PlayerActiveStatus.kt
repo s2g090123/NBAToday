@@ -4,8 +4,8 @@ import com.google.gson.annotations.SerializedName
 
 enum class PlayerActiveStatus {
     @SerializedName("ACTIVE")
-    ACTIVE, // 出賽
+    ACTIVE, // Playing status
 
     @SerializedName("INACTIVE")
-    INACTIVE // 未出賽
+    INACTIVE // Not playing status
 }

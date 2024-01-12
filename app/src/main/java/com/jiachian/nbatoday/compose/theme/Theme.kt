@@ -14,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 
 var ColorPalette by mutableStateOf(LakersColors)
+    private set
     @VisibleForTesting get
 
 @Composable

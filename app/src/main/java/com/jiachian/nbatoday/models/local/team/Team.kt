@@ -11,10 +11,10 @@ data class Team(
     @ColumnInfo(name = "team_id") @PrimaryKey val teamId: Int,
     @ColumnInfo(name = "team") val team: NBATeam,
     @ColumnInfo(name = "team_conference") val teamConference: NBATeam.Conference,
-    @ColumnInfo(name = "game_played") val gamePlayed: Int, // 目前打了幾場比賽
+    @ColumnInfo(name = "game_played") val gamePlayed: Int,
     @ColumnInfo(name = "win") val win: Int,
     @ColumnInfo(name = "lose") val lose: Int,
-    @ColumnInfo(name = "win_percentage") val winPercentage: Double, // 勝敗場百分比, e.g. 50.0
+    @ColumnInfo(name = "win_percentage") val winPercentage: Double,
     @ColumnInfo(name = "field_goals_percentage") val fieldGoalsPercentage: Double,
     @ColumnInfo(name = "three_pointers_percentage") val threePointersPercentage: Double,
     @ColumnInfo(name = "free_throws_percentage") val freeThrowsPercentage: Double,
