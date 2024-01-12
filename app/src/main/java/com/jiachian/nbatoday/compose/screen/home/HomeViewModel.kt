@@ -9,6 +9,14 @@ import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.utils.ComposeViewModelProvider
 import kotlinx.coroutines.CoroutineScope
 
+/**
+ * ViewModel for handling business logic related to [HomeScreen].
+ *
+ * @property composeViewModelProvider The provider for creating ComposeViewModel instances.
+ * @property navigationController The controller for navigation within the app.
+ * @property dispatcherProvider The provider for obtaining dispatchers for coroutines (default is [DefaultDispatcherProvider]).
+ * @property coroutineScope The coroutine scope for managing coroutines (default is [CoroutineScope] with unconfined dispatcher).
+ */
 class HomeViewModel(
     private val composeViewModelProvider: ComposeViewModelProvider,
     navigationController: NavigationController,
@@ -19,6 +27,7 @@ class HomeViewModel(
     navigationController = navigationController,
     route = MainRoute.Home
 ) {
+    // list of pages in the home screen
     val pages = HomePage.values()
 
     val schedulePageViewModel by lazy {

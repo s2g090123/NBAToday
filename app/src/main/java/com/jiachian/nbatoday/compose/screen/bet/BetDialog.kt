@@ -113,7 +113,7 @@ private fun BetDialogDetail(
     homePoints: Long,
     awayPoints: Long
 ) {
-    val remainedPoints by viewModel.remainedPoints.collectAsState()
+    val remainingPoint by viewModel.remainingPoints.collectAsState()
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -146,7 +146,7 @@ private fun BetDialogDetail(
             modifier = Modifier
                 .testTag(BetTestTag.BetDialogDetail_Text_Remainder)
                 .padding(top = 16.dp, start = 16.dp, end = 16.dp),
-            text = stringResource(R.string.bet_remain, remainedPoints),
+            text = stringResource(R.string.bet_remain, remainingPoint),
             color = MaterialTheme.colors.primary,
             fontSize = 12.sp,
         )

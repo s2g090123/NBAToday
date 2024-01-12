@@ -31,6 +31,16 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
+/**
+ * ViewModel for handling business logic related to [CalendarScreen].
+ *
+ * @property dateTime The initial date and time for the calendar.
+ * @property repository The repository for interacting with [GameAndBets].
+ * @property navigationController The controller for navigation within the app.
+ * @property composeViewModelProvider The provider for creating ComposeViewModel instances.
+ * @property dispatcherProvider The provider for obtaining dispatchers for coroutines (default is [DefaultDispatcherProvider]).
+ * @property coroutineScope The coroutine scope for managing coroutines (default is [CoroutineScope] with unconfined dispatcher).
+ */
 class CalendarViewModel(
     dateTime: Long,
     private val repository: GameRepository,
@@ -48,12 +58,15 @@ class CalendarViewModel(
     private val selectedDateImp = MutableStateFlow(Date(dateTime))
     val selectedDate = selectedDateImp.asStateFlow()
 
+    // the list of games for the selected date
     private val selectedGamesImp = MutableStateFlow(emptyList<GameAndBets>())
     val selectedGames = selectedGamesImp.asStateFlow()
 
+    // the loading status of [selectedGames]
     private val loadingGamesImp = MutableStateFlow(false)
     val loadingGames = loadingGamesImp.asStateFlow()
 
+    // the loading status of [calendarDates]
     private val loadingCalendar = MutableStateFlow(false)
 
     private val lastGameDate = repository.getLastGameDateTime()
@@ -61,6 +74,7 @@ class CalendarViewModel(
     private val firstGameDate = repository.getFirstGameDateTime()
         .stateIn(coroutineScope, SharingStarted.Lazily, Date(dateTime))
 
+    // Initialize the [currentCalendar] based on the provided date and time.
     init {
         currentCalendar = DateUtils.getCalendar().let {
             it.timeInMillis = dateTime
@@ -147,6 +161,9 @@ class CalendarViewModel(
         selectedDateImp.value = date
     }
 
+    /**
+     * Moves to the next month in the calendar.
+     */
     fun nextMonth() {
         if (hasNextMonth()) {
             currentCalendar.value = DateUtils.getCalendar().apply {
@@ -156,6 +173,9 @@ class CalendarViewModel(
         }
     }
 
+    /**
+     * Moves to the previous month in the calendar.
+     */
     fun lastMonth() {
         if (hasLastMonth()) {
             currentCalendar.value = DateUtils.getCalendar().apply {
@@ -165,6 +185,12 @@ class CalendarViewModel(
         }
     }
 
+    /**
+     * Retrieves the list of dates for the current calendar month.
+     *
+     * @param calendar The calendar instance representing the current month.
+     * @return List of CalendarDate objects representing each day in the month.
+     */
     private fun getCalendarDates(calendar: Calendar): List<CalendarDate> {
         val year = calendar.get(Calendar.YEAR)
         val month = calendar.get(Calendar.MONTH)
@@ -200,6 +226,11 @@ class CalendarViewModel(
         }
     }
 
+    /**
+     * Click event handler for a game card.
+     *
+     * @param game The selected game.
+     */
     fun clickGameCard(game: Game) {
         if (game.gamePlayed) {
             navigationController.navigateToBoxScore(game.gameId)

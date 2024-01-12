@@ -22,11 +22,17 @@ import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.repository.RepositoryProvider
 import kotlinx.coroutines.CoroutineScope
 
+/**
+ * A provider class for creating and managing ComposeViewModel instances.
+ */
 class ComposeViewModelProvider(
     private val repositoryProvider: RepositoryProvider,
     private val dataStore: BaseDataStore,
     private val navigationController: NavigationController,
 ) {
+    /**
+     * A map to store created ComposeViewModel instances for reuse.
+     */
     private val viewModelMap = mutableMapOf<MainRoute, ComposeViewModel>()
 
     fun getHomeViewModel(
@@ -179,6 +185,11 @@ class ComposeViewModelProvider(
         )
     }
 
+    /**
+     * Removes a ComposeViewModel instance from the map based on the specified route.
+     *
+     * @param route The MainRoute associated with the view model to be removed.
+     */
     fun removeViewModel(route: MainRoute) {
         viewModelMap.remove(route)
     }

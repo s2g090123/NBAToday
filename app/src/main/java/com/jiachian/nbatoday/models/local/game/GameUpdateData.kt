@@ -3,20 +3,22 @@ package com.jiachian.nbatoday.models.local.game
 import androidx.room.ColumnInfo
 
 /**
- * 每場比賽的數據，需要透過兩個不同的api才能彙整一份資料，
- * 1. 透過`static/json/staticData/scheduleLeagueV2_32.json`取得賽季的賽程表(當中會包含簡單的數據)
- * 2. 透過`stats/scoreboardv3`取得特定日期裡各場比賽的數據(包含leaders數據)
+ * Data for each game needs to be aggregated through two different APIs,
+ * 1. Fetch the season schedule from `static/json/staticData/scheduleLeagueV2_32.json` (which contains basic data about the schedule).
+ * 2. Retrieve specific game data, including leaders' statistics, for each game on a given date through `stats/scoreboardv3`.
  *
- * 因此會在初始時(App尚未取得任何數據)先透過(1)初始化資料庫，再透過根據當日且推算前幾天後幾天，透過(2)取得更詳細的資料，
- * 而此Data Class就是用來將(2)的資料更新於先前的(1)的資料中
+ * Therefore, during the initialization phase (when the app has not obtained any data yet), the database is initialized through (1).
+ * Subsequently, more detailed data is obtained by using (2) based on the current date and estimating a few days before and after.
+ * This Data Class is designed to update the data from (2) into the previously fetched data from (1).
  */
+
 data class GameUpdateData(
     @ColumnInfo(name = "game_id")
-    val gameId: String, // 比賽id, e.g. 0022200089
+    val gameId: String, // e.g. 0022200089
     @ColumnInfo(name = "game_status")
     val gameStatus: GameStatus,
     @ColumnInfo(name = "game_status_text")
-    val gameStatusText: String, // 比賽狀態(Final或開始時間), e.g. Final or 3:00 pm ET
+    val gameStatusText: String, // e.g. Final or 3:00 pm ET
     @ColumnInfo(name = "home_team")
     val homeTeam: GameTeam,
     @ColumnInfo(name = "away_team")

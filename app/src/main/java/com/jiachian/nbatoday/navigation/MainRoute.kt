@@ -1,5 +1,11 @@
 package com.jiachian.nbatoday.navigation
 
+/**
+ * Different routes in the main navigation flow.
+ *
+ * @param path The path for the route.
+ * @param param The optional parameter associated with the route.
+ */
 sealed class MainRoute(
     val path: String,
     val param: String = "",
@@ -12,5 +18,6 @@ sealed class MainRoute(
     object Calendar : MainRoute("calendar", "dateTime")
     object Bet : MainRoute("bet", "account")
 
+    // The full route string, including the parameter if present
     val route = if (param.isEmpty()) path else "$path/{$param}"
 }

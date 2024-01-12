@@ -3,6 +3,11 @@ package com.jiachian.nbatoday.navigation
 import com.jiachian.nbatoday.event.EventBroadcaster
 import com.jiachian.nbatoday.event.EventManager
 
+/**
+ * Handle navigation events within the app.
+ *
+ * @param eventManager The event manager used for broadcasting navigation events.
+ */
 class NavigationController(
     private val eventManager: EventManager<Event> = EventManager()
 ) : EventBroadcaster<NavigationController.Event> by eventManager {

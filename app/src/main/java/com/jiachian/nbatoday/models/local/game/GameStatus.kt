@@ -8,11 +8,11 @@ private const val FinalStatusCode = 3
 
 enum class GameStatus(val code: Int) {
     @SerializedName(ComingSoonStatusCode.toString())
-    COMING_SOON(ComingSoonStatusCode), // 比賽尚未開始
+    COMING_SOON(ComingSoonStatusCode), // The game is coming
 
     @SerializedName(PlayingStatusCode.toString())
-    PLAYING(PlayingStatusCode), // 比賽進行中
+    PLAYING(PlayingStatusCode), // The game is in progress
 
     @SerializedName(FinalStatusCode.toString())
-    FINAL(FinalStatusCode) // 比賽已經結束
+    FINAL(FinalStatusCode) // The game has finished
 }

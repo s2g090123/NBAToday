@@ -10,10 +10,10 @@ data class TeamPlayer(
     @ColumnInfo(name = "player_id") @PrimaryKey val playerId: Int,
     @ColumnInfo(name = "team_id") val teamId: Int,
     @ColumnInfo(name = "player_name") val playerName: String, // A.J. Lawson
-    @ColumnInfo(name = "game_played") val gamePlayed: Int, // 目前打了幾場比賽
+    @ColumnInfo(name = "game_played") val gamePlayed: Int,
     @ColumnInfo(name = "win") val win: Int,
     @ColumnInfo(name = "lose") val lose: Int,
-    @ColumnInfo(name = "win_percentage") val winPercentage: Double, // 勝敗場百分比, e.g. 50.0
+    @ColumnInfo(name = "win_percentage") val winPercentage: Double,
     @ColumnInfo(name = "field_goals_made") val fieldGoalsMade: Int,
     @ColumnInfo(name = "field_goals_attempted") val fieldGoalsAttempted: Int,
     @ColumnInfo(name = "field_goals_percentage") val fieldGoalsPercentage: Double,

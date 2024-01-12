@@ -24,6 +24,9 @@ object DateUtils {
     private const val MONTH_OCT = 9
     private const val MONTH_NOV = 10
 
+    /**
+     * Gets a Calendar instance set to the current date and time in the "EST" time zone.
+     */
     fun getCalendar(): Calendar {
         return Calendar.getInstance().apply {
             timeZone = TimeZone.getTimeZone("EST")
@@ -35,10 +38,16 @@ object DateUtils {
         return formatDate(year, month, day)
     }
 
+    /**
+     * Formats a date as a string in the format "yyyy-MM-dd".
+     */
     fun formatDate(year: Int, month: Int, day: Int): String {
         return String.format(Locale.US, "%d-%d-%d", year, month, day)
     }
 
+    /**
+     * Parses a date represented by the given year, month, and day into a Date object.
+     */
     @SuppressLint("SimpleDateFormat")
     fun parseDate(year: Int, month: Int, day: Int): Date? {
         return SimpleDateFormat("yyyy-MM-dd").let {
@@ -47,6 +56,9 @@ object DateUtils {
         }
     }
 
+    /**
+     * Parses a date represented by the provided date string in "yyyy-MM-dd" format into a Date object.
+     */
     @SuppressLint("SimpleDateFormat")
     fun parseDate(dateInFormat: String): Date? {
         return SimpleDateFormat("yyyy-MM-dd").let {
@@ -55,6 +67,9 @@ object DateUtils {
         }
     }
 
+    /**
+     * Parses a date represented by the given date string using the provided date format.
+     */
     fun parseDate(dateString: String?, dateFormat: SimpleDateFormat): Date? {
         return dateString?.let { time ->
             try {

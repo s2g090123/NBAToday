@@ -14,6 +14,9 @@ import com.jiachian.nbatoday.models.local.team.Team
 import com.jiachian.nbatoday.models.local.team.TeamPlayer
 import com.jiachian.nbatoday.utils.decimalFormat
 
+/**
+ * Helper object for obtaining values based on different labels for various UI components.
+ */
 object LabelHelper {
     fun getValueByLabel(
         label: StandingLabel,

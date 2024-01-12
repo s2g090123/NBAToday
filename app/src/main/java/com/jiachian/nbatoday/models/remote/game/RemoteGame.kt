@@ -35,9 +35,9 @@ data class RemoteGame(
                     val jerseyNum: String, // e.g. 3
                     val position: String, // e.g. G
                     val teamTricode: String, // e.g. CHA
-                    val points: Double, // e.g. 如果比賽已經結束： 22，否則：22.2
-                    val rebounds: Double, // e.g. 如果比賽已經結束： 22，否則：22.2
-                    val assists: Double // e.g. 如果比賽已經結束： 22，否則：22.2
+                    val points: Double, // e.g. If the game has finished： 22, otherwise：22.2
+                    val rebounds: Double, // e.g. If the game has finished： 22, otherwise：22.2
+                    val assists: Double // e.g. If the game has finished： 22, otherwise：22.2
                 )
             }
 

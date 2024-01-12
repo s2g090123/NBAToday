@@ -64,6 +64,9 @@ class MainActivity : ComponentActivity() {
         toastEventManager.eventFlow.collectWithLifecycle(this::onToastEvent)
     }
 
+    /**
+     * Handles navigation events received from the ViewModel.
+     */
     private fun onNavigationEvent(event: NavigationController.Event?) {
         runOnUiThread {
             when (event) {
@@ -102,6 +105,9 @@ class MainActivity : ComponentActivity() {
         viewModel.consumeNavigationEvent(event)
     }
 
+    /**
+     * Handles toast events received from the toast event manager.
+     */
     private fun onToastEvent(event: ToastEvent?) {
         when (event) {
             ToastEvent.OnError -> showErrorToast()

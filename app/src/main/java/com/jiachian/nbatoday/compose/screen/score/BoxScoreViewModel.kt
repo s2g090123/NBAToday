@@ -26,6 +26,15 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
+/**
+ * ViewModel for handling business logic related to [BoxScoreScreen].
+ *
+ * @param gameId The ID of the game for which the box score is displayed.
+ * @param repository The repository for interacting with [Game].
+ * @property navigationController The controller for navigation within the app.
+ * @property dispatcherProvider The provider for obtaining dispatchers for coroutines (default is [DefaultDispatcherProvider]).
+ * @property coroutineScope The coroutine scope for managing coroutines (default is [CoroutineScope] with unconfined dispatcher).
+ */
 class BoxScoreViewModel(
     private val gameId: String,
     private val repository: GameRepository,
@@ -37,12 +46,14 @@ class BoxScoreViewModel(
     navigationController = navigationController,
     route = MainRoute.BoxScore
 ) {
+    // Update box score data into the repository
     init {
         coroutineScope.launch(dispatcherProvider.io) {
             repository.insertBoxScore(gameId)
         }
     }
 
+    // labels for box score player, team, and leader sections
     val playerLabels = BoxScorePlayerLabel.values()
     private val teamLabels = BoxScoreTeamLabel.values()
     private val leaderLabels = BoxScoreLeaderLabel.values()
@@ -52,6 +63,7 @@ class BoxScoreViewModel(
         it?.boxScore
     }
 
+    // date of the game (e.g. 2023-1-1)
     val date = boxScore.map {
         it?.gameDate ?: ""
     }.stateIn(coroutineScope, SharingStarted.Lazily, "")
@@ -196,6 +208,9 @@ class BoxScoreViewModel(
         selectedPlayerLabelImp.value = label
     }
 
+    /**
+     * Navigate to the player screen
+     */
     fun openPlayerInfo(playerId: Int) {
         navigationController.navigateToPlayer(playerId)
     }

@@ -52,6 +52,13 @@ import com.jiachian.nbatoday.utils.NBAUtils
 import com.jiachian.nbatoday.utils.color
 import com.jiachian.nbatoday.utils.noRippleClickable
 
+/**
+ * Displays a loading screen with a circular progress indicator.
+ *
+ * @param modifier The modifier for the loading screen.
+ * @param color The color of the circular progress indicator.
+ * @param interceptBack Whether to intercept the back button press.
+ */
 @Composable
 fun LoadingScreen(
     modifier: Modifier = Modifier,
@@ -67,6 +74,9 @@ fun LoadingScreen(
     BackHandler(interceptBack) {}
 }
 
+/**
+ * Custom implementation of an outlined text field with additional customization options.
+ */
 @Composable
 fun CustomOutlinedTextField(
     value: String,
@@ -185,6 +195,12 @@ fun IconButton(
     }
 }
 
+/**
+ * Displays the team logo image using an AsyncImage.
+ *
+ * @param modifier The modifier for the team logo image.
+ * @param team The NBA team for which to display the logo.
+ */
 @Composable
 fun TeamLogoImage(
     modifier: Modifier = Modifier,
@@ -201,6 +217,12 @@ fun TeamLogoImage(
     )
 }
 
+/**
+ * Displays the player image using an AsyncImage.
+ *
+ * @param modifier The modifier for the player image.
+ * @param playerId The ID of the player for which to display the image.
+ */
 @Composable
 fun PlayerImage(
     modifier: Modifier = Modifier,
@@ -217,6 +239,13 @@ fun PlayerImage(
     )
 }
 
+/**
+ * Conditional rendering based on nullability of data.
+ *
+ * @param data The data to be checked for null.
+ * @param ifNull Content to be displayed if data is null.
+ * @param ifNotNull Content to be displayed if data is not null.
+ */
 @Composable
 fun <T> NullCheckScreen(
     data: T?,
@@ -228,6 +257,14 @@ fun <T> NullCheckScreen(
     } ?: ifNull?.invoke()
 }
 
+/**
+ * Conditional rendering based on the state of UI data.
+ *
+ * @param state The UIState representing the state of the data.
+ * @param loading Content to be displayed when data is in a loading state.
+ * @param ifNull Content to be displayed when data is null.
+ * @param ifNotNull Content to be displayed when data is not null.
+ */
 @Composable
 fun <T> UIStateScreen(
     state: UIState<T>,
@@ -238,13 +275,22 @@ fun <T> UIStateScreen(
     when (state) {
         is UIState.Loading -> loading?.invoke()
         is UIState.Loaded -> {
-            state.data?.let { data ->
-                ifNotNull?.invoke(data)
-            } ?: ifNull?.invoke()
+            NullCheckScreen(
+                data = state.data,
+                ifNull = ifNull,
+                ifNotNull = ifNotNull
+            )
         }
     }
 }
 
+/**
+ * Animate the expansion of content.
+ *
+ * @param modifier The modifier for the AnimatedExpand.
+ * @param visible Whether the content is currently visible.
+ * @param content The content to be animated.
+ */
 @Composable
 fun AnimatedExpand(
     modifier: Modifier = Modifier,

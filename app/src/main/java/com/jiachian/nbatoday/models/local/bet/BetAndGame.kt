@@ -28,6 +28,9 @@ data class BetAndGame(
     val awayWin
         get() = game.awayWin
 
+    /**
+     * Gets the text representation of home team points, considering the game's status and result.
+     */
     fun getHomePointsText(): String {
         return when {
             !gameFinal -> "${bet.homePoints}"
@@ -36,6 +39,9 @@ data class BetAndGame(
         }
     }
 
+    /**
+     * Gets the text representation of away team points, considering the game's status and result.
+     */
     fun getAwayPointsText(): String {
         return when {
             !gameFinal -> "${bet.awayPoints}"
@@ -44,6 +50,9 @@ data class BetAndGame(
         }
     }
 
+    /**
+     * Gets the color of home team points text, based on the game's status and result.
+     */
     @Composable
     fun getHomePointsTextColor(): Color {
         return when {
@@ -53,6 +62,9 @@ data class BetAndGame(
         }
     }
 
+    /**
+     * Gets the color of away team points text, based on the game's status and result.
+     */
     @Composable
     fun getAwayPointsTextColor(): Color {
         return when {
@@ -62,6 +74,9 @@ data class BetAndGame(
         }
     }
 
+    /**
+     * Gets the text representation of the bet status based on the associated game's status.
+     */
     fun getBetStatusText(): String {
         return when (game.gameStatus) {
             GameStatus.COMING_SOON -> game.gameStatusText.replaceFirst(" ", "\n") + "\n1:1"
@@ -70,10 +85,16 @@ data class BetAndGame(
         }.trim()
     }
 
+    /**
+     * Gets the number of points won in the bet.
+     */
     fun getWonPoints(): Long {
         return if (homeWin) bet.homePoints else bet.awayPoints
     }
 
+    /**
+     * Gets the number of points lost in the bet.
+     */
     fun getLostPoints(): Long {
         return if (homeWin) bet.awayPoints else bet.homePoints
     }

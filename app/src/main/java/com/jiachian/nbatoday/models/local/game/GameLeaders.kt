@@ -21,11 +21,11 @@ data class GameLeaders(
         @ColumnInfo(name = "team_tri_code")
         val teamTricode: String, // e.g. CHA
         @ColumnInfo(name = "person_points")
-        val points: Double, // e.g. 如果比賽已經結束： 22，否則：22.2
+        val points: Double, // e.g. If the game has finished： 22, otherwise：22.2
         @ColumnInfo(name = "person_rebounds")
-        val rebounds: Double, // e.g. 如果比賽已經結束： 22，否則：22.2
+        val rebounds: Double, // e.g. f the game has finished：： 22, otherwise：22.2
         @ColumnInfo(name = "person_assists")
-        val assists: Double // e.g. 如果比賽已經結束： 22，否則：22.2
+        val assists: Double // e.g. f the game has finished：： 22, otherwise：22.2
     ) {
         companion object {
             fun default(): GameLeader = GameLeader(
