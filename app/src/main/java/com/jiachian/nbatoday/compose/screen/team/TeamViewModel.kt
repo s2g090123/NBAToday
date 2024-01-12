@@ -59,7 +59,6 @@ class TeamViewModel(
     private val team = NBATeam.getTeamById(teamId)
     val colors = team.colors
 
-
     // Asynchronous initialization to update teams and team players.
     init {
         coroutineScope.launch(dispatcherProvider.io) {
