@@ -53,19 +53,19 @@ The Testing workflow focuses on ensuring the reliability and correctness of the 
 
 
 ## Video
-https://user-images.githubusercontent.com/32809761/219942203-224beaa9-a135-439d-9e14-f51f6078b260.mp4
-
-https://user-images.githubusercontent.com/32809761/221369247-c05eee72-dfca-4f18-9c57-9c10bc025235.mp4
+https://github.com/s2g090123/NBAToday/assets/32809761/da742512-56d2-46f8-8e0b-cc6e6e43a768
 
 ## Screenshot
 <p float="left">
-<img src="https://github.com/s2g090123/NBAToday/blob/master/image/Screenshot_1676796391.png"  width="200" height="400">
-<img src="https://github.com/s2g090123/NBAToday/blob/master/image/Screenshot_1676796416.png"  width="200" height="400">
-<img src="https://github.com/s2g090123/NBAToday/blob/master/image/Screenshot_1676796494.png"  width="200" height="400">
-  <img src="https://github.com/s2g090123/NBAToday/blob/master/image/Screenshot_1676796545.png"  width="200" height="400">
-   <img src="https://github.com/s2g090123/NBAToday/blob/master/image/Screenshot_1676796556.png" width="200" height="400">
-   <img src="https://github.com/s2g090123/NBAToday/blob/master/image/Screenshot_1676796441.png"  width="200" height="400">
-   <img src="https://github.com/s2g090123/NBAToday/blob/master/image/Screenshot_1676796475.png"  width="200" height="400">
+<img src="https://github.com/s2g090123/NBAToday/blob/master/image/Screenshot_1705139125.png"  width="200" height="350">
+<img src="https://github.com/s2g090123/NBAToday/blob/master/image/Screenshot_1705138643.png"  width="200" height="350">
+<img src="https://github.com/s2g090123/NBAToday/blob/master/image/Screenshot_1705138715.png"  width="200" height="350">
+  <img src="https://github.com/s2g090123/NBAToday/blob/master/image/Screenshot_1705138740.png"  width="200" height="350">
+   <img src="https://github.com/s2g090123/NBAToday/blob/master/image/Screenshot_1705138842.png" width="200" height="350">
+   <img src="https://github.com/s2g090123/NBAToday/blob/master/image/Screenshot_1705138859.png"  width="200" height="350">
+   <img src="https://github.com/s2g090123/NBAToday/blob/master/image/Screenshot_1705138881.png"  width="200" height="350">
+  <img src="https://github.com/s2g090123/NBAToday/blob/master/image/Screenshot_1705138983.png"  width="200" height="350">
+  <img src="https://github.com/s2g090123/NBAToday/blob/master/image/Screenshot_1705139125.png"  width="200" height="350">
 </p>
 
 ## To-do list
