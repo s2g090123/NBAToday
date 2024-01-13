@@ -43,7 +43,7 @@ class GameCardViewModel(
     // whether the user is logged in
     val login = user
         .map { it != null }
-        .stateIn(coroutineScope, SharingStarted.Lazily, false)
+        .stateIn(coroutineScope, SharingStarted.Eagerly, false)
 
     // the expanded status of the game card
     private val expandedImp = MutableStateFlow(false)
