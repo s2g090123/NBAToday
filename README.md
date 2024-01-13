@@ -33,6 +33,25 @@ Here are the key technologies I've used to create this app:
 - DataStore
 - Koin
 
+## CI workflows
+NBA Today utilizes two CI workflows: `Danger` and `Testing`.
+
+All generated reports, including Danger, testing result and jacoco code coverage reports, are archived on GitHub for easy access and reference
+
+### Danger workflow
+The Danger workflow is designed to enforce coding standards and catch potential issues early in the development process.
+
+Danger checks:
+1. [ktlint](https://pinterest.github.io/ktlint/latest/): Enforces Kotlin coding style.
+2. [detekt](https://detekt.dev/): Performs static code analysis for Kotlin.
+3. [Android lint](https://developer.android.com/studio/write/lint): Ensures adherence to Android coding conventions.
+
+Utilize [Danger](https://danger.systems/kotlin/) to comment on PR with any issues found, alerting the PR author or reviewer.
+
+### Testing workflow
+The Testing workflow focuses on ensuring the reliability and correctness of the codebase by running both unit and Android tests. Additionally, it generates a code coverage report using [jacoco](https://www.jacoco.org/jacoco/).
+
+
 ## Video
 https://user-images.githubusercontent.com/32809761/219942203-224beaa9-a135-439d-9e14-f51f6078b260.mp4
 
