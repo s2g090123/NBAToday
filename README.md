@@ -59,15 +59,15 @@ https://github.com/s2g090123/NBAToday/assets/32809761/421f60f1-ca40-422a-b8bb-24
 
 ## Screenshot
 <p float="left">
-<img src="https://github.com/s2g090123/NBAToday/blob/master/image/Screenshot_1705139125.png"  width="200" height="350">
-<img src="https://github.com/s2g090123/NBAToday/blob/master/image/Screenshot_1705138643.png"  width="200" height="350">
-<img src="https://github.com/s2g090123/NBAToday/blob/master/image/Screenshot_1705138715.png"  width="200" height="350">
-  <img src="https://github.com/s2g090123/NBAToday/blob/master/image/Screenshot_1705138740.png"  width="200" height="350">
-   <img src="https://github.com/s2g090123/NBAToday/blob/master/image/Screenshot_1705138842.png" width="200" height="350">
-   <img src="https://github.com/s2g090123/NBAToday/blob/master/image/Screenshot_1705138859.png"  width="200" height="350">
-   <img src="https://github.com/s2g090123/NBAToday/blob/master/image/Screenshot_1705138881.png"  width="200" height="350">
-  <img src="https://github.com/s2g090123/NBAToday/blob/master/image/Screenshot_1705138983.png"  width="200" height="350">
-  <img src="https://github.com/s2g090123/NBAToday/blob/master/image/Screenshot_1705139125.png"  width="200" height="350">
+<img src="https://github.com/s2g090123/NBAToday/blob/master/image/Screenshot_1705139125.png"  width="200" height="400">
+<img src="https://github.com/s2g090123/NBAToday/blob/master/image/Screenshot_1705138643.png"  width="200" height="400">
+  <img src="https://github.com/s2g090123/NBAToday/blob/master/image/Screenshot_1705138678.png"  width="200" height="400">
+<img src="https://github.com/s2g090123/NBAToday/blob/master/image/Screenshot_1705138715.png"  width="200" height="400">
+  <img src="https://github.com/s2g090123/NBAToday/blob/master/image/Screenshot_1705138740.png"  width="200" height="400">
+   <img src="https://github.com/s2g090123/NBAToday/blob/master/image/Screenshot_1705138842.png" width="200" height="400">
+   <img src="https://github.com/s2g090123/NBAToday/blob/master/image/Screenshot_1705138859.png"  width="200" height="400">
+   <img src="https://github.com/s2g090123/NBAToday/blob/master/image/Screenshot_1705138881.png"  width="200" height="400">
+  <img src="https://github.com/s2g090123/NBAToday/blob/master/image/Screenshot_1705138983.png"  width="200" height="400">
 </p>
 
 ## To-do list
