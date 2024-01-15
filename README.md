@@ -53,7 +53,9 @@ The Testing workflow focuses on ensuring the reliability and correctness of the 
 
 
 ## Video
-https://github.com/s2g090123/NBAToday/assets/32809761/da742512-56d2-46f8-8e0b-cc6e6e43a768
+https://github.com/s2g090123/NBAToday/assets/32809761/52b159e3-37bd-432b-b33f-4dac31f00bd6
+
+https://github.com/s2g090123/NBAToday/assets/32809761/421f60f1-ca40-422a-b8bb-249e4375d766
 
 ## Screenshot
 <p float="left">
