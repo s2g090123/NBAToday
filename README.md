@@ -73,5 +73,5 @@ https://github.com/s2g090123/NBAToday/assets/32809761/421f60f1-ca40-422a-b8bb-24
 ## To-do list
 - [X] Write Unit Tests
 - [X] Write End to End Tests
-- [ ] CI
+- [X] CI
 - [ ] Deploy NBA Today Server
