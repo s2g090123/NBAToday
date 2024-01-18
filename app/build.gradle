@@ -7,6 +7,22 @@ apply from: "../buildscripts/jacoco.gradle"
 apply from: "../buildscripts/detekt.gradle"
 apply from: "../buildscripts/ktlint.gradle"
 
+def getOutputFileName(outputFileName, versionName) {
+  String fileName = outputFileName.toLowerCase()
+  String fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1)
+  if (fileExtension == 'apk' || fileExtension == 'aab') {
+    return "NBAToday.${fileExtension}"
+  } else {
+    return outputFileName
+  }
+}
+
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file('keystore.properties')
+if (keystorePropertiesFile.exists()) {
+  keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
 android {
   compileSdk 33
 
@@ -23,10 +39,25 @@ android {
     }
   }
 
+  signingConfigs {
+    release {
+      keyAlias keystoreProperties['keyAlias']
+      keyPassword keystoreProperties['keyAlias.password']
+      storeFile keystoreProperties['keystore'] ? file(keystoreProperties['keystore']) : null
+      storePassword keystoreProperties['keystore.password']
+    }
+  }
+
   buildTypes {
     release {
       minifyEnabled false
       proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+      android.applicationVariants.all { variant ->
+        variant.outputs.all {
+          outputFileName = getOutputFileName(outputFileName, variant.versionName)
+        }
+      }
     }
     debug {
       testCoverageEnabled true
@@ -130,4 +161,26 @@ dependencies {
   androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutine_version"
   androidTestImplementation "io.mockk:mockk-android:$mockk_version"
   androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"
+}
+
+// Rename generated aab
+tasks.whenTaskAdded { task ->
+  def taskName = task.name
+  //Skip some unnecessary tasks
+  if (taskName.startsWith("bundle") && taskName.endsWith("Release")) {
+    def renameTaskName = "rename${task.name.capitalize()}Aab"
+    def flavor = taskName.substring("bundle".length())
+    def versionName = android.defaultConfig.versionName
+    def outputName = getOutputFileName(".aab", versionName)
+    tasks.create(renameTaskName) {
+      def path = "${rootDir}/../build/app/outputs/bundle/${flavor}"
+      def originalFile = "$path/app-release.aab"
+      doLast {
+        if (file("$originalFile").exists()) {
+          ant.move file: "$originalFile", tofile: "$path/${outputName}"
+        }
+      }
+    }
+    task.finalizedBy(renameTaskName)
+  }
 }
