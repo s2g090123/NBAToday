@@ -30,5 +30,5 @@ jobs:
           subject: NBA Today ${{ github.event.release.tag_name }} version has been released
           body: Please do not reply. Check the attachment and install/update the latest version of the app.
           from: Jia Chian
-          to: ${{secrets.OWNER_EMAIL}}
+          to: s2g090123@gmail.com
           attachments: app/build/outputs/apk/release/NBAToday.apk
