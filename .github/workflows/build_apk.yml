@@ -17,8 +17,8 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
 
-      - name: Build release apk
-        run: ./gradlew assembleRelease
+      #      - name: Build release apk
+      #        run: ./gradlew assembleRelease
 
       - name: Send the apk via email
         uses: dawidd6/action-send-mail@v3
@@ -31,4 +31,4 @@ jobs:
           body: Please do not reply. Check the attachment and install/update the latest version of the app.
           from: Jia Chian
           to: s2g090123@gmail.com
-          attachments: app/build/outputs/apk/release/NBAToday.apk
+#          attachments: app/build/outputs/apk/release/NBAToday.apk
