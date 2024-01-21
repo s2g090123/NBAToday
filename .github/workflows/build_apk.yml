@@ -1,9 +1,6 @@
 name: Build apk and send it via email when releasing
 
 on:
-  release:
-    types:
-      - created
   workflow_dispatch:
 
 jobs:
