@@ -20,6 +20,18 @@ jobs:
       - name: Build release apk
         run: ./gradlew assembleRelease
 
+      - name: Set release version
+        id: set_release_version
+        run: |
+          version=$(echo "${{ github.event.release.tag_name }}" | tr -d '[:space:]')
+          if [ -z "$version" ]; then
+            version="new"
+          fi
+          echo "::set-output name=release_version::${version}"
+
+      - name: echo user
+        run: echo ${{secrets.OWNER_EMAIL}}
+
       - name: Send the apk via email
         continue-on-error: true
         uses: dawidd6/action-send-mail@v3
@@ -28,7 +40,7 @@ jobs:
           server_port: 465
           username: ${{secrets.MAIL_USERNAME}}
           password: ${{secrets.MAIL_PASSWORD}}
-          subject: NBA Today ${{ github.event.release.tag_name }} version has been released
+          subject: NBA Today ${{ steps.set_release_version.outputs.release_version }}" version has been released
           body: |
             [Please do not reply]
 
@@ -38,6 +50,6 @@ jobs:
 
             Best regards,
             Jia Chian
-          to: s2g090123@gmail.com
+          to: ${{secrets.OWNER_EMAIL}}
           from: Jia Chian
           attachments: app/build/outputs/apk/release/NBAToday.apk
