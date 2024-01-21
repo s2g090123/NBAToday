@@ -20,12 +20,8 @@ jobs:
       - name: Build release apk
         run: ./gradlew assembleRelease
 
-      - name: Zip the apk
-        run: |
-          rm -rf NBAToday.zip
-          zip -r NBAToday.zip app/build/outputs/apk/release/NBAToday.apk
-
       - name: Send the apk via email
+        continue-on-error: true
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
@@ -34,7 +30,8 @@ jobs:
           password: ${{secrets.MAIL_PASSWORD}}
           subject: NBA Today ${{ github.event.release.tag_name }} version has been released
           body: |
-            Please do not reply.
+            [Please do not reply]
+
             Check the attachment and install/update the latest version of the app.
 
             Have a nice day! ^^
@@ -43,4 +40,4 @@ jobs:
             Jia Chian
           to: s2g090123@gmail.com
           from: Jia Chian
-          attachments: NBAToday.zip
+          attachments: app/build/outputs/apk/release/NBAToday.apk
