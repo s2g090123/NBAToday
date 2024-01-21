@@ -42,4 +42,5 @@ jobs:
             Best regards,
             Jia Chian
           to: s2g090123@gmail.com
+          from: Jia Chian
           attachments: app/build/outputs/apk/release/NBAToday.apk
