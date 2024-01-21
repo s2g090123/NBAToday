@@ -1,10 +1,10 @@
 name: Build apk and send it via email when releasing
 
 on:
-  pull_request:
-    branches:
-      - '*'
   workflow_dispatch:
+    pull_request:
+      branches:
+        - '*'
 
 jobs:
   build:
@@ -26,6 +26,6 @@ jobs:
           password: ${{secrets.MAIL_PASSWORD}}
           subject: NBA Today ${{ github.event.release.tag_name }} version has been released
           body: Please do not reply. Check the attachment and install/update the latest version of the app.
-          to: ${{secrets.OWNER_EMAIL}}
           from: Jia Chian
+          to: ${{secrets.OWNER_EMAIL}}
           attachments: app/build/outputs/apk/release/NBAToday.apk
