@@ -33,6 +33,13 @@ jobs:
           username: ${{secrets.MAIL_USERNAME}}
           password: ${{secrets.MAIL_PASSWORD}}
           subject: NBA Today ${{ github.event.release.tag_name }} version has been released
-          body: Please do not reply. Check the attachment and install/update the latest version of the app.
+          body: |
+            Please do not reply.
+            Check the attachment and install/update the latest version of the app.
+
+            Have a nice day! ^^
+
+            Best regards,
+            Jia Chian
           to: s2g090123@gmail.com
           attachments: app/build/outputs/apk/release/NBAToday.apk
