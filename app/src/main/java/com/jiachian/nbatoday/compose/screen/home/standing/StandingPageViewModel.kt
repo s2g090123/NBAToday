@@ -29,13 +29,13 @@ import kotlinx.coroutines.launch
  * @property repository The repository for interacting with [Team].
  * @property navigationController The controller for navigation within the app.
  * @property dispatcherProvider The provider for obtaining dispatchers for coroutines (default is [DefaultDispatcherProvider]).
- * @property coroutineScope The coroutine scope for managing coroutines (default is [CoroutineScope] with unconfined dispatcher).
+ * @property coroutineScope The coroutine scope for managing coroutines (default is [CoroutineScope] with main dispatcher).
  */
 class StandingPageViewModel(
     private val repository: TeamRepository,
     private val navigationController: NavigationController,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
-    private val coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
+    private val coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.main)
 ) {
     private val eastTeams = repository.getTeams(NBATeam.Conference.EAST)
     private val westTeams = repository.getTeams(NBATeam.Conference.WEST)

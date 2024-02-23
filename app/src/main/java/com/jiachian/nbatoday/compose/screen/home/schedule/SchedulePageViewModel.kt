@@ -35,7 +35,7 @@ import kotlinx.coroutines.launch
  * @property navigationController The controller for navigation within the app.
  * @property composeViewModelProvider The provider for creating ComposeViewModel instances.
  * @property dispatcherProvider The provider for obtaining dispatchers for coroutines (default is [DefaultDispatcherProvider]).
- * @property coroutineScope The coroutine scope for managing coroutines (default is [CoroutineScope] with unconfined dispatcher).
+ * @property coroutineScope The coroutine scope for managing coroutines (default is [CoroutineScope] with main dispatcher).
  */
 class SchedulePageViewModel(
     private val scheduleRepository: ScheduleRepository,
@@ -43,7 +43,7 @@ class SchedulePageViewModel(
     private val navigationController: NavigationController,
     private val composeViewModelProvider: ComposeViewModelProvider,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
-    private val coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
+    private val coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.main)
 ) {
     // the date data for the schedule page on the TabBar
     val dateData = createDateData()

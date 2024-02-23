@@ -7,6 +7,7 @@ import com.jiachian.nbatoday.models.local.game.GameAndBets
 import com.jiachian.nbatoday.models.local.game.GameLeaders
 import com.jiachian.nbatoday.repository.bet.BetRepository
 import com.jiachian.nbatoday.repository.user.UserRepository
+import com.jiachian.nbatoday.utils.WhileSubscribed5000
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -23,14 +24,14 @@ import kotlinx.coroutines.launch
  * @property betRepository The repository for interacting with [GameAndBets].
  * @property userRepository The repository for interacting with [User].
  * @property dispatcherProvider The provider for obtaining dispatchers for coroutines (default is [DefaultDispatcherProvider]).
- * @property coroutineScope The coroutine scope for managing coroutines (default is [CoroutineScope] with unconfined dispatcher).
+ * @property coroutineScope The coroutine scope for managing coroutines (default is [CoroutineScope] with main dispatcher).
  */
 class GameCardViewModel(
     val gameAndBets: GameAndBets,
     private val betRepository: BetRepository,
     private val userRepository: UserRepository,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
-    private val coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined),
+    private val coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.main),
 ) {
     // logged-in user.
     private val user = userRepository.user
@@ -58,12 +59,12 @@ class GameCardViewModel(
         gameAndBets.bets.any { it.account == user.account }
     }
         .flowOn(dispatcherProvider.io)
-        .stateIn(coroutineScope, SharingStarted.Lazily, true)
+        .stateIn(coroutineScope, WhileSubscribed5000, true)
 
     // whether the user can place a bet on the game
     val betAvailable = hasBet.map {
         !gamePlayed && !it
-    }.stateIn(coroutineScope, SharingStarted.Lazily, true)
+    }.stateIn(coroutineScope, WhileSubscribed5000, true)
 
     private val leaders = if (gamePlayed) gameAndBets.game.gameLeaders else gameAndBets.game.teamLeaders
     val expandedContentVisible = leaders != null

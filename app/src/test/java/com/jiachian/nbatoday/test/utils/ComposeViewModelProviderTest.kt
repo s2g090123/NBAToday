@@ -41,7 +41,7 @@ class ComposeViewModelProviderTest : BaseUnitTest() {
     @Test
     fun `getHomeViewModel() expects correct`() {
         viewModelProvider
-            .getHomeViewModel()
+            .getHomeViewModel(dispatcherProvider = dispatcherProvider)
             .assertIsA(HomeViewModel::class.java)
     }
 
@@ -56,7 +56,10 @@ class ComposeViewModelProviderTest : BaseUnitTest() {
     @Test
     fun `getBoxScoreViewModel() expects correct`() {
         viewModelProvider
-            .getBoxScoreViewModel(FinalGameId)
+            .getBoxScoreViewModel(
+                gameId = FinalGameId,
+                dispatcherProvider = dispatcherProvider
+            )
             .assertIsA(BoxScoreViewModel::class.java)
     }
 
@@ -71,7 +74,10 @@ class ComposeViewModelProviderTest : BaseUnitTest() {
     @Test
     fun `getTeamViewModel() expects correct`() {
         viewModelProvider
-            .getTeamViewModel(HomeTeamId)
+            .getTeamViewModel(
+                teamId = HomeTeamId,
+                dispatcherProvider = dispatcherProvider
+            )
             .assertIsA(TeamViewModel::class.java)
     }
 
@@ -86,7 +92,10 @@ class ComposeViewModelProviderTest : BaseUnitTest() {
     @Test
     fun `getPlayerViewModel() expects correct`() {
         viewModelProvider
-            .getPlayerViewModel(HomePlayerId)
+            .getPlayerViewModel(
+                playerId = HomePlayerId,
+                dispatcherProvider = dispatcherProvider
+            )
             .assertIsA(PlayerViewModel::class.java)
     }
 
@@ -101,7 +110,10 @@ class ComposeViewModelProviderTest : BaseUnitTest() {
     @Test
     fun `getCalendarViewModel() expects correct`() {
         viewModelProvider
-            .getCalendarViewModel(FinalGameTimeMs)
+            .getCalendarViewModel(
+                dateTime = FinalGameTimeMs,
+                dispatcherProvider = dispatcherProvider
+            )
             .assertIsA(CalendarViewModel::class.java)
     }
 
@@ -116,7 +128,10 @@ class ComposeViewModelProviderTest : BaseUnitTest() {
     @Test
     fun `getBetViewModel() expects correct`() {
         viewModelProvider
-            .getBetViewModel(UserAccount)
+            .getBetViewModel(
+                account = UserAccount,
+                dispatcherProvider = dispatcherProvider
+            )
             .assertIsA(BetViewModel::class.java)
     }
 
@@ -131,28 +146,31 @@ class ComposeViewModelProviderTest : BaseUnitTest() {
     @Test
     fun `getSchedulePageViewModel() expects correct`() {
         viewModelProvider
-            .getSchedulePageViewModel()
+            .getSchedulePageViewModel(dispatcherProvider = dispatcherProvider)
             .assertIsA(SchedulePageViewModel::class.java)
     }
 
     @Test
     fun `getStandingPageViewModel() expects correct`() {
         viewModelProvider
-            .getStandingPageViewModel()
+            .getStandingPageViewModel(dispatcherProvider = dispatcherProvider)
             .assertIsA(StandingPageViewModel::class.java)
     }
 
     @Test
     fun `getUserPageViewModel() expects correct`() {
         viewModelProvider
-            .getUserPageViewModel()
+            .getUserPageViewModel(dispatcherProvider = dispatcherProvider)
             .assertIsA(UserPageViewModel::class.java)
     }
 
     @Test
     fun `getGameCardViewModel() expects correct`() {
         viewModelProvider
-            .getGameCardViewModel(GameAndBetsGenerator.getFinal())
+            .getGameCardViewModel(
+                gameAndBets = GameAndBetsGenerator.getFinal(),
+                dispatcherProvider = dispatcherProvider
+            )
             .assertIsA(GameCardViewModel::class.java)
     }
 

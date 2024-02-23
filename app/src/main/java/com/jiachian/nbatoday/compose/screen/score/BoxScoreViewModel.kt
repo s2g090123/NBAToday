@@ -16,9 +16,9 @@ import com.jiachian.nbatoday.models.local.team.data.teamOfficial
 import com.jiachian.nbatoday.navigation.MainRoute
 import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.repository.game.GameRepository
+import com.jiachian.nbatoday.utils.WhileSubscribed5000
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOn
@@ -33,14 +33,14 @@ import kotlinx.coroutines.launch
  * @param repository The repository for interacting with [Game].
  * @property navigationController The controller for navigation within the app.
  * @property dispatcherProvider The provider for obtaining dispatchers for coroutines (default is [DefaultDispatcherProvider]).
- * @property coroutineScope The coroutine scope for managing coroutines (default is [CoroutineScope] with unconfined dispatcher).
+ * @property coroutineScope The coroutine scope for managing coroutines (default is [CoroutineScope] with main dispatcher).
  */
 class BoxScoreViewModel(
     private val gameId: String,
     private val repository: GameRepository,
     navigationController: NavigationController,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
-    coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
+    coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.main)
 ) : ComposeViewModel(
     coroutineScope = coroutineScope,
     navigationController = navigationController,
@@ -66,7 +66,7 @@ class BoxScoreViewModel(
     // date of the game (e.g. 2023-1-1)
     val date = boxScore.map {
         it?.gameDate ?: ""
-    }.stateIn(coroutineScope, SharingStarted.Lazily, "")
+    }.stateIn(coroutineScope, WhileSubscribed5000, "")
 
     private val periods = boxScore.map {
         it?.homeTeam?.periods?.map { period ->
@@ -199,7 +199,7 @@ class BoxScoreViewModel(
     ) { loading, boxScoreUI ->
         if (loading) return@combine UIState.Loading()
         UIState.Loaded(boxScoreUI)
-    }.stateIn(coroutineScope, SharingStarted.Lazily, UIState.Loading())
+    }.stateIn(coroutineScope, WhileSubscribed5000, UIState.Loading())
 
     private val selectedPlayerLabelImp = MutableStateFlow<BoxScorePlayerLabel?>(null)
     val selectedPlayerLabel = selectedPlayerLabelImp.asStateFlow()

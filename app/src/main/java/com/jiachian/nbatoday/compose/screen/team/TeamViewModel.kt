@@ -19,6 +19,7 @@ import com.jiachian.nbatoday.repository.game.GameRepository
 import com.jiachian.nbatoday.repository.team.TeamRepository
 import com.jiachian.nbatoday.utils.ComposeViewModelProvider
 import com.jiachian.nbatoday.utils.DateUtils
+import com.jiachian.nbatoday.utils.WhileSubscribed5000
 import java.util.Calendar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
@@ -41,7 +42,7 @@ import kotlinx.coroutines.launch
  * @property navigationController The controller for navigation within the app.
  * @property composeViewModelProvider The provider for creating ComposeViewModel instances.
  * @property dispatcherProvider The provider for obtaining dispatchers for coroutines (default is [DefaultDispatcherProvider]).
- * @property coroutineScope The coroutine scope for managing coroutines (default is [CoroutineScope] with unconfined dispatcher).
+ * @property coroutineScope The coroutine scope for managing coroutines (default is [CoroutineScope] with main dispatcher).
  */
 class TeamViewModel(
     teamId: Int,
@@ -50,7 +51,7 @@ class TeamViewModel(
     navigationController: NavigationController,
     private val composeViewModelProvider: ComposeViewModelProvider,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
-    coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
+    coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.main)
 ) : ComposeViewModel(
     coroutineScope = coroutineScope,
     navigationController = navigationController,
@@ -145,7 +146,7 @@ class TeamViewModel(
     ) { loading, teamUI ->
         if (loading) return@combine UIState.Loading()
         UIState.Loaded(teamUI)
-    }.stateIn(coroutineScope, SharingStarted.Lazily, UIState.Loading())
+    }.stateIn(coroutineScope, WhileSubscribed5000, UIState.Loading())
 
     private val gameCardViewModelMap = mutableMapOf<GameAndBets, GameCardViewModel>()
 

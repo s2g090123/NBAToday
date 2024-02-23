@@ -14,9 +14,9 @@ import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.navigation.MainRoute
 import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.repository.player.PlayerRepository
+import com.jiachian.nbatoday.utils.WhileSubscribed5000
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOn
@@ -31,14 +31,14 @@ import kotlinx.coroutines.launch
  * @param repository The repository for interacting with [Player].
  * @property navigationController The controller for navigation within the app.
  * @property dispatcherProvider The provider for obtaining dispatchers for coroutines (default is [DefaultDispatcherProvider]).
- * @property coroutineScope The coroutine scope for managing coroutines (default is [CoroutineScope] with unconfined dispatcher).
+ * @property coroutineScope The coroutine scope for managing coroutines (default is [CoroutineScope] with main dispatcher).
  */
 class PlayerViewModel(
     private val playerId: Int,
     private val repository: PlayerRepository,
     navigationController: NavigationController,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
-    coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
+    coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.main)
 ) : ComposeViewModel(
     coroutineScope = coroutineScope,
     navigationController = navigationController,
@@ -120,7 +120,7 @@ class PlayerViewModel(
     ) { loading, playerUI ->
         if (loading) return@combine UIState.Loading()
         UIState.Loaded(playerUI)
-    }.stateIn(coroutineScope, SharingStarted.Lazily, UIState.Loading())
+    }.stateIn(coroutineScope, WhileSubscribed5000, UIState.Loading())
 
     /**
      * Update the sorting criteria for player stats.
