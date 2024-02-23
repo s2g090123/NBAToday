@@ -31,9 +31,9 @@ class EventManager<T> : EventBroadcaster<T> {
         eventFlowImp.tryEmit(event)
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @VisibleForTesting
     @ExcludeFromJacocoGeneratedReport
-    @OptIn(ExperimentalCoroutinesApi::class)
     fun reset() {
         eventFlowImp.resetReplayCache()
     }

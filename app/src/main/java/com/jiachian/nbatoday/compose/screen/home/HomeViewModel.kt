@@ -15,13 +15,13 @@ import kotlinx.coroutines.CoroutineScope
  * @property composeViewModelProvider The provider for creating ComposeViewModel instances.
  * @property navigationController The controller for navigation within the app.
  * @property dispatcherProvider The provider for obtaining dispatchers for coroutines (default is [DefaultDispatcherProvider]).
- * @property coroutineScope The coroutine scope for managing coroutines (default is [CoroutineScope] with unconfined dispatcher).
+ * @property coroutineScope The coroutine scope for managing coroutines (default is [CoroutineScope] with main dispatcher).
  */
 class HomeViewModel(
     private val composeViewModelProvider: ComposeViewModelProvider,
     navigationController: NavigationController,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
-    coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
+    coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.main)
 ) : ComposeViewModel(
     coroutineScope = coroutineScope,
     navigationController = navigationController,

@@ -3,10 +3,10 @@ package com.jiachian.nbatoday.compose.screen.bet
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.models.local.game.GameAndBets
+import com.jiachian.nbatoday.utils.WhileSubscribed5000
 import kotlin.math.min
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
@@ -18,13 +18,13 @@ import kotlinx.coroutines.flow.stateIn
  * @property gameAndBets The data class containing information about the game and associated bets.
  * @property userPoints The total points of the user available for betting.
  * @property dispatcherProvider The provider for obtaining dispatchers for coroutines (default is [DefaultDispatcherProvider]).
- * @property coroutineScope The coroutine scope for managing coroutines (default is [CoroutineScope] with unconfined dispatcher).
+ * @property coroutineScope The coroutine scope for managing coroutines (default is [CoroutineScope] with main dispatcher).
  */
 class BetDialogViewModel(
     val gameAndBets: GameAndBets,
     val userPoints: Long,
     dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
-    coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined),
+    coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.main),
 ) {
     // the warning state in the UI
     private val warningImp = MutableStateFlow(false)
@@ -44,12 +44,12 @@ class BetDialogViewModel(
         awayPoints
     ) { home, away ->
         userPoints - home - away
-    }.stateIn(coroutineScope, SharingStarted.Lazily, userPoints)
+    }.stateIn(coroutineScope, WhileSubscribed5000, userPoints)
 
     // Determine if the bet button should be enabled based on [remainingPoints].
     val enabled = remainingPoints.map { points ->
         points != userPoints && points >= 0
-    }.stateIn(coroutineScope, SharingStarted.Lazily, false)
+    }.stateIn(coroutineScope, WhileSubscribed5000, false)
 
     fun showWarning() {
         warningImp.value = true

@@ -10,12 +10,12 @@ import com.jiachian.nbatoday.models.local.game.GameStatus
 import com.jiachian.nbatoday.navigation.MainRoute
 import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.repository.bet.BetRepository
+import com.jiachian.nbatoday.utils.WhileSubscribed5000
 import java.util.Random
 import kotlin.math.abs
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -48,14 +48,14 @@ private const val MaxMagnification = 4
  * @property repository The repository for interacting with [BetAndGame].
  * @property navigationController The controller for navigation within the app.
  * @property dispatcherProvider The provider for obtaining dispatchers for coroutines (default is [DefaultDispatcherProvider]).
- * @property coroutineScope The coroutine scope for managing coroutines (default is [CoroutineScope] with unconfined dispatcher).
+ * @property coroutineScope The coroutine scope for managing coroutines (default is [CoroutineScope] with main dispatcher).
  */
 class BetViewModel(
     account: String,
     private val repository: BetRepository,
     navigationController: NavigationController,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
-    coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
+    coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.main)
 ) : ComposeViewModel(
     coroutineScope = coroutineScope,
     navigationController = navigationController,
@@ -65,7 +65,7 @@ class BetViewModel(
     val betsAndGamesState = repository
         .getBetsAndGames(account)
         .map { UIState.Loaded(it) }
-        .stateIn(coroutineScope, SharingStarted.Lazily, UIState.Loading())
+        .stateIn(coroutineScope, WhileSubscribed5000, UIState.Loading())
 
     // the current points on the turn table
     private val turnTablePointsImp = MutableStateFlow<TurnTablePoints?>(null)

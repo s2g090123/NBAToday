@@ -22,14 +22,14 @@ import kotlinx.coroutines.launch
  * @property dataStore The data store for managing user preferences.
  * @property navigationController The controller for navigation within the app.
  * @property dispatcherProvider The provider for obtaining dispatchers for coroutines (default is [DefaultDispatcherProvider]).
- * @property coroutineScope The coroutine scope for managing coroutines (default is [CoroutineScope] with unconfined dispatcher).
+ * @property coroutineScope The coroutine scope for managing coroutines (default is [CoroutineScope] with main dispatcher).
  */
 class UserPageViewModel(
     private val repository: UserRepository,
     private val dataStore: BaseDataStore,
     private val navigationController: NavigationController,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
-    private val coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
+    private val coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.main)
 ) {
     // logged-in user
     private val user = repository.user

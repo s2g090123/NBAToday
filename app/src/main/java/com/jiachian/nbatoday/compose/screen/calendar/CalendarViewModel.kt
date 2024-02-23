@@ -16,12 +16,12 @@ import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.repository.game.GameRepository
 import com.jiachian.nbatoday.utils.ComposeViewModelProvider
 import com.jiachian.nbatoday.utils.DateUtils
+import com.jiachian.nbatoday.utils.WhileSubscribed5000
 import java.util.Calendar
 import java.util.Date
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
@@ -39,7 +39,7 @@ import kotlinx.coroutines.launch
  * @property navigationController The controller for navigation within the app.
  * @property composeViewModelProvider The provider for creating ComposeViewModel instances.
  * @property dispatcherProvider The provider for obtaining dispatchers for coroutines (default is [DefaultDispatcherProvider]).
- * @property coroutineScope The coroutine scope for managing coroutines (default is [CoroutineScope] with unconfined dispatcher).
+ * @property coroutineScope The coroutine scope for managing coroutines (default is [CoroutineScope] with main dispatcher).
  */
 class CalendarViewModel(
     dateTime: Long,
@@ -47,7 +47,7 @@ class CalendarViewModel(
     navigationController: NavigationController,
     private val composeViewModelProvider: ComposeViewModelProvider,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
-    coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.unconfined)
+    coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.main)
 ) : ComposeViewModel(
     coroutineScope = coroutineScope,
     navigationController = navigationController,
@@ -70,9 +70,7 @@ class CalendarViewModel(
     private val loadingCalendar = MutableStateFlow(false)
 
     private val lastGameDate = repository.getLastGameDateTime()
-        .stateIn(coroutineScope, SharingStarted.Lazily, Date(dateTime))
     private val firstGameDate = repository.getFirstGameDateTime()
-        .stateIn(coroutineScope, SharingStarted.Lazily, Date(dateTime))
 
     // Initialize the [currentCalendar] based on the provided date and time.
     init {
@@ -88,13 +86,13 @@ class CalendarViewModel(
         selectedDate
     ) { cal, selectedDate ->
         isInCalendar(cal, selectedDate)
-    }.stateIn(coroutineScope, SharingStarted.Lazily, false)
+    }.stateIn(coroutineScope, WhileSubscribed5000, false)
 
     val numberAndDateString = currentCalendar.map { cal ->
         val year = cal.get(Calendar.YEAR)
         val month = cal.get(Calendar.MONTH)
         year * 100 + month to DateUtils.getDateString(year, month)
-    }.stateIn(coroutineScope, SharingStarted.Lazily, 0 to "")
+    }.stateIn(coroutineScope, WhileSubscribed5000, 0 to "")
 
     val hasNextMonth = combine(
         currentCalendar, lastGameDate
@@ -104,7 +102,7 @@ class CalendarViewModel(
             .run {
                 get(Calendar.YEAR) > cal.get(Calendar.YEAR) || get(Calendar.MONTH) > cal.get(Calendar.MONTH)
             }
-    }.stateIn(coroutineScope, SharingStarted.Lazily, false)
+    }.stateIn(coroutineScope, WhileSubscribed5000, false)
     val hasLastMonth = combine(
         currentCalendar, firstGameDate
     ) { cal, lastDate ->
@@ -113,7 +111,7 @@ class CalendarViewModel(
             .run {
                 get(Calendar.YEAR) < cal.get(Calendar.YEAR) || get(Calendar.MONTH) < cal.get(Calendar.MONTH)
             }
-    }.stateIn(coroutineScope, SharingStarted.Lazily, false)
+    }.stateIn(coroutineScope, WhileSubscribed5000, false)
 
     private val calendarDatesMap = mutableMapOf<String, List<CalendarDate>>()
 
@@ -126,7 +124,7 @@ class CalendarViewModel(
     ) { loading, dates ->
         if (loading) return@combine UIState.Loading()
         UIState.Loaded(dates)
-    }.stateIn(coroutineScope, SharingStarted.Lazily, UIState.Loading())
+    }.stateIn(coroutineScope, WhileSubscribed5000, UIState.Loading())
 
     private val gameCardViewModelMap = mutableMapOf<GameAndBets, GameCardViewModel>()
 
