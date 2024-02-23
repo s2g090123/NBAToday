@@ -163,27 +163,25 @@ class TeamViewModelTest : BaseUnitTest() {
     }
 
     @Test
-    fun `onGameCardClick(finalGame) expects screen navigates to BoxScore`() {
+    fun `onGameCardClick(finalGame) expects screen navigates to BoxScore`() = launch {
+        val event = navigationController.eventFlow.defer(this)
         viewModel.onGameCardClick(GameGenerator.getFinal())
-        assertIsA(
-            navigationController.eventFlow.value,
-            NavigationController.Event.NavigateToBoxScore::class.java
-        )
-        val event =
-            navigationController.eventFlow.value as? NavigationController.Event.NavigateToBoxScore
-        assertIs(event?.gameId, FinalGameId)
+        event
+            .await()
+            .assertIsA(NavigationController.Event.NavigateToBoxScore::class.java)
+            .gameId
+            .assertIs(FinalGameId)
     }
 
     @Test
-    fun `onPlayerClick(homePlayer) expects screen navigates to Player`() {
+    fun `onPlayerClick(homePlayer) expects screen navigates to Player`() = launch {
+        val event = navigationController.eventFlow.defer(this)
         viewModel.onPlayerClick(HomePlayerId)
-        assertIsA(
-            navigationController.eventFlow.value,
-            NavigationController.Event.NavigateToPlayer::class.java
-        )
-        val event =
-            navigationController.eventFlow.value as? NavigationController.Event.NavigateToPlayer
-        assertIs(event?.playerId, HomePlayerId)
+        event
+            .await()
+            .assertIsA(NavigationController.Event.NavigateToPlayer::class.java)
+            .playerId
+            .assertIs(HomePlayerId)
     }
 
     @Test

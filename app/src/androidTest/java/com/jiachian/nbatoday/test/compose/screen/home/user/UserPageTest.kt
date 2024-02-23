@@ -138,14 +138,14 @@ class UserPageTest : BaseAndroidTest() {
 
     @Test
     fun userPage_clicksBet_switchesToBetScreen() = inCompose {
+        val event = navigationController.eventFlow.defer(it)
         repositoryProvider.user.login(UserAccount, UserPassword)
         onNodeWithUnmergedTree(UserTestTag.UserTopBar_Button_Bet)
             .performClick()
-        navigationController
-            .eventFlow
-            .value
+        event
+            .await()
             .assertIsA(NavigationController.Event.NavigateToBet::class.java)
-            ?.account
+            .account
             .assertIs(UserAccount)
     }
 

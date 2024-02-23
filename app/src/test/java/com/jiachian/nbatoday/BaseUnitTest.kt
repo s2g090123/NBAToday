@@ -10,12 +10,16 @@ import com.jiachian.nbatoday.rule.CoroutineRule
 import com.jiachian.nbatoday.rule.NBATeamRule
 import com.jiachian.nbatoday.utils.ComposeViewModelProvider
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
@@ -66,6 +70,10 @@ open class BaseUnitTest : KoinTest {
         return CoroutineScope(dispatcherProvider.unconfined).launch {
             collect()
         }
+    }
+
+    protected fun <T> SharedFlow<T>.defer(scope: CoroutineScope): Deferred<T> = scope.async {
+        this@defer.first()
     }
 
     protected fun <T> Flow<T>.stateIn(initValue: T): StateFlow<T> {

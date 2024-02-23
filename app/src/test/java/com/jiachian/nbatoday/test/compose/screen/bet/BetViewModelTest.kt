@@ -51,23 +51,23 @@ class BetViewModelTest : BaseUnitTest() {
     }
 
     @Test
-    fun `clickBetAndGame(playingGame) expects screen navigates to BoxScore`() {
+    fun `clickBetAndGame(playingGame) expects screen navigates to BoxScore`() = launch {
         val betAndGame = BetAndGameGenerator.getPlaying()
+        val event = navigationController.eventFlow.defer(this)
         viewModel.clickBetAndGame(betAndGame)
-        assertIsA(
-            navigationController.eventFlow.value,
-            NavigationController.Event.NavigateToBoxScore::class.java
-        )
+        event
+            .await()
+            .assertIsA(NavigationController.Event.NavigateToBoxScore::class.java)
     }
 
     @Test
-    fun `clickBetAndGame(comingSoonGame) expects screen navigates to Team`() {
+    fun `clickBetAndGame(comingSoonGame) expects screen navigates to Team`() = launch {
         val betAndGame = BetAndGameGenerator.getComingSoon()
+        val event = navigationController.eventFlow.defer(this)
         viewModel.clickBetAndGame(betAndGame)
-        assertIsA(
-            navigationController.eventFlow.value,
-            NavigationController.Event.NavigateToTeam::class.java
-        )
+        event
+            .await()
+            .assertIsA(NavigationController.Event.NavigateToTeam::class.java)
     }
 
     @Test

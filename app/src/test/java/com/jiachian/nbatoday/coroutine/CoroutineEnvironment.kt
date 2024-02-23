@@ -9,7 +9,7 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 @OptIn(ExperimentalCoroutinesApi::class)
 class CoroutineEnvironment {
 
-    val testScope = TestScope()
+    val testScope = TestScope(UnconfinedTestDispatcher())
 
     val testScheduler = testScope.testScheduler
 

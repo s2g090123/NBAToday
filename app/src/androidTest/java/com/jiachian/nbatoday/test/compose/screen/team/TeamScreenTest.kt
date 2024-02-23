@@ -118,6 +118,7 @@ class TeamScreenTest : BaseAndroidTest() {
 
     @Test
     fun teamScreen_checksPreviousGamesUI() = inCompose {
+        val event = navigationController.eventFlow.defer(it)
         onAllNodesWithUnmergedTree(TeamTestTag.TeamTab)[1]
             .performClick()
         onAllNodesWithUnmergedTree(TeamTestTag.TeamGamePage_GameCard)[0].apply {
@@ -139,16 +140,16 @@ class TeamScreenTest : BaseAndroidTest() {
                 .assertDoesNotExist()
             performClick()
         }
-        navigationController
-            .eventFlow
-            .value
+        event
+            .await()
             .assertIsA(NavigationController.Event.NavigateToBoxScore::class.java)
-            ?.gameId
+            .gameId
             .assertIs(FinalGameId)
     }
 
     @Test
     fun teamScreen_checksNextGamesUI() = inCompose {
+        val event = navigationController.eventFlow.defer(it)
         onAllNodesWithUnmergedTree(TeamTestTag.TeamTab)[2]
             .performClick()
         onAllNodesWithUnmergedTree(TeamTestTag.TeamGamePage_GameCard)[0].apply {
@@ -170,11 +171,10 @@ class TeamScreenTest : BaseAndroidTest() {
                 .assertDoesNotExist()
             performClick()
         }
-        navigationController
-            .eventFlow
-            .value
+        event
+            .await()
             .assertIsA(NavigationController.Event.NavigateToBoxScore::class.java)
-            ?.gameId
+            .gameId
             .assertIs(PlayingGameId)
         onAllNodesWithUnmergedTree(TeamTestTag.TeamGamePage_GameCard)[1].apply {
             onNodeWithTag(GameCardTestTag.GameDetail_GameTeamInfo_Home).apply {
@@ -198,13 +198,13 @@ class TeamScreenTest : BaseAndroidTest() {
 
     @Test
     fun teamScreen_clicksBack() = inCompose {
+        val event = navigationController.eventFlow.defer(it)
         onNodeWithUnmergedTree(TeamTestTag.TeamScreen_Button_Back)
             .performClick()
-        navigationController
-            .eventFlow
-            .value
+        event
+            .await()
             .assertIsA(NavigationController.Event.BackScreen::class.java)
-            ?.departure
+            .departure
             .assertIs(MainRoute.Team)
     }
 

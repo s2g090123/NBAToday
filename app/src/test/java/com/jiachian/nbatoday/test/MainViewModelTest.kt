@@ -7,7 +7,6 @@ import com.jiachian.nbatoday.data.local.UserGenerator
 import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsA
-import com.jiachian.nbatoday.utils.assertIsNull
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Test
 
@@ -17,7 +16,8 @@ class MainViewModelTest : BaseUnitTest() {
     fun `init() with user had been logged in expects correct`() = launch {
         val user = UserGenerator.get(true)
         dataStore.updateUser(user)
-        val viewModel = MainViewModel(
+        val event = navigationController.eventFlow.defer(this)
+        MainViewModel(
             repositoryProvider = repositoryProvider,
             dataStore = dataStore,
             navigationController = navigationController,
@@ -30,28 +30,13 @@ class MainViewModelTest : BaseUnitTest() {
             .stateIn(null)
             .value
             .assertIs(user)
-        viewModel
-            .navigationEvent
-            .value
+        event
+            .await()
             .assertIsA(NavigationController.Event.NavigateToHome::class.java)
     }
 
     @Test
-    fun `navigationEvent expects initial value is null`() {
-        val viewModel = MainViewModel(
-            repositoryProvider = repositoryProvider,
-            dataStore = dataStore,
-            navigationController = navigationController,
-            viewModelProvider = composeViewModelProvider,
-        )
-        viewModel
-            .navigationEvent
-            .value
-            .assertIsNull()
-    }
-
-    @Test
-    fun `consumeNavigationEvent(Home) expects next event is sent`() {
+    fun `consumeNavigationEvent(Home) expects next event is sent`() = launch {
         val viewModel = MainViewModel(
             repositoryProvider = repositoryProvider,
             dataStore = dataStore,
@@ -59,13 +44,12 @@ class MainViewModelTest : BaseUnitTest() {
             viewModelProvider = composeViewModelProvider,
         )
         navigationController.navigateToHome()
+        val event = viewModel.navigationEvent.defer(this)
         navigationController.navigateToTeam(HomeTeamId)
-        viewModel.consumeNavigationEvent(NavigationController.Event.NavigateToHome)
-        viewModel
-            .navigationEvent
-            .value
+        event
+            .await()
             .assertIsA(NavigationController.Event.NavigateToTeam::class.java)
-            ?.teamId
+            .teamId
             .assertIs(HomeTeamId)
     }
 
