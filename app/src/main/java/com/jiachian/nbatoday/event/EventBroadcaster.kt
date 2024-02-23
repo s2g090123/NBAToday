@@ -1,8 +1,7 @@
 package com.jiachian.nbatoday.event
 
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.SharedFlow
 
 interface EventBroadcaster<T> {
-    val eventFlow: StateFlow<T?>
-    fun onEventConsumed(event: T?)
+    val eventFlow: SharedFlow<T>
 }

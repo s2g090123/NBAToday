@@ -9,7 +9,3 @@ val toastEventManager = EventManager<ToastEvent>()
 fun ToastEvent.send() {
     toastEventManager.send(this)
 }
-
-fun ToastEvent?.consume() {
-    toastEventManager.onEventConsumed(this)
-}

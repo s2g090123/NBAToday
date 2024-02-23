@@ -68,8 +68,4 @@ class MainViewModel(
             navigationController.navigateToHome()
         }
     }
-
-    fun consumeNavigationEvent(event: NavigationController.Event?) {
-        navigationController.onEventConsumed(event)
-    }
 }
