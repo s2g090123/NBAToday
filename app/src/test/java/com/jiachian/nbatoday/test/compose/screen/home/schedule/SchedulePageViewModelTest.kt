@@ -111,45 +111,41 @@ class SchedulePageViewModelTest : BaseUnitTest() {
     }
 
     @Test
-    fun `onClickGame(finalGame) expects screen navigates to BoxScore`() {
+    fun `onClickGame(finalGame) expects screen navigates to BoxScore`() = launch {
+        val event = navigationController.eventFlow.defer(this)
         viewModel.onClickGame(GameAndBetsGenerator.getFinal())
-        assertIsA(
-            navigationController.eventFlow.value,
-            NavigationController.Event.NavigateToBoxScore::class.java
-        )
+        event
+            .await()
+            .assertIsA(NavigationController.Event.NavigateToBoxScore::class.java)
     }
 
     @Test
-    fun `onClickGame(playingGame) expects screen navigates to BoxScore`() {
+    fun `onClickGame(playingGame) expects screen navigates to BoxScore`() = launch {
+        val event = navigationController.eventFlow.defer(this)
         viewModel.onClickGame(GameAndBetsGenerator.getPlaying())
-        assertIsA(
-            navigationController.eventFlow.value,
-            NavigationController.Event.NavigateToBoxScore::class.java
-        )
+        event
+            .await()
+            .assertIsA(NavigationController.Event.NavigateToBoxScore::class.java)
     }
 
     @Test
-    fun `onClickGame(comingSoonGame) expects screen navigates to Team`() {
+    fun `onClickGame(comingSoonGame) expects screen navigates to Team`() = launch {
+        val event = navigationController.eventFlow.defer(this)
         viewModel.onClickGame(GameAndBetsGenerator.getComingSoon())
-        assertIsA(
-            navigationController.eventFlow.value,
-            NavigationController.Event.NavigateToTeam::class.java
-        )
+        event
+            .await()
+            .assertIsA(NavigationController.Event.NavigateToTeam::class.java)
     }
 
     @Test
-    fun `onClickCalendar() expects screen navigates to Calendar`() {
+    fun `onClickCalendar() expects screen navigates to Calendar`() = launch {
+        val event = navigationController.eventFlow.defer(this)
         viewModel.onClickCalendar()
-        assertIsA(
-            navigationController.eventFlow.value,
-            NavigationController.Event.NavigateToCalendar::class.java
-        )
-        val event =
-            navigationController.eventFlow.value as? NavigationController.Event.NavigateToCalendar
-        assertIs(
-            event?.dateTime,
-            BasicTime,
-        )
+        event
+            .await()
+            .assertIsA(NavigationController.Event.NavigateToCalendar::class.java)
+            .dateTime
+            .assertIs(BasicTime)
     }
 
     @Test

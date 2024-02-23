@@ -114,13 +114,13 @@ class PlayerScreenTest : BaseAndroidTest() {
 
     @Test
     fun playerScreen_clicksBack() = inCompose {
+        val event = navigationController.eventFlow.defer(it)
         onNodeWithUnmergedTree(PlayerTestTag.PlayerScreen_Button_Back)
             .performClick()
-        navigationController
-            .eventFlow
-            .value
+        event
+            .await()
             .assertIsA(NavigationController.Event.BackScreen::class.java)
-            ?.departure
+            .departure
             .assertIs(MainRoute.Player)
     }
 }

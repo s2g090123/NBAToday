@@ -200,13 +200,13 @@ class BoxScoreScreenTest : BaseAndroidTest() {
 
     @Test
     fun boxScoreScreen_clicksBack() = inCompose {
+        val event = navigationController.eventFlow.defer(it)
         onNodeWithUnmergedTree(BoxScoreTestTag.ScoreTopBar_Button_Back)
             .performClick()
-        navigationController
-            .eventFlow
-            .value
+        event
+            .await()
             .assertIsA(NavigationController.Event.BackScreen::class.java)
-            ?.departure
+            .departure
             .assertIs(MainRoute.BoxScore)
     }
 }

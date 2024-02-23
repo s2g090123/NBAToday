@@ -64,11 +64,11 @@ class UserPageViewModelTest : BaseUnitTest() {
     @Test
     fun `onBetClick() expects screen navigates to Bet`() = launch {
         repositoryProvider.user.login(UserAccount, UserPassword)
+        val event = navigationController.eventFlow.defer(this)
         viewModel.onBetClick()
-        assertIsA(
-            navigationController.eventFlow.value,
-            NavigationController.Event.NavigateToBet::class.java
-        )
+        event
+            .await()
+            .assertIsA(NavigationController.Event.NavigateToBet::class.java)
     }
 
     @Test

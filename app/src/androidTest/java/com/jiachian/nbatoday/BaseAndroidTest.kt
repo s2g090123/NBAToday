@@ -18,12 +18,17 @@ import com.jiachian.nbatoday.rule.KoinTestRule
 import com.jiachian.nbatoday.rule.NBATeamRule
 import com.jiachian.nbatoday.utils.ComposeViewModelProvider
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
@@ -95,6 +100,14 @@ open class BaseAndroidTest {
         )
     }
 
+    protected suspend fun <T> SharedFlow<T>.defer(scope: CoroutineScope): Deferred<T> {
+        val deferred = scope.async {
+            this@defer.first()
+        }
+        delay(1) // Ensure that the async operation is executed first
+        return deferred
+    }
+
     protected fun getString(@StringRes res: Int): String {
         return context.getString(res)
     }
@@ -106,10 +119,10 @@ open class BaseAndroidTest {
     @Composable
     protected open fun provideComposable(): Any = Unit
 
-    protected fun inCompose(execution: suspend ComposeTestRule.() -> Unit) = launch {
+    protected fun inCompose(execution: suspend ComposeTestRule.(scope: CoroutineScope) -> Unit) = launch {
         composeTestRule.setContent {
             provideComposable()
         }
-        execution(composeTestRule)
+        execution(composeTestRule, this)
     }
 }

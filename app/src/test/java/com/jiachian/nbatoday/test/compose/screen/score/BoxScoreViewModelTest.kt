@@ -157,14 +157,13 @@ class BoxScoreViewModelTest : BaseUnitTest() {
     }
 
     @Test
-    fun `openPlayerInfo(HomePlayer) expects screen navigates to Player`() {
+    fun `openPlayerInfo(HomePlayer) expects screen navigates to Player`() = launch {
+        val event = navigationController.eventFlow.defer(this)
         viewModel.openPlayerInfo(HomePlayerId)
-        assertIsA(
-            navigationController.eventFlow.value,
-            NavigationController.Event.NavigateToPlayer::class.java
-        )
-        val event =
-            navigationController.eventFlow.value as? NavigationController.Event.NavigateToPlayer
-        assertIs(event?.playerId, HomePlayerId)
+        event
+            .await()
+            .assertIsA(NavigationController.Event.NavigateToPlayer::class.java)
+            .playerId
+            .assertIs(HomePlayerId)
     }
 }

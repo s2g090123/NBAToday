@@ -138,13 +138,13 @@ class CalendarScreenTest : BaseAndroidTest() {
             onNodeWithTag(GameCardTestTag.GameStatusAndBetButton_Button_Bet)
                 .assertDoesNotExist()
         }
+        val event = navigationController.eventFlow.defer(it)
         onAllNodesWithUnmergedTree(CalendarTestTag.CalendarGameCard)[0]
             .performClick()
-        navigationController
-            .eventFlow
-            .value
+        event
+            .await()
             .assertIsA(NavigationController.Event.NavigateToBoxScore::class.java)
-            ?.gameId
+            .gameId
             .assertIs(PlayingGameId)
     }
 
@@ -173,13 +173,13 @@ class CalendarScreenTest : BaseAndroidTest() {
             onNodeWithTag(GameCardTestTag.GameStatusAndBetButton_Button_Bet)
                 .assertDoesNotExist()
         }
+        val event = navigationController.eventFlow.defer(it)
         onAllNodesWithUnmergedTree(CalendarTestTag.CalendarGameCard)[0]
             .performClick()
-        navigationController
-            .eventFlow
-            .value
+        event
+            .await()
             .assertIsA(NavigationController.Event.NavigateToBoxScore::class.java)
-            ?.gameId
+            .gameId
             .assertIs(FinalGameId)
     }
 
@@ -208,14 +208,14 @@ class CalendarScreenTest : BaseAndroidTest() {
             onNodeWithTag(GameCardTestTag.GameStatusAndBetButton_Button_Bet)
                 .assertIsDisplayed()
         }
+        val event = navigationController.eventFlow.defer(it)
         onAllNodesWithUnmergedTree(CalendarTestTag.CalendarGameCard)[0]
             .onNodeWithTag(GameCardTestTag.GameDetail_GameTeamInfo_Home)
             .performClick()
-        navigationController
-            .eventFlow
-            .value
+        event
+            .await()
             .assertIsA(NavigationController.Event.NavigateToTeam::class.java)
-            ?.teamId
+            .teamId
             .assertIs(HomeTeamId)
     }
 
@@ -255,13 +255,13 @@ class CalendarScreenTest : BaseAndroidTest() {
 
     @Test
     fun calendarScreen_closes_expectsBackScreen() = inCompose {
+        val event = navigationController.eventFlow.defer(it)
         onNodeWithUnmergedTree(CalendarTestTag.CalendarTopBar_Btn_Close)
             .performClick()
-        navigationController
-            .eventFlow
-            .value
+        event
+            .await()
             .assertIsA(NavigationController.Event.BackScreen::class.java)
-            ?.departure
+            .departure
             .assertIs(MainRoute.Calendar)
     }
 

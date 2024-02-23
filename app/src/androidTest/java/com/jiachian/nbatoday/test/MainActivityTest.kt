@@ -13,14 +13,18 @@ import com.jiachian.nbatoday.event.ToastEvent
 import com.jiachian.nbatoday.event.send
 import com.jiachian.nbatoday.event.toastEventManager
 import com.jiachian.nbatoday.navigation.MainRoute
+import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.rule.SetMainDispatcherRule
 import com.jiachian.nbatoday.utils.assertIs
-import com.jiachian.nbatoday.utils.assertIsNull
+import com.jiachian.nbatoday.utils.assertIsA
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class MainActivityTest : BaseAndroidTest() {
     private lateinit var activity: ActivityScenario<MainActivity>
 
@@ -38,12 +42,12 @@ class MainActivityTest : BaseAndroidTest() {
     }
 
     @Test
-    fun mainActivity_onNavigationEvent_backScreen() {
+    fun mainActivity_onNavigationEvent_backScreen() = launch {
+        val event = navigationController.eventFlow.defer(this)
         navigationController.backScreen(MainRoute.Team)
-        navigationController
-            .eventFlow
-            .value
-            .assertIsNull()
+        event
+            .await()
+            .assertIsA(NavigationController.Event.BackScreen::class.java)
     }
 
     @Test
@@ -54,65 +58,66 @@ class MainActivityTest : BaseAndroidTest() {
     }
 
     @Test
-    fun mainActivity_onNavigationEvent_navigateToHome() {
+    fun mainActivity_onNavigationEvent_navigateToHome() = launch {
+        val event = navigationController.eventFlow.defer(this)
         navigationController.navigateToHome()
-        navigationController
-            .eventFlow
-            .value
-            .assertIsNull()
+        event
+            .await()
+            .assertIsA(NavigationController.Event.NavigateToHome::class.java)
     }
 
     @Test
-    fun mainActivity_onNavigationEvent_navigateToBoxScore() {
+    fun mainActivity_onNavigationEvent_navigateToBoxScore() = launch {
+        val event = navigationController.eventFlow.defer(this)
         navigationController.navigateToBoxScore(FinalGameId)
-        navigationController
-            .eventFlow
-            .value
-            .assertIsNull()
+        event
+            .await()
+            .assertIsA(NavigationController.Event.NavigateToBoxScore::class.java)
     }
 
     @Test
-    fun mainActivity_onNavigationEvent_navigateToTeam() {
+    fun mainActivity_onNavigationEvent_navigateToTeam() = launch {
+        val event = navigationController.eventFlow.defer(this)
         navigationController.navigateToTeam(HomeTeamId)
-        navigationController
-            .eventFlow
-            .value
-            .assertIsNull()
+        event
+            .await()
+            .assertIsA(NavigationController.Event.NavigateToTeam::class.java)
     }
 
     @Test
-    fun mainActivity_onNavigationEvent_navigateToPlayer() {
+    fun mainActivity_onNavigationEvent_navigateToPlayer() = launch {
+        val event = navigationController.eventFlow.defer(this)
         navigationController.navigateToPlayer(HomePlayerId)
-        navigationController
-            .eventFlow
-            .value
-            .assertIsNull()
+        event
+            .await()
+            .assertIsA(NavigationController.Event.NavigateToPlayer::class.java)
     }
 
     @Test
-    fun mainActivity_onNavigationEvent_navigateToCalendar() {
+    fun mainActivity_onNavigationEvent_navigateToCalendar() = launch {
+        val event = navigationController.eventFlow.defer(this)
         navigationController.navigateToCalendar(FinalGameTimeMs)
-        navigationController
-            .eventFlow
-            .value
-            .assertIsNull()
+        event
+            .await()
+            .assertIsA(NavigationController.Event.NavigateToCalendar::class.java)
     }
 
     @Test
-    fun mainActivity_onNavigationEvent_navigateToBet() {
+    fun mainActivity_onNavigationEvent_navigateToBet() = launch {
+        val event = navigationController.eventFlow.defer(this)
         navigationController.navigateToBet(UserAccount)
-        navigationController
-            .eventFlow
-            .value
-            .assertIsNull()
+        event
+            .await()
+            .assertIsA(NavigationController.Event.NavigateToBet::class.java)
     }
 
     @Test
-    fun mainActivity_showErrorToast() {
+    fun mainActivity_showErrorToast() = launch {
+        val event = toastEventManager.eventFlow.defer(this)
         ToastEvent.OnError.send()
-        toastEventManager
-            .eventFlow
-            .value
-            .assertIsNull()
+        delay(100)
+        event
+            .await()
+            .assertIsA(ToastEvent.OnError::class.java)
     }
 }

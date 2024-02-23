@@ -307,27 +307,25 @@ class StandingPageViewModelTest : BaseUnitTest() {
     }
 
     @Test
-    fun `onClickTeam(Home) expects screen navigates to Team`() {
+    fun `onClickTeam(Home) expects screen navigates to Team`() = launch {
+        val event = navigationController.eventFlow.defer(this)
         viewModel.onClickTeam(NBATeamGenerator.getHome())
-        val event = navigationController.eventFlow.value
-        assertIsA(
-            event,
-            NavigationController.Event.NavigateToTeam::class.java
-        )
-        val teamId = (event as? NavigationController.Event.NavigateToTeam)?.teamId
-        assertIs(teamId, NBATeamGenerator.getHome().teamId)
+        event
+            .await()
+            .assertIsA(NavigationController.Event.NavigateToTeam::class.java)
+            .teamId
+            .assertIs(NBATeamGenerator.getHome().teamId)
     }
 
     @Test
-    fun `onClickTeam(Away) expects screen navigates to Team`() {
+    fun `onClickTeam(Away) expects screen navigates to Team`() = launch {
+        val event = navigationController.eventFlow.defer(this)
         viewModel.onClickTeam(NBATeamGenerator.getAway())
-        val event = navigationController.eventFlow.value
-        assertIsA(
-            event,
-            NavigationController.Event.NavigateToTeam::class.java
-        )
-        val teamId = (event as? NavigationController.Event.NavigateToTeam)?.teamId
-        assertIs(teamId, NBATeamGenerator.getAway().teamId)
+        event
+            .await()
+            .assertIsA(NavigationController.Event.NavigateToTeam::class.java)
+            .teamId
+            .assertIs(NBATeamGenerator.getAway().teamId)
     }
 
     private fun List<StandingRowData>.sortedWith(sorting: StandingSorting): List<StandingRowData> {

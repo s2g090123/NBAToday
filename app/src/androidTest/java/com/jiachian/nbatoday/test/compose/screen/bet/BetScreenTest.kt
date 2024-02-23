@@ -152,13 +152,13 @@ class BetScreenTest : BaseAndroidTest() {
     @Test
     fun betScreen_clicksPlayingGame_navigateToBoxScore() = inCompose {
         insertBets()
+        val event = navigationController.eventFlow.defer(it)
         onAllNodesWithUnmergedTree(BetTestTag.BetScreen_BetBody_BetCard)[1]
             .performClick()
-        navigationController
-            .eventFlow
-            .value
+        event
+            .await()
             .assertIsA(NavigationController.Event.NavigateToBoxScore::class.java)
-            ?.gameId
+            .gameId
             .assertIs(PlayingGameId)
     }
 
@@ -193,25 +193,25 @@ class BetScreenTest : BaseAndroidTest() {
     @Test
     fun betScreen_clicksComingSoonGame_navigateToTeam() = inCompose {
         insertBets()
+        val event = navigationController.eventFlow.defer(it)
         onAllNodesWithUnmergedTree(BetTestTag.BetScreen_BetBody_BetCard)[2]
             .performClick()
-        navigationController
-            .eventFlow
-            .value
+        event
+            .await()
             .assertIsA(NavigationController.Event.NavigateToTeam::class.java)
-            ?.teamId
+            .teamId
             .assertIs(HomeTeamId)
     }
 
     @Test
     fun betScreen_clicksBack_backScreenIsTriggered() = inCompose {
+        val event = navigationController.eventFlow.defer(it)
         onNodeWithUnmergedTree(BetTestTag.BetScreen_BetTop_Button_Back)
             .performClick()
-        navigationController
-            .eventFlow
-            .value
+        event
+            .await()
             .assertIsA(NavigationController.Event.BackScreen::class.java)
-            ?.departure
+            .departure
             .assertIs(MainRoute.Bet)
     }
 

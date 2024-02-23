@@ -103,21 +103,21 @@ class CalendarViewModelTest : BaseUnitTest() {
     }
 
     @Test
-    fun `clickGameCard(playedGame) expects screen navigates to BoxScore`() {
+    fun `clickGameCard(playedGame) expects screen navigates to BoxScore`() = launch {
+        val event = navigationController.eventFlow.defer(this)
         viewModel.clickGameCard(GameGenerator.getFinal())
-        assertIsA(
-            navigationController.eventFlow.value,
-            NavigationController.Event.NavigateToBoxScore::class.java
-        )
+        event
+            .await()
+            .assertIsA(NavigationController.Event.NavigateToBoxScore::class.java)
     }
 
     @Test
-    fun `clickGameCard(unPlayedGame) expects screen navigates to Team`() {
+    fun `clickGameCard(unPlayedGame) expects screen navigates to Team`() = launch {
+        val event = navigationController.eventFlow.defer(this)
         viewModel.clickGameCard(GameGenerator.getComingSoon())
-        assertIsA(
-            navigationController.eventFlow.value,
-            NavigationController.Event.NavigateToTeam::class.java
-        )
+        event
+            .await()
+            .assertIsA(NavigationController.Event.NavigateToTeam::class.java)
     }
 
     @Test

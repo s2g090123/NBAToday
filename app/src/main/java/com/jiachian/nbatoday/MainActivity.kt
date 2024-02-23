@@ -19,7 +19,6 @@ import androidx.navigation.compose.rememberNavController
 import com.jiachian.nbatoday.compose.screen.main.MainScreen
 import com.jiachian.nbatoday.compose.theme.NBATodayTheme
 import com.jiachian.nbatoday.event.ToastEvent
-import com.jiachian.nbatoday.event.consume
 import com.jiachian.nbatoday.event.toastEventManager
 import com.jiachian.nbatoday.navigation.MainRoute
 import com.jiachian.nbatoday.navigation.NavigationController
@@ -67,7 +66,7 @@ class MainActivity : ComponentActivity() {
     /**
      * Handles navigation events received from the ViewModel.
      */
-    private fun onNavigationEvent(event: NavigationController.Event?) {
+    private fun onNavigationEvent(event: NavigationController.Event) {
         runOnUiThread {
             when (event) {
                 is NavigationController.Event.BackScreen -> {
@@ -99,21 +98,17 @@ class MainActivity : ComponentActivity() {
                 is NavigationController.Event.NavigateToBet -> {
                     navController?.navigate("${MainRoute.Bet.path}/${event.account}")
                 }
-                null -> {}
             }
         }
-        viewModel.consumeNavigationEvent(event)
     }
 
     /**
      * Handles toast events received from the toast event manager.
      */
-    private fun onToastEvent(event: ToastEvent?) {
+    private fun onToastEvent(event: ToastEvent) {
         when (event) {
             ToastEvent.OnError -> showErrorToast()
-            null -> {}
         }
-        event.consume()
     }
 
     private fun <T> Flow<T>.collectWithLifecycle(collector: FlowCollector<T>) {

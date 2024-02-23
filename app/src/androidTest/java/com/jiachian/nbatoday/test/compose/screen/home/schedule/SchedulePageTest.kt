@@ -76,6 +76,7 @@ class SchedulePageTest : BaseAndroidTest() {
 
     @Test
     fun schedulePage_checksPlayingDay() = inCompose {
+        val event = navigationController.eventFlow.defer(it)
         onNodeWithText("1/1").performClick()
         onAllNodesWithUnmergedTree(ScheduleTestTag.ScheduleContent_GameCard)[0].apply {
             onNodeWithTag(GameCardTestTag.GameDetail_GameTeamInfo_Home).apply {
@@ -95,11 +96,10 @@ class SchedulePageTest : BaseAndroidTest() {
             onNodeWithTag(GameCardTestTag.GameStatusAndBetButton_Button_Bet)
                 .assertDoesNotExist()
             performClick()
-            navigationController
-                .eventFlow
-                .value
+            event
+                .await()
                 .assertIsA(NavigationController.Event.NavigateToBoxScore::class.java)
-                ?.gameId
+                .gameId
                 .assertIs(PlayingGameId)
         }
     }
@@ -141,6 +141,7 @@ class SchedulePageTest : BaseAndroidTest() {
 
     @Test
     fun schedulePage_checksFinalDay() = inCompose {
+        val event = navigationController.eventFlow.defer(it)
         onNodeWithText("12/31").performClick()
         onAllNodesWithUnmergedTree(ScheduleTestTag.ScheduleContent_GameCard)[0].apply {
             onNodeWithTag(GameCardTestTag.GameDetail_GameTeamInfo_Home).apply {
@@ -160,11 +161,10 @@ class SchedulePageTest : BaseAndroidTest() {
             onNodeWithTag(GameCardTestTag.GameStatusAndBetButton_Button_Bet)
                 .assertDoesNotExist()
             performClick()
-            navigationController
-                .eventFlow
-                .value
+            event
+                .await()
                 .assertIsA(NavigationController.Event.NavigateToBoxScore::class.java)
-                ?.gameId
+                .gameId
                 .assertIs(FinalGameId)
         }
     }
@@ -206,6 +206,7 @@ class SchedulePageTest : BaseAndroidTest() {
 
     @Test
     fun schedulePage_checksComingSoonDay() = inCompose {
+        val event = navigationController.eventFlow.defer(it)
         onNodeWithText("1/2").performClick()
         onAllNodesWithUnmergedTree(ScheduleTestTag.ScheduleContent_GameCard)[0].apply {
             onNodeWithTag(GameCardTestTag.GameDetail_GameTeamInfo_Home).apply {
@@ -226,11 +227,10 @@ class SchedulePageTest : BaseAndroidTest() {
                 .assertIsDisplayed()
             onNodeWithTag(GameCardTestTag.GameDetail_GameTeamInfo_Home)
                 .performClick()
-            navigationController
-                .eventFlow
-                .value
+            event
+                .await()
                 .assertIsA(NavigationController.Event.NavigateToTeam::class.java)
-                ?.teamId
+                .teamId
                 .assertIs(HomeTeamId)
         }
     }
@@ -272,14 +272,14 @@ class SchedulePageTest : BaseAndroidTest() {
 
     @Test
     fun schedulePage_clicksCalendar() = inCompose {
+        val event = navigationController.eventFlow.defer(it)
         onAllNodesWithUnmergedTree(ScheduleTestTag.ScheduleContent_Button_Calendar)
             .onFirst()
             .performClick()
-        navigationController
-            .eventFlow
-            .value
+        event
+            .await()
             .assertIsA(NavigationController.Event.NavigateToCalendar::class.java)
-            ?.dateTime
+            .dateTime
             .assertIs(BasicTime)
     }
 
