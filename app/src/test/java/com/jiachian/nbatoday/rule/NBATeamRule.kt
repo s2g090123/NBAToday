@@ -31,6 +31,6 @@ class NBATeamRule : TestWatcher() {
          * but suspect it may be related to issues with unmock.
          * Therefore, commented out the following code for now.
          */
-        //unmockkObject(NBATeam)
+        // unmockkObject(NBATeam)
     }
 }
