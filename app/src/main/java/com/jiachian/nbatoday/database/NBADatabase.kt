@@ -59,7 +59,7 @@ abstract class NBADatabase : RoomDatabase() {
 
         fun getInstance(context: Context): NBADatabase {
             return instance ?: synchronized(this) {
-                buildDatabase(context).also { instance = it }
+                instance ?: buildDatabase(context).also { instance = it }
             }
         }
 
