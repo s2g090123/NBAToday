@@ -22,7 +22,7 @@ jobs:
     name: Run AndroidTests
     runs-on: self-hosted
     needs: [ build ]
-    timeout-minutes: 10
+    timeout-minutes: 15
 
     steps:
       - name: Check emulator command is exists
@@ -112,7 +112,7 @@ jobs:
     name: Run UnitTests
     runs-on: self-hosted
     needs: [ build ]
-    timeout-minutes: 10
+    timeout-minutes: 15
 
     steps:
       - name: Run Unit Tests
@@ -131,7 +131,7 @@ jobs:
     name: Generate combined code coverage report with AndroidTest and UnitTest
     runs-on: self-hosted
     needs: [ run_android_test, run_unit_test ]
-    timeout-minutes: 10
+    timeout-minutes: 15
 
     steps:
       - name: Generate combined code coverage report
@@ -148,7 +148,7 @@ jobs:
     name: Generate code coverage report badge
     runs-on: ubuntu-latest
     needs: [ generate_code_coverage ]
-    timeout-minutes: 10
+    timeout-minutes: 15
     permissions:
       contents: write
 
