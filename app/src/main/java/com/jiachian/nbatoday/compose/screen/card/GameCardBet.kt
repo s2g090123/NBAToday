@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -15,6 +14,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.screen.account.LoginDialog
 import com.jiachian.nbatoday.compose.screen.bet.BetDialog
@@ -25,8 +25,8 @@ import com.jiachian.nbatoday.utils.showToast
 
 @Composable
 fun GameCardBetScreen(viewModel: GameCardViewModel) {
-    val login by viewModel.login.collectAsState()
-    val hasBet by viewModel.hasBet.collectAsState()
+    val login by viewModel.login.collectAsStateWithLifecycle()
+    val hasBet by viewModel.hasBet.collectAsStateWithLifecycle()
     when {
         !login -> {
             LoginDialog(

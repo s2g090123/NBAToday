@@ -10,7 +10,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,6 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.screen.player.models.PlayerUI
 import com.jiachian.nbatoday.compose.screen.player.widgets.playerInfo
@@ -30,7 +30,7 @@ import com.jiachian.nbatoday.testing.testtag.PlayerTestTag
 
 @Composable
 fun PlayerScreen(viewModel: PlayerViewModel) {
-    val playerUIState by viewModel.playerUIState.collectAsState()
+    val playerUIState by viewModel.playerUIState.collectAsStateWithLifecycle()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -77,7 +77,7 @@ private fun PlayerDetail(
     viewModel: PlayerViewModel,
     playerUI: PlayerUI,
 ) {
-    val sorting by viewModel.sorting.collectAsState()
+    val sorting by viewModel.sorting.collectAsStateWithLifecycle()
     val scrollState = rememberScrollState()
     LazyColumn(modifier = modifier) {
         playerInfo(

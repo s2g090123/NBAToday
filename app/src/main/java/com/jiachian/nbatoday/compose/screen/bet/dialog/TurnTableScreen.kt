@@ -2,10 +2,10 @@ package com.jiachian.nbatoday.compose.screen.bet.dialog
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jiachian.nbatoday.compose.screen.bet.BetViewModel
 import com.jiachian.nbatoday.compose.screen.bet.turntable.AskTurnTableDialog
 import com.jiachian.nbatoday.compose.screen.bet.turntable.BetTurnTable
@@ -14,8 +14,8 @@ import com.jiachian.nbatoday.testing.testtag.BetTestTag
 
 @Composable
 fun TurnTableScreen(viewModel: BetViewModel) {
-    val turnTablePoints by viewModel.turnTablePoints.collectAsState()
-    val turnTableVisible by viewModel.turnTableVisible.collectAsState()
+    val turnTablePoints by viewModel.turnTablePoints.collectAsStateWithLifecycle()
+    val turnTableVisible by viewModel.turnTableVisible.collectAsStateWithLifecycle()
     NullCheckScreen(
         data = turnTablePoints,
         ifNull = null

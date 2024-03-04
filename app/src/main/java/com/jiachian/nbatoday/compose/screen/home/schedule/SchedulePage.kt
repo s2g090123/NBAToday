@@ -21,7 +21,6 @@ import androidx.compose.material.pullrefresh.PullRefreshState
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -31,6 +30,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
@@ -54,8 +54,8 @@ fun SchedulePage(
 ) {
     val dateData = viewModel.dateData
     val pagerState = rememberPagerState(initialPage = dateData.size / 2)
-    val dateAndGamesState by viewModel.groupedGamesState.collectAsState()
-    val refreshing by viewModel.refreshing.collectAsState()
+    val dateAndGamesState by viewModel.groupedGamesState.collectAsStateWithLifecycle()
+    val refreshing by viewModel.refreshing.collectAsStateWithLifecycle()
     val pullRefreshState = rememberPullRefreshState(
         refreshing = refreshing,
         onRefresh = { viewModel.updateSelectedSchedule() }

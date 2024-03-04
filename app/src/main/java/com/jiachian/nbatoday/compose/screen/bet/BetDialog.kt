@@ -16,7 +16,6 @@ import androidx.compose.material.AlertDialog
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,6 +32,7 @@ import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.Transparency25
 import com.jiachian.nbatoday.compose.widget.CustomOutlinedTextField
@@ -48,10 +48,10 @@ fun BetDialog(
     onConfirm: (homePoints: Long, awayPoints: Long) -> Unit,
     onDismiss: () -> Unit
 ) {
-    val warning by viewModel.warning.collectAsState()
-    val homePoints by viewModel.homePoints.collectAsState()
-    val awayPoints by viewModel.awayPoints.collectAsState()
-    val enabled by viewModel.enabled.collectAsState()
+    val warning by viewModel.warning.collectAsStateWithLifecycle()
+    val homePoints by viewModel.homePoints.collectAsStateWithLifecycle()
+    val awayPoints by viewModel.awayPoints.collectAsStateWithLifecycle()
+    val enabled by viewModel.enabled.collectAsStateWithLifecycle()
     Dialog(onDismissRequest = onDismiss) {
         Column(
             modifier = Modifier
@@ -113,7 +113,7 @@ private fun BetDialogDetail(
     homePoints: Long,
     awayPoints: Long
 ) {
-    val remainingPoint by viewModel.remainingPoints.collectAsState()
+    val remainingPoint by viewModel.remainingPoints.collectAsStateWithLifecycle()
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally

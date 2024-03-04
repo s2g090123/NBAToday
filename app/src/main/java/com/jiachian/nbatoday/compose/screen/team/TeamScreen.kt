@@ -16,7 +16,6 @@ import androidx.compose.material.TabRowDefaults
 import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -31,6 +30,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
@@ -51,7 +51,7 @@ private val TopMargin = 81.dp
 
 @Composable
 fun TeamScreen(viewModel: TeamViewModel) {
-    val teamUIState by viewModel.teamUIState.collectAsState()
+    val teamUIState by viewModel.teamUIState.collectAsStateWithLifecycle()
     val scrollState = rememberScrollState()
     Column(modifier = Modifier.background(viewModel.colors.primary)) {
         IconButton(
@@ -230,7 +230,7 @@ private fun TeamPager(
                 )
             }
             1 -> {
-                val gamesBefore by viewModel.gamesBefore.collectAsState()
+                val gamesBefore by viewModel.gamesBefore.collectAsStateWithLifecycle()
                 TeamGamePage(
                     modifier = Modifier.fillMaxHeight(),
                     viewModel = viewModel,
@@ -238,7 +238,7 @@ private fun TeamPager(
                 )
             }
             2 -> {
-                val gamesAfter by viewModel.gamesAfter.collectAsState()
+                val gamesAfter by viewModel.gamesAfter.collectAsStateWithLifecycle()
                 TeamGamePage(
                     modifier = Modifier.fillMaxHeight(),
                     viewModel = viewModel,
