@@ -10,13 +10,43 @@ sealed class MainRoute(
     val path: String,
     val param: String = "",
 ) {
-    object Splash : MainRoute("splash")
-    object Home : MainRoute("home")
-    object BoxScore : MainRoute("box_score", "gameId")
-    object Team : MainRoute("team", "teamId")
-    object Player : MainRoute("player", "playerId")
-    object Calendar : MainRoute("calendar", "dateTime")
-    object Bet : MainRoute("bet", "account")
+    object Splash : MainRoute("splash") {
+        fun build(): String = path
+    }
+
+    object Home : MainRoute("home") {
+        fun build(): String = path
+    }
+
+    object BoxScore : MainRoute("box_score", "gameId") {
+        fun build(gameId: String): String {
+            return "$path/$gameId"
+        }
+    }
+
+    object Team : MainRoute("team", "teamId") {
+        fun build(teamId: Int): String {
+            return "$path/$teamId"
+        }
+    }
+
+    object Player : MainRoute("player", "playerId") {
+        fun build(playerId: Int): String {
+            return "$path/$playerId"
+        }
+    }
+
+    object Calendar : MainRoute("calendar", "dateTime") {
+        fun build(dateTime: Long): String {
+            return "$path/$dateTime"
+        }
+    }
+
+    object Bet : MainRoute("bet", "account") {
+        fun build(account: String): String {
+            return "$path/$account"
+        }
+    }
 
     // The full route string, including the parameter if present
     val route = if (param.isEmpty()) path else "$path/{$param}"

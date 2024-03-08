@@ -77,26 +77,26 @@ class MainActivity : ComponentActivity() {
                     navController?.popBackStack()
                 }
                 is NavigationController.Event.NavigateToHome -> {
-                    navController?.navigate(MainRoute.Home.route) {
-                        popUpTo(MainRoute.Splash.route) {
+                    navController?.navigate(MainRoute.Home.build()) {
+                        popUpTo(MainRoute.Splash.build()) {
                             inclusive = true
                         }
                     }
                 }
                 is NavigationController.Event.NavigateToBoxScore -> {
-                    navController?.navigate("${MainRoute.BoxScore.path}/${event.gameId}")
+                    navController?.navigate(MainRoute.BoxScore.build(event.gameId))
                 }
                 is NavigationController.Event.NavigateToTeam -> {
-                    navController?.navigate("${MainRoute.Team.path}/${event.teamId}")
+                    navController?.navigate(MainRoute.Team.build(event.teamId))
                 }
                 is NavigationController.Event.NavigateToPlayer -> {
-                    navController?.navigate("${MainRoute.Player.path}/${event.playerId}")
+                    navController?.navigate(MainRoute.Player.build(event.playerId))
                 }
                 is NavigationController.Event.NavigateToCalendar -> {
-                    navController?.navigate("${MainRoute.Calendar.path}/${event.dateTime}")
+                    navController?.navigate(MainRoute.Calendar.build(event.dateTime))
                 }
                 is NavigationController.Event.NavigateToBet -> {
-                    navController?.navigate("${MainRoute.Bet.path}/${event.account}")
+                    navController?.navigate(MainRoute.Bet.build(event.account))
                 }
             }
         }
