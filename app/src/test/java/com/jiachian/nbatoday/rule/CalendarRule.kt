@@ -4,6 +4,7 @@ import com.jiachian.nbatoday.BasicTime
 import com.jiachian.nbatoday.utils.DateUtils
 import io.mockk.every
 import io.mockk.mockkObject
+import io.mockk.unmockkObject
 import java.util.Calendar
 import java.util.Date
 import java.util.TimeZone
@@ -24,15 +25,6 @@ class CalendarRule : TestWatcher() {
     }
 
     override fun finished(description: Description) {
-        /**
-         * WORKAROUND!
-         * When dealing with #52-collectAsStateWithLifecycle, upgraded the android gradle plugin and gradle versions,
-         * and then started encountering the `io.mockk.MockKException: can't find stub DateUtils(object DateUtils)` problem.
-         *
-         * Unable to confirm the exact cause of the issue,
-         * but suspect it may be related to issues with unmock.
-         * Therefore, commented out the following code for now.
-         */
-        // unmockkObject(DateUtils)
+        unmockkObject(DateUtils)
     }
 }
