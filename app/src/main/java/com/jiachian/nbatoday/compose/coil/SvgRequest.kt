@@ -21,10 +21,7 @@ class SvgRequest private constructor() {
 
         private val requestBuilder = ImageRequest.Builder(context)
 
-        private var data: Any? = null
-
         fun data(data: Any?) = apply {
-            this.data = data
             requestBuilder.data(data)
         }
 
