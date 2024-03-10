@@ -23,7 +23,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,6 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jiachian.nbatoday.DaysPerWeek
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.Transparency25
@@ -106,9 +106,9 @@ private fun CalendarNavigationBar(
     modifier: Modifier = Modifier,
     viewModel: CalendarViewModel,
 ) {
-    val numberAndDateString by viewModel.numberAndDateString.collectAsState()
-    val hasLastMonth by viewModel.hasLastMonth.collectAsState()
-    val hasNextMonth by viewModel.hasNextMonth.collectAsState()
+    val numberAndDateString by viewModel.numberAndDateString.collectAsStateWithLifecycle()
+    val hasLastMonth by viewModel.hasLastMonth.collectAsStateWithLifecycle()
+    val hasNextMonth by viewModel.hasNextMonth.collectAsStateWithLifecycle()
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
@@ -163,11 +163,11 @@ private fun CalendarContent(
     modifier: Modifier = Modifier,
     viewModel: CalendarViewModel
 ) {
-    val selectedGames by viewModel.selectedGames.collectAsState()
-    val selectedGamesVisible by viewModel.selectedGamesVisible.collectAsState()
-    val loadingGames by viewModel.loadingGames.collectAsState()
-    val calendarDatesState by viewModel.calendarDatesState.collectAsState()
-    val selectedDate by viewModel.selectedDate.collectAsState()
+    val selectedGames by viewModel.selectedGames.collectAsStateWithLifecycle()
+    val selectedGamesVisible by viewModel.selectedGamesVisible.collectAsStateWithLifecycle()
+    val loadingGames by viewModel.loadingGames.collectAsStateWithLifecycle()
+    val calendarDatesState by viewModel.calendarDatesState.collectAsStateWithLifecycle()
+    val selectedDate by viewModel.selectedDate.collectAsStateWithLifecycle()
     UIStateScreen(
         state = calendarDatesState,
         loading = {

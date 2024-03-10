@@ -19,7 +19,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,6 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jiachian.nbatoday.Transparency25
 import com.jiachian.nbatoday.compose.screen.team.TeamViewModel
 import com.jiachian.nbatoday.compose.screen.team.models.TeamPlayerLabel
@@ -46,7 +46,7 @@ fun TeamPlayerPage(
     teamPlayers: List<TeamPlayerRowData>,
 ) {
     val scrollState = rememberScrollState()
-    val sorting by viewModel.playerSorting.collectAsState()
+    val sorting by viewModel.playerSorting.collectAsStateWithLifecycle()
     LazyColumn(modifier = modifier) {
         stickyHeader {
             ScorePlayerLabelScrollableRow(

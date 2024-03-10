@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -25,6 +24,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jiachian.nbatoday.compose.screen.bet.BetViewModel
 import com.jiachian.nbatoday.testing.testtag.BetTestTag
 import com.jiachian.nbatoday.utils.drawText
@@ -52,8 +52,8 @@ fun BetTurnTable(
     onStart: () -> Unit,
     onClose: () -> Unit
 ) {
-    val running by viewModel.turnTableRunning.collectAsState()
-    val angle by viewModel.turnTableAngle.collectAsState()
+    val running by viewModel.turnTableRunning.collectAsStateWithLifecycle()
+    val angle by viewModel.turnTableAngle.collectAsStateWithLifecycle()
     val textMeasure = rememberTextMeasurer()
     val plusTextSize1 = remember { textMeasure.measureSize(PlusText1) }
     val minusTextSize1 = remember { textMeasure.measureSize(MinusText1) }

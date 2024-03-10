@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,6 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.widget.AnimatedExpand
 import com.jiachian.nbatoday.compose.widget.TeamLogoImage
@@ -38,8 +38,8 @@ fun GameCard(
     color: Color,
     expandable: Boolean,
 ) {
-    val betAvailable by viewModel.betAvailable.collectAsState()
-    val betDialogVisible by viewModel.betDialogVisible.collectAsState()
+    val betAvailable by viewModel.betAvailable.collectAsStateWithLifecycle()
+    val betDialogVisible by viewModel.betDialogVisible.collectAsStateWithLifecycle()
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -141,7 +141,7 @@ private fun GameExpandedContent(
     viewModel: GameCardViewModel,
     color: Color
 ) {
-    val expanded by viewModel.expanded.collectAsState()
+    val expanded by viewModel.expanded.collectAsStateWithLifecycle()
     Box {
         AnimatedExpand(
             modifier = Modifier

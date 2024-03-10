@@ -12,7 +12,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,6 +21,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.screen.bet.dialog.RewardedPointsScreen
 import com.jiachian.nbatoday.compose.screen.bet.dialog.TurnTableScreen
@@ -35,7 +35,7 @@ import com.jiachian.nbatoday.utils.rippleClickable
 
 @Composable
 fun BetScreen(viewModel: BetViewModel) {
-    val rewardedPoints by viewModel.rewardedPoints.collectAsState()
+    val rewardedPoints by viewModel.rewardedPoints.collectAsStateWithLifecycle()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -71,7 +71,7 @@ private fun BetBody(
     modifier: Modifier = Modifier,
     viewModel: BetViewModel,
 ) {
-    val betsAndGamesState by viewModel.betsAndGamesState.collectAsState()
+    val betsAndGamesState by viewModel.betsAndGamesState.collectAsStateWithLifecycle()
     UIStateScreen(
         state = betsAndGamesState,
         loading = {

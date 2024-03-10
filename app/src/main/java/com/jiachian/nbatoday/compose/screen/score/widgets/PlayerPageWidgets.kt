@@ -21,7 +21,6 @@ import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,6 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.screen.score.BoxScoreViewModel
 import com.jiachian.nbatoday.compose.screen.score.models.BoxScorePlayerLabel
@@ -92,7 +92,7 @@ private fun ScorePlayerLabelRow(
     viewModel: BoxScoreViewModel,
     scrollState: ScrollState,
 ) {
-    val selectedLabel by viewModel.selectedPlayerLabel.collectAsState()
+    val selectedLabel by viewModel.selectedPlayerLabel.collectAsStateWithLifecycle()
     Row(modifier = modifier) {
         Text(
             modifier = Modifier

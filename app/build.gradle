@@ -24,7 +24,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-  compileSdk 33
+  compileSdk 34
 
   defaultConfig {
     applicationId "com.jiachian.nbatoday"
@@ -124,6 +124,7 @@ dependencies {
   implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
   implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
   implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
+  implementation "androidx.lifecycle:lifecycle-runtime-compose:$lifecycle_version"
 
   // coroutine
   implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutine_version"

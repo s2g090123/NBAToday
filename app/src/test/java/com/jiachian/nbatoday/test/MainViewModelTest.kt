@@ -5,6 +5,7 @@ import com.jiachian.nbatoday.HomeTeamId
 import com.jiachian.nbatoday.MainViewModel
 import com.jiachian.nbatoday.data.local.UserGenerator
 import com.jiachian.nbatoday.navigation.NavigationController
+import com.jiachian.nbatoday.rule.emptyRule
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsA
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -12,6 +13,20 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class MainViewModelTest : BaseUnitTest() {
+    /**
+     * WORKAROUND!
+     * When dealing with #52-collectAsStateWithLifecycle, upgraded the android gradle plugin and gradle versions.
+     * After that, started encountering the `io.mockk.MockKException: can't find stub DateUtils(object DateUtils)` problem.
+     *
+     * Currently unable to confirm the exact cause of the issue,
+     * but suspect it may be related to issues with `unmockkObject`,
+     * leading to the aforementioned error in the next test.
+     *
+     * The test doesn't need the CalendarRule,
+     * therefore, replace the CalendarRule with an empty TestWatcher.
+     */
+    override val calendarRule = emptyRule
+
     @Test
     fun `init() with user had been logged in expects correct`() = launch {
         val user = UserGenerator.get(true)

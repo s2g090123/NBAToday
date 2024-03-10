@@ -23,7 +23,6 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,6 +40,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.screen.account.LoginDialog
 import com.jiachian.nbatoday.compose.theme.NBAColors
@@ -58,7 +58,7 @@ fun UserPage(
     modifier: Modifier = Modifier,
     viewModel: UserPageViewModel
 ) {
-    val userState by viewModel.userState.collectAsState()
+    val userState by viewModel.userState.collectAsStateWithLifecycle()
     UIStateScreen(
         state = userState,
         loading = {

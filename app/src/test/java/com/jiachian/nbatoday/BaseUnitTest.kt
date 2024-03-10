@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestScope
 import org.junit.Rule
+import org.junit.rules.TestWatcher
 import org.koin.test.KoinTest
 import org.koin.test.KoinTestRule
 import org.koin.test.get
@@ -34,10 +35,10 @@ open class BaseUnitTest : KoinTest {
     val coroutineRule = CoroutineRule()
 
     @get:Rule
-    val calendarRule = CalendarRule()
+    open val calendarRule: TestWatcher = CalendarRule()
 
     @get:Rule
-    val nbaTeamRule = NBATeamRule()
+    open val nbaTeamRule: TestWatcher = NBATeamRule()
 
     @get:Rule
     val koinTestRule = KoinTestRule.create {

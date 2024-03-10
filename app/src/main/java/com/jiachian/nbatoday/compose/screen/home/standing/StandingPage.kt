@@ -28,7 +28,6 @@ import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -39,6 +38,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
@@ -64,7 +64,7 @@ fun StandingPage(
     modifier: Modifier = Modifier,
     viewModel: StandingPageViewModel,
 ) {
-    val refreshing by viewModel.refreshing.collectAsState()
+    val refreshing by viewModel.refreshing.collectAsStateWithLifecycle()
     val pagerState = rememberPagerState()
     val pullRefreshState = rememberPullRefreshState(
         refreshing = refreshing,
@@ -153,12 +153,12 @@ private fun StandingScreen(
 ) {
     val scrollState = rememberScrollState()
     val rowDataState by when (east) {
-        true -> viewModel.sortedEastRowDataState.collectAsState()
-        false -> viewModel.sortedWestRowDataState.collectAsState()
+        true -> viewModel.sortedEastRowDataState.collectAsStateWithLifecycle()
+        false -> viewModel.sortedWestRowDataState.collectAsStateWithLifecycle()
     }
     val sorting by when (east) {
-        true -> viewModel.eastSorting.collectAsState()
-        false -> viewModel.westSorting.collectAsState()
+        true -> viewModel.eastSorting.collectAsStateWithLifecycle()
+        false -> viewModel.westSorting.collectAsStateWithLifecycle()
     }
     UIStateScreen(
         state = rowDataState,
