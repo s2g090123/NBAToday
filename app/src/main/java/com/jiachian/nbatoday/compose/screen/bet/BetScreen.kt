@@ -69,8 +69,7 @@ fun BetScreen(viewModel: BetViewModel) {
                     modifier = Modifier
                         .testTag(BetTestTag.BetTurnTable)
                         .fillMaxSize(),
-                    running = it.running,
-                    angle = it.angle,
+                    uiState = it,
                     onStart = { viewModel.startTurnTable(it.win, it.lose) },
                     onClose = viewModel::closeTurnTable
                 )

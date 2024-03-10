@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.jiachian.nbatoday.compose.screen.bet.models.TurnTableUIState
 import com.jiachian.nbatoday.testing.testtag.BetTestTag
 import com.jiachian.nbatoday.utils.drawText
 import com.jiachian.nbatoday.utils.drawTurnTableArc
@@ -45,8 +46,7 @@ private const val MinusText2 = "+0\n-0"
 @Composable
 fun BetTurnTable(
     modifier: Modifier = Modifier,
-    running: Boolean,
-    angle: Float,
+    uiState: TurnTableUIState.TurnTable,
     onStart: () -> Unit,
     onClose: () -> Unit
 ) {
@@ -58,13 +58,13 @@ fun BetTurnTable(
     Dialog(
         onDismissRequest = onClose,
         properties = DialogProperties(
-            dismissOnBackPress = !running,
+            dismissOnBackPress = !uiState.running,
             dismissOnClickOutside = false,
             usePlatformDefaultWidth = false,
         )
     ) {
         Box(modifier = modifier) {
-            if (!running) {
+            if (!uiState.running) {
                 TurnTableCancelButton(
                     modifier = Modifier
                         .testTag(BetTestTag.BetTurnTable_Button_Cancel)
@@ -78,7 +78,7 @@ fun BetTurnTable(
                 modifier = Modifier
                     .align(Alignment.Center)
                     .size(320.dp)
-                    .graphicsLayer { rotationZ = angle },
+                    .graphicsLayer { rotationZ = uiState.angle },
                 textMeasurer = textMeasure,
                 plusTextSize1 = plusTextSize1,
                 plusTextSize2 = plusTextSize2,
@@ -93,7 +93,7 @@ fun BetTurnTable(
                     }
                     .size(48.dp, 56.dp),
             )
-            if (!running) {
+            if (!uiState.running) {
                 TurnTableStartButton(
                     modifier = Modifier.align(Alignment.Center),
                     onClick = onStart
