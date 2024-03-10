@@ -23,39 +23,70 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.R
-import com.jiachian.nbatoday.compose.screen.bet.dialog.RewardedPointsScreen
-import com.jiachian.nbatoday.compose.screen.bet.dialog.TurnTableScreen
+import com.jiachian.nbatoday.compose.screen.bet.turntable.AskTurnTableDialog
+import com.jiachian.nbatoday.compose.screen.bet.turntable.BetTurnTable
+import com.jiachian.nbatoday.compose.screen.bet.turntable.TurnTableRewardedDialog
+import com.jiachian.nbatoday.compose.screen.bet.turntable.TurnTableScreen
 import com.jiachian.nbatoday.compose.screen.bet.widgets.BetCard
+import com.jiachian.nbatoday.compose.screen.state.UIState
 import com.jiachian.nbatoday.compose.widget.IconButton
 import com.jiachian.nbatoday.compose.widget.LoadingScreen
 import com.jiachian.nbatoday.compose.widget.UIStateScreen
+import com.jiachian.nbatoday.models.local.bet.BetAndGame
 import com.jiachian.nbatoday.testing.testtag.BetTestTag
 import com.jiachian.nbatoday.testing.testtag.BetTestTag.BetScreen_BetBody_Loading
 import com.jiachian.nbatoday.utils.rippleClickable
 
 @Composable
 fun BetScreen(viewModel: BetViewModel) {
-    val rewardedPoints by viewModel.rewardedPoints.collectAsState()
-    Column(
+    val uiState by viewModel.betsAndGamesState.collectAsState()
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colors.primary)
     ) {
-        BetTopBar(onBack = viewModel::close)
-        BetBody(
-            modifier = Modifier.fillMaxSize(),
-            viewModel = viewModel,
+        Column {
+            BetBackButton(onBack = viewModel::close)
+            BetBody(
+                modifier = Modifier.fillMaxSize(),
+                uiState = uiState,
+                onClickBet = { viewModel.clickBetAndGame(it) }
+            )
+        }
+        TurnTableScreen(
+            uiState = viewModel.turnTableUIState,
+            idle = null,
+            asking = {
+                AskTurnTableDialog(
+                    win = it.win,
+                    lose = it.lose,
+                    onContinue = { viewModel.showTurnTable(it.win, it.lose) },
+                    onCancel = viewModel::closeTurnTable
+                )
+            },
+            turntable = {
+                BetTurnTable(
+                    modifier = Modifier
+                        .testTag(BetTestTag.BetTurnTable)
+                        .fillMaxSize(),
+                    running = it.running,
+                    angle = it.angle,
+                    onStart = { viewModel.startTurnTable(it.win, it.lose) },
+                    onClose = viewModel::closeTurnTable
+                )
+            },
+            rewarded = {
+                TurnTableRewardedDialog(
+                    points = it.points,
+                    onDismiss = viewModel::closeTurnTable
+                )
+            }
         )
     }
-    TurnTableScreen(viewModel = viewModel)
-    RewardedPointsScreen(
-        rewardedPoints = rewardedPoints,
-        onDismiss = viewModel::closeRewardedPoints
-    )
 }
 
 @Composable
-private fun BetTopBar(onBack: () -> Unit) {
+private fun BetBackButton(onBack: () -> Unit) {
     IconButton(
         modifier = Modifier
             .testTag(BetTestTag.BetScreen_BetTop_Button_Back)
@@ -69,11 +100,11 @@ private fun BetTopBar(onBack: () -> Unit) {
 @Composable
 private fun BetBody(
     modifier: Modifier = Modifier,
-    viewModel: BetViewModel,
+    uiState: UIState<List<BetAndGame>>,
+    onClickBet: (BetAndGame) -> Unit,
 ) {
-    val betsAndGamesState by viewModel.betsAndGamesState.collectAsState()
     UIStateScreen(
-        state = betsAndGamesState,
+        state = uiState,
         loading = {
             LoadingScreen(
                 modifier = Modifier
@@ -88,7 +119,10 @@ private fun BetBody(
             list.isEmpty() -> BetEmptyScreen(modifier = modifier)
             else -> {
                 LazyColumn(modifier = modifier) {
-                    itemsIndexed(list) { index, betAndGame ->
+                    itemsIndexed(
+                        list,
+                        key = { _, item -> item.bet.betId }
+                    ) { index, betAndGame ->
                         BetCard(
                             modifier = Modifier
                                 .testTag(BetTestTag.BetScreen_BetBody_BetCard)
@@ -103,9 +137,7 @@ private fun BetBody(
                                 .fillMaxWidth()
                                 .background(MaterialTheme.colors.secondary)
                                 .padding(bottom = 8.dp)
-                                .rippleClickable {
-                                    viewModel.clickBetAndGame(betAndGame)
-                                },
+                                .rippleClickable { onClickBet(betAndGame) },
                             betAndGame = betAndGame
                         )
                     }

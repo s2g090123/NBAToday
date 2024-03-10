@@ -5,14 +5,14 @@ import androidx.compose.ui.test.performClick
 import com.jiachian.nbatoday.BaseAndroidTest
 import com.jiachian.nbatoday.BetPoints
 import com.jiachian.nbatoday.R
-import com.jiachian.nbatoday.compose.screen.bet.dialog.RewardedPointsScreen
+import com.jiachian.nbatoday.compose.screen.bet.turntable.TurnTableRewardedDialog
 import com.jiachian.nbatoday.testing.testtag.BetTestTag
 import com.jiachian.nbatoday.utils.assertIsTrue
 import com.jiachian.nbatoday.utils.onNodeWithUnmergedTree
 import org.junit.After
 import org.junit.Test
 
-class RewardedPointsScreenTest : BaseAndroidTest() {
+class TurnTableRewardedDialogTest : BaseAndroidTest() {
     private var dismissed: Boolean? = null
 
     @After
@@ -23,8 +23,8 @@ class RewardedPointsScreenTest : BaseAndroidTest() {
     @Test
     fun rewardedPointsScreen_earnsPoints_checksUI() {
         composeTestRule.setContent {
-            RewardedPointsScreen(
-                rewardedPoints = BetPoints,
+            TurnTableRewardedDialog(
+                points = BetPoints,
                 onDismiss = { dismissed = true }
             )
         }
@@ -45,8 +45,8 @@ class RewardedPointsScreenTest : BaseAndroidTest() {
     @Test
     fun rewardedPointsScreen_losesPoints_checksUI() {
         composeTestRule.setContent {
-            RewardedPointsScreen(
-                rewardedPoints = -BetPoints,
+            TurnTableRewardedDialog(
+                points = -BetPoints,
                 onDismiss = { dismissed = true }
             )
         }
@@ -67,8 +67,8 @@ class RewardedPointsScreenTest : BaseAndroidTest() {
     @Test
     fun rewardedPointsScreen_closesDialog() {
         composeTestRule.setContent {
-            RewardedPointsScreen(
-                rewardedPoints = BetPoints,
+            TurnTableRewardedDialog(
+                points = BetPoints,
                 onDismiss = { dismissed = true }
             )
         }

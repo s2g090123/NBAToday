@@ -20,14 +20,16 @@ import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.R
-import com.jiachian.nbatoday.compose.screen.bet.models.TurnTablePoints
+import com.jiachian.nbatoday.compose.screen.bet.models.Lose
+import com.jiachian.nbatoday.compose.screen.bet.models.Win
 import com.jiachian.nbatoday.testing.testtag.BetTestTag
 import com.jiachian.nbatoday.utils.rippleClickable
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun AskTurnTableDialog(
-    points: TurnTablePoints,
+    win: Win,
+    lose: Lose,
     onContinue: () -> Unit,
     onCancel: () -> Unit
 ) {
@@ -49,9 +51,9 @@ fun AskTurnTableDialog(
                 modifier = Modifier.testTag(BetTestTag.AskTurnTableDialog_Text_Body),
                 text = pluralStringResource(
                     id = R.plurals.bet_ask_turn_table_text,
-                    count = if (points.win <= 1 && points.lose <= 1) 1 else 0,
-                    points.win,
-                    points.lose
+                    count = if (win.points <= 1 && lose.points <= 1) 1 else 0,
+                    win.points,
+                    lose.points
                 ),
                 color = MaterialTheme.colors.primary,
                 fontSize = 16.sp

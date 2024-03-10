@@ -6,15 +6,16 @@ import com.jiachian.nbatoday.UserAccount
 import com.jiachian.nbatoday.UserPassword
 import com.jiachian.nbatoday.UserPoints
 import com.jiachian.nbatoday.compose.screen.bet.BetViewModel
-import com.jiachian.nbatoday.compose.screen.bet.models.TurnTablePoints
+import com.jiachian.nbatoday.compose.screen.bet.models.Lose
+import com.jiachian.nbatoday.compose.screen.bet.models.TurnTableUIState
+import com.jiachian.nbatoday.compose.screen.bet.models.Win
 import com.jiachian.nbatoday.data.local.BetAndGameGenerator
 import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsA
-import com.jiachian.nbatoday.utils.assertIsFalse
 import com.jiachian.nbatoday.utils.assertIsNot
 import com.jiachian.nbatoday.utils.assertIsNotNull
-import com.jiachian.nbatoday.utils.assertIsNull
+import com.jiachian.nbatoday.utils.assertIsTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
@@ -44,10 +45,11 @@ class BetViewModelTest : BaseUnitTest() {
         val lostPoints = betAndGame.getLostPoints()
         val updatedPoints = UserPoints + wonPoints
         assertIs(dataHolder.user.value?.points, updatedPoints)
-        assertIs(
-            viewModel.turnTablePoints.value,
-            TurnTablePoints(wonPoints, lostPoints)
-        )
+        viewModel
+            .turnTableUIState
+            .assertIsA(TurnTableUIState.Asking::class.java)
+            .assertIsTrue { it.win == Win(wonPoints) }
+            .assertIsTrue { it.lose == Lose(lostPoints) }
     }
 
     @Test
@@ -73,28 +75,22 @@ class BetViewModelTest : BaseUnitTest() {
     @Test
     fun `closeTurnTable() expects all data are reset`() {
         viewModel.closeTurnTable()
-        assertIsFalse(viewModel.turnTableVisible.value)
-        assertIsNull(viewModel.turnTablePoints.value)
-        assertIsFalse(viewModel.turnTableRunning.value)
-        assertIs(viewModel.turnTableAngle.value, 0f)
+        viewModel.turnTableUIState.assertIs(TurnTableUIState.Idle)
     }
 
     @Test
     fun `startTurnTable() expects rewardedPoints is updated`() = launch {
-        val turnTablePoints = TurnTablePoints(BasicNumber.toLong(), BasicNumber.toLong() + 1)
-        viewModel.startTurnTable(turnTablePoints)
+        viewModel.showTurnTable(Win(BasicNumber.toLong()), Lose(BasicNumber.toLong() + 1))
+        viewModel.startTurnTable(Win(BasicNumber.toLong()), Lose(BasicNumber.toLong() + 1))
         advanceUntilIdle()
-        assertIsFalse(viewModel.turnTableVisible.value)
-        assertIsNull(viewModel.turnTablePoints.value)
-        assertIsFalse(viewModel.turnTableRunning.value)
-        assertIs(viewModel.turnTableAngle.value, 0f)
-        assertIsNotNull(viewModel.rewardedPoints.value)
-        assertIsNot(dataHolder.user.value?.points, UserPoints)
-    }
-
-    @Test
-    fun `closeRewardedPoints expects rewardedPoints is null`() {
-        viewModel.closeTurnTable()
-        assertIsNull(viewModel.rewardedPoints.value)
+        viewModel
+            .turnTableUIState
+            .assertIsA(TurnTableUIState.Rewarded::class.java)
+        dataHolder
+            .user
+            .value
+            ?.points
+            .assertIsNotNull()
+            .assertIsNot(UserPoints)
     }
 }
