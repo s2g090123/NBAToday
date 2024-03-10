@@ -1,6 +1,7 @@
 package com.jiachian.nbatoday.compose.screen.bet.models
 
-data class TurnTablePoints(
-    val win: Long,
-    val lose: Long
-)
+@JvmInline
+value class Win(val points: Long)
+
+@JvmInline
+value class Lose(val points: Long)
