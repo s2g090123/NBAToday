@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.jiachian.nbatoday.MainViewModel
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.Transparency25
@@ -48,14 +49,17 @@ import com.jiachian.nbatoday.compose.screen.player.PlayerScreen
 import com.jiachian.nbatoday.compose.screen.score.BoxScoreScreen
 import com.jiachian.nbatoday.compose.screen.team.TeamScreen
 import com.jiachian.nbatoday.navigation.MainRoute
+import com.jiachian.nbatoday.navigation.NavigationController2
+import com.jiachian.nbatoday.navigation.rememberNavigationController
 import com.jiachian.nbatoday.utils.getOrError
 
 private const val SplashOffsetAnimationDurationMs = 2000
 
 @Composable
 fun MainScreen(
+    navController: NavHostController = rememberNavController(),
     viewModel: MainViewModel,
-    navController: NavHostController,
+    navigationController: NavigationController2 = rememberNavigationController(navController),
 ) {
     NavHost(
         modifier = Modifier.fillMaxSize(),
@@ -71,9 +75,7 @@ fun MainScreen(
             )
         }
         composable(MainRoute.Home.route) {
-            remember {
-                viewModel.viewModelProvider.getHomeViewModel()
-            }.let { viewModel -> HomeScreen(viewModel = viewModel) }
+            HomeScreen()
         }
         composable(MainRoute.BoxScore.route) {
             remember {

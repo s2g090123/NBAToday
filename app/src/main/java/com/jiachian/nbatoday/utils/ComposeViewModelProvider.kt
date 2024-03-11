@@ -6,13 +6,10 @@ import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.compose.screen.bet.BetViewModel
 import com.jiachian.nbatoday.compose.screen.calendar.CalendarViewModel
 import com.jiachian.nbatoday.compose.screen.card.GameCardViewModel
-import com.jiachian.nbatoday.compose.screen.home.HomeViewModel
 import com.jiachian.nbatoday.compose.screen.home.schedule.SchedulePageViewModel
 import com.jiachian.nbatoday.compose.screen.home.standing.StandingPageViewModel
 import com.jiachian.nbatoday.compose.screen.home.user.UserPageViewModel
 import com.jiachian.nbatoday.compose.screen.player.PlayerViewModel
-import com.jiachian.nbatoday.compose.screen.score.BoxScoreViewModel
-import com.jiachian.nbatoday.compose.screen.team.TeamViewModel
 import com.jiachian.nbatoday.datastore.BaseDataStore
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
@@ -34,54 +31,6 @@ class ComposeViewModelProvider(
      * A map to store created ComposeViewModel instances for reuse.
      */
     private val viewModelMap = mutableMapOf<MainRoute, ComposeViewModel>()
-
-    fun getHomeViewModel(
-        dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
-        coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.main),
-    ): HomeViewModel {
-        return viewModelMap[MainRoute.Home] as? HomeViewModel ?: HomeViewModel(
-            composeViewModelProvider = this,
-            navigationController = navigationController,
-            dispatcherProvider = dispatcherProvider,
-            coroutineScope = coroutineScope
-        ).apply {
-            viewModelMap[MainRoute.Home] = this
-        }
-    }
-
-    fun getBoxScoreViewModel(
-        gameId: String,
-        dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
-        coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.main),
-    ): BoxScoreViewModel {
-        return viewModelMap[MainRoute.BoxScore] as? BoxScoreViewModel ?: BoxScoreViewModel(
-            gameId = gameId,
-            repository = repositoryProvider.game,
-            navigationController = navigationController,
-            dispatcherProvider = dispatcherProvider,
-            coroutineScope = coroutineScope,
-        ).apply {
-            viewModelMap[MainRoute.BoxScore] = this
-        }
-    }
-
-    fun getTeamViewModel(
-        teamId: Int,
-        dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
-        coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.main),
-    ): TeamViewModel {
-        return viewModelMap[MainRoute.Team] as? TeamViewModel ?: TeamViewModel(
-            teamId = teamId,
-            teamRepository = repositoryProvider.team,
-            gameRepository = repositoryProvider.game,
-            navigationController = navigationController,
-            composeViewModelProvider = this,
-            dispatcherProvider = dispatcherProvider,
-            coroutineScope = coroutineScope
-        ).apply {
-            viewModelMap[MainRoute.Team] = this
-        }
-    }
 
     fun getPlayerViewModel(
         playerId: Int,

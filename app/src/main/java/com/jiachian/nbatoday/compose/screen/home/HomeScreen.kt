@@ -26,10 +26,11 @@ import com.jiachian.nbatoday.compose.screen.home.schedule.SchedulePage
 import com.jiachian.nbatoday.compose.screen.home.standing.StandingPage
 import com.jiachian.nbatoday.compose.screen.home.user.UserPage
 import com.jiachian.nbatoday.testing.testtag.HomeTestTag
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel,
+    viewModel: HomeViewModel = koinViewModel(),
     navController: NavHostController = rememberNavController().apply {
         enableOnBackPressed(false)
     }
