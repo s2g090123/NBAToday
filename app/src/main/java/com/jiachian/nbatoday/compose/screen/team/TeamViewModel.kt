@@ -3,7 +3,6 @@ package com.jiachian.nbatoday.compose.screen.team
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jiachian.nbatoday.compose.screen.card.GameCardUIData
 import com.jiachian.nbatoday.compose.screen.label.LabelHelper
 import com.jiachian.nbatoday.compose.screen.state.UIState
 import com.jiachian.nbatoday.compose.screen.team.models.TeamPlayerLabel
@@ -13,13 +12,11 @@ import com.jiachian.nbatoday.compose.screen.team.models.TeamUI
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.models.local.game.Game
-import com.jiachian.nbatoday.models.local.game.GameAndBets
+import com.jiachian.nbatoday.models.local.game.toGameCardUIDataList
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.navigation.MainRoute
-import com.jiachian.nbatoday.repository.bet.BetRepository
 import com.jiachian.nbatoday.repository.game.GameRepository
 import com.jiachian.nbatoday.repository.team.TeamRepository
-import com.jiachian.nbatoday.repository.user.UserRepository
 import com.jiachian.nbatoday.utils.DateUtils
 import com.jiachian.nbatoday.utils.WhileSubscribed5000
 import java.util.Calendar
@@ -33,7 +30,6 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import org.koin.java.KoinJavaComponent.get
 
 /**
  * ViewModel for handling business logic related to [TeamScreen].
@@ -74,8 +70,10 @@ class TeamViewModel(
             set(Calendar.MILLISECOND, 0)
         }.timeInMillis
     ).map {
-        UIState.Loaded(it)
-    }.stateIn(viewModelScope, SharingStarted.Lazily, UIState.Loading())
+        UIState.Loaded(it.toGameCardUIDataList())
+    }
+        .flowOn(dispatcherProvider.default)
+        .stateIn(viewModelScope, SharingStarted.Lazily, UIState.Loading())
     val gamesAfter = gameRepository.getGamesAndBetsAfter(
         team.teamId,
         DateUtils.getCalendar().apply {
@@ -84,8 +82,10 @@ class TeamViewModel(
             set(Calendar.MILLISECOND, 0)
         }.timeInMillis
     ).map {
-        UIState.Loaded(it)
-    }.stateIn(viewModelScope, SharingStarted.Lazily, UIState.Loading())
+        UIState.Loaded(it.toGameCardUIDataList())
+    }
+        .flowOn(dispatcherProvider.default)
+        .stateIn(viewModelScope, SharingStarted.Lazily, UIState.Loading())
 
     private val teamAndPlayers = teamRepository.getTeamAndPlayers(team.teamId)
 
@@ -140,8 +140,6 @@ class TeamViewModel(
         UIState.Loaded(teamUI)
     }.stateIn(viewModelScope, WhileSubscribed5000, UIState.Loading())
 
-    private val gameCardViewModelMap = mutableMapOf<GameAndBets, GameCardUIData>()
-
     /**
      * Update the player sorting based on the provided [sorting] criteria.
      *
@@ -149,16 +147,6 @@ class TeamViewModel(
      */
     fun updatePlayerSorting(sorting: TeamPlayerSorting) {
         playerSortingImp.value = sorting
-    }
-
-    fun getGameCardViewModel(gameAndBets: GameAndBets): GameCardUIData {
-        return GameCardUIData(
-            gameAndBets = gameAndBets,
-            betRepository = get(BetRepository::class.java),
-            userRepository = get(UserRepository::class.java),
-            dispatcherProvider = dispatcherProvider,
-            coroutineScope = viewModelScope,
-        )
     }
 
     private fun List<TeamPlayerRowData>.sortedWith(sorting: TeamPlayerSorting): List<TeamPlayerRowData> {

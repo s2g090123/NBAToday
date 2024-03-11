@@ -116,8 +116,6 @@ class CalendarViewModel(
         UIState.Loaded(dates)
     }.stateIn(viewModelScope, WhileSubscribed5000, UIState.Loading())
 
-    private val gameCardViewModelMap = mutableMapOf<GameAndBets, GameCardUIData>()
-
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun collectSelectedGames() {
         viewModelScope.launch(dispatcherProvider.io) {
