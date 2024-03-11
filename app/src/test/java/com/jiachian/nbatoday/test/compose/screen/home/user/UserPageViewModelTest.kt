@@ -10,7 +10,6 @@ import com.jiachian.nbatoday.data.local.NBATeamGenerator
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.models.local.team.data.teamOfficial
 import com.jiachian.nbatoday.models.local.user.User
-import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsA
 import com.jiachian.nbatoday.utils.assertIsNotNull

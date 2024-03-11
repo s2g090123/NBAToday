@@ -10,7 +10,7 @@ import com.jiachian.nbatoday.FinalGameId
 import com.jiachian.nbatoday.FinalGameTimeMs
 import com.jiachian.nbatoday.HomePlayerId
 import com.jiachian.nbatoday.HomeTeamId
-import com.jiachian.nbatoday.MainViewModel
+import com.jiachian.nbatoday.SplashViewModel
 import com.jiachian.nbatoday.UserAccount
 import com.jiachian.nbatoday.compose.screen.main.MainScreen
 import com.jiachian.nbatoday.navigation.MainRoute
@@ -30,7 +30,7 @@ class MainScreenTest : BaseAndroidTest() {
             }
         }
         MainScreen(
-            viewModel = MainViewModel(
+            viewModel = SplashViewModel(
                 repositoryProvider = repositoryProvider,
                 dataStore = dataStore,
                 navigationController = navigationController,

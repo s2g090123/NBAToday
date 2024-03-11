@@ -16,7 +16,6 @@ import com.jiachian.nbatoday.data.local.BoxScoreGenerator
 import com.jiachian.nbatoday.data.local.GameGenerator
 import com.jiachian.nbatoday.models.local.score.BoxScore
 import com.jiachian.nbatoday.models.local.score.BoxScoreAndGame
-import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsA
 import kotlinx.coroutines.ExperimentalCoroutinesApi

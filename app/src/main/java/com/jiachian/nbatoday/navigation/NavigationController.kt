@@ -1,55 +1,54 @@
 package com.jiachian.nbatoday.navigation
 
-import com.jiachian.nbatoday.event.EventBroadcaster
-import com.jiachian.nbatoday.event.EventManager
+import android.annotation.SuppressLint
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.navigation.NavHostController
+import com.jiachian.nbatoday.compose.screen.home.schedule.models.DateData
+import java.text.SimpleDateFormat
+import java.util.TimeZone
 
-/**
- * Handle navigation events within the app.
- *
- * @param eventManager The event manager used for broadcasting navigation events.
- */
-class NavigationController(
-    private val eventManager: EventManager<Event> = EventManager()
-) : EventBroadcaster<NavigationController.Event> by eventManager {
-    sealed class Event {
-        object NavigateToHome : Event()
-        class NavigateToBoxScore(val gameId: String) : Event()
-        class NavigateToTeam(val teamId: Int) : Event()
-        class NavigateToPlayer(val playerId: Int) : Event()
-        class NavigateToCalendar(val dateTime: Long) : Event()
-        class NavigateToBet(val account: String) : Event()
-        class BackScreen(val departure: MainRoute) : Event()
-    }
-
-    private fun Event.send() {
-        eventManager.send(this)
-    }
-
+class NavigationController2(
+    private val navController: NavHostController,
+) {
     fun navigateToHome() {
-        Event.NavigateToHome.send()
-    }
-
-    fun navigateToBoxScore(gameId: String) {
-        Event.NavigateToBoxScore(gameId).send()
-    }
-
-    fun navigateToTeam(teamId: Int) {
-        Event.NavigateToTeam(teamId).send()
+        navController.navigate(MainRoute.Home.build()) {
+            popUpTo(MainRoute.Splash.build()) {
+                inclusive = true
+            }
+        }
     }
 
     fun navigateToPlayer(playerId: Int) {
-        Event.NavigateToPlayer(playerId).send()
+        navController.navigate(MainRoute.Player.build(playerId))
     }
 
-    fun navigateToCalendar(dateTime: Long) {
-        Event.NavigateToCalendar(dateTime).send()
+    fun navigateToBoxScore(gameId: String) {
+        navController.navigate(MainRoute.BoxScore.build(gameId))
+    }
+
+    fun navigateToTeam(teamId: Int) {
+        navController.navigate(MainRoute.Team.build(teamId))
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    fun navigateToCalendar(date: DateData) {
+        SimpleDateFormat("yyyy/MM/dd").let { format ->
+            format.timeZone = TimeZone.getTimeZone("EST")
+            format.parse(date.dateString)?.time
+        }?.let {
+            navController.navigate(MainRoute.Calendar.build(it))
+        }
     }
 
     fun navigateToBet(account: String) {
-        Event.NavigateToBet(account).send()
+        navController.navigate(MainRoute.Bet.build(account))
     }
+}
 
-    fun backScreen(departure: MainRoute) {
-        Event.BackScreen(departure).send()
+@Composable
+fun rememberNavigationController(navHostController: NavHostController): NavigationController2 {
+    return remember(navHostController) {
+        NavigationController2(navHostController)
     }
 }

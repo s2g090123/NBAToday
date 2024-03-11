@@ -31,7 +31,6 @@ import com.jiachian.nbatoday.datasource.remote.team.TeamRemoteSource
 import com.jiachian.nbatoday.datasource.remote.user.UserRemoteSource
 import com.jiachian.nbatoday.datastore.BaseDataStore
 import com.jiachian.nbatoday.datastore.data.TestDataStore
-import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.repository.RepositoryProvider
 import com.jiachian.nbatoday.repository.bet.BetRepository
 import com.jiachian.nbatoday.repository.data.TestBetRepository
@@ -45,7 +44,6 @@ import com.jiachian.nbatoday.repository.player.PlayerRepository
 import com.jiachian.nbatoday.repository.schedule.ScheduleRepository
 import com.jiachian.nbatoday.repository.team.TeamRepository
 import com.jiachian.nbatoday.repository.user.UserRepository
-import com.jiachian.nbatoday.utils.ComposeViewModelProvider
 import org.koin.dsl.module
 
 val testModule = module {

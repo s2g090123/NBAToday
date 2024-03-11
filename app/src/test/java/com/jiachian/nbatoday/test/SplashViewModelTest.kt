@@ -2,22 +2,21 @@ package com.jiachian.nbatoday.test
 
 import com.jiachian.nbatoday.BaseUnitTest
 import com.jiachian.nbatoday.HomeTeamId
-import com.jiachian.nbatoday.MainViewModel
+import com.jiachian.nbatoday.SplashViewModel
 import com.jiachian.nbatoday.data.local.UserGenerator
-import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsA
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class MainViewModelTest : BaseUnitTest() {
+class SplashViewModelTest : BaseUnitTest() {
     @Test
     fun `init() with user had been logged in expects correct`() = launch {
         val user = UserGenerator.get(true)
         dataStore.updateUser(user)
         val event = navigationController.eventFlow.defer(this)
-        MainViewModel(
+        SplashViewModel(
             repositoryProvider = repositoryProvider,
             dataStore = dataStore,
             navigationController = navigationController,
@@ -37,7 +36,7 @@ class MainViewModelTest : BaseUnitTest() {
 
     @Test
     fun `consumeNavigationEvent(Home) expects next event is sent`() = launch {
-        val viewModel = MainViewModel(
+        val viewModel = SplashViewModel(
             repositoryProvider = repositoryProvider,
             dataStore = dataStore,
             navigationController = navigationController,
@@ -55,7 +54,7 @@ class MainViewModelTest : BaseUnitTest() {
 
     @Test
     fun `viewModelProvider expects correct`() {
-        val viewModel = MainViewModel(
+        val viewModel = SplashViewModel(
             repositoryProvider = repositoryProvider,
             dataStore = dataStore,
             navigationController = navigationController,

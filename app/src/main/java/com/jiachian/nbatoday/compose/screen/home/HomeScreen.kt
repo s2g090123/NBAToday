@@ -27,11 +27,9 @@ import com.jiachian.nbatoday.compose.screen.home.schedule.models.DateData
 import com.jiachian.nbatoday.compose.screen.home.standing.StandingPage
 import com.jiachian.nbatoday.compose.screen.home.user.UserPage
 import com.jiachian.nbatoday.testing.testtag.HomeTestTag
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel = koinViewModel(),
     navController: NavHostController = rememberNavController().apply {
         enableOnBackPressed(false)
     },
@@ -43,7 +41,7 @@ fun HomeScreen(
     Scaffold(
         bottomBar = {
             HomeBottomNavigation(
-                pages = viewModel.pages,
+                pages = HomePage.values(),
                 navController = navController,
             )
         }

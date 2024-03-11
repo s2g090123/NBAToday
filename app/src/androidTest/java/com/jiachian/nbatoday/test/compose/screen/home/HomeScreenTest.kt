@@ -9,7 +9,6 @@ import androidx.navigation.compose.ComposeNavigator
 import androidx.navigation.testing.TestNavHostController
 import com.jiachian.nbatoday.BaseAndroidTest
 import com.jiachian.nbatoday.compose.screen.home.HomeScreen
-import com.jiachian.nbatoday.compose.screen.home.HomeViewModel
 import com.jiachian.nbatoday.compose.screen.home.navigation.HomePage
 import com.jiachian.nbatoday.testing.testtag.HomeTestTag
 import com.jiachian.nbatoday.utils.assertCurrentRoute

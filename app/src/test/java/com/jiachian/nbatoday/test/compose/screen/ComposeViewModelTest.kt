@@ -1,9 +1,7 @@
 package com.jiachian.nbatoday.test.compose.screen
 
 import com.jiachian.nbatoday.BaseUnitTest
-import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.navigation.MainRoute
-import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.utils.assertIsA
 import com.jiachian.nbatoday.utils.assertIsFalse
 import kotlinx.coroutines.CoroutineScope

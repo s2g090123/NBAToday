@@ -19,7 +19,6 @@ import com.jiachian.nbatoday.compose.theme.ColorPalette
 import com.jiachian.nbatoday.compose.theme.OfficialColors
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.models.local.team.data.teamOfficial
-import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.testing.testtag.UserTestTag
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsA

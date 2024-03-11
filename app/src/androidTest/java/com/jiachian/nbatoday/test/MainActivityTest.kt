@@ -13,7 +13,6 @@ import com.jiachian.nbatoday.event.ToastEvent
 import com.jiachian.nbatoday.event.send
 import com.jiachian.nbatoday.event.toastEventManager
 import com.jiachian.nbatoday.navigation.MainRoute
-import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.rule.SetMainDispatcherRule
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsA

@@ -10,7 +10,6 @@ import com.jiachian.nbatoday.compose.screen.bet.models.Lose
 import com.jiachian.nbatoday.compose.screen.bet.models.TurnTableUIState
 import com.jiachian.nbatoday.compose.screen.bet.models.Win
 import com.jiachian.nbatoday.data.local.BetAndGameGenerator
-import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsA
 import com.jiachian.nbatoday.utils.assertIsNot
