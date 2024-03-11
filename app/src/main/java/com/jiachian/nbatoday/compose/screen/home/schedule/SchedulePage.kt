@@ -37,20 +37,25 @@ import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.screen.card.GameCard
+import com.jiachian.nbatoday.compose.screen.card.GameCardUIData
 import com.jiachian.nbatoday.compose.screen.home.schedule.models.DateData
 import com.jiachian.nbatoday.compose.widget.IconButton
 import com.jiachian.nbatoday.compose.widget.LoadingScreen
 import com.jiachian.nbatoday.compose.widget.UIStateScreen
-import com.jiachian.nbatoday.models.local.game.GameAndBets
+import com.jiachian.nbatoday.models.local.game.Game
 import com.jiachian.nbatoday.testing.testtag.ScheduleTestTag
 import com.jiachian.nbatoday.utils.rippleClickable
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalPagerApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun SchedulePage(
     modifier: Modifier = Modifier,
-    viewModel: SchedulePageViewModel
+    viewModel: SchedulePageViewModel = koinViewModel(),
+    navigateToBoxScore: (gameId: String) -> Unit,
+    navigateToTeam: (teamId: Int) -> Unit,
+    navigateToCalendar: (DateData) -> Unit,
 ) {
     val dateData = viewModel.dateData
     val pagerState = rememberPagerState(initialPage = dateData.size / 2)
@@ -87,6 +92,14 @@ fun SchedulePage(
                     refreshing = refreshing,
                     refreshState = pullRefreshState,
                     games = dateAndGames[date] ?: emptyList(),
+                    onClickGame = {
+                        if (it.gamePlayed) {
+                            navigateToBoxScore(it.gameId)
+                        } else {
+                            navigateToTeam(it.homeTeamId)
+                        }
+                    },
+                    onClickCalendar = navigateToCalendar,
                 )
             }
         }
@@ -104,7 +117,9 @@ private fun ScheduleContent(
     viewModel: SchedulePageViewModel,
     refreshState: PullRefreshState,
     refreshing: Boolean,
-    games: List<GameAndBets>,
+    games: List<GameCardUIData>,
+    onClickGame: (game: Game) -> Unit,
+    onClickCalendar: (DateData) -> Unit,
 ) {
     Box(
         modifier = Modifier
@@ -124,10 +139,10 @@ private fun ScheduleContent(
                         .padding(top = 8.dp, end = 4.dp),
                     drawableRes = R.drawable.ic_black_calendar,
                     tint = MaterialTheme.colors.secondary,
-                    onClick = viewModel::onClickCalendar
+                    onClick = { onClickCalendar(viewModel.selectedDate) }
                 )
             }
-            itemsIndexed(games) { index, game ->
+            itemsIndexed(games) { index, uiData ->
                 GameCard(
                     modifier = Modifier
                         .testTag(ScheduleTestTag.ScheduleContent_GameCard)
@@ -142,10 +157,8 @@ private fun ScheduleContent(
                         .fillMaxWidth()
                         .wrapContentHeight()
                         .background(MaterialTheme.colors.secondary)
-                        .rippleClickable {
-                            viewModel.onClickGame(game)
-                        },
-                    viewModel = viewModel.getGameCardViewModel(game),
+                        .rippleClickable { onClickGame(uiData.gameAndBets.game) },
+                    uiData = uiData,
                     color = MaterialTheme.colors.primary,
                     expandable = true,
                 )

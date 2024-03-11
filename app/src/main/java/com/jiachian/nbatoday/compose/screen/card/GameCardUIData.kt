@@ -16,20 +16,12 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import org.koin.java.KoinJavaComponent.get
 
-/**
- * ViewModel for handling business logic related to [GameCard].
- *
- * @property gameAndBets The GameAndBets instance associated with the game card.
- * @property betRepository The repository for interacting with [GameAndBets].
- * @property userRepository The repository for interacting with [User].
- * @property dispatcherProvider The provider for obtaining dispatchers for coroutines (default is [DefaultDispatcherProvider]).
- * @property coroutineScope The coroutine scope for managing coroutines (default is [CoroutineScope] with main dispatcher).
- */
-class GameCardViewModel(
+class GameCardUIData(
     val gameAndBets: GameAndBets,
-    private val betRepository: BetRepository,
-    private val userRepository: UserRepository,
+    private val betRepository: BetRepository = get(BetRepository::class.java),
+    private val userRepository: UserRepository = get(UserRepository::class.java),
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
     private val coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.main),
 ) {

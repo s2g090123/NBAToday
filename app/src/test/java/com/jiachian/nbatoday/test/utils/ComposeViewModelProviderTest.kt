@@ -8,7 +8,7 @@ import com.jiachian.nbatoday.HomeTeamId
 import com.jiachian.nbatoday.UserAccount
 import com.jiachian.nbatoday.compose.screen.bet.BetViewModel
 import com.jiachian.nbatoday.compose.screen.calendar.CalendarViewModel
-import com.jiachian.nbatoday.compose.screen.card.GameCardViewModel
+import com.jiachian.nbatoday.compose.screen.card.GameCardUIData
 import com.jiachian.nbatoday.compose.screen.home.HomeViewModel
 import com.jiachian.nbatoday.compose.screen.home.schedule.SchedulePageViewModel
 import com.jiachian.nbatoday.compose.screen.home.standing.StandingPageViewModel
@@ -171,7 +171,7 @@ class ComposeViewModelProviderTest : BaseUnitTest() {
                 gameAndBets = GameAndBetsGenerator.getFinal(),
                 dispatcherProvider = dispatcherProvider
             )
-            .assertIsA(GameCardViewModel::class.java)
+            .assertIsA(GameCardUIData::class.java)
     }
 
     @Test

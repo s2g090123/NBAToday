@@ -34,31 +34,31 @@ import com.jiachian.nbatoday.utils.rippleClickable
 @Composable
 fun GameCard(
     modifier: Modifier = Modifier,
-    viewModel: GameCardViewModel,
+    uiData: GameCardUIData,
     color: Color,
     expandable: Boolean,
 ) {
-    val betAvailable by viewModel.betAvailable.collectAsState()
-    val betDialogVisible by viewModel.betDialogVisible.collectAsState()
+    val betAvailable by uiData.betAvailable.collectAsState()
+    val betDialogVisible by uiData.betDialogVisible.collectAsState()
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         GameDetail(
             modifier = Modifier.fillMaxWidth(),
-            gameAndBets = viewModel.gameAndBets,
+            gameAndBets = uiData.gameAndBets,
             textColor = color,
             betAvailable = betAvailable,
-            onBet = { viewModel.setBetDialogVisible(true) }
+            onBet = { uiData.setBetDialogVisible(true) }
         )
-        if (expandable && viewModel.expandedContentVisible) {
+        if (expandable && uiData.expandedContentVisible) {
             GameExpandedContent(
-                viewModel = viewModel,
+                viewModel = uiData,
                 color = color,
             )
         }
         if (betDialogVisible) {
-            GameCardBetScreen(viewModel = viewModel)
+            GameCardBetScreen(viewModel = uiData)
         }
     }
 }
@@ -138,7 +138,7 @@ private fun GameTeamInfo(
 
 @Composable
 private fun GameExpandedContent(
-    viewModel: GameCardViewModel,
+    viewModel: GameCardUIData,
     color: Color
 ) {
     val expanded by viewModel.expanded.collectAsState()

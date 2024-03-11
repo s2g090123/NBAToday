@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.jiachian.nbatoday.DaysPerWeek
 import com.jiachian.nbatoday.annotation.ExcludeFromJacocoGeneratedReport
 import com.jiachian.nbatoday.compose.screen.calendar.models.CalendarDate
-import com.jiachian.nbatoday.compose.screen.card.GameCardViewModel
+import com.jiachian.nbatoday.compose.screen.card.GameCardUIData
 import com.jiachian.nbatoday.compose.screen.state.UIState
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
@@ -123,7 +123,7 @@ class CalendarViewModel(
         UIState.Loaded(dates)
     }.stateIn(viewModelScope, WhileSubscribed5000, UIState.Loading())
 
-    private val gameCardViewModelMap = mutableMapOf<GameAndBets, GameCardViewModel>()
+    private val gameCardViewModelMap = mutableMapOf<GameAndBets, GameCardUIData>()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun collectSelectedGames() {
@@ -221,8 +221,8 @@ class CalendarViewModel(
         }
     }
 
-    fun getGameCardViewModel(gameAndBets: GameAndBets): GameCardViewModel {
-        return GameCardViewModel(
+    fun getGameCardViewModel(gameAndBets: GameAndBets): GameCardUIData {
+        return GameCardUIData(
             gameAndBets = gameAndBets,
             betRepository = get(BetRepository::class.java),
             userRepository = get(UserRepository::class.java),

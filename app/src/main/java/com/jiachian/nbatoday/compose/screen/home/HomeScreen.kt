@@ -23,6 +23,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.jiachian.nbatoday.compose.screen.home.navigation.HomePage
 import com.jiachian.nbatoday.compose.screen.home.schedule.SchedulePage
+import com.jiachian.nbatoday.compose.screen.home.schedule.models.DateData
 import com.jiachian.nbatoday.compose.screen.home.standing.StandingPage
 import com.jiachian.nbatoday.compose.screen.home.user.UserPage
 import com.jiachian.nbatoday.testing.testtag.HomeTestTag
@@ -33,7 +34,10 @@ fun HomeScreen(
     viewModel: HomeViewModel = koinViewModel(),
     navController: NavHostController = rememberNavController().apply {
         enableOnBackPressed(false)
-    }
+    },
+    navigateToBoxScore: (gameId: String) -> Unit,
+    navigateToTeam: (teamId: Int) -> Unit,
+    navigateToCalendar: (DateData) -> Unit,
 ) {
     Scaffold(
         bottomBar = {
@@ -53,7 +57,9 @@ fun HomeScreen(
             composable(HomePage.SCHEDULE.route) {
                 SchedulePage(
                     modifier = Modifier.fillMaxSize(),
-                    viewModel = viewModel.schedulePageViewModel
+                    navigateToBoxScore = navigateToBoxScore,
+                    navigateToTeam = navigateToTeam,
+                    navigateToCalendar = navigateToCalendar,
                 )
             }
             composable(HomePage.STANDING.route) {

@@ -3,8 +3,7 @@ package com.jiachian.nbatoday.utils
 import androidx.annotation.VisibleForTesting
 import com.jiachian.nbatoday.annotation.ExcludeFromJacocoGeneratedReport
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
-import com.jiachian.nbatoday.compose.screen.card.GameCardViewModel
-import com.jiachian.nbatoday.compose.screen.home.schedule.SchedulePageViewModel
+import com.jiachian.nbatoday.compose.screen.card.GameCardUIData
 import com.jiachian.nbatoday.compose.screen.home.standing.StandingPageViewModel
 import com.jiachian.nbatoday.compose.screen.home.user.UserPageViewModel
 import com.jiachian.nbatoday.datastore.BaseDataStore
@@ -28,20 +27,6 @@ class ComposeViewModelProvider(
      * A map to store created ComposeViewModel instances for reuse.
      */
     private val viewModelMap = mutableMapOf<MainRoute, ComposeViewModel>()
-
-    fun getSchedulePageViewModel(
-        dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
-        coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.main),
-    ): SchedulePageViewModel {
-        return SchedulePageViewModel(
-            scheduleRepository = repositoryProvider.schedule,
-            gameRepository = repositoryProvider.game,
-            navigationController = navigationController,
-            composeViewModelProvider = this,
-            dispatcherProvider = dispatcherProvider,
-            coroutineScope = coroutineScope,
-        )
-    }
 
     fun getStandingPageViewModel(
         dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
@@ -72,8 +57,8 @@ class ComposeViewModelProvider(
         gameAndBets: GameAndBets,
         dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
         coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.main),
-    ): GameCardViewModel {
-        return GameCardViewModel(
+    ): GameCardUIData {
+        return GameCardUIData(
             gameAndBets = gameAndBets,
             betRepository = repositoryProvider.bet,
             userRepository = repositoryProvider.user,

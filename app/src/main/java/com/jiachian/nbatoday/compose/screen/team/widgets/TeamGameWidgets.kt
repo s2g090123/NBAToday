@@ -69,7 +69,7 @@ fun TeamGamePage(
                             }
                         }
                         .padding(bottom = 8.dp),
-                    viewModel = viewModel.getGameCardViewModel(game),
+                    uiData = viewModel.getGameCardViewModel(game),
                     expandable = false,
                     color = viewModel.colors.primary,
                 )

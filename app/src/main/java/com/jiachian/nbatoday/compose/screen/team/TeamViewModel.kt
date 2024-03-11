@@ -3,7 +3,7 @@ package com.jiachian.nbatoday.compose.screen.team
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jiachian.nbatoday.compose.screen.card.GameCardViewModel
+import com.jiachian.nbatoday.compose.screen.card.GameCardUIData
 import com.jiachian.nbatoday.compose.screen.label.LabelHelper
 import com.jiachian.nbatoday.compose.screen.state.UIState
 import com.jiachian.nbatoday.compose.screen.team.models.TeamPlayerLabel
@@ -140,7 +140,7 @@ class TeamViewModel(
         UIState.Loaded(teamUI)
     }.stateIn(viewModelScope, WhileSubscribed5000, UIState.Loading())
 
-    private val gameCardViewModelMap = mutableMapOf<GameAndBets, GameCardViewModel>()
+    private val gameCardViewModelMap = mutableMapOf<GameAndBets, GameCardUIData>()
 
     /**
      * Update the player sorting based on the provided [sorting] criteria.
@@ -151,8 +151,8 @@ class TeamViewModel(
         playerSortingImp.value = sorting
     }
 
-    fun getGameCardViewModel(gameAndBets: GameAndBets): GameCardViewModel {
-        return GameCardViewModel(
+    fun getGameCardViewModel(gameAndBets: GameAndBets): GameCardUIData {
+        return GameCardUIData(
             gameAndBets = gameAndBets,
             betRepository = get(BetRepository::class.java),
             userRepository = get(UserRepository::class.java),

@@ -40,7 +40,7 @@ import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.Transparency25
 import com.jiachian.nbatoday.compose.screen.calendar.models.CalendarDate
 import com.jiachian.nbatoday.compose.screen.card.GameCard
-import com.jiachian.nbatoday.compose.screen.card.GameCardViewModel
+import com.jiachian.nbatoday.compose.screen.card.GameCardUIData
 import com.jiachian.nbatoday.compose.widget.IconButton
 import com.jiachian.nbatoday.compose.widget.LoadingScreen
 import com.jiachian.nbatoday.compose.widget.UIStateScreen
@@ -266,7 +266,7 @@ private fun LazyGridScope.calendarGameCards(
 @Composable
 private fun CalendarGameCard(
     modifier: Modifier = Modifier,
-    viewModel: GameCardViewModel,
+    viewModel: GameCardUIData,
     onClick: () -> Unit,
 ) {
     GameCard(
@@ -280,7 +280,7 @@ private fun CalendarGameCard(
                 .rippleClickable { onClick() }
                 .padding(bottom = 8.dp)
         ),
-        viewModel = viewModel,
+        uiData = viewModel,
         expandable = false,
         color = MaterialTheme.colors.primary,
     )

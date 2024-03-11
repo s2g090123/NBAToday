@@ -71,7 +71,11 @@ fun MainScreen(
             )
         }
         composable(MainRoute.Home.route) {
-            HomeScreen()
+            HomeScreen(
+                navigateToBoxScore = navigationController::navigateToBoxScore,
+                navigateToTeam = navigationController::navigateToTeam,
+                navigateToCalendar = navigationController::navigateToCalendar,
+            )
         }
         composable(MainRoute.BoxScore.route) {
             BoxScoreScreen(

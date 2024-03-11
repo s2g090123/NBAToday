@@ -64,7 +64,7 @@ class SchedulePageViewModelTest : BaseUnitTest() {
             viewModel.groupedGamesState.value,
             UIState.Loaded::class.java
         )
-        val dateData = viewModel.getSelectedDate()
+        val dateData = viewModel.selectedDate
         val dateDataToGames = viewModel.groupedGamesState.value.getDataOrNull()
         val actual = dateDataToGames?.get(dateData)
         val expected = gamesAndBets.value.filter {
@@ -84,7 +84,7 @@ class SchedulePageViewModelTest : BaseUnitTest() {
             )
         }
         viewModel.selectDate(dateData)
-        assertIs(viewModel.getSelectedDate(), dateData)
+        assertIs(viewModel.selectedDate, dateData)
     }
 
     @Test
@@ -101,7 +101,7 @@ class SchedulePageViewModelTest : BaseUnitTest() {
             viewModel.groupedGamesState.value,
             UIState.Loaded::class.java
         )
-        val dateData = viewModel.getSelectedDate()
+        val dateData = viewModel.selectedDate
         val dateDataToGames = viewModel.groupedGamesState.value.getDataOrNull()
         val actual = dateDataToGames?.get(dateData)
         val expected = gamesAndBets.value.filter {

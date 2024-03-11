@@ -8,7 +8,7 @@ import com.jiachian.nbatoday.UserName
 import com.jiachian.nbatoday.UserPassword
 import com.jiachian.nbatoday.UserPoints
 import com.jiachian.nbatoday.UserToken
-import com.jiachian.nbatoday.compose.screen.card.GameCardViewModel
+import com.jiachian.nbatoday.compose.screen.card.GameCardUIData
 import com.jiachian.nbatoday.data.local.GameAndBetsGenerator
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsFalse
@@ -19,7 +19,7 @@ import org.junit.Before
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class GameCardViewModelTest : BaseUnitTest() {
+class GameCardUIDataTest : BaseUnitTest() {
     @Before
     fun setup() = runTest {
         repositoryProvider.schedule.updateSchedule()
@@ -111,8 +111,8 @@ class GameCardViewModelTest : BaseUnitTest() {
         assertIsFalse(viewModel.expanded.value)
     }
 
-    private fun getFinalViewModel(): GameCardViewModel {
-        return GameCardViewModel(
+    private fun getFinalViewModel(): GameCardUIData {
+        return GameCardUIData(
             gameAndBets = GameAndBetsGenerator.getFinal(),
             betRepository = repositoryProvider.bet,
             userRepository = repositoryProvider.user,
@@ -120,8 +120,8 @@ class GameCardViewModelTest : BaseUnitTest() {
         )
     }
 
-    private fun getPlayingViewModel(): GameCardViewModel {
-        return GameCardViewModel(
+    private fun getPlayingViewModel(): GameCardUIData {
+        return GameCardUIData(
             gameAndBets = GameAndBetsGenerator.getPlaying(),
             betRepository = repositoryProvider.bet,
             userRepository = repositoryProvider.user,
@@ -129,8 +129,8 @@ class GameCardViewModelTest : BaseUnitTest() {
         )
     }
 
-    private fun getComingSoonViewModel(): GameCardViewModel {
-        return GameCardViewModel(
+    private fun getComingSoonViewModel(): GameCardUIData {
+        return GameCardUIData(
             gameAndBets = GameAndBetsGenerator.getComingSoon(),
             betRepository = repositoryProvider.bet,
             userRepository = repositoryProvider.user,
