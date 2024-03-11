@@ -14,6 +14,10 @@ class NavigationController2(
     fun navigateToBoxScore(gameId: String) {
         navController.navigate(MainRoute.BoxScore.build(gameId))
     }
+
+    fun navigateToTeam(teamId: Int) {
+        navController.navigate(MainRoute.Team.build(teamId))
+    }
 }
 
 @Composable

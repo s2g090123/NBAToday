@@ -96,11 +96,11 @@ fun MainScreen(
             )
         }
         composable(MainRoute.Calendar.route) {
-            remember {
-                viewModel.viewModelProvider.getCalendarViewModel(
-                    dateTime = it.arguments?.getStringToLong(MainRoute.Calendar.param).getOrError()
-                )
-            }.let { viewModel -> CalendarScreen(viewModel = viewModel) }
+            CalendarScreen(
+                navigateToBoxScore = navigationController::navigateToBoxScore,
+                navigateToTeam = navigationController::navigateToTeam,
+                onBack = navController::popBackStack
+            )
         }
         composable(MainRoute.Bet.route) {
             remember {
