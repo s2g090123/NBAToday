@@ -12,15 +12,13 @@ import com.jiachian.nbatoday.compose.screen.state.UIState
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.models.local.game.GameAndBets
+import com.jiachian.nbatoday.models.local.game.toGameCardUIDataList
 import com.jiachian.nbatoday.navigation.MainRoute
-import com.jiachian.nbatoday.repository.bet.BetRepository
 import com.jiachian.nbatoday.repository.game.GameRepository
-import com.jiachian.nbatoday.repository.user.UserRepository
 import com.jiachian.nbatoday.utils.DateUtils
 import com.jiachian.nbatoday.utils.WhileSubscribed5000
 import java.util.Calendar
 import java.util.Date
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -31,17 +29,12 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import org.koin.java.KoinJavaComponent.get
 
 /**
  * ViewModel for handling business logic related to [CalendarScreen].
  *
- * @property dateTime The initial date and time for the calendar.
  * @property repository The repository for interacting with [GameAndBets].
- * @property navigationController The controller for navigation within the app.
- * @property composeViewModelProvider The provider for creating ComposeViewModel instances.
  * @property dispatcherProvider The provider for obtaining dispatchers for coroutines (default is [DefaultDispatcherProvider]).
- * @property coroutineScope The coroutine scope for managing coroutines (default is [CoroutineScope] with main dispatcher).
  */
 class CalendarViewModel(
     savedStateHandle: SavedStateHandle,
@@ -60,7 +53,7 @@ class CalendarViewModel(
     val selectedDate = selectedDateImp.asStateFlow()
 
     // the list of games for the selected date
-    private val selectedGamesImp = MutableStateFlow(emptyList<GameAndBets>())
+    private val selectedGamesImp = MutableStateFlow(emptyList<GameCardUIData>())
     val selectedGames = selectedGamesImp.asStateFlow()
 
     // the loading status of [selectedGames]
@@ -145,6 +138,7 @@ class CalendarViewModel(
                             repository.getGamesAndBetsDuring(after, before)
                         }
                 }
+                .map { it.toGameCardUIDataList() }
                 .collect { games ->
                     selectedGamesImp.value = games
                     loadingGamesImp.value = false
@@ -219,16 +213,6 @@ class CalendarViewModel(
                     calendarDates
                 }
         }
-    }
-
-    fun getGameCardViewModel(gameAndBets: GameAndBets): GameCardUIData {
-        return GameCardUIData(
-            gameAndBets = gameAndBets,
-            betRepository = get(BetRepository::class.java),
-            userRepository = get(UserRepository::class.java),
-            dispatcherProvider = dispatcherProvider,
-            coroutineScope = viewModelScope,
-        )
     }
 
     private fun isInCalendar(calendar: Calendar, date: Date): Boolean {

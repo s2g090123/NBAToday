@@ -45,7 +45,6 @@ import com.jiachian.nbatoday.compose.widget.IconButton
 import com.jiachian.nbatoday.compose.widget.LoadingScreen
 import com.jiachian.nbatoday.compose.widget.UIStateScreen
 import com.jiachian.nbatoday.models.local.game.Game
-import com.jiachian.nbatoday.models.local.game.GameAndBets
 import com.jiachian.nbatoday.testing.testtag.CalendarTestTag
 import com.jiachian.nbatoday.utils.rippleClickable
 import com.jiachian.nbatoday.utils.slideSpec
@@ -216,7 +215,6 @@ private fun CalendarContent(
                     }
                 } else {
                     calendarGameCards(
-                        viewModel = viewModel,
                         games = selectedGames,
                         onClickGame = onClickGame,
                     )
@@ -242,13 +240,12 @@ private fun LazyGridScope.dateBoxes(
 }
 
 private fun LazyGridScope.calendarGameCards(
-    viewModel: CalendarViewModel,
-    games: List<GameAndBets>,
+    games: List<GameCardUIData>,
     onClickGame: (game: Game) -> Unit,
 ) = itemsIndexed(
     items = games,
     span = { _, _ -> GridItemSpan(DaysPerWeek) }
-) { index, game ->
+) { index, uiData ->
     CalendarGameCard(
         modifier = Modifier
             .testTag(CalendarTestTag.CalendarGameCard)
@@ -258,15 +255,15 @@ private fun LazyGridScope.calendarGameCards(
                 top = if (index == 0) 16.dp else 8.dp,
                 bottom = if (index == games.size - 1) 16.dp else 0.dp
             ),
-        viewModel = viewModel.getGameCardViewModel(game),
-        onClick = { onClickGame(game.game) }
+        uiData = uiData,
+        onClick = { onClickGame(uiData.gameAndBets.game) }
     )
 }
 
 @Composable
 private fun CalendarGameCard(
     modifier: Modifier = Modifier,
-    viewModel: GameCardUIData,
+    uiData: GameCardUIData,
     onClick: () -> Unit,
 ) {
     GameCard(
@@ -280,7 +277,7 @@ private fun CalendarGameCard(
                 .rippleClickable { onClick() }
                 .padding(bottom = 8.dp)
         ),
-        uiData = viewModel,
+        uiData = uiData,
         expandable = false,
         color = MaterialTheme.colors.primary,
     )
