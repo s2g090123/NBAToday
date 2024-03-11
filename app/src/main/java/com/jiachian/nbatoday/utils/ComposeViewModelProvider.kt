@@ -9,7 +9,6 @@ import com.jiachian.nbatoday.compose.screen.card.GameCardViewModel
 import com.jiachian.nbatoday.compose.screen.home.schedule.SchedulePageViewModel
 import com.jiachian.nbatoday.compose.screen.home.standing.StandingPageViewModel
 import com.jiachian.nbatoday.compose.screen.home.user.UserPageViewModel
-import com.jiachian.nbatoday.compose.screen.player.PlayerViewModel
 import com.jiachian.nbatoday.datastore.BaseDataStore
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
@@ -31,22 +30,6 @@ class ComposeViewModelProvider(
      * A map to store created ComposeViewModel instances for reuse.
      */
     private val viewModelMap = mutableMapOf<MainRoute, ComposeViewModel>()
-
-    fun getPlayerViewModel(
-        playerId: Int,
-        dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
-        coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.main),
-    ): PlayerViewModel {
-        return viewModelMap[MainRoute.Player] as? PlayerViewModel ?: PlayerViewModel(
-            playerId = playerId,
-            repository = repositoryProvider.player,
-            navigationController = navigationController,
-            dispatcherProvider = dispatcherProvider,
-            coroutineScope = coroutineScope,
-        ).apply {
-            viewModelMap[MainRoute.Player] = this
-        }
-    }
 
     fun getCalendarViewModel(
         dateTime: Long,

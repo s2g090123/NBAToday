@@ -91,11 +91,9 @@ fun MainScreen(
             )
         }
         composable(MainRoute.Player.route) {
-            remember {
-                viewModel.viewModelProvider.getPlayerViewModel(
-                    playerId = it.arguments?.getStringToInt(MainRoute.Player.param).getOrError()
-                )
-            }.let { viewModel -> PlayerScreen(viewModel = viewModel) }
+            PlayerScreen(
+                onBack = navController::popBackStack,
+            )
         }
         composable(MainRoute.Calendar.route) {
             remember {

@@ -27,9 +27,13 @@ import com.jiachian.nbatoday.compose.widget.IconButton
 import com.jiachian.nbatoday.compose.widget.LoadingScreen
 import com.jiachian.nbatoday.compose.widget.UIStateScreen
 import com.jiachian.nbatoday.testing.testtag.PlayerTestTag
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun PlayerScreen(viewModel: PlayerViewModel) {
+fun PlayerScreen(
+    viewModel: PlayerViewModel = koinViewModel(),
+    onBack: () -> Unit,
+) {
     val playerUIState by viewModel.playerUIState.collectAsState()
     Column(
         modifier = Modifier
@@ -42,7 +46,7 @@ fun PlayerScreen(viewModel: PlayerViewModel) {
                 .padding(top = 8.dp, start = 8.dp),
             drawableRes = R.drawable.ic_black_back,
             tint = MaterialTheme.colors.secondary,
-            onClick = viewModel::close
+            onClick = onBack,
         )
         UIStateScreen(
             state = playerUIState,
