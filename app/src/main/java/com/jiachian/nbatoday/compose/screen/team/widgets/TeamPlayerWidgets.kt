@@ -44,6 +44,7 @@ fun TeamPlayerPage(
     modifier: Modifier = Modifier,
     viewModel: TeamViewModel,
     teamPlayers: List<TeamPlayerRowData>,
+    navigateToPlayer: (playerId: Int) -> Unit,
 ) {
     val scrollState = rememberScrollState()
     val sorting by viewModel.playerSorting.collectAsState()
@@ -60,7 +61,8 @@ fun TeamPlayerPage(
                 viewModel = viewModel,
                 scrollState = scrollState,
                 rowData = rowData,
-                sorting = sorting
+                sorting = sorting,
+                onPlayerClick = navigateToPlayer,
             )
         }
     }
@@ -142,6 +144,7 @@ private fun TeamPlayerScrollableRow(
     scrollState: ScrollState,
     rowData: TeamPlayerRowData,
     sorting: TeamPlayerSorting,
+    onPlayerClick: (playerId: Int) -> Unit,
 ) {
     TeamPlayerRow(
         modifier = modifier,
@@ -149,6 +152,7 @@ private fun TeamPlayerScrollableRow(
         scrollState = scrollState,
         rowData = rowData,
         sorting = sorting,
+        onPlayerClick = onPlayerClick,
     )
     Divider(color = viewModel.colors.secondary.copy(Transparency25))
 }
@@ -159,14 +163,15 @@ private fun TeamPlayerRow(
     viewModel: TeamViewModel,
     scrollState: ScrollState,
     rowData: TeamPlayerRowData,
-    sorting: TeamPlayerSorting
+    sorting: TeamPlayerSorting,
+    onPlayerClick: (playerId: Int) -> Unit
 ) {
     Row(modifier = modifier) {
         TeamPlayerNameText(
             modifier = Modifier
                 .testTag(TeamTestTag.TeamPlayerRow_Text_PlayerName)
                 .size(120.dp, 40.dp)
-                .rippleClickable { viewModel.onPlayerClick(rowData.player.playerId) }
+                .rippleClickable { onPlayerClick(rowData.player.playerId) }
                 .padding(top = 8.dp, bottom = 8.dp, start = 4.dp),
             name = rowData.player.playerName,
             color = viewModel.colors.secondary,

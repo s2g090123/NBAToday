@@ -84,11 +84,11 @@ fun MainScreen(
             )
         }
         composable(MainRoute.Team.route) {
-            remember {
-                viewModel.viewModelProvider.getTeamViewModel(
-                    teamId = it.arguments?.getStringToInt(MainRoute.Team.param).getOrError()
-                )
-            }.let { viewModel -> TeamScreen(viewModel = viewModel) }
+            TeamScreen(
+                navigateToPlayer = navigationController::navigateToPlayer,
+                navigateToBoxScore = navigationController::navigateToBoxScore,
+                onBack = navController::popBackStack
+            )
         }
         composable(MainRoute.Player.route) {
             remember {

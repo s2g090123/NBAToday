@@ -30,6 +30,7 @@ fun TeamGamePage(
     modifier: Modifier = Modifier,
     viewModel: TeamViewModel,
     gamesState: UIState<List<GameAndBets>>,
+    navigateToBoxScore: (gameId: String) -> Unit,
 ) {
     UIStateScreen(
         state = gamesState,
@@ -64,7 +65,7 @@ fun TeamGamePage(
                             if (!game.game.gamePlayed) {
                                 showToast(R.string.game_is_coming_soon)
                             } else {
-                                viewModel.onGameCardClick(game.game)
+                                navigateToBoxScore(game.game.gameId)
                             }
                         }
                         .padding(bottom = 8.dp),

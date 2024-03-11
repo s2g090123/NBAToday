@@ -1,6 +1,8 @@
 package com.jiachian.nbatoday.compose.screen.team
 
-import com.jiachian.nbatoday.compose.screen.ComposeViewModel
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.jiachian.nbatoday.compose.screen.card.GameCardViewModel
 import com.jiachian.nbatoday.compose.screen.label.LabelHelper
 import com.jiachian.nbatoday.compose.screen.state.UIState
@@ -14,14 +16,13 @@ import com.jiachian.nbatoday.models.local.game.Game
 import com.jiachian.nbatoday.models.local.game.GameAndBets
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.navigation.MainRoute
-import com.jiachian.nbatoday.navigation.NavigationController
+import com.jiachian.nbatoday.repository.bet.BetRepository
 import com.jiachian.nbatoday.repository.game.GameRepository
 import com.jiachian.nbatoday.repository.team.TeamRepository
-import com.jiachian.nbatoday.utils.ComposeViewModelProvider
+import com.jiachian.nbatoday.repository.user.UserRepository
 import com.jiachian.nbatoday.utils.DateUtils
 import com.jiachian.nbatoday.utils.WhileSubscribed5000
 import java.util.Calendar
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,37 +33,28 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import org.koin.java.KoinJavaComponent.get
 
 /**
  * ViewModel for handling business logic related to [TeamScreen].
  *
- * @param teamId The ID of the team for which details are displayed.
  * @param teamRepository The repository for interacting with [Team].
  * @param gameRepository The repository for interacting with [Game].
- * @property navigationController The controller for navigation within the app.
- * @property composeViewModelProvider The provider for creating ComposeViewModel instances.
  * @property dispatcherProvider The provider for obtaining dispatchers for coroutines (default is [DefaultDispatcherProvider]).
- * @property coroutineScope The coroutine scope for managing coroutines (default is [CoroutineScope] with main dispatcher).
  */
 class TeamViewModel(
-    teamId: Int,
+    savedStateHandle: SavedStateHandle,
     private val teamRepository: TeamRepository,
     gameRepository: GameRepository,
-    navigationController: NavigationController,
-    private val composeViewModelProvider: ComposeViewModelProvider,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
-    coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.main)
-) : ComposeViewModel(
-    coroutineScope = coroutineScope,
-    navigationController = navigationController,
-    route = MainRoute.Team
-) {
+) : ViewModel() {
+    private val teamId: Int = savedStateHandle.get<String>(MainRoute.Team.param)?.toIntOrNull() ?: throw Exception("teamId is null.")
     private val team = NBATeam.getTeamById(teamId)
     val colors = team.colors
 
     // Asynchronous initialization to update teams and team players.
     init {
-        coroutineScope.launch(dispatcherProvider.io) {
+        viewModelScope.launch(dispatcherProvider.io) {
             val deferred1 = async { teamRepository.insertTeams() }
             val deferred2 = async { teamRepository.updateTeamPlayers(team.teamId) }
             awaitAll(deferred1, deferred2)
@@ -83,7 +75,7 @@ class TeamViewModel(
         }.timeInMillis
     ).map {
         UIState.Loaded(it)
-    }.stateIn(coroutineScope, SharingStarted.Lazily, UIState.Loading())
+    }.stateIn(viewModelScope, SharingStarted.Lazily, UIState.Loading())
     val gamesAfter = gameRepository.getGamesAndBetsAfter(
         team.teamId,
         DateUtils.getCalendar().apply {
@@ -93,7 +85,7 @@ class TeamViewModel(
         }.timeInMillis
     ).map {
         UIState.Loaded(it)
-    }.stateIn(coroutineScope, SharingStarted.Lazily, UIState.Loading())
+    }.stateIn(viewModelScope, SharingStarted.Lazily, UIState.Loading())
 
     private val teamAndPlayers = teamRepository.getTeamAndPlayers(team.teamId)
 
@@ -146,7 +138,7 @@ class TeamViewModel(
     ) { loading, teamUI ->
         if (loading) return@combine UIState.Loading()
         UIState.Loaded(teamUI)
-    }.stateIn(coroutineScope, WhileSubscribed5000, UIState.Loading())
+    }.stateIn(viewModelScope, WhileSubscribed5000, UIState.Loading())
 
     private val gameCardViewModelMap = mutableMapOf<GameAndBets, GameCardViewModel>()
 
@@ -159,32 +151,14 @@ class TeamViewModel(
         playerSortingImp.value = sorting
     }
 
-    /**
-     * Handle the click event on a game card and navigates to the box score screen.
-     *
-     * @param game The clicked game.
-     */
-    fun onGameCardClick(game: Game) {
-        navigationController.navigateToBoxScore(game.gameId)
-    }
-
-    /**
-     * Handle the click event on a player and navigates to the player screen.
-     *
-     * @param playerId The ID of the clicked player.
-     */
-    fun onPlayerClick(playerId: Int) {
-        navigationController.navigateToPlayer(playerId)
-    }
-
     fun getGameCardViewModel(gameAndBets: GameAndBets): GameCardViewModel {
-        return gameCardViewModelMap.getOrPut(gameAndBets) {
-            composeViewModelProvider.getGameCardViewModel(
-                gameAndBets = gameAndBets,
-                dispatcherProvider = dispatcherProvider,
-                coroutineScope = coroutineScope
-            )
-        }
+        return GameCardViewModel(
+            gameAndBets = gameAndBets,
+            betRepository = get(BetRepository::class.java),
+            userRepository = get(UserRepository::class.java),
+            dispatcherProvider = dispatcherProvider,
+            coroutineScope = viewModelScope,
+        )
     }
 
     private fun List<TeamPlayerRowData>.sortedWith(sorting: TeamPlayerSorting): List<TeamPlayerRowData> {
