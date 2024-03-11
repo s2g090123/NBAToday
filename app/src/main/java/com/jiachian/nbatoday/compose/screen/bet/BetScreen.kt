@@ -33,12 +33,19 @@ import com.jiachian.nbatoday.compose.widget.IconButton
 import com.jiachian.nbatoday.compose.widget.LoadingScreen
 import com.jiachian.nbatoday.compose.widget.UIStateScreen
 import com.jiachian.nbatoday.models.local.bet.BetAndGame
+import com.jiachian.nbatoday.models.local.game.GameStatus
 import com.jiachian.nbatoday.testing.testtag.BetTestTag
 import com.jiachian.nbatoday.testing.testtag.BetTestTag.BetScreen_BetBody_Loading
 import com.jiachian.nbatoday.utils.rippleClickable
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun BetScreen(viewModel: BetViewModel) {
+fun BetScreen(
+    viewModel: BetViewModel = koinViewModel(),
+    navigateToBoxScore: (gameId: String) -> Unit,
+    navigateToTeam: (teamId: Int) -> Unit,
+    onBack: () -> Unit,
+) {
     val uiState by viewModel.betsAndGamesState.collectAsState()
     Box(
         modifier = Modifier
@@ -46,11 +53,17 @@ fun BetScreen(viewModel: BetViewModel) {
             .background(MaterialTheme.colors.primary)
     ) {
         Column {
-            BetBackButton(onBack = viewModel::close)
+            BetBackButton(onBack = onBack)
             BetBody(
                 modifier = Modifier.fillMaxSize(),
                 uiState = uiState,
-                onClickBet = { viewModel.clickBetAndGame(it) }
+                onClickBet = {
+                    when (it.game.gameStatus) {
+                        GameStatus.COMING_SOON -> navigateToTeam(it.game.homeTeamId)
+                        GameStatus.PLAYING -> navigateToBoxScore(it.game.gameId)
+                        GameStatus.FINAL -> viewModel.settleBet(it)
+                    }
+                }
             )
         }
         TurnTableScreen(

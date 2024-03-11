@@ -1,6 +1,5 @@
 package com.jiachian.nbatoday.compose.screen.main
 
-import android.os.Bundle
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.InfiniteRepeatableSpec
@@ -39,7 +38,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.jiachian.nbatoday.MainViewModel
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.Transparency25
 import com.jiachian.nbatoday.compose.screen.bet.BetScreen
@@ -51,14 +49,12 @@ import com.jiachian.nbatoday.compose.screen.team.TeamScreen
 import com.jiachian.nbatoday.navigation.MainRoute
 import com.jiachian.nbatoday.navigation.NavigationController2
 import com.jiachian.nbatoday.navigation.rememberNavigationController
-import com.jiachian.nbatoday.utils.getOrError
 
 private const val SplashOffsetAnimationDurationMs = 2000
 
 @Composable
 fun MainScreen(
     navController: NavHostController = rememberNavController(),
-    viewModel: MainViewModel,
     navigationController: NavigationController2 = rememberNavigationController(navController),
 ) {
     NavHost(
@@ -103,11 +99,11 @@ fun MainScreen(
             )
         }
         composable(MainRoute.Bet.route) {
-            remember {
-                viewModel.viewModelProvider.getBetViewModel(
-                    account = it.arguments?.getString(MainRoute.Bet.param).getOrError()
-                )
-            }.let { viewModel -> BetScreen(viewModel = viewModel) }
+            BetScreen(
+                navigateToBoxScore = navigationController::navigateToBoxScore,
+                navigateToTeam = navigationController::navigateToTeam,
+                onBack = navController::popBackStack,
+            )
         }
     }
 }
@@ -166,6 +162,3 @@ private fun SplashScreen(colors: List<Color>) {
         )
     }
 }
-
-private fun Bundle.getStringToInt(key: String) = this.getString(key)?.toIntOrNull()
-private fun Bundle.getStringToLong(key: String) = this.getString(key)?.toLongOrNull()

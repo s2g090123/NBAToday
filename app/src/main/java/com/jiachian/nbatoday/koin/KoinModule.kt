@@ -1,6 +1,7 @@
 package com.jiachian.nbatoday.koin
 
 import com.jiachian.nbatoday.MainViewModel
+import com.jiachian.nbatoday.compose.screen.bet.BetViewModel
 import com.jiachian.nbatoday.compose.screen.calendar.CalendarViewModel
 import com.jiachian.nbatoday.compose.screen.home.HomeViewModel
 import com.jiachian.nbatoday.compose.screen.player.PlayerViewModel
@@ -86,4 +87,5 @@ val module = module {
     viewModel { TeamViewModel(get(), get(), get()) }
     viewModel { PlayerViewModel(get(), get()) }
     viewModel { CalendarViewModel(get(), get()) }
+    viewModel { BetViewModel(get(), get()) }
 }

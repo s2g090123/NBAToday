@@ -3,7 +3,6 @@ package com.jiachian.nbatoday.utils
 import androidx.annotation.VisibleForTesting
 import com.jiachian.nbatoday.annotation.ExcludeFromJacocoGeneratedReport
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
-import com.jiachian.nbatoday.compose.screen.bet.BetViewModel
 import com.jiachian.nbatoday.compose.screen.card.GameCardViewModel
 import com.jiachian.nbatoday.compose.screen.home.schedule.SchedulePageViewModel
 import com.jiachian.nbatoday.compose.screen.home.standing.StandingPageViewModel
@@ -29,22 +28,6 @@ class ComposeViewModelProvider(
      * A map to store created ComposeViewModel instances for reuse.
      */
     private val viewModelMap = mutableMapOf<MainRoute, ComposeViewModel>()
-
-    fun getBetViewModel(
-        account: String,
-        dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
-        coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.main),
-    ): BetViewModel {
-        return viewModelMap[MainRoute.Bet] as? BetViewModel ?: BetViewModel(
-            account = account,
-            repository = repositoryProvider.bet,
-            navigationController = navigationController,
-            dispatcherProvider = dispatcherProvider,
-            coroutineScope = coroutineScope,
-        ).apply {
-            viewModelMap[MainRoute.Bet] = this
-        }
-    }
 
     fun getSchedulePageViewModel(
         dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
