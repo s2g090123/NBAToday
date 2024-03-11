@@ -5,6 +5,7 @@ import com.jiachian.nbatoday.compose.screen.bet.BetViewModel
 import com.jiachian.nbatoday.compose.screen.calendar.CalendarViewModel
 import com.jiachian.nbatoday.compose.screen.home.HomeViewModel
 import com.jiachian.nbatoday.compose.screen.home.schedule.SchedulePageViewModel
+import com.jiachian.nbatoday.compose.screen.home.standing.StandingPageViewModel
 import com.jiachian.nbatoday.compose.screen.player.PlayerViewModel
 import com.jiachian.nbatoday.compose.screen.score.BoxScoreViewModel
 import com.jiachian.nbatoday.compose.screen.team.TeamViewModel
@@ -90,4 +91,5 @@ val module = module {
     viewModel { CalendarViewModel(get(), get()) }
     viewModel { BetViewModel(get(), get()) }
     viewModel { SchedulePageViewModel(get(), get()) }
+    viewModel { StandingPageViewModel(get()) }
 }

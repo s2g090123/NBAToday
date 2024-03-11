@@ -4,7 +4,6 @@ import androidx.annotation.VisibleForTesting
 import com.jiachian.nbatoday.annotation.ExcludeFromJacocoGeneratedReport
 import com.jiachian.nbatoday.compose.screen.ComposeViewModel
 import com.jiachian.nbatoday.compose.screen.card.GameCardUIData
-import com.jiachian.nbatoday.compose.screen.home.standing.StandingPageViewModel
 import com.jiachian.nbatoday.compose.screen.home.user.UserPageViewModel
 import com.jiachian.nbatoday.datastore.BaseDataStore
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
@@ -27,18 +26,6 @@ class ComposeViewModelProvider(
      * A map to store created ComposeViewModel instances for reuse.
      */
     private val viewModelMap = mutableMapOf<MainRoute, ComposeViewModel>()
-
-    fun getStandingPageViewModel(
-        dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
-        coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.main),
-    ): StandingPageViewModel {
-        return StandingPageViewModel(
-            repository = repositoryProvider.team,
-            navigationController = navigationController,
-            dispatcherProvider = dispatcherProvider,
-            coroutineScope = coroutineScope,
-        )
-    }
 
     fun getUserPageViewModel(
         dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,

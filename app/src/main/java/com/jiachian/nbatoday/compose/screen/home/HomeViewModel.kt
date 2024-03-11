@@ -20,13 +20,6 @@ class HomeViewModel(
     // list of pages in the home screen
     val pages = HomePage.values()
 
-    val standingPageViewModel by lazy {
-        composeViewModelProvider.getStandingPageViewModel(
-            dispatcherProvider = dispatcherProvider,
-            coroutineScope = viewModelScope,
-        )
-    }
-
     val userPageViewModel by lazy {
         composeViewModelProvider.getUserPageViewModel(
             dispatcherProvider = dispatcherProvider,

@@ -65,7 +65,7 @@ fun HomeScreen(
             composable(HomePage.STANDING.route) {
                 StandingPage(
                     modifier = Modifier.fillMaxSize(),
-                    viewModel = viewModel.standingPageViewModel
+                    navigateToTeam = navigateToTeam,
                 )
             }
             composable(HomePage.USER.route) {
