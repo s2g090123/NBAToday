@@ -42,11 +42,16 @@ import com.jiachian.nbatoday.compose.widget.IconButton
 import com.jiachian.nbatoday.compose.widget.LoadingScreen
 import com.jiachian.nbatoday.compose.widget.UIStateScreen
 import com.jiachian.nbatoday.testing.testtag.BoxScoreTestTag
+import org.koin.androidx.compose.koinViewModel
 
 private val TopMargin = 81.dp
 
 @Composable
-fun BoxScoreScreen(viewModel: BoxScoreViewModel) {
+fun BoxScoreScreen(
+    viewModel: BoxScoreViewModel = koinViewModel(),
+    openPlayerInfo: (playerId: Int) -> Unit,
+    onBack: () -> Unit,
+) {
     val date by viewModel.date.collectAsState()
     val boxScoreUIState by viewModel.boxScoreUIState.collectAsState()
     Column(
@@ -56,7 +61,7 @@ fun BoxScoreScreen(viewModel: BoxScoreViewModel) {
     ) {
         ScoreTopBar(
             title = date,
-            onBack = viewModel::close
+            onBack = onBack
         )
         UIStateScreen(
             state = boxScoreUIState,
@@ -84,6 +89,7 @@ fun BoxScoreScreen(viewModel: BoxScoreViewModel) {
                 viewModel = viewModel,
                 scrollState = scrollState,
                 boxScoreUI = boxScoreUI,
+                onClickPlayer = openPlayerInfo,
             )
         }
     }
@@ -95,6 +101,7 @@ private fun ScoreScreen(
     viewModel: BoxScoreViewModel,
     scrollState: ScrollState,
     boxScoreUI: BoxScoreUI,
+    onClickPlayer: (playerId: Int) -> Unit,
 ) {
     val detailHeight = LocalConfiguration.current.screenHeightDp.dp - TopMargin
     Column(modifier = modifier) {
@@ -118,6 +125,7 @@ private fun ScoreScreen(
             viewModel = viewModel,
             boxScoreUI = boxScoreUI,
             scrollState = scrollState,
+            onClickPlayer = onClickPlayer,
         )
     }
 }
@@ -160,6 +168,7 @@ private fun ScoreDetail(
     viewModel: BoxScoreViewModel,
     boxScoreUI: BoxScoreUI,
     scrollState: ScrollState,
+    onClickPlayer: (playerId: Int) -> Unit,
 ) {
     val pagerState = rememberPagerState()
     val nestedScrollConnection = remember {
@@ -189,6 +198,7 @@ private fun ScoreDetail(
             viewModel = viewModel,
             pagerState = pagerState,
             boxScoreUI = boxScoreUI,
+            onClickPlayer = onClickPlayer,
         )
     }
 }

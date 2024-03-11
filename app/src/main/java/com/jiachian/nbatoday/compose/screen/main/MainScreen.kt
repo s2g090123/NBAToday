@@ -78,11 +78,10 @@ fun MainScreen(
             HomeScreen()
         }
         composable(MainRoute.BoxScore.route) {
-            remember {
-                viewModel.viewModelProvider.getBoxScoreViewModel(
-                    gameId = it.arguments?.getString(MainRoute.BoxScore.param).getOrError()
-                )
-            }.let { viewModel -> BoxScoreScreen(viewModel = viewModel) }
+            BoxScoreScreen(
+                openPlayerInfo = navigationController::navigateToPlayer,
+                onBack = navController::popBackStack
+            )
         }
         composable(MainRoute.Team.route) {
             remember {

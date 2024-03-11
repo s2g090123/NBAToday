@@ -38,6 +38,7 @@ fun ScoreDetailPager(
     viewModel: BoxScoreViewModel,
     pagerState: PagerState,
     boxScoreUI: BoxScoreUI,
+    onClickPlayer: (playerId: Int) -> Unit,
 ) {
     HorizontalPager(
         modifier = modifier,
@@ -53,6 +54,7 @@ fun ScoreDetailPager(
                         .fillMaxSize(),
                     viewModel = viewModel,
                     players = boxScoreUI.players.home,
+                    onClickPlayer = onClickPlayer,
                 )
             }
             AwayPageIndex -> {
@@ -62,6 +64,7 @@ fun ScoreDetailPager(
                         .fillMaxHeight(),
                     viewModel = viewModel,
                     players = boxScoreUI.players.away,
+                    onClickPlayer = onClickPlayer,
                 )
             }
             TeamPageIndex -> {
