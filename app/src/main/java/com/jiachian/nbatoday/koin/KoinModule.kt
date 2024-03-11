@@ -31,7 +31,6 @@ import com.jiachian.nbatoday.datasource.remote.user.NBAUserRemoteSource
 import com.jiachian.nbatoday.datasource.remote.user.UserRemoteSource
 import com.jiachian.nbatoday.datastore.BaseDataStore
 import com.jiachian.nbatoday.datastore.NBADataStore
-import com.jiachian.nbatoday.repository.RepositoryProvider
 import com.jiachian.nbatoday.repository.bet.BetRepository
 import com.jiachian.nbatoday.repository.bet.NBABetRepository
 import com.jiachian.nbatoday.repository.game.GameRepository
@@ -68,7 +67,6 @@ val module = module {
     factory { NBATeamLocalSource(get()) as TeamLocalSource }
     factory { NBAPlayerLocalSource(get()) as PlayerLocalSource }
     factory { NBABetLocalSource(get()) as BetLocalSource }
-    factory { RepositoryProvider(get(), get(), get(), get(), get(), get()) }
 
     single { NBADatabase.getInstance(androidContext()) }
     single { NBADataStore(androidApplication()) as BaseDataStore }

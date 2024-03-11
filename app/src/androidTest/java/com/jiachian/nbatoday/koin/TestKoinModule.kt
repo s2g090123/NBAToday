@@ -32,7 +32,6 @@ import com.jiachian.nbatoday.datasource.remote.team.TeamRemoteSource
 import com.jiachian.nbatoday.datasource.remote.user.UserRemoteSource
 import com.jiachian.nbatoday.datastore.BaseDataStore
 import com.jiachian.nbatoday.datastore.data.TestDataStore
-import com.jiachian.nbatoday.repository.RepositoryProvider
 import com.jiachian.nbatoday.repository.bet.BetRepository
 import com.jiachian.nbatoday.repository.data.TestBetRepository
 import com.jiachian.nbatoday.repository.data.TestGameRepository
