@@ -32,6 +32,10 @@ class NavigationController2(
             navController.navigate(MainRoute.Calendar.build(it))
         }
     }
+
+    fun navigateToBet(account: String) {
+        navController.navigate(MainRoute.Bet.build(account))
+    }
 }
 
 @Composable

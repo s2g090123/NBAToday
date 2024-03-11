@@ -1,7 +1,6 @@
 package com.jiachian.nbatoday.compose.screen.home
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.jiachian.nbatoday.compose.screen.home.navigation.HomePage
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
@@ -19,11 +18,4 @@ class HomeViewModel(
 ) : ViewModel() {
     // list of pages in the home screen
     val pages = HomePage.values()
-
-    val userPageViewModel by lazy {
-        composeViewModelProvider.getUserPageViewModel(
-            dispatcherProvider = dispatcherProvider,
-            coroutineScope = viewModelScope
-        )
-    }
 }

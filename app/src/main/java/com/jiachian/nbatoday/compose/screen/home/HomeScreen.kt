@@ -38,6 +38,7 @@ fun HomeScreen(
     navigateToBoxScore: (gameId: String) -> Unit,
     navigateToTeam: (teamId: Int) -> Unit,
     navigateToCalendar: (DateData) -> Unit,
+    navigateToBet: (account: String) -> Unit,
 ) {
     Scaffold(
         bottomBar = {
@@ -71,7 +72,7 @@ fun HomeScreen(
             composable(HomePage.USER.route) {
                 UserPage(
                     modifier = Modifier.fillMaxSize(),
-                    viewModel = viewModel.userPageViewModel
+                    navigateToBet = navigateToBet,
                 )
             }
         }
