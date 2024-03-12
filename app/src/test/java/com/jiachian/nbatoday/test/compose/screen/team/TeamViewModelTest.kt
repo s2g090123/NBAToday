@@ -19,8 +19,6 @@ import com.jiachian.nbatoday.models.local.team.Team
 import com.jiachian.nbatoday.models.local.team.TeamPlayer
 import com.jiachian.nbatoday.models.local.team.TeamRank
 import com.jiachian.nbatoday.navigation.MainRoute
-import com.jiachian.nbatoday.repository.schedule.ScheduleRepository
-import com.jiachian.nbatoday.repository.team.TeamRepository
 import com.jiachian.nbatoday.rule.SetMainDispatcherRule
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsA
@@ -62,7 +60,8 @@ class TeamViewModelTest : BaseUnitTest() {
 
     private val teamRank: TeamRank
         get() {
-            return get<TeamRepository>()
+            return repositoryProvider
+                .team
                 .getTeamRank(team.teamId, team.teamConference)
                 .stateIn(TeamRank.default())
                 .value
@@ -70,8 +69,8 @@ class TeamViewModelTest : BaseUnitTest() {
 
     @Before
     fun setup() = runTest {
-        get<ScheduleRepository>().updateSchedule()
-        get<TeamRepository>().insertTeams()
+        repositoryProvider.schedule.updateSchedule()
+        repositoryProvider.team.insertTeams()
         viewModel = TeamViewModel(
             savedStateHandle = SavedStateHandle(mapOf(MainRoute.Team.param to "${team.teamId}")),
             teamRepository = get(),

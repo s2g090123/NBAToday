@@ -3,7 +3,6 @@ package com.jiachian.nbatoday.test
 import com.jiachian.nbatoday.BaseUnitTest
 import com.jiachian.nbatoday.SplashViewModel
 import com.jiachian.nbatoday.data.local.UserGenerator
-import com.jiachian.nbatoday.repository.user.UserRepository
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -23,7 +22,8 @@ class SplashViewModelTest : BaseUnitTest() {
             dataStore = get(),
             dispatcherProvider = dispatcherProvider,
         )
-        get<UserRepository>()
+        repositoryProvider
+            .user
             .user
             .stateIn(null)
             .value

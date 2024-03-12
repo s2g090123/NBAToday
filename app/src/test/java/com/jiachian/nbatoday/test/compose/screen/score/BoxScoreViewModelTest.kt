@@ -17,7 +17,6 @@ import com.jiachian.nbatoday.data.local.GameGenerator
 import com.jiachian.nbatoday.models.local.score.BoxScore
 import com.jiachian.nbatoday.models.local.score.BoxScoreAndGame
 import com.jiachian.nbatoday.navigation.MainRoute
-import com.jiachian.nbatoday.repository.schedule.ScheduleRepository
 import com.jiachian.nbatoday.rule.SetMainDispatcherRule
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsA
@@ -116,7 +115,7 @@ class BoxScoreViewModelTest : BaseUnitTest() {
 
     @Before
     fun setup() = runTest {
-        get<ScheduleRepository>().updateSchedule()
+        repositoryProvider.schedule.updateSchedule()
         viewModel = BoxScoreViewModel(
             savedStateHandle = SavedStateHandle(mapOf(MainRoute.BoxScore.param to boxScoreAndGame.game.gameId)),
             repository = get(),

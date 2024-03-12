@@ -5,7 +5,6 @@ import com.jiachian.nbatoday.BaseUnitTest
 import com.jiachian.nbatoday.BasicTime
 import com.jiachian.nbatoday.compose.screen.calendar.CalendarViewModel
 import com.jiachian.nbatoday.navigation.MainRoute
-import com.jiachian.nbatoday.repository.schedule.ScheduleRepository
 import com.jiachian.nbatoday.rule.SetMainDispatcherRule
 import com.jiachian.nbatoday.utils.DateUtils
 import com.jiachian.nbatoday.utils.assertIs
@@ -38,7 +37,7 @@ class CalendarViewModelTest : BaseUnitTest() {
 
     @Before
     fun setup() = runTest {
-        get<ScheduleRepository>().updateSchedule()
+        repositoryProvider.schedule.updateSchedule()
         viewModel = CalendarViewModel(
             savedStateHandle = SavedStateHandle(mapOf(MainRoute.Calendar.param to "$BasicTime")),
             repository = get(),

@@ -17,9 +17,6 @@ import com.jiachian.nbatoday.models.local.game.GameAndBets
 import com.jiachian.nbatoday.models.local.game.GameScoreUpdateData
 import com.jiachian.nbatoday.models.local.game.GameStatus
 import com.jiachian.nbatoday.models.local.game.GameUpdateData
-import com.jiachian.nbatoday.repository.bet.BetRepository
-import com.jiachian.nbatoday.repository.schedule.ScheduleRepository
-import com.jiachian.nbatoday.repository.user.UserRepository
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsFalse
 import com.jiachian.nbatoday.utils.assertIsTrue
@@ -40,7 +37,7 @@ class NBAGameLocalSourceTest : BaseUnitTest() {
 
     @Test
     fun `getGamesAndBets() with nonIncluding bets expects correct`() = launch {
-        get<ScheduleRepository>().updateSchedule()
+        repositoryProvider.schedule.updateSchedule()
         val actual =
             localSource.getGamesAndBets().stateIn(emptyList()).value
         val expected = listOf(
@@ -53,16 +50,16 @@ class NBAGameLocalSourceTest : BaseUnitTest() {
 
     @Test
     fun `getGamesAndBets() with including bets expects correct`() = launch {
-        get<ScheduleRepository>().updateSchedule()
-        get<UserRepository>().login(UserAccount, UserPassword)
+        repositoryProvider.schedule.updateSchedule()
+        repositoryProvider.user.login(UserAccount, UserPassword)
         BetGenerator.getFinal().also {
-            get<BetRepository>().insertBet(it.gameId, it.homePoints, it.awayPoints)
+            repositoryProvider.bet.insertBet(it.gameId, it.homePoints, it.awayPoints)
         }
         BetGenerator.getPlaying().also {
-            get<BetRepository>().insertBet(it.gameId, it.homePoints, it.awayPoints)
+            repositoryProvider.bet.insertBet(it.gameId, it.homePoints, it.awayPoints)
         }
         BetGenerator.getComingSoon().also {
-            get<BetRepository>().insertBet(it.gameId, it.homePoints, it.awayPoints)
+            repositoryProvider.bet.insertBet(it.gameId, it.homePoints, it.awayPoints)
         }
         val actual =
             localSource.getGamesAndBets().stateIn(emptyList()).value
@@ -76,7 +73,7 @@ class NBAGameLocalSourceTest : BaseUnitTest() {
 
     @Test
     fun `getGamesAndBetsDuring(final) expects correct`() = launch {
-        get<ScheduleRepository>().updateSchedule()
+        repositoryProvider.schedule.updateSchedule()
         val game = GameGenerator.getFinal()
         val actual =
             localSource.getGamesAndBetsDuring(game.gameDate.time, game.gameDate.time)
@@ -88,7 +85,7 @@ class NBAGameLocalSourceTest : BaseUnitTest() {
 
     @Test
     fun `getGamesAndBetsDuring(playing) expects correct`() = launch {
-        get<ScheduleRepository>().updateSchedule()
+        repositoryProvider.schedule.updateSchedule()
         val game = GameGenerator.getPlaying()
         val actual =
             localSource.getGamesAndBetsDuring(game.gameDate.time, game.gameDate.time)
@@ -100,7 +97,7 @@ class NBAGameLocalSourceTest : BaseUnitTest() {
 
     @Test
     fun `getGamesAndBetsDuring(comingSoon) expects correct`() = launch {
-        get<ScheduleRepository>().updateSchedule()
+        repositoryProvider.schedule.updateSchedule()
         val game = GameGenerator.getComingSoon()
         val actual =
             localSource.getGamesAndBetsDuring(game.gameDate.time, game.gameDate.time)
@@ -112,7 +109,7 @@ class NBAGameLocalSourceTest : BaseUnitTest() {
 
     @Test
     fun `getGamesAndBetsBefore(home, final) expects correct`() = launch {
-        get<ScheduleRepository>().updateSchedule()
+        repositoryProvider.schedule.updateSchedule()
         val game = GameGenerator.getFinal()
         val actual =
             localSource.getGamesAndBetsBefore(HomeTeamId, game.gameDate.time)
@@ -124,7 +121,7 @@ class NBAGameLocalSourceTest : BaseUnitTest() {
 
     @Test
     fun `getGamesAndBetsBefore(home, playing) expects correct`() = launch {
-        get<ScheduleRepository>().updateSchedule()
+        repositoryProvider.schedule.updateSchedule()
         val game = GameGenerator.getPlaying()
         val actual =
             localSource.getGamesAndBetsBefore(HomeTeamId, game.gameDate.time)
@@ -139,7 +136,7 @@ class NBAGameLocalSourceTest : BaseUnitTest() {
 
     @Test
     fun `getGamesAndBetsBefore(home, comingSoon) expects correct`() = launch {
-        get<ScheduleRepository>().updateSchedule()
+        repositoryProvider.schedule.updateSchedule()
         val game = GameGenerator.getComingSoon()
         val actual =
             localSource.getGamesAndBetsBefore(HomeTeamId, game.gameDate.time)
@@ -155,7 +152,7 @@ class NBAGameLocalSourceTest : BaseUnitTest() {
 
     @Test
     fun `getGamesAndBetsAfter(home, final) expects correct`() = launch {
-        get<ScheduleRepository>().updateSchedule()
+        repositoryProvider.schedule.updateSchedule()
         val game = GameGenerator.getFinal()
         val actual =
             localSource.getGamesAndBetsAfter(HomeTeamId, game.gameDate.time)
@@ -170,7 +167,7 @@ class NBAGameLocalSourceTest : BaseUnitTest() {
 
     @Test
     fun `getGamesAndBetsAfter(home, playing) expects correct`() = launch {
-        get<ScheduleRepository>().updateSchedule()
+        repositoryProvider.schedule.updateSchedule()
         val game = GameGenerator.getPlaying()
         val actual =
             localSource.getGamesAndBetsAfter(HomeTeamId, game.gameDate.time)
@@ -182,7 +179,7 @@ class NBAGameLocalSourceTest : BaseUnitTest() {
 
     @Test
     fun `getGamesAndBetsAfter(home, comingSoon) expects correct`() = launch {
-        get<ScheduleRepository>().updateSchedule()
+        repositoryProvider.schedule.updateSchedule()
         val game = GameGenerator.getComingSoon()
         val actual =
             localSource.getGamesAndBetsAfter(HomeTeamId, game.gameDate.time)
@@ -194,7 +191,7 @@ class NBAGameLocalSourceTest : BaseUnitTest() {
 
     @Test
     fun `getLastGameDateTime() expects last game is comingSoon`() = launch {
-        get<ScheduleRepository>().updateSchedule()
+        repositoryProvider.schedule.updateSchedule()
         val actual =
             localSource.getLastGameDateTime().stateIn(null).value
         val expected = GameGenerator.getComingSoon().gameDateTime
@@ -203,7 +200,7 @@ class NBAGameLocalSourceTest : BaseUnitTest() {
 
     @Test
     fun `getFirstGameDateTime() expects first game is final`() = launch {
-        get<ScheduleRepository>().updateSchedule()
+        repositoryProvider.schedule.updateSchedule()
         val actual =
             localSource.getFirstGameDateTime().stateIn(null).value
         val expected = GameGenerator.getFinal().gameDateTime
@@ -229,7 +226,7 @@ class NBAGameLocalSourceTest : BaseUnitTest() {
 
     @Test
     fun `updateGames(finalUpdateData) expects playing becomes final`() = launch {
-        get<ScheduleRepository>().updateSchedule()
+        repositoryProvider.schedule.updateSchedule()
         val playingGame = GameGenerator.getPlaying()
         val updateData = GameUpdateData(
             gameId = playingGame.gameId,
@@ -252,7 +249,7 @@ class NBAGameLocalSourceTest : BaseUnitTest() {
 
     @Test
     fun `updateGameScores(playing) expects playingGame is updated`() = launch {
-        get<ScheduleRepository>().updateSchedule()
+        repositoryProvider.schedule.updateSchedule()
         val playingGame = GameGenerator.getPlaying()
         val pointsLeader = Game.PointsLeader(
             playerId = HomePlayerId,
@@ -280,7 +277,7 @@ class NBAGameLocalSourceTest : BaseUnitTest() {
 
     @Test
     fun `gameExists() with updateSchedule expects true`() = launch {
-        get<ScheduleRepository>().updateSchedule()
+        repositoryProvider.schedule.updateSchedule()
         val actual = localSource.gameExists()
         assertIsTrue(actual)
     }

@@ -11,7 +11,6 @@ import com.jiachian.nbatoday.compose.screen.bet.models.Lose
 import com.jiachian.nbatoday.compose.screen.bet.models.TurnTableUIState
 import com.jiachian.nbatoday.compose.screen.bet.models.Win
 import com.jiachian.nbatoday.navigation.MainRoute
-import com.jiachian.nbatoday.repository.user.UserRepository
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsA
 import com.jiachian.nbatoday.utils.assertIsNot
@@ -29,7 +28,7 @@ class BetViewModelTest : BaseUnitTest() {
 
     @Before
     fun setup() = runTest {
-        get<UserRepository>().login(UserAccount, UserPassword)
+        repositoryProvider.user.login(UserAccount, UserPassword)
         viewModel = BetViewModel(
             savedStateHandle = SavedStateHandle(mapOf(MainRoute.Bet.param to UserAccount)),
             repository = get(),

@@ -5,7 +5,6 @@ import com.jiachian.nbatoday.UserAccount
 import com.jiachian.nbatoday.data.local.BetAndGameGenerator
 import com.jiachian.nbatoday.data.local.BetGenerator
 import com.jiachian.nbatoday.datasource.local.bet.NBABetLocalSource
-import com.jiachian.nbatoday.repository.schedule.ScheduleRepository
 import com.jiachian.nbatoday.utils.assertIs
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
@@ -19,7 +18,7 @@ class NBABetLocalSourceTest : BaseUnitTest() {
 
     @Before
     fun setup() = runTest {
-        get<ScheduleRepository>().updateSchedule()
+        repositoryProvider.schedule.updateSchedule()
         localSource = NBABetLocalSource(get())
     }
 

@@ -10,7 +10,6 @@ import com.jiachian.nbatoday.UserPoints
 import com.jiachian.nbatoday.UserToken
 import com.jiachian.nbatoday.compose.screen.card.GameCardUIData
 import com.jiachian.nbatoday.data.local.GameAndBetsGenerator
-import com.jiachian.nbatoday.repository.schedule.ScheduleRepository
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsFalse
 import com.jiachian.nbatoday.utils.assertIsTrue
@@ -24,7 +23,7 @@ import org.koin.test.get
 class GameCardUIDataTest : BaseUnitTest() {
     @Before
     fun setup() = runTest {
-        get<ScheduleRepository>().updateSchedule()
+        repositoryProvider.schedule.updateSchedule()
     }
 
     @Test

@@ -9,7 +9,6 @@ import com.jiachian.nbatoday.compose.screen.label.LabelHelper
 import com.jiachian.nbatoday.compose.screen.state.UIState
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.models.local.team.Team
-import com.jiachian.nbatoday.repository.team.TeamRepository
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsA
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -25,13 +24,13 @@ class StandingPageViewModelTest : BaseUnitTest() {
 
     private val expectedEastRowData: List<StandingRowData>
         get() {
-            return get<TeamRepository>().getTeams(NBATeam.Conference.EAST).map { teams ->
+            return repositoryProvider.team.getTeams(NBATeam.Conference.EAST).map { teams ->
                 teams.toRowData().sortedWith(viewModel.eastSorting.value)
             }.stateIn(emptyList()).value
         }
     private val expectedWestRowData: List<StandingRowData>
         get() {
-            return get<TeamRepository>().getTeams(NBATeam.Conference.WEST).map { teams ->
+            return repositoryProvider.team.getTeams(NBATeam.Conference.WEST).map { teams ->
                 teams.toRowData().sortedWith(viewModel.westSorting.value)
             }.stateIn(emptyList()).value
         }
@@ -43,7 +42,7 @@ class StandingPageViewModelTest : BaseUnitTest() {
 
     @Before
     fun setup() = runTest {
-        get<TeamRepository>().insertTeams()
+        repositoryProvider.team.insertTeams()
         viewModel = StandingPageViewModel(
             repository = get(),
             dispatcherProvider = dispatcherProvider,
