@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.get
 
-class GameCardUIData(
+data class GameCardUIData(
     val gameAndBets: GameAndBets,
     private val betRepository: BetRepository = get(BetRepository::class.java),
     private val userRepository: UserRepository = get(UserRepository::class.java),
@@ -118,5 +118,14 @@ class GameCardUIData(
 
     fun setCardExpanded(expanded: Boolean) {
         expandedImp.value = expanded
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is GameCardUIData) return false
+        return gameAndBets == other.gameAndBets
+    }
+
+    override fun hashCode(): Int {
+        return gameAndBets.hashCode()
     }
 }
