@@ -8,7 +8,7 @@ import com.jiachian.nbatoday.compose.screen.home.schedule.models.DateData
 import java.text.SimpleDateFormat
 import java.util.TimeZone
 
-class NavigationController2(
+class NavigationController(
     private val navController: NavHostController,
 ) {
     fun navigateToHome() {
@@ -47,8 +47,8 @@ class NavigationController2(
 }
 
 @Composable
-fun rememberNavigationController(navHostController: NavHostController): NavigationController2 {
+fun rememberNavigationController(navHostController: NavHostController): NavigationController {
     return remember(navHostController) {
-        NavigationController2(navHostController)
+        NavigationController(navHostController)
     }
 }

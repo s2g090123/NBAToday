@@ -50,7 +50,7 @@ import com.jiachian.nbatoday.compose.screen.player.PlayerScreen
 import com.jiachian.nbatoday.compose.screen.score.BoxScoreScreen
 import com.jiachian.nbatoday.compose.screen.team.TeamScreen
 import com.jiachian.nbatoday.navigation.MainRoute
-import com.jiachian.nbatoday.navigation.NavigationController2
+import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.navigation.rememberNavigationController
 import kotlinx.coroutines.flow.filter
 import org.koin.androidx.compose.koinViewModel
@@ -60,7 +60,7 @@ private const val SplashOffsetAnimationDurationMs = 2000
 @Composable
 fun MainScreen(
     navController: NavHostController = rememberNavController(),
-    navigationController: NavigationController2 = rememberNavigationController(navController),
+    navigationController: NavigationController = rememberNavigationController(navController),
 ) {
     NavHost(
         modifier = Modifier.fillMaxSize(),
