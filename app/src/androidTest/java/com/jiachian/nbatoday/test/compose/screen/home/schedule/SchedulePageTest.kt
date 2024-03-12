@@ -23,17 +23,20 @@ import com.jiachian.nbatoday.HomeTeamId
 import com.jiachian.nbatoday.PlayingGameId
 import com.jiachian.nbatoday.compose.screen.home.schedule.SchedulePage
 import com.jiachian.nbatoday.compose.screen.home.schedule.SchedulePageViewModel
+import com.jiachian.nbatoday.compose.screen.home.schedule.models.DateData
 import com.jiachian.nbatoday.compose.screen.state.UIState
 import com.jiachian.nbatoday.data.local.GameGenerator
 import com.jiachian.nbatoday.testing.testtag.GameCardTestTag
 import com.jiachian.nbatoday.testing.testtag.ScheduleTestTag
 import com.jiachian.nbatoday.utils.assertIs
-import com.jiachian.nbatoday.utils.assertIsA
+import com.jiachian.nbatoday.utils.assertIsNotNull
 import com.jiachian.nbatoday.utils.onAllNodesWithUnmergedTree
 import com.jiachian.nbatoday.utils.onNodeWithTag
 import io.mockk.every
 import io.mockk.spyk
 import io.mockk.unmockkObject
+import java.text.SimpleDateFormat
+import java.util.TimeZone
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
@@ -45,14 +48,19 @@ import org.junit.Test
 class SchedulePageTest : BaseAndroidTest() {
     private lateinit var viewModel: SchedulePageViewModel
 
+    private var navigateToGame: String? = null
+    private var navigateToTeam: Int? = null
+    private var navigateToCalendar: DateData? = null
+
     @Before
     fun setup() = runTest {
+        navigateToGame = null
+        navigateToTeam = null
+        navigateToCalendar = null
         viewModel = spyk(
             SchedulePageViewModel(
                 scheduleRepository = repositoryProvider.schedule,
                 gameRepository = repositoryProvider.game,
-                navigationController = navigationController,
-                composeViewModelProvider = composeViewModelProvider,
                 dispatcherProvider = dispatcherProvider
             ).apply {
                 repositoryProvider.schedule.updateSchedule()
@@ -66,16 +74,23 @@ class SchedulePageTest : BaseAndroidTest() {
     }
 
     @Composable
-    override fun provideComposable(): Any {
+    override fun ProvideComposable() {
         SchedulePage(
-            viewModel = viewModel
+            viewModel = viewModel,
+            navigateToBoxScore = {
+                navigateToGame = it
+            },
+            navigateToTeam = {
+                navigateToTeam = it
+            },
+            navigateToCalendar = {
+                navigateToCalendar = it
+            },
         )
-        return super.provideComposable()
     }
 
     @Test
     fun schedulePage_checksPlayingDay() = inCompose {
-        val event = navigationController.eventFlow.defer(it)
         onNodeWithText("1/1").performClick()
         onAllNodesWithUnmergedTree(ScheduleTestTag.ScheduleContent_GameCard)[0].apply {
             onNodeWithTag(GameCardTestTag.GameDetail_GameTeamInfo_Home).apply {
@@ -95,11 +110,7 @@ class SchedulePageTest : BaseAndroidTest() {
             onNodeWithTag(GameCardTestTag.GameStatusAndBetButton_Button_Bet)
                 .assertDoesNotExist()
             performClick()
-            event
-                .await()
-                .assertIsA(NavigationController.Event.NavigateToBoxScore::class.java)
-                .gameId
-                .assertIs(PlayingGameId)
+            navigateToGame.assertIs(PlayingGameId)
         }
     }
 
@@ -140,7 +151,6 @@ class SchedulePageTest : BaseAndroidTest() {
 
     @Test
     fun schedulePage_checksFinalDay() = inCompose {
-        val event = navigationController.eventFlow.defer(it)
         onNodeWithText("12/31").performClick()
         onAllNodesWithUnmergedTree(ScheduleTestTag.ScheduleContent_GameCard)[0].apply {
             onNodeWithTag(GameCardTestTag.GameDetail_GameTeamInfo_Home).apply {
@@ -160,11 +170,7 @@ class SchedulePageTest : BaseAndroidTest() {
             onNodeWithTag(GameCardTestTag.GameStatusAndBetButton_Button_Bet)
                 .assertDoesNotExist()
             performClick()
-            event
-                .await()
-                .assertIsA(NavigationController.Event.NavigateToBoxScore::class.java)
-                .gameId
-                .assertIs(FinalGameId)
+            navigateToGame.assertIs(FinalGameId)
         }
     }
 
@@ -205,7 +211,6 @@ class SchedulePageTest : BaseAndroidTest() {
 
     @Test
     fun schedulePage_checksComingSoonDay() = inCompose {
-        val event = navigationController.eventFlow.defer(it)
         onNodeWithText("1/2").performClick()
         onAllNodesWithUnmergedTree(ScheduleTestTag.ScheduleContent_GameCard)[0].apply {
             onNodeWithTag(GameCardTestTag.GameDetail_GameTeamInfo_Home).apply {
@@ -226,11 +231,7 @@ class SchedulePageTest : BaseAndroidTest() {
                 .assertIsDisplayed()
             onNodeWithTag(GameCardTestTag.GameDetail_GameTeamInfo_Home)
                 .performClick()
-            event
-                .await()
-                .assertIsA(NavigationController.Event.NavigateToTeam::class.java)
-                .teamId
-                .assertIs(HomeTeamId)
+            navigateToTeam.assertIs(HomeTeamId)
         }
     }
 
@@ -271,14 +272,17 @@ class SchedulePageTest : BaseAndroidTest() {
 
     @Test
     fun schedulePage_clicksCalendar() = inCompose {
-        val event = navigationController.eventFlow.defer(it)
         onAllNodesWithUnmergedTree(ScheduleTestTag.ScheduleContent_Button_Calendar)
             .onFirst()
             .performClick()
-        event
-            .await()
-            .assertIsA(NavigationController.Event.NavigateToCalendar::class.java)
-            .dateTime
+        navigateToCalendar
+            .assertIsNotNull()
+            .let {
+                SimpleDateFormat("yyyy/MM/dd").let { format ->
+                    format.timeZone = TimeZone.getTimeZone("EST")
+                    format.parse(it.dateString)?.time
+                }
+            }
             .assertIs(BasicTime)
     }
 

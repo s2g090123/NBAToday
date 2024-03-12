@@ -37,8 +37,9 @@ fun <T> T.assertIsNull() = apply {
     assertThat(this, nullValue())
 }
 
-fun <T> T.assertIsNotNull() = apply {
+inline fun <reified T : Any?> T?.assertIsNotNull() = run {
     assertThat(this, notNullValue())
+    this as T
 }
 
 fun Boolean?.assertIsTrue() = apply {

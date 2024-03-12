@@ -10,19 +10,17 @@ import com.jiachian.nbatoday.FinalGameId
 import com.jiachian.nbatoday.FinalGameTimeMs
 import com.jiachian.nbatoday.HomePlayerId
 import com.jiachian.nbatoday.HomeTeamId
-import com.jiachian.nbatoday.SplashViewModel
 import com.jiachian.nbatoday.UserAccount
 import com.jiachian.nbatoday.compose.screen.main.MainScreen
 import com.jiachian.nbatoday.navigation.MainRoute
 import com.jiachian.nbatoday.utils.assertCurrentRoute
-import com.jiachian.nbatoday.utils.assertIsTrue
 import org.junit.Test
 
 class MainScreenTest : BaseAndroidTest() {
     private lateinit var navController: TestNavHostController
 
     @Composable
-    override fun provideComposable(): Any {
+    override fun ProvideComposable() {
         val context = LocalContext.current
         navController = remember {
             TestNavHostController(context).apply {
@@ -30,16 +28,8 @@ class MainScreenTest : BaseAndroidTest() {
             }
         }
         MainScreen(
-            viewModel = SplashViewModel(
-                repositoryProvider = repositoryProvider,
-                dataStore = dataStore,
-                navigationController = navigationController,
-                viewModelProvider = composeViewModelProvider,
-                dispatcherProvider = dispatcherProvider,
-            ),
             navController = navController
         )
-        return super.provideComposable()
     }
 
     @Test
@@ -54,9 +44,6 @@ class MainScreenTest : BaseAndroidTest() {
         }
         awaitIdle()
         navController.assertCurrentRoute(MainRoute.Home.route)
-        composeViewModelProvider
-            .getViewModelMap()
-            .assertIsTrue { it.contains(MainRoute.Home) }
     }
 
     @Test
@@ -66,9 +53,6 @@ class MainScreenTest : BaseAndroidTest() {
         }
         awaitIdle()
         navController.assertCurrentRoute(MainRoute.BoxScore.route)
-        composeViewModelProvider
-            .getViewModelMap()
-            .assertIsTrue { it.contains(MainRoute.BoxScore) }
     }
 
     @Test
@@ -78,9 +62,6 @@ class MainScreenTest : BaseAndroidTest() {
         }
         awaitIdle()
         navController.assertCurrentRoute(MainRoute.Team.route)
-        composeViewModelProvider
-            .getViewModelMap()
-            .assertIsTrue { it.contains(MainRoute.Team) }
     }
 
     @Test
@@ -90,9 +71,6 @@ class MainScreenTest : BaseAndroidTest() {
         }
         awaitIdle()
         navController.assertCurrentRoute(MainRoute.Player.route)
-        composeViewModelProvider
-            .getViewModelMap()
-            .assertIsTrue { it.contains(MainRoute.Player) }
     }
 
     @Test
@@ -102,9 +80,6 @@ class MainScreenTest : BaseAndroidTest() {
         }
         awaitIdle()
         navController.assertCurrentRoute(MainRoute.Calendar.route)
-        composeViewModelProvider
-            .getViewModelMap()
-            .assertIsTrue { it.contains(MainRoute.Calendar) }
     }
 
     @Test
@@ -114,8 +89,5 @@ class MainScreenTest : BaseAndroidTest() {
         }
         awaitIdle()
         navController.assertCurrentRoute(MainRoute.Bet.route)
-        composeViewModelProvider
-            .getViewModelMap()
-            .assertIsTrue { it.contains(MainRoute.Bet) }
     }
 }

@@ -30,11 +30,13 @@ class StandingPageTest : BaseAndroidTest() {
     private lateinit var viewModel: StandingPageViewModel
 
     @Composable
-    override fun provideComposable(): Any {
+    override fun ProvideComposable() {
         StandingPage(
-            viewModel = viewModel
+            viewModel = viewModel,
+            navigateToTeam = {
+
+            }
         )
-        return super.provideComposable()
     }
 
     @Before
@@ -42,7 +44,6 @@ class StandingPageTest : BaseAndroidTest() {
         repositoryProvider.team.insertTeams()
         viewModel = StandingPageViewModel(
             repository = repositoryProvider.team,
-            navigationController = navigationController,
             dispatcherProvider = dispatcherProvider,
         )
     }

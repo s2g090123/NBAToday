@@ -23,7 +23,7 @@ class LoginDialogTest : BaseAndroidTest() {
     private var dialogDismissed = false
 
     @Composable
-    override fun provideComposable(): Any {
+    override fun ProvideComposable() {
         LoginDialog(
             onLogin = { account, password ->
                 user = UserGenerator.get(true).copy(
@@ -39,7 +39,6 @@ class LoginDialogTest : BaseAndroidTest() {
             },
             onDismiss = { dialogDismissed = true }
         )
-        return super.provideComposable()
     }
 
     @After

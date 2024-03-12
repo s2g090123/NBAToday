@@ -10,6 +10,7 @@ import androidx.compose.ui.test.filter
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.onFirst
 import androidx.compose.ui.test.performClick
+import androidx.lifecycle.SavedStateHandle
 import com.jiachian.nbatoday.AwayTeamAbbr
 import com.jiachian.nbatoday.BaseAndroidTest
 import com.jiachian.nbatoday.BasicNumber
@@ -29,7 +30,7 @@ import com.jiachian.nbatoday.testing.testtag.CalendarTestTag
 import com.jiachian.nbatoday.testing.testtag.GameCardTestTag
 import com.jiachian.nbatoday.utils.DateUtils
 import com.jiachian.nbatoday.utils.assertIs
-import com.jiachian.nbatoday.utils.assertIsA
+import com.jiachian.nbatoday.utils.assertIsTrue
 import com.jiachian.nbatoday.utils.onAllNodesWithUnmergedTree
 import com.jiachian.nbatoday.utils.onNodeWithTag
 import com.jiachian.nbatoday.utils.onNodeWithUnmergedTree
@@ -48,14 +49,19 @@ import org.junit.Test
 class CalendarScreenTest : BaseAndroidTest() {
     private lateinit var viewModel: CalendarViewModel
 
+    private var navigateToGame: String? = null
+    private var navigateToTeam: Int? = null
+    private var navigateToBack: Boolean? = null
+
     @Before
     fun setup() = runTest {
+        navigateToGame = null
+        navigateToTeam = null
+        navigateToBack = null
         viewModel = spyk(
             CalendarViewModel(
-                dateTime = PlayingGameTimeMs,
+                savedStateHandle = SavedStateHandle(mapOf(MainRoute.Calendar.param to "$PlayingGameTimeMs")),
                 repository = repositoryProvider.game,
-                navigationController = navigationController,
-                composeViewModelProvider = composeViewModelProvider,
                 dispatcherProvider = dispatcherProvider,
             )
         ).apply {
@@ -70,11 +76,19 @@ class CalendarScreenTest : BaseAndroidTest() {
     }
 
     @Composable
-    override fun provideComposable(): Any {
+    override fun ProvideComposable() {
         CalendarScreen(
-            viewModel = viewModel
+            viewModel = viewModel,
+            navigateToBoxScore = {
+                navigateToGame = it
+            },
+            navigateToTeam = {
+                navigateToTeam = it
+            },
+            onBack = {
+                navigateToBack = true
+            },
         )
-        return super.provideComposable()
     }
 
     @Test
@@ -137,14 +151,9 @@ class CalendarScreenTest : BaseAndroidTest() {
             onNodeWithTag(GameCardTestTag.GameStatusAndBetButton_Button_Bet)
                 .assertDoesNotExist()
         }
-        val event = navigationController.eventFlow.defer(it)
         onAllNodesWithUnmergedTree(CalendarTestTag.CalendarGameCard)[0]
             .performClick()
-        event
-            .await()
-            .assertIsA(NavigationController.Event.NavigateToBoxScore::class.java)
-            .gameId
-            .assertIs(PlayingGameId)
+        navigateToGame.assertIs(PlayingGameId)
     }
 
     @Test
@@ -172,14 +181,9 @@ class CalendarScreenTest : BaseAndroidTest() {
             onNodeWithTag(GameCardTestTag.GameStatusAndBetButton_Button_Bet)
                 .assertDoesNotExist()
         }
-        val event = navigationController.eventFlow.defer(it)
         onAllNodesWithUnmergedTree(CalendarTestTag.CalendarGameCard)[0]
             .performClick()
-        event
-            .await()
-            .assertIsA(NavigationController.Event.NavigateToBoxScore::class.java)
-            .gameId
-            .assertIs(FinalGameId)
+        navigateToGame.assertIs(FinalGameId)
     }
 
     @Test
@@ -207,15 +211,10 @@ class CalendarScreenTest : BaseAndroidTest() {
             onNodeWithTag(GameCardTestTag.GameStatusAndBetButton_Button_Bet)
                 .assertIsDisplayed()
         }
-        val event = navigationController.eventFlow.defer(it)
         onAllNodesWithUnmergedTree(CalendarTestTag.CalendarGameCard)[0]
             .onNodeWithTag(GameCardTestTag.GameDetail_GameTeamInfo_Home)
             .performClick()
-        event
-            .await()
-            .assertIsA(NavigationController.Event.NavigateToTeam::class.java)
-            .teamId
-            .assertIs(HomeTeamId)
+        navigateToTeam.assertIs(HomeTeamId)
     }
 
     @Test
@@ -254,14 +253,9 @@ class CalendarScreenTest : BaseAndroidTest() {
 
     @Test
     fun calendarScreen_closes_expectsBackScreen() = inCompose {
-        val event = navigationController.eventFlow.defer(it)
         onNodeWithUnmergedTree(CalendarTestTag.CalendarTopBar_Btn_Close)
             .performClick()
-        event
-            .await()
-            .assertIsA(NavigationController.Event.BackScreen::class.java)
-            .departure
-            .assertIs(MainRoute.Calendar)
+        navigateToBack.assertIsTrue()
     }
 
     private fun insertNextMonthGame() {
