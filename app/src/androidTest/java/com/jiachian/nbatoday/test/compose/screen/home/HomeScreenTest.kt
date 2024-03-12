@@ -1,6 +1,7 @@
 package com.jiachian.nbatoday.test.compose.screen.home
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.performClick
@@ -20,9 +21,12 @@ class HomeScreenTest : BaseAndroidTest() {
 
     @Composable
     override fun provideComposable(): Any {
-        navController = TestNavHostController(LocalContext.current).apply {
-            navigatorProvider.addNavigator(ComposeNavigator())
-            enableOnBackPressed(false)
+        val context = LocalContext.current
+        navController = remember {
+            TestNavHostController(context).apply {
+                navigatorProvider.addNavigator(ComposeNavigator())
+                enableOnBackPressed(false)
+            }
         }
         HomeScreen(
             viewModel = HomeViewModel(

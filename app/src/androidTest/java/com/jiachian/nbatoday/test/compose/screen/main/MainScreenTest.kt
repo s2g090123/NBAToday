@@ -1,6 +1,7 @@
 package com.jiachian.nbatoday.test.compose.screen.main
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.ComposeNavigator
 import androidx.navigation.testing.TestNavHostController
@@ -22,8 +23,11 @@ class MainScreenTest : BaseAndroidTest() {
 
     @Composable
     override fun provideComposable(): Any {
-        navController = TestNavHostController(LocalContext.current).apply {
-            navigatorProvider.addNavigator(ComposeNavigator())
+        val context = LocalContext.current
+        navController = remember {
+            TestNavHostController(context).apply {
+                navigatorProvider.addNavigator(ComposeNavigator())
+            }
         }
         MainScreen(
             viewModel = MainViewModel(

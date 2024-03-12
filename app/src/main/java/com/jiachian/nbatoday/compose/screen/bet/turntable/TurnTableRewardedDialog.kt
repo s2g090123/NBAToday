@@ -1,4 +1,4 @@
-package com.jiachian.nbatoday.compose.screen.bet.dialog
+package com.jiachian.nbatoday.compose.screen.bet.turntable
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -18,30 +18,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.R
-import com.jiachian.nbatoday.compose.widget.NullCheckScreen
 import com.jiachian.nbatoday.testing.testtag.BetTestTag
 import com.jiachian.nbatoday.utils.rippleClickable
 import kotlin.math.abs
 
-@Composable
-fun RewardedPointsScreen(
-    rewardedPoints: Long?,
-    onDismiss: () -> Unit,
-) {
-    NullCheckScreen(
-        data = rewardedPoints,
-        ifNull = null
-    ) { points ->
-        RewardedPointsDialog(
-            points = points,
-            onDismiss = onDismiss
-        )
-    }
-}
-
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-private fun RewardedPointsDialog(
+fun TurnTableRewardedDialog(
     points: Long,
     onDismiss: () -> Unit
 ) {
