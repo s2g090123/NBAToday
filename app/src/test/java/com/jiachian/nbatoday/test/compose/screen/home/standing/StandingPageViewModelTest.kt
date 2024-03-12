@@ -7,9 +7,9 @@ import com.jiachian.nbatoday.compose.screen.home.standing.models.StandingRowData
 import com.jiachian.nbatoday.compose.screen.home.standing.models.StandingSorting
 import com.jiachian.nbatoday.compose.screen.label.LabelHelper
 import com.jiachian.nbatoday.compose.screen.state.UIState
-import com.jiachian.nbatoday.data.local.NBATeamGenerator
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.models.local.team.Team
+import com.jiachian.nbatoday.repository.team.TeamRepository
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsA
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
+import org.koin.test.get
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class StandingPageViewModelTest : BaseUnitTest() {
@@ -24,13 +25,13 @@ class StandingPageViewModelTest : BaseUnitTest() {
 
     private val expectedEastRowData: List<StandingRowData>
         get() {
-            return repositoryProvider.team.getTeams(NBATeam.Conference.EAST).map { teams ->
+            return get<TeamRepository>().getTeams(NBATeam.Conference.EAST).map { teams ->
                 teams.toRowData().sortedWith(viewModel.eastSorting.value)
             }.stateIn(emptyList()).value
         }
     private val expectedWestRowData: List<StandingRowData>
         get() {
-            return repositoryProvider.team.getTeams(NBATeam.Conference.WEST).map { teams ->
+            return get<TeamRepository>().getTeams(NBATeam.Conference.WEST).map { teams ->
                 teams.toRowData().sortedWith(viewModel.westSorting.value)
             }.stateIn(emptyList()).value
         }
@@ -42,10 +43,9 @@ class StandingPageViewModelTest : BaseUnitTest() {
 
     @Before
     fun setup() = runTest {
-        repositoryProvider.team.insertTeams()
+        get<TeamRepository>().insertTeams()
         viewModel = StandingPageViewModel(
-            repository = repositoryProvider.team,
-            navigationController = navigationController,
+            repository = get(),
             dispatcherProvider = dispatcherProvider,
         )
     }
@@ -303,28 +303,6 @@ class StandingPageViewModelTest : BaseUnitTest() {
         assertIs(viewModel.westSorting.value, StandingSorting.BLK)
         assertIs(actualEastRowData, expectedEastRowData)
         assertIs(actualWestRowData, expectedWestRowData)
-    }
-
-    @Test
-    fun `onClickTeam(Home) expects screen navigates to Team`() = launch {
-        val event = navigationController.eventFlow.defer(this)
-        viewModel.onClickTeam(NBATeamGenerator.getHome())
-        event
-            .await()
-            .assertIsA(NavigationController.Event.NavigateToTeam::class.java)
-            .teamId
-            .assertIs(NBATeamGenerator.getHome().teamId)
-    }
-
-    @Test
-    fun `onClickTeam(Away) expects screen navigates to Team`() = launch {
-        val event = navigationController.eventFlow.defer(this)
-        viewModel.onClickTeam(NBATeamGenerator.getAway())
-        event
-            .await()
-            .assertIsA(NavigationController.Event.NavigateToTeam::class.java)
-            .teamId
-            .assertIs(NBATeamGenerator.getAway().teamId)
     }
 
     private fun List<StandingRowData>.sortedWith(sorting: StandingSorting): List<StandingRowData> {

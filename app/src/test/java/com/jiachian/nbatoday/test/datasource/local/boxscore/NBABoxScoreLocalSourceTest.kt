@@ -5,6 +5,8 @@ import com.jiachian.nbatoday.FinalGameId
 import com.jiachian.nbatoday.PlayingGameId
 import com.jiachian.nbatoday.data.local.BoxScoreGenerator
 import com.jiachian.nbatoday.datasource.local.boxscore.NBABoxScoreLocalSource
+import com.jiachian.nbatoday.repository.game.GameRepository
+import com.jiachian.nbatoday.repository.schedule.ScheduleRepository
 import com.jiachian.nbatoday.utils.assertIs
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
@@ -18,13 +20,13 @@ class NBABoxScoreLocalSourceTest : BaseUnitTest() {
 
     @Before
     fun setup() = runTest {
-        repositoryProvider.schedule.updateSchedule()
+        get<ScheduleRepository>().updateSchedule()
         localSource = NBABoxScoreLocalSource(get())
     }
 
     @Test
     fun `getBoxScoreAndGame(final) with inserting finalGame expects correct`() = launch {
-        repositoryProvider.game.insertBoxScore(FinalGameId)
+        get<GameRepository>().insertBoxScore(FinalGameId)
         val actual =
             localSource.getBoxScoreAndGame(FinalGameId).stateIn(null).value?.boxScore
         assertIs(actual, BoxScoreGenerator.getFinal())
@@ -32,7 +34,7 @@ class NBABoxScoreLocalSourceTest : BaseUnitTest() {
 
     @Test
     fun `getBoxScoreAndGame(playing) with inserting playingGame expects correct`() = launch {
-        repositoryProvider.game.insertBoxScore(PlayingGameId)
+        get<GameRepository>().insertBoxScore(PlayingGameId)
         val actual =
             localSource.getBoxScoreAndGame(PlayingGameId).stateIn(null).value?.boxScore
         assertIs(actual, BoxScoreGenerator.getPlaying())

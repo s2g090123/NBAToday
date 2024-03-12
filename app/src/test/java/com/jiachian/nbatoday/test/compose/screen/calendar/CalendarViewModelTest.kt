@@ -1,13 +1,14 @@
 package com.jiachian.nbatoday.test.compose.screen.calendar
 
+import androidx.lifecycle.SavedStateHandle
 import com.jiachian.nbatoday.BaseUnitTest
 import com.jiachian.nbatoday.BasicTime
 import com.jiachian.nbatoday.compose.screen.calendar.CalendarViewModel
-import com.jiachian.nbatoday.data.local.GameAndBetsGenerator
-import com.jiachian.nbatoday.data.local.GameGenerator
+import com.jiachian.nbatoday.navigation.MainRoute
+import com.jiachian.nbatoday.repository.schedule.ScheduleRepository
+import com.jiachian.nbatoday.rule.SetMainDispatcherRule
 import com.jiachian.nbatoday.utils.DateUtils
 import com.jiachian.nbatoday.utils.assertIs
-import com.jiachian.nbatoday.utils.assertIsA
 import com.jiachian.nbatoday.utils.assertIsFalse
 import com.jiachian.nbatoday.utils.assertIsTrue
 import io.mockk.every
@@ -17,10 +18,15 @@ import java.util.Date
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
+import org.koin.test.get
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class CalendarViewModelTest : BaseUnitTest() {
+    @get:Rule
+    val mainDispatcherRule = SetMainDispatcherRule(dispatcherProvider)
+
     private lateinit var viewModel: CalendarViewModel
 
     private val currentCalendar: Calendar
@@ -32,12 +38,10 @@ class CalendarViewModelTest : BaseUnitTest() {
 
     @Before
     fun setup() = runTest {
-        repositoryProvider.schedule.updateSchedule()
+        get<ScheduleRepository>().updateSchedule()
         viewModel = CalendarViewModel(
-            dateTime = BasicTime,
-            repository = repositoryProvider.game,
-            navigationController = navigationController,
-            composeViewModelProvider = composeViewModelProvider,
+            savedStateHandle = SavedStateHandle(mapOf(MainRoute.Calendar.param to "$BasicTime")),
+            repository = get(),
             dispatcherProvider = dispatcherProvider,
         )
     }
@@ -99,45 +103,6 @@ class CalendarViewModelTest : BaseUnitTest() {
         val expected = spy.numberAndDateString.value
         spy.lastMonth()
         assertIs(spy.numberAndDateString.value, expected)
-    }
-
-    @Test
-    fun `clickGameCard(playedGame) expects screen navigates to BoxScore`() = launch {
-        val event = navigationController.eventFlow.defer(this)
-        viewModel.clickGameCard(GameGenerator.getFinal())
-        event
-            .await()
-            .assertIsA(NavigationController.Event.NavigateToBoxScore::class.java)
-    }
-
-    @Test
-    fun `clickGameCard(unPlayedGame) expects screen navigates to Team`() = launch {
-        val event = navigationController.eventFlow.defer(this)
-        viewModel.clickGameCard(GameGenerator.getComingSoon())
-        event
-            .await()
-            .assertIsA(NavigationController.Event.NavigateToTeam::class.java)
-    }
-
-    @Test
-    fun `getGameCardViewModel(finalGame) expects gameAndBets is correct`() {
-        val expected = GameAndBetsGenerator.getFinal()
-        val cardViewModel = viewModel.getGameCardViewModel(expected)
-        assertIs(cardViewModel.gameAndBets, expected)
-    }
-
-    @Test
-    fun `getGameCardViewModel(playingGame) expects gameAndBets is correct`() {
-        val expected = GameAndBetsGenerator.getPlaying()
-        val cardViewModel = viewModel.getGameCardViewModel(expected)
-        assertIs(cardViewModel.gameAndBets, expected)
-    }
-
-    @Test
-    fun `getGameCardViewModel(comingSoonGame) expects gameAndBets is correct`() {
-        val expected = GameAndBetsGenerator.getComingSoon()
-        val cardViewModel = viewModel.getGameCardViewModel(expected)
-        assertIs(cardViewModel.gameAndBets, expected)
     }
 
     @Test

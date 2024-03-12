@@ -15,6 +15,7 @@ import com.jiachian.nbatoday.models.local.score.BoxScoreAndGame
 import com.jiachian.nbatoday.models.remote.score.RemoteBoxScore
 import com.jiachian.nbatoday.models.remote.score.extensions.toBoxScore
 import com.jiachian.nbatoday.repository.game.NBAGameRepository
+import com.jiachian.nbatoday.repository.schedule.ScheduleRepository
 import com.jiachian.nbatoday.utils.assertIs
 import io.mockk.coEvery
 import io.mockk.every
@@ -103,7 +104,7 @@ class NBAGameRepositoryTest : BaseUnitTest() {
 
     @Test
     fun `getGamesAndBetsDuring(finalGameTime) expects correct`() = runTest {
-        repositoryProvider.schedule.updateSchedule()
+        get<ScheduleRepository>().updateSchedule()
         repository
             .getGamesAndBetsDuring(FinalGameTimeMs, FinalGameTimeMs)
             .stateIn(emptyList())
@@ -115,7 +116,7 @@ class NBAGameRepositoryTest : BaseUnitTest() {
 
     @Test
     fun `getBoxScoreAndGame(final) expects correct`() = launch {
-        repositoryProvider.schedule.updateSchedule()
+        get<ScheduleRepository>().updateSchedule()
         repository.insertBoxScore(FinalGameId)
         repository
             .getBoxScoreAndGame(FinalGameId)
@@ -131,7 +132,7 @@ class NBAGameRepositoryTest : BaseUnitTest() {
 
     @Test
     fun `getGamesAndBets() expects correct`() = launch {
-        repositoryProvider.schedule.updateSchedule()
+        get<ScheduleRepository>().updateSchedule()
         repository
             .getGamesAndBets()
             .stateIn(emptyList())
@@ -147,7 +148,7 @@ class NBAGameRepositoryTest : BaseUnitTest() {
 
     @Test
     fun `getGamesAndBetsBefore(home, comingSoonGameTime) expects correct`() = launch {
-        repositoryProvider.schedule.updateSchedule()
+        get<ScheduleRepository>().updateSchedule()
         repository
             .getGamesAndBetsBefore(HomeTeamId, ComingSoonGameTimeMs)
             .stateIn(emptyList())
@@ -163,7 +164,7 @@ class NBAGameRepositoryTest : BaseUnitTest() {
 
     @Test
     fun `getGamesAndBetsAfter(home, finalGameTime) expects correct`() = launch {
-        repositoryProvider.schedule.updateSchedule()
+        get<ScheduleRepository>().updateSchedule()
         repository
             .getGamesAndBetsAfter(HomeTeamId, FinalGameTimeMs)
             .stateIn(emptyList())
@@ -178,7 +179,7 @@ class NBAGameRepositoryTest : BaseUnitTest() {
 
     @Test
     fun `getLastGameDateTime() expects the result is comingSoonGameDate`() = launch {
-        repositoryProvider.schedule.updateSchedule()
+        get<ScheduleRepository>().updateSchedule()
         repository
             .getLastGameDateTime()
             .stateIn(Date())
@@ -188,7 +189,7 @@ class NBAGameRepositoryTest : BaseUnitTest() {
 
     @Test
     fun `getFirstGameDateTime() expects the result is finalGameDate`() = launch {
-        repositoryProvider.schedule.updateSchedule()
+        get<ScheduleRepository>().updateSchedule()
         repository
             .getFirstGameDateTime()
             .stateIn(Date())

@@ -47,16 +47,7 @@ open class BaseUnitTest : KoinTest {
     protected val dataHolder: DataHolder
         get() = get()
 
-    protected val navigationController: NavigationController
-        get() = get()
-
     protected val dataStore: BaseDataStore
-        get() = get()
-
-    protected val repositoryProvider: RepositoryProvider
-        get() = get()
-
-    protected val composeViewModelProvider: ComposeViewModelProvider
         get() = get()
 
     protected fun launch(testBody: suspend TestScope.() -> Unit) = coroutineRule.launch {

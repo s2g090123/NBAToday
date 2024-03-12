@@ -14,6 +14,7 @@ import com.jiachian.nbatoday.datasource.local.bet.BetLocalSource
 import com.jiachian.nbatoday.models.local.bet.Bet
 import com.jiachian.nbatoday.models.local.user.User
 import com.jiachian.nbatoday.repository.bet.NBABetRepository
+import com.jiachian.nbatoday.repository.schedule.ScheduleRepository
 import com.jiachian.nbatoday.repository.user.UserRepository
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsNull
@@ -36,9 +37,9 @@ class NBABetRepositoryTest : BaseUnitTest() {
 
     @Before
     fun setup() = runTest {
-        repositoryProvider.schedule.updateSchedule()
+        get<ScheduleRepository>().updateSchedule()
         localSource = get()
-        userRepository = spyk(repositoryProvider.user) {
+        userRepository = spyk(get<UserRepository>()) {
             login(UserAccount, UserPassword)
         }
         repository = NBABetRepository(
@@ -67,7 +68,8 @@ class NBABetRepositoryTest : BaseUnitTest() {
             .firstOrNull { it.game.gameId == FinalGameId }
             ?.bet
             .assertIs(expectedBet)
-        repositoryProvider.user.user
+        get<UserRepository>()
+            .user
             .stateIn(null)
             .value
             ?.points
@@ -86,7 +88,8 @@ class NBABetRepositoryTest : BaseUnitTest() {
             .firstOrNull { it.game.gameId == FinalGameId }
             ?.bet
             .assertIsNull()
-        repositoryProvider.user.user
+        get<UserRepository>()
+            .user
             .stateIn(null)
             .value
             ?.points
@@ -114,7 +117,8 @@ class NBABetRepositoryTest : BaseUnitTest() {
             .firstOrNull { it.game.gameId == FinalGameId }
             ?.bet
             .assertIsNull()
-        repositoryProvider.user.user
+        get<UserRepository>()
+            .user
             .stateIn(null)
             .value
             ?.points
@@ -129,7 +133,8 @@ class NBABetRepositoryTest : BaseUnitTest() {
             .value
             .firstOrNull { it.game.gameId == FinalGameId }
             .assertIsNull()
-        repositoryProvider.user.user
+        get<UserRepository>()
+            .user
             .stateIn(null)
             .value
             ?.points
@@ -165,7 +170,7 @@ class NBABetRepositoryTest : BaseUnitTest() {
                 .value
                 .firstOrNull { it.bet.betId == betAndGame.bet.betId }
                 .assertIsNull()
-            repositoryProvider.user
+            get<UserRepository>()
                 .user
                 .stateIn(null)
                 .value
@@ -177,7 +182,7 @@ class NBABetRepositoryTest : BaseUnitTest() {
     @Test
     fun `addPoints() expects user's points are updated`() = launch {
         repository.addPoints(BetPoints)
-        repositoryProvider.user
+        get<UserRepository>()
             .user
             .stateIn(null)
             .value
