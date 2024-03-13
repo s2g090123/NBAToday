@@ -19,10 +19,8 @@ import com.jiachian.nbatoday.compose.theme.ColorPalette
 import com.jiachian.nbatoday.compose.theme.OfficialColors
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.models.local.team.data.teamOfficial
-import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.testing.testtag.UserTestTag
 import com.jiachian.nbatoday.utils.assertIs
-import com.jiachian.nbatoday.utils.assertIsA
 import com.jiachian.nbatoday.utils.assertIsNull
 import com.jiachian.nbatoday.utils.assertIsTrue
 import com.jiachian.nbatoday.utils.onAllNodesWithUnmergedTree
@@ -33,17 +31,20 @@ import com.jiachian.nbatoday.utils.pressBack
 import org.junit.Test
 
 class UserPageTest : BaseAndroidTest() {
+    private var navigateToBet: String? = null
+
     @Composable
-    override fun provideComposable(): Any {
+    override fun ProvideComposable() {
         UserPage(
             viewModel = UserPageViewModel(
                 repository = repositoryProvider.user,
                 dataStore = dataStore,
-                navigationController = navigationController,
                 dispatcherProvider = dispatcherProvider,
-            )
+            ),
+            navigateToBet = {
+                navigateToBet = it
+            }
         )
-        return super.provideComposable()
     }
 
     @Test
@@ -138,15 +139,10 @@ class UserPageTest : BaseAndroidTest() {
 
     @Test
     fun userPage_clicksBet_switchesToBetScreen() = inCompose {
-        val event = navigationController.eventFlow.defer(it)
         repositoryProvider.user.login(UserAccount, UserPassword)
         onNodeWithUnmergedTree(UserTestTag.UserTopBar_Button_Bet)
             .performClick()
-        event
-            .await()
-            .assertIsA(NavigationController.Event.NavigateToBet::class.java)
-            .account
-            .assertIs(UserAccount)
+        navigateToBet.assertIs(UserAccount)
     }
 
     @Test

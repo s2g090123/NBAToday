@@ -29,7 +29,7 @@ import com.jiachian.nbatoday.utils.dividerPrimaryColor
 @Composable
 fun GameCardLeadersInfo(
     modifier: Modifier = Modifier,
-    viewModel: GameCardViewModel,
+    viewModel: GameCardUIData,
     color: Color,
 ) {
     Column(modifier = modifier) {

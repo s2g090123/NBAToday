@@ -29,7 +29,7 @@ class BetDialogTest : BaseAndroidTest() {
     private var dialogDismissed: Boolean? = null
 
     @Composable
-    override fun provideComposable(): Any {
+    override fun ProvideComposable() {
         BetDialog(
             viewModel = BetDialogViewModel(
                 gameAndBets = GameAndBetsGenerator.getComingSoon(false),
@@ -42,7 +42,6 @@ class BetDialogTest : BaseAndroidTest() {
             },
             onDismiss = { dialogDismissed = true }
         )
-        return super.provideComposable()
     }
 
     @After

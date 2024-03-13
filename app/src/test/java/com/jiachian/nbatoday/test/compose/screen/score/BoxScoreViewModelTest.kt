@@ -1,7 +1,7 @@
 package com.jiachian.nbatoday.test.compose.screen.score
 
+import androidx.lifecycle.SavedStateHandle
 import com.jiachian.nbatoday.BaseUnitTest
-import com.jiachian.nbatoday.HomePlayerId
 import com.jiachian.nbatoday.compose.screen.label.LabelHelper
 import com.jiachian.nbatoday.compose.screen.score.BoxScoreViewModel
 import com.jiachian.nbatoday.compose.screen.score.models.BoxScoreLeaderLabel
@@ -16,16 +16,22 @@ import com.jiachian.nbatoday.data.local.BoxScoreGenerator
 import com.jiachian.nbatoday.data.local.GameGenerator
 import com.jiachian.nbatoday.models.local.score.BoxScore
 import com.jiachian.nbatoday.models.local.score.BoxScoreAndGame
-import com.jiachian.nbatoday.navigation.NavigationController
+import com.jiachian.nbatoday.navigation.MainRoute
+import com.jiachian.nbatoday.rule.SetMainDispatcherRule
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsA
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
+import org.koin.test.get
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class BoxScoreViewModelTest : BaseUnitTest() {
+    @get:Rule
+    val mainDispatcherRule = SetMainDispatcherRule(dispatcherProvider)
+
     private lateinit var viewModel: BoxScoreViewModel
 
     private val boxScoreAndGame: BoxScoreAndGame
@@ -111,9 +117,8 @@ class BoxScoreViewModelTest : BaseUnitTest() {
     fun setup() = runTest {
         repositoryProvider.schedule.updateSchedule()
         viewModel = BoxScoreViewModel(
-            gameId = boxScoreAndGame.game.gameId,
-            repository = repositoryProvider.game,
-            navigationController = navigationController,
+            savedStateHandle = SavedStateHandle(mapOf(MainRoute.BoxScore.param to boxScoreAndGame.game.gameId)),
+            repository = get(),
             dispatcherProvider = dispatcherProvider,
         )
     }
@@ -154,16 +159,5 @@ class BoxScoreViewModelTest : BaseUnitTest() {
             viewModel.selectPlayerLabel(label)
             assertIs(viewModel.selectedPlayerLabel.value, label)
         }
-    }
-
-    @Test
-    fun `openPlayerInfo(HomePlayer) expects screen navigates to Player`() = launch {
-        val event = navigationController.eventFlow.defer(this)
-        viewModel.openPlayerInfo(HomePlayerId)
-        event
-            .await()
-            .assertIsA(NavigationController.Event.NavigateToPlayer::class.java)
-            .playerId
-            .assertIs(HomePlayerId)
     }
 }

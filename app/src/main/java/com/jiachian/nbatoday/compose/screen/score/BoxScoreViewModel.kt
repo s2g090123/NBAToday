@@ -1,6 +1,8 @@
 package com.jiachian.nbatoday.compose.screen.score
 
-import com.jiachian.nbatoday.compose.screen.ComposeViewModel
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.jiachian.nbatoday.compose.screen.label.LabelHelper
 import com.jiachian.nbatoday.compose.screen.score.models.BoxScoreLeaderLabel
 import com.jiachian.nbatoday.compose.screen.score.models.BoxScoreLeaderRowData
@@ -14,10 +16,8 @@ import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.models.local.team.data.teamOfficial
 import com.jiachian.nbatoday.navigation.MainRoute
-import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.repository.game.GameRepository
 import com.jiachian.nbatoday.utils.WhileSubscribed5000
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
@@ -29,26 +29,19 @@ import kotlinx.coroutines.launch
 /**
  * ViewModel for handling business logic related to [BoxScoreScreen].
  *
- * @param gameId The ID of the game for which the box score is displayed.
  * @param repository The repository for interacting with [Game].
- * @property navigationController The controller for navigation within the app.
  * @property dispatcherProvider The provider for obtaining dispatchers for coroutines (default is [DefaultDispatcherProvider]).
- * @property coroutineScope The coroutine scope for managing coroutines (default is [CoroutineScope] with main dispatcher).
  */
 class BoxScoreViewModel(
-    private val gameId: String,
+    savedStateHandle: SavedStateHandle,
     private val repository: GameRepository,
-    navigationController: NavigationController,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
-    coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.main)
-) : ComposeViewModel(
-    coroutineScope = coroutineScope,
-    navigationController = navigationController,
-    route = MainRoute.BoxScore
-) {
+) : ViewModel() {
+    private val gameId: String = savedStateHandle[MainRoute.BoxScore.param] ?: throw Exception("gameId is null.")
+
     // Update box score data into the repository
     init {
-        coroutineScope.launch(dispatcherProvider.io) {
+        viewModelScope.launch(dispatcherProvider.io) {
             repository.insertBoxScore(gameId)
         }
     }
@@ -66,7 +59,7 @@ class BoxScoreViewModel(
     // date of the game (e.g. 2023-1-1)
     val date = boxScore.map {
         it?.gameDate ?: ""
-    }.stateIn(coroutineScope, WhileSubscribed5000, "")
+    }.stateIn(viewModelScope, WhileSubscribed5000, "")
 
     private val periods = boxScore.map {
         it?.homeTeam?.periods?.map { period ->
@@ -199,19 +192,12 @@ class BoxScoreViewModel(
     ) { loading, boxScoreUI ->
         if (loading) return@combine UIState.Loading()
         UIState.Loaded(boxScoreUI)
-    }.stateIn(coroutineScope, WhileSubscribed5000, UIState.Loading())
+    }.stateIn(viewModelScope, WhileSubscribed5000, UIState.Loading())
 
     private val selectedPlayerLabelImp = MutableStateFlow<BoxScorePlayerLabel?>(null)
     val selectedPlayerLabel = selectedPlayerLabelImp.asStateFlow()
 
     fun selectPlayerLabel(label: BoxScorePlayerLabel?) {
         selectedPlayerLabelImp.value = label
-    }
-
-    /**
-     * Navigate to the player screen
-     */
-    fun openPlayerInfo(playerId: Int) {
-        navigationController.navigateToPlayer(playerId)
     }
 }

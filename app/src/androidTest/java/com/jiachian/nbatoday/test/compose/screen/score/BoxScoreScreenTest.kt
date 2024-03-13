@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.performClick
+import androidx.lifecycle.SavedStateHandle
 import com.jiachian.nbatoday.AwayPlayerLastName
 import com.jiachian.nbatoday.AwayTeamName
 import com.jiachian.nbatoday.BaseAndroidTest
@@ -22,11 +23,9 @@ import com.jiachian.nbatoday.compose.screen.score.models.BoxScoreTeamLabel
 import com.jiachian.nbatoday.compose.screen.state.UIState
 import com.jiachian.nbatoday.data.local.BoxScoreGenerator
 import com.jiachian.nbatoday.navigation.MainRoute
-import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.testing.testtag.BoxScoreTestTag
 import com.jiachian.nbatoday.utils.DateUtils
-import com.jiachian.nbatoday.utils.assertIs
-import com.jiachian.nbatoday.utils.assertIsA
+import com.jiachian.nbatoday.utils.assertIsTrue
 import com.jiachian.nbatoday.utils.onAllNodesWithUnmergedTree
 import com.jiachian.nbatoday.utils.onNodeWithTag
 import com.jiachian.nbatoday.utils.onNodeWithUnmergedTree
@@ -44,25 +43,32 @@ import org.junit.Test
 class BoxScoreScreenTest : BaseAndroidTest() {
     private lateinit var viewModel: BoxScoreViewModel
 
+    private var navigateToBack: Boolean? = null
+
     @Before
     fun setup() = runTest {
+        navigateToBack = null
         repositoryProvider.schedule.updateSchedule()
         viewModel = spyk(
             BoxScoreViewModel(
-                gameId = FinalGameId,
+                savedStateHandle = SavedStateHandle(mapOf(MainRoute.BoxScore.param to FinalGameId)),
                 repository = repositoryProvider.game,
-                navigationController = navigationController,
                 dispatcherProvider = dispatcherProvider,
             )
         )
     }
 
     @Composable
-    override fun provideComposable(): Any {
+    override fun ProvideComposable() {
         BoxScoreScreen(
-            viewModel = viewModel
+            viewModel = viewModel,
+            openPlayerInfo = {
+                // do nothing
+            },
+            onBack = {
+                navigateToBack = true
+            }
         )
-        return super.provideComposable()
     }
 
     @Test
@@ -200,13 +206,8 @@ class BoxScoreScreenTest : BaseAndroidTest() {
 
     @Test
     fun boxScoreScreen_clicksBack() = inCompose {
-        val event = navigationController.eventFlow.defer(it)
         onNodeWithUnmergedTree(BoxScoreTestTag.ScoreTopBar_Button_Back)
             .performClick()
-        event
-            .await()
-            .assertIsA(NavigationController.Event.BackScreen::class.java)
-            .departure
-            .assertIs(MainRoute.BoxScore)
+        navigateToBack.assertIsTrue()
     }
 }

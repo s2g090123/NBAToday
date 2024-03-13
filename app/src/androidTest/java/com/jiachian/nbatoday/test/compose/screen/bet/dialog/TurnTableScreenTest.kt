@@ -7,6 +7,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.performClick
+import androidx.lifecycle.SavedStateHandle
 import com.jiachian.nbatoday.BaseAndroidTest
 import com.jiachian.nbatoday.BetPoints
 import com.jiachian.nbatoday.R
@@ -18,6 +19,7 @@ import com.jiachian.nbatoday.compose.screen.bet.turntable.BetTurnTable
 import com.jiachian.nbatoday.compose.screen.bet.turntable.TurnTableRewardedDialog
 import com.jiachian.nbatoday.compose.screen.bet.turntable.TurnTableScreen
 import com.jiachian.nbatoday.data.local.BetAndGameGenerator
+import com.jiachian.nbatoday.navigation.MainRoute
 import com.jiachian.nbatoday.testing.testtag.BetTestTag
 import com.jiachian.nbatoday.utils.assertDialogDoesNotExist
 import com.jiachian.nbatoday.utils.assertIs
@@ -32,15 +34,14 @@ class TurnTableScreenTest : BaseAndroidTest() {
     @Before
     fun setup() {
         viewModel = BetViewModel(
-            account = UserAccount,
+            savedStateHandle = SavedStateHandle(mapOf(MainRoute.Bet.param to UserAccount)),
             repository = repositoryProvider.bet,
-            navigationController = navigationController,
             dispatcherProvider = dispatcherProvider
         )
     }
 
     @Composable
-    override fun provideComposable(): Any {
+    override fun ProvideComposable() {
         TurnTableScreen(
             uiState = viewModel.turnTableUIState,
             idle = null,
@@ -69,12 +70,11 @@ class TurnTableScreenTest : BaseAndroidTest() {
                 )
             }
         )
-        return super.provideComposable()
     }
 
     @Test
     fun turnTableScreen_checksAskTurnTableUI() = inCompose {
-        viewModel.clickBetAndGame(BetAndGameGenerator.getFinal())
+        viewModel.settleBet(BetAndGameGenerator.getFinal())
         onNodeWithUnmergedTree(BetTestTag.AskTurnTableDialog_Text_Body)
             .assertTextEquals(
                 context.resources.getQuantityString(
@@ -88,7 +88,7 @@ class TurnTableScreenTest : BaseAndroidTest() {
 
     @Test
     fun turnTableScreen_closesAskTurnTable() = inCompose {
-        viewModel.clickBetAndGame(BetAndGameGenerator.getFinal())
+        viewModel.settleBet(BetAndGameGenerator.getFinal())
         onNodeWithUnmergedTree(BetTestTag.AskTurnTableButtons_Text_Cancel)
             .performClick()
         assertDialogDoesNotExist()
@@ -96,7 +96,7 @@ class TurnTableScreenTest : BaseAndroidTest() {
 
     @Test
     fun turnTableScreen_startsTurnTable() = inCompose {
-        viewModel.clickBetAndGame(BetAndGameGenerator.getFinal())
+        viewModel.settleBet(BetAndGameGenerator.getFinal())
         onNodeWithUnmergedTree(BetTestTag.AskTurnTableButtons_Text_Continue)
             .performClick()
         onNodeWithUnmergedTree(BetTestTag.BetTurnTable_Button_Cancel)
@@ -108,14 +108,13 @@ class TurnTableScreenTest : BaseAndroidTest() {
         onNodeWithUnmergedTree(BetTestTag.BetTurnTable_Button_Cancel)
             .assertDoesNotExist()
         awaitIdle()
-        onNodeWithUnmergedTree(BetTestTag.BetTurnTable)
-            .assertDoesNotExist()
+        waitUntil(1000) { viewModel.turnTableUIState !is TurnTableUIState.TurnTable }
         viewModel.turnTableUIState.assertIsA(TurnTableUIState.Rewarded::class.java)
     }
 
     @Test
     fun turnTableScreen_closesTurnTable() = inCompose {
-        viewModel.clickBetAndGame(BetAndGameGenerator.getFinal())
+        viewModel.settleBet(BetAndGameGenerator.getFinal())
         onNodeWithUnmergedTree(BetTestTag.AskTurnTableButtons_Text_Continue)
             .performClick()
         onNodeWithUnmergedTree(BetTestTag.BetTurnTable_Button_Cancel)

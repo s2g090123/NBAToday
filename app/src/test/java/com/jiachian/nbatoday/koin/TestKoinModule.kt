@@ -1,6 +1,15 @@
 package com.jiachian.nbatoday.koin
 
 import com.jiachian.nbatoday.DataHolder
+import com.jiachian.nbatoday.SplashViewModel
+import com.jiachian.nbatoday.compose.screen.bet.BetViewModel
+import com.jiachian.nbatoday.compose.screen.calendar.CalendarViewModel
+import com.jiachian.nbatoday.compose.screen.home.schedule.SchedulePageViewModel
+import com.jiachian.nbatoday.compose.screen.home.standing.StandingPageViewModel
+import com.jiachian.nbatoday.compose.screen.home.user.UserPageViewModel
+import com.jiachian.nbatoday.compose.screen.player.PlayerViewModel
+import com.jiachian.nbatoday.compose.screen.score.BoxScoreViewModel
+import com.jiachian.nbatoday.compose.screen.team.TeamViewModel
 import com.jiachian.nbatoday.database.dao.BetDao
 import com.jiachian.nbatoday.database.dao.BoxScoreDao
 import com.jiachian.nbatoday.database.dao.GameDao
@@ -31,8 +40,6 @@ import com.jiachian.nbatoday.datasource.remote.team.TeamRemoteSource
 import com.jiachian.nbatoday.datasource.remote.user.UserRemoteSource
 import com.jiachian.nbatoday.datastore.BaseDataStore
 import com.jiachian.nbatoday.datastore.data.TestDataStore
-import com.jiachian.nbatoday.navigation.NavigationController
-import com.jiachian.nbatoday.repository.RepositoryProvider
 import com.jiachian.nbatoday.repository.bet.BetRepository
 import com.jiachian.nbatoday.repository.data.TestBetRepository
 import com.jiachian.nbatoday.repository.data.TestGameRepository
@@ -45,7 +52,7 @@ import com.jiachian.nbatoday.repository.player.PlayerRepository
 import com.jiachian.nbatoday.repository.schedule.ScheduleRepository
 import com.jiachian.nbatoday.repository.team.TeamRepository
 import com.jiachian.nbatoday.repository.user.UserRepository
-import com.jiachian.nbatoday.utils.ComposeViewModelProvider
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val testModule = module {
@@ -63,7 +70,6 @@ val testModule = module {
     factory { TestTeamLocalSource(get()) as TeamLocalSource }
     factory { TestPlayerLocalSource(get()) as PlayerLocalSource }
     factory { TestBetLocalSource(get()) as BetLocalSource }
-    factory { RepositoryProvider(get(), get(), get(), get(), get(), get()) }
 
     single { DataHolder() }
     single { TestDataStore(get()) as BaseDataStore }
@@ -73,6 +79,14 @@ val testModule = module {
     single { TestPlayerRepository(get(), get()) as PlayerRepository }
     single { TestBetRepository(get(), get()) as BetRepository }
     single { TestUserRepository(get(), get()) as UserRepository }
-    single { NavigationController() }
-    single { ComposeViewModelProvider(get(), get(), get()) }
+
+    viewModel { SplashViewModel(get(), get(), get(), get()) }
+    viewModel { BoxScoreViewModel(get(), get()) }
+    viewModel { TeamViewModel(get(), get(), get()) }
+    viewModel { PlayerViewModel(get(), get()) }
+    viewModel { CalendarViewModel(get(), get()) }
+    viewModel { BetViewModel(get(), get()) }
+    viewModel { SchedulePageViewModel(get(), get()) }
+    viewModel { StandingPageViewModel(get()) }
+    viewModel { UserPageViewModel(get(), get()) }
 }

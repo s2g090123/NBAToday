@@ -57,12 +57,14 @@ import com.jiachian.nbatoday.utils.dividerSecondaryColor
 import com.jiachian.nbatoday.utils.modifyIf
 import com.jiachian.nbatoday.utils.rippleClickable
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalPagerApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun StandingPage(
     modifier: Modifier = Modifier,
-    viewModel: StandingPageViewModel,
+    viewModel: StandingPageViewModel = koinViewModel(),
+    navigateToTeam: (teamId: Int) -> Unit,
 ) {
     val refreshing by viewModel.refreshing.collectAsState()
     val pagerState = rememberPagerState()
@@ -87,7 +89,8 @@ fun StandingPage(
                 StandingScreen(
                     modifier = Modifier.fillMaxHeight(),
                     viewModel = viewModel,
-                    east = page == 0
+                    east = page == 0,
+                    onClickTeam = navigateToTeam,
                 )
                 PullRefreshIndicator(
                     modifier = Modifier.align(Alignment.TopCenter),
@@ -150,6 +153,7 @@ private fun StandingScreen(
     modifier: Modifier = Modifier,
     viewModel: StandingPageViewModel,
     east: Boolean,
+    onClickTeam: (teamId: Int) -> Unit,
 ) {
     val scrollState = rememberScrollState()
     val rowDataState by when (east) {
@@ -180,11 +184,11 @@ private fun StandingScreen(
             }
             itemsIndexed(rowData) { standing, rowData ->
                 StandingStatsScrollableRow(
-                    viewModel = viewModel,
                     scrollState = scrollState,
                     standing = standing + 1,
                     rowData = rowData,
                     sorting = sorting,
+                    onClickTeam = onClickTeam,
                 )
             }
         }
@@ -260,18 +264,18 @@ private fun StandingLabel(
 
 @Composable
 private fun StandingStatsScrollableRow(
-    viewModel: StandingPageViewModel,
     scrollState: ScrollState,
     standing: Int,
     rowData: StandingRowData,
     sorting: StandingSorting,
+    onClickTeam: (teamId: Int) -> Unit,
 ) {
     StandingStatsRow(
-        viewModel = viewModel,
         scrollState = scrollState,
         standing = standing,
         rowData = rowData,
         sorting = sorting,
+        onClickTeam = onClickTeam,
     )
     Divider(
         color = dividerSecondaryColor(),
@@ -281,17 +285,17 @@ private fun StandingStatsScrollableRow(
 
 @Composable
 private fun StandingStatsRow(
-    viewModel: StandingPageViewModel,
     scrollState: ScrollState,
     standing: Int,
     rowData: StandingRowData,
     sorting: StandingSorting,
+    onClickTeam: (teamId: Int) -> Unit,
 ) {
     Row(modifier = Modifier.testTag(StandingTestTag.StandingStatsRow)) {
         StandingTeamRow(
             modifier = Modifier
                 .size(135.dp, 40.dp)
-                .rippleClickable { viewModel.onClickTeam(rowData.team.team) },
+                .rippleClickable { onClickTeam(rowData.team.teamId) },
             standing = standing,
             team = rowData.team.team
         )

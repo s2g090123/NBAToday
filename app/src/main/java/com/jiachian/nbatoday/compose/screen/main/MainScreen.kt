@@ -1,6 +1,5 @@
 package com.jiachian.nbatoday.compose.screen.main
 
-import android.os.Bundle
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.InfiniteRepeatableSpec
@@ -17,8 +16,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -38,8 +39,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.jiachian.nbatoday.MainViewModel
+import androidx.navigation.compose.rememberNavController
 import com.jiachian.nbatoday.R
+import com.jiachian.nbatoday.SplashViewModel
 import com.jiachian.nbatoday.Transparency25
 import com.jiachian.nbatoday.compose.screen.bet.BetScreen
 import com.jiachian.nbatoday.compose.screen.calendar.CalendarScreen
@@ -48,14 +50,17 @@ import com.jiachian.nbatoday.compose.screen.player.PlayerScreen
 import com.jiachian.nbatoday.compose.screen.score.BoxScoreScreen
 import com.jiachian.nbatoday.compose.screen.team.TeamScreen
 import com.jiachian.nbatoday.navigation.MainRoute
-import com.jiachian.nbatoday.utils.getOrError
+import com.jiachian.nbatoday.navigation.NavigationController
+import com.jiachian.nbatoday.navigation.rememberNavigationController
+import kotlinx.coroutines.flow.filter
+import org.koin.androidx.compose.koinViewModel
 
 private const val SplashOffsetAnimationDurationMs = 2000
 
 @Composable
 fun MainScreen(
-    viewModel: MainViewModel,
-    navController: NavHostController,
+    navController: NavHostController = rememberNavController(),
+    navigationController: NavigationController = rememberNavigationController(navController),
 ) {
     NavHost(
         modifier = Modifier.fillMaxSize(),
@@ -67,55 +72,60 @@ fun MainScreen(
                 colors = listOf(
                     MaterialTheme.colors.secondary.copy(Transparency25),
                     MaterialTheme.colors.secondary
-                )
+                ),
+                navigateToHome = navigationController::navigateToHome
             )
         }
         composable(MainRoute.Home.route) {
-            remember {
-                viewModel.viewModelProvider.getHomeViewModel()
-            }.let { viewModel -> HomeScreen(viewModel = viewModel) }
+            HomeScreen(
+                navigateToBoxScore = navigationController::navigateToBoxScore,
+                navigateToTeam = navigationController::navigateToTeam,
+                navigateToCalendar = navigationController::navigateToCalendar,
+                navigateToBet = navigationController::navigateToBet,
+            )
         }
         composable(MainRoute.BoxScore.route) {
-            remember {
-                viewModel.viewModelProvider.getBoxScoreViewModel(
-                    gameId = it.arguments?.getString(MainRoute.BoxScore.param).getOrError()
-                )
-            }.let { viewModel -> BoxScoreScreen(viewModel = viewModel) }
+            BoxScoreScreen(
+                openPlayerInfo = navigationController::navigateToPlayer,
+                onBack = navController::popBackStack
+            )
         }
         composable(MainRoute.Team.route) {
-            remember {
-                viewModel.viewModelProvider.getTeamViewModel(
-                    teamId = it.arguments?.getStringToInt(MainRoute.Team.param).getOrError()
-                )
-            }.let { viewModel -> TeamScreen(viewModel = viewModel) }
+            TeamScreen(
+                navigateToPlayer = navigationController::navigateToPlayer,
+                navigateToBoxScore = navigationController::navigateToBoxScore,
+                onBack = navController::popBackStack
+            )
         }
         composable(MainRoute.Player.route) {
-            remember {
-                viewModel.viewModelProvider.getPlayerViewModel(
-                    playerId = it.arguments?.getStringToInt(MainRoute.Player.param).getOrError()
-                )
-            }.let { viewModel -> PlayerScreen(viewModel = viewModel) }
+            PlayerScreen(
+                onBack = navController::popBackStack,
+            )
         }
         composable(MainRoute.Calendar.route) {
-            remember {
-                viewModel.viewModelProvider.getCalendarViewModel(
-                    dateTime = it.arguments?.getStringToLong(MainRoute.Calendar.param).getOrError()
-                )
-            }.let { viewModel -> CalendarScreen(viewModel = viewModel) }
+            CalendarScreen(
+                navigateToBoxScore = navigationController::navigateToBoxScore,
+                navigateToTeam = navigationController::navigateToTeam,
+                onBack = navController::popBackStack
+            )
         }
         composable(MainRoute.Bet.route) {
-            remember {
-                viewModel.viewModelProvider.getBetViewModel(
-                    account = it.arguments?.getString(MainRoute.Bet.param).getOrError()
-                )
-            }.let { viewModel -> BetScreen(viewModel = viewModel) }
+            BetScreen(
+                navigateToBoxScore = navigationController::navigateToBoxScore,
+                navigateToTeam = navigationController::navigateToTeam,
+                onBack = navController::popBackStack,
+            )
         }
     }
 }
 
 @OptIn(ExperimentalTextApi::class)
 @Composable
-private fun SplashScreen(colors: List<Color>) {
+private fun SplashScreen(
+    viewModel: SplashViewModel = koinViewModel(),
+    colors: List<Color>,
+    navigateToHome: () -> Unit,
+) {
     val infiniteAnimation = rememberInfiniteTransition()
     val colorAnimation by infiniteAnimation.animateColor(
         initialValue = MaterialTheme.colors.secondary.copy(Transparency25),
@@ -166,7 +176,9 @@ private fun SplashScreen(colors: List<Color>) {
             fontSize = 14.sp
         )
     }
+    LaunchedEffect(Unit) {
+        snapshotFlow { viewModel.isLoaded }
+            .filter { it }
+            .collect { navigateToHome() }
+    }
 }
-
-private fun Bundle.getStringToInt(key: String) = this.getString(key)?.toIntOrNull()
-private fun Bundle.getStringToLong(key: String) = this.getString(key)?.toLongOrNull()

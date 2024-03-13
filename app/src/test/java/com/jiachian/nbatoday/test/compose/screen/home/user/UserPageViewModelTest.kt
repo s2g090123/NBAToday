@@ -10,17 +10,22 @@ import com.jiachian.nbatoday.data.local.NBATeamGenerator
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.models.local.team.data.teamOfficial
 import com.jiachian.nbatoday.models.local.user.User
-import com.jiachian.nbatoday.navigation.NavigationController
+import com.jiachian.nbatoday.rule.SetMainDispatcherRule
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsA
 import com.jiachian.nbatoday.utils.assertIsNotNull
 import com.jiachian.nbatoday.utils.assertIsNull
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
+import org.koin.test.get
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class UserPageViewModelTest : BaseUnitTest() {
+    @get:Rule
+    val mainDispatcherRule = SetMainDispatcherRule(dispatcherProvider)
+
     private lateinit var viewModel: UserPageViewModel
 
     private val actualUser: User?
@@ -29,9 +34,8 @@ class UserPageViewModelTest : BaseUnitTest() {
     @Before
     fun setup() {
         viewModel = UserPageViewModel(
-            repository = repositoryProvider.user,
+            repository = get(),
             dataStore = dataStore,
-            navigationController = navigationController,
             dispatcherProvider = dispatcherProvider,
         )
     }
@@ -59,16 +63,6 @@ class UserPageViewModelTest : BaseUnitTest() {
                 addAll(NBATeam.nbaTeams)
             }
         )
-    }
-
-    @Test
-    fun `onBetClick() expects screen navigates to Bet`() = launch {
-        repositoryProvider.user.login(UserAccount, UserPassword)
-        val event = navigationController.eventFlow.defer(this)
-        viewModel.onBetClick()
-        event
-            .await()
-            .assertIsA(NavigationController.Event.NavigateToBet::class.java)
     }
 
     @Test

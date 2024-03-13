@@ -2,7 +2,9 @@ package com.jiachian.nbatoday.compose.screen.bet
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import com.jiachian.nbatoday.compose.screen.ComposeViewModel
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.jiachian.nbatoday.compose.screen.bet.models.Lose
 import com.jiachian.nbatoday.compose.screen.bet.models.TurnTableUIState
 import com.jiachian.nbatoday.compose.screen.bet.models.Win
@@ -10,14 +12,11 @@ import com.jiachian.nbatoday.compose.screen.state.UIState
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.models.local.bet.BetAndGame
-import com.jiachian.nbatoday.models.local.game.GameStatus
 import com.jiachian.nbatoday.navigation.MainRoute
-import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.repository.bet.BetRepository
 import com.jiachian.nbatoday.utils.WhileSubscribed5000
 import java.util.Random
 import kotlin.math.abs
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.mapLatest
@@ -47,54 +46,28 @@ private const val MaxMagnification = 4
 /**
  * ViewModel for handling business logic related to [BetScreen].
  *
- * @property account The user account associated with the logged-in user.
  * @property repository The repository for interacting with [BetAndGame].
- * @property navigationController The controller for navigation within the app.
  * @property dispatcherProvider The provider for obtaining dispatchers for coroutines (default is [DefaultDispatcherProvider]).
- * @property coroutineScope The coroutine scope for managing coroutines (default is [CoroutineScope] with main dispatcher).
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 class BetViewModel(
-    account: String,
+    savedStateHandle: SavedStateHandle,
     private val repository: BetRepository,
-    navigationController: NavigationController,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
-    coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.main)
-) : ComposeViewModel(
-    coroutineScope = coroutineScope,
-    navigationController = navigationController,
-    route = MainRoute.Bet
-) {
+) : ViewModel() {
+    private val account: String = savedStateHandle[MainRoute.Bet.param] ?: throw Exception("account is null.")
+
     // state representing the stats of [BetAndGame]
     val betsAndGamesState = repository
         .getBetsAndGames(account)
         .mapLatest { UIState.Loaded(it) }
-        .stateIn(coroutineScope, WhileSubscribed5000, UIState.Loading())
+        .stateIn(viewModelScope, WhileSubscribed5000, UIState.Loading())
 
     private var turnTableUIStateImp = mutableStateOf<TurnTableUIState>(TurnTableUIState.Idle)
     val turnTableUIState by turnTableUIStateImp
 
-    /**
-     * Handles the click event on a specific [BetAndGame].
-     *
-     * @param betAndGame The clicked [BetAndGame].
-     */
-    fun clickBetAndGame(betAndGame: BetAndGame) {
-        when (betAndGame.game.gameStatus) {
-            GameStatus.COMING_SOON -> {
-                navigationController.navigateToTeam(betAndGame.game.homeTeamId)
-            }
-            GameStatus.PLAYING -> {
-                navigationController.navigateToBoxScore(betAndGame.game.gameId)
-            }
-            GameStatus.FINAL -> {
-                settleBet(betAndGame)
-            }
-        }
-    }
-
-    private fun settleBet(betAndGame: BetAndGame) {
-        coroutineScope.launch(dispatcherProvider.io) {
+    fun settleBet(betAndGame: BetAndGame) {
+        viewModelScope.launch(dispatcherProvider.io) {
             val (win, lose) = repository.settleBet(betAndGame)
             turnTableUIStateImp.value = TurnTableUIState.Asking(Win(win), Lose(lose))
         }
@@ -120,7 +93,7 @@ class BetViewModel(
             turnTableUIStateImp.value = TurnTableUIState.Idle
             return
         }
-        coroutineScope.launch(dispatcherProvider.io) {
+        viewModelScope.launch(dispatcherProvider.io) {
             state.running = true
             val rewardedAngle = Random().nextInt(RandomBound).toFloat()
             val rewardedPoints = getRewardedPoints(win, lose, rewardedAngle)

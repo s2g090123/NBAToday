@@ -1,6 +1,14 @@
 package com.jiachian.nbatoday.koin
 
-import com.jiachian.nbatoday.MainViewModel
+import com.jiachian.nbatoday.SplashViewModel
+import com.jiachian.nbatoday.compose.screen.bet.BetViewModel
+import com.jiachian.nbatoday.compose.screen.calendar.CalendarViewModel
+import com.jiachian.nbatoday.compose.screen.home.schedule.SchedulePageViewModel
+import com.jiachian.nbatoday.compose.screen.home.standing.StandingPageViewModel
+import com.jiachian.nbatoday.compose.screen.home.user.UserPageViewModel
+import com.jiachian.nbatoday.compose.screen.player.PlayerViewModel
+import com.jiachian.nbatoday.compose.screen.score.BoxScoreViewModel
+import com.jiachian.nbatoday.compose.screen.team.TeamViewModel
 import com.jiachian.nbatoday.database.NBADatabase
 import com.jiachian.nbatoday.datasource.local.bet.BetLocalSource
 import com.jiachian.nbatoday.datasource.local.bet.NBABetLocalSource
@@ -23,8 +31,6 @@ import com.jiachian.nbatoday.datasource.remote.user.NBAUserRemoteSource
 import com.jiachian.nbatoday.datasource.remote.user.UserRemoteSource
 import com.jiachian.nbatoday.datastore.BaseDataStore
 import com.jiachian.nbatoday.datastore.NBADataStore
-import com.jiachian.nbatoday.navigation.NavigationController
-import com.jiachian.nbatoday.repository.RepositoryProvider
 import com.jiachian.nbatoday.repository.bet.BetRepository
 import com.jiachian.nbatoday.repository.bet.NBABetRepository
 import com.jiachian.nbatoday.repository.game.GameRepository
@@ -41,7 +47,6 @@ import com.jiachian.nbatoday.service.GameService
 import com.jiachian.nbatoday.service.PlayerService
 import com.jiachian.nbatoday.service.TeamService
 import com.jiachian.nbatoday.service.UserService
-import com.jiachian.nbatoday.utils.ComposeViewModelProvider
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -62,7 +67,6 @@ val module = module {
     factory { NBATeamLocalSource(get()) as TeamLocalSource }
     factory { NBAPlayerLocalSource(get()) as PlayerLocalSource }
     factory { NBABetLocalSource(get()) as BetLocalSource }
-    factory { RepositoryProvider(get(), get(), get(), get(), get(), get()) }
 
     single { NBADatabase.getInstance(androidContext()) }
     single { NBADataStore(androidApplication()) as BaseDataStore }
@@ -72,8 +76,14 @@ val module = module {
     single { NBAPlayerRepository(get(), get()) as PlayerRepository }
     single { NBABetRepository(get(), get()) as BetRepository }
     single { NBAUserRepository(get(), get()) as UserRepository }
-    single { NavigationController() }
-    single { ComposeViewModelProvider(get(), get(), get()) }
 
-    viewModel { MainViewModel(get(), get(), get(), get()) }
+    viewModel { SplashViewModel(get(), get(), get(), get()) }
+    viewModel { BoxScoreViewModel(get(), get()) }
+    viewModel { TeamViewModel(get(), get(), get()) }
+    viewModel { PlayerViewModel(get(), get()) }
+    viewModel { CalendarViewModel(get(), get()) }
+    viewModel { BetViewModel(get(), get()) }
+    viewModel { SchedulePageViewModel(get(), get()) }
+    viewModel { StandingPageViewModel(get()) }
+    viewModel { UserPageViewModel(get(), get()) }
 }

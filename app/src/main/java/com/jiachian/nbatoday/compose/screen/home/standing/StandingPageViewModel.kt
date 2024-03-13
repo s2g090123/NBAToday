@@ -1,6 +1,8 @@
 package com.jiachian.nbatoday.compose.screen.home.standing
 
 import androidx.annotation.VisibleForTesting
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.jiachian.nbatoday.annotation.ExcludeFromJacocoGeneratedReport
 import com.jiachian.nbatoday.compose.screen.home.standing.models.StandingLabel
 import com.jiachian.nbatoday.compose.screen.home.standing.models.StandingRowData
@@ -11,7 +13,6 @@ import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.models.local.team.Team
-import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.repository.team.TeamRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,10 +34,8 @@ import kotlinx.coroutines.launch
  */
 class StandingPageViewModel(
     private val repository: TeamRepository,
-    private val navigationController: NavigationController,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
-    private val coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.main)
-) {
+) : ViewModel() {
     private val eastTeams = repository.getTeams(NBATeam.Conference.EAST)
     private val westTeams = repository.getTeams(NBATeam.Conference.WEST)
 
@@ -66,7 +65,7 @@ class StandingPageViewModel(
         UIState.Loaded(rowData.sortedWith(sorting))
     }
         .flowOn(dispatcherProvider.io)
-        .stateIn(coroutineScope, SharingStarted.Lazily, UIState.Loading())
+        .stateIn(viewModelScope, SharingStarted.Lazily, UIState.Loading())
     val sortedWestRowDataState = combine(
         westRowData,
         westSorting
@@ -74,7 +73,7 @@ class StandingPageViewModel(
         UIState.Loaded(rowData.sortedWith(sorting))
     }
         .flowOn(dispatcherProvider.io)
-        .stateIn(coroutineScope, SharingStarted.Lazily, UIState.Loading())
+        .stateIn(viewModelScope, SharingStarted.Lazily, UIState.Loading())
 
     // the refreshing status of the standing page
     private val refreshingImp = MutableStateFlow(false)
@@ -87,7 +86,7 @@ class StandingPageViewModel(
      */
     fun updateTeamStats() {
         if (refreshing.value) return
-        coroutineScope.launch(dispatcherProvider.io) {
+        viewModelScope.launch(dispatcherProvider.io) {
             refreshingImp.value = true
             repository.insertTeams()
             refreshingImp.value = false
@@ -108,15 +107,6 @@ class StandingPageViewModel(
             NBATeam.Conference.EAST -> eastSortingImp.value = sorting
             NBATeam.Conference.WEST -> westSortingImp.value = sorting
         }
-    }
-
-    /**
-     * Handles click event for a team, navigating to the team details screen.
-     *
-     * @param team The selected NBATeam instance.
-     */
-    fun onClickTeam(team: NBATeam) {
-        navigationController.navigateToTeam(team.teamId)
     }
 
     private fun List<StandingRowData>.sortedWith(sorting: StandingSorting): List<StandingRowData> {

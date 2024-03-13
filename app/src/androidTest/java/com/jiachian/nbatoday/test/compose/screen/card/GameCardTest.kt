@@ -7,7 +7,7 @@ import com.jiachian.nbatoday.HomeTeamColors
 import com.jiachian.nbatoday.UserAccount
 import com.jiachian.nbatoday.UserPassword
 import com.jiachian.nbatoday.compose.screen.card.GameCard
-import com.jiachian.nbatoday.compose.screen.card.GameCardViewModel
+import com.jiachian.nbatoday.compose.screen.card.GameCardUIData
 import com.jiachian.nbatoday.data.local.GameAndBetsGenerator
 import com.jiachian.nbatoday.testing.testtag.BetTestTag
 import com.jiachian.nbatoday.testing.testtag.GameCardTestTag
@@ -27,7 +27,7 @@ class GameCardTest : BaseAndroidTest() {
     fun gameCard_nonExpandable_checksUI() {
         composeTestRule.setContent {
             GameCard(
-                viewModel = GameCardViewModel(
+                uiData = GameCardUIData(
                     gameAndBets = GameAndBetsGenerator.getFinal(),
                     betRepository = repositoryProvider.bet,
                     userRepository = repositoryProvider.user,
@@ -46,7 +46,7 @@ class GameCardTest : BaseAndroidTest() {
     fun gameCard_expandable_checksUI() {
         composeTestRule.setContent {
             GameCard(
-                viewModel = GameCardViewModel(
+                uiData = GameCardUIData(
                     gameAndBets = GameAndBetsGenerator.getFinal(),
                     betRepository = repositoryProvider.bet,
                     userRepository = repositoryProvider.user,
@@ -69,7 +69,7 @@ class GameCardTest : BaseAndroidTest() {
     fun gameCard_clicksBetButton_displayLoginDialog() {
         composeTestRule.setContent {
             GameCard(
-                viewModel = GameCardViewModel(
+                uiData = GameCardUIData(
                     gameAndBets = GameAndBetsGenerator.getComingSoon(false),
                     betRepository = repositoryProvider.bet,
                     userRepository = repositoryProvider.user,
@@ -92,7 +92,7 @@ class GameCardTest : BaseAndroidTest() {
     @Test
     fun gameCard_clicksBetButton_hasBet() {
         val viewModel = spyk(
-            GameCardViewModel(
+            GameCardUIData(
                 gameAndBets = GameAndBetsGenerator.getComingSoon(false),
                 betRepository = repositoryProvider.bet,
                 userRepository = repositoryProvider.user,
@@ -105,7 +105,7 @@ class GameCardTest : BaseAndroidTest() {
         }
         composeTestRule.setContent {
             GameCard(
-                viewModel = viewModel,
+                uiData = viewModel,
                 color = HomeTeamColors.primary,
                 expandable = false
             )
@@ -121,7 +121,7 @@ class GameCardTest : BaseAndroidTest() {
     fun gameCard_clicksBetButton_displayBetDialog() = launch {
         composeTestRule.setContent {
             GameCard(
-                viewModel = GameCardViewModel(
+                uiData = GameCardUIData(
                     gameAndBets = GameAndBetsGenerator.getComingSoon(false),
                     betRepository = repositoryProvider.bet,
                     userRepository = repositoryProvider.user,

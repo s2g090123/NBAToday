@@ -9,14 +9,12 @@ import androidx.test.core.app.ApplicationProvider
 import com.jiachian.nbatoday.datastore.BaseDataStore
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.koin.testModule
-import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.repository.RepositoryProvider
 import com.jiachian.nbatoday.rule.ApplicationRule
 import com.jiachian.nbatoday.rule.CalendarRule
 import com.jiachian.nbatoday.rule.CoroutineRule
 import com.jiachian.nbatoday.rule.KoinTestRule
 import com.jiachian.nbatoday.rule.NBATeamRule
-import com.jiachian.nbatoday.utils.ComposeViewModelProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -70,17 +68,12 @@ open class BaseAndroidTest {
     protected val dataHolder: DataHolder
         get() = get(DataHolder::class.java)
 
-    protected val navigationController: NavigationController
-        get() = get(NavigationController::class.java)
-
     protected val dataStore: BaseDataStore
         get() = get(BaseDataStore::class.java)
 
-    protected val repositoryProvider: RepositoryProvider
-        get() = get(RepositoryProvider::class.java)
-
-    protected val composeViewModelProvider: ComposeViewModelProvider
-        get() = get(ComposeViewModelProvider::class.java)
+    protected val repositoryProvider by lazy {
+        RepositoryProvider()
+    }
 
     protected fun launch(testBody: suspend TestScope.() -> Unit) = coroutineRule.launch {
         testBody()
@@ -117,11 +110,12 @@ open class BaseAndroidTest {
     }
 
     @Composable
-    protected open fun provideComposable(): Any = Unit
+    protected open fun ProvideComposable() {
+    }
 
     protected fun inCompose(execution: suspend ComposeTestRule.(scope: CoroutineScope) -> Unit) = launch {
         composeTestRule.setContent {
-            provideComposable()
+            ProvideComposable()
         }
         execution(composeTestRule, this)
     }

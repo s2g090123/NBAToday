@@ -9,18 +9,24 @@ import androidx.navigation.compose.ComposeNavigator
 import androidx.navigation.testing.TestNavHostController
 import com.jiachian.nbatoday.BaseAndroidTest
 import com.jiachian.nbatoday.compose.screen.home.HomeScreen
-import com.jiachian.nbatoday.compose.screen.home.HomeViewModel
 import com.jiachian.nbatoday.compose.screen.home.navigation.HomePage
+import com.jiachian.nbatoday.compose.screen.home.schedule.models.DateData
 import com.jiachian.nbatoday.testing.testtag.HomeTestTag
 import com.jiachian.nbatoday.utils.assertCurrentRoute
 import com.jiachian.nbatoday.utils.onAllNodesWithUnmergedTree
+import org.junit.Before
 import org.junit.Test
 
 class HomeScreenTest : BaseAndroidTest() {
     private lateinit var navController: TestNavHostController
 
+    private var navigateToGame: String? = null
+    private var navigateToTeam: Int? = null
+    private var navigateToCalendar: DateData? = null
+    private var navigateToBet: String? = null
+
     @Composable
-    override fun provideComposable(): Any {
+    override fun ProvideComposable() {
         val context = LocalContext.current
         navController = remember {
             TestNavHostController(context).apply {
@@ -29,14 +35,28 @@ class HomeScreenTest : BaseAndroidTest() {
             }
         }
         HomeScreen(
-            viewModel = HomeViewModel(
-                composeViewModelProvider = composeViewModelProvider,
-                navigationController = navigationController,
-                dispatcherProvider = dispatcherProvider,
-            ),
             navController = navController,
+            navigateToBoxScore = {
+                navigateToGame = it
+            },
+            navigateToTeam = {
+                navigateToTeam = it
+            },
+            navigateToCalendar = {
+                navigateToCalendar = it
+            },
+            navigateToBet = {
+                navigateToBet = it
+            },
         )
-        return super.provideComposable()
+    }
+
+    @Before
+    fun setup() {
+        navigateToGame = null
+        navigateToTeam = null
+        navigateToCalendar = null
+        navigateToBet = null
     }
 
     @Test
@@ -64,26 +84,15 @@ class HomeScreenTest : BaseAndroidTest() {
     }
 
     @Test
-    fun homeScreen_defaultNavController() {
-        composeTestRule.setContent {
-            HomeScreen(
-                viewModel = HomeViewModel(
-                    composeViewModelProvider = composeViewModelProvider,
-                    navigationController = navigationController,
-                    dispatcherProvider = dispatcherProvider,
-                )
-            )
-        }
-        composeTestRule.apply {
-            onAllNodesWithUnmergedTree(HomeTestTag.HomeBottomNavigation_BottomNavigationItem)[0]
-                .performClick()
-                .assertIsSelected()
-            onAllNodesWithUnmergedTree(HomeTestTag.HomeBottomNavigation_BottomNavigationItem)[1]
-                .performClick()
-                .assertIsSelected()
-            onAllNodesWithUnmergedTree(HomeTestTag.HomeBottomNavigation_BottomNavigationItem)[2]
-                .performClick()
-                .assertIsSelected()
-        }
+    fun homeScreen_defaultNavController() = inCompose {
+        onAllNodesWithUnmergedTree(HomeTestTag.HomeBottomNavigation_BottomNavigationItem)[0]
+            .performClick()
+            .assertIsSelected()
+        onAllNodesWithUnmergedTree(HomeTestTag.HomeBottomNavigation_BottomNavigationItem)[1]
+            .performClick()
+            .assertIsSelected()
+        onAllNodesWithUnmergedTree(HomeTestTag.HomeBottomNavigation_BottomNavigationItem)[2]
+            .performClick()
+            .assertIsSelected()
     }
 }

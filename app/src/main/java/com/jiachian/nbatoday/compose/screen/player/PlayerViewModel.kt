@@ -1,6 +1,8 @@
 package com.jiachian.nbatoday.compose.screen.player
 
-import com.jiachian.nbatoday.compose.screen.ComposeViewModel
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.jiachian.nbatoday.compose.screen.label.LabelHelper
 import com.jiachian.nbatoday.compose.screen.player.models.PlayerInfoTableData
 import com.jiachian.nbatoday.compose.screen.player.models.PlayerStatsLabel
@@ -12,10 +14,8 @@ import com.jiachian.nbatoday.compose.screen.state.UIState
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.navigation.MainRoute
-import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.repository.player.PlayerRepository
 import com.jiachian.nbatoday.utils.WhileSubscribed5000
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
@@ -27,26 +27,19 @@ import kotlinx.coroutines.launch
 /**
  * ViewModel for handling business logic related to [PlayerScreen].
  *
- * @param playerId The ID of the player for whom details are displayed.
  * @param repository The repository for interacting with [Player].
- * @property navigationController The controller for navigation within the app.
  * @property dispatcherProvider The provider for obtaining dispatchers for coroutines (default is [DefaultDispatcherProvider]).
- * @property coroutineScope The coroutine scope for managing coroutines (default is [CoroutineScope] with main dispatcher).
  */
 class PlayerViewModel(
-    private val playerId: Int,
+    savedStateHandle: SavedStateHandle,
     private val repository: PlayerRepository,
-    navigationController: NavigationController,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
-    coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.main)
-) : ComposeViewModel(
-    coroutineScope = coroutineScope,
-    navigationController = navigationController,
-    route = MainRoute.Player
-) {
+) : ViewModel() {
+    private val playerId: Int = savedStateHandle.get<String>(MainRoute.Player.param)?.toIntOrNull() ?: throw Exception("playerId is null.")
+
     // Update player data into the repository
     init {
-        coroutineScope.launch(dispatcherProvider.io) {
+        viewModelScope.launch(dispatcherProvider.io) {
             repository.insertPlayer(playerId)
         }
     }
@@ -120,7 +113,7 @@ class PlayerViewModel(
     ) { loading, playerUI ->
         if (loading) return@combine UIState.Loading()
         UIState.Loaded(playerUI)
-    }.stateIn(coroutineScope, WhileSubscribed5000, UIState.Loading())
+    }.stateIn(viewModelScope, WhileSubscribed5000, UIState.Loading())
 
     /**
      * Update the sorting criteria for player stats.

@@ -24,7 +24,7 @@ import com.jiachian.nbatoday.testing.testtag.GameCardTestTag
 import com.jiachian.nbatoday.utils.showToast
 
 @Composable
-fun GameCardBetScreen(viewModel: GameCardViewModel) {
+fun GameCardBetScreen(viewModel: GameCardUIData) {
     val login by viewModel.login.collectAsState()
     val hasBet by viewModel.hasBet.collectAsState()
     when {

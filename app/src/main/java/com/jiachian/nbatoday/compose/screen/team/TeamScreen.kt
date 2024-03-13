@@ -46,11 +46,17 @@ import com.jiachian.nbatoday.compose.widget.LoadingScreen
 import com.jiachian.nbatoday.compose.widget.UIStateScreen
 import com.jiachian.nbatoday.testing.testtag.TeamTestTag
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 
 private val TopMargin = 81.dp
 
 @Composable
-fun TeamScreen(viewModel: TeamViewModel) {
+fun TeamScreen(
+    viewModel: TeamViewModel = koinViewModel(),
+    navigateToPlayer: (playerId: Int) -> Unit,
+    navigateToBoxScore: (gameId: String) -> Unit,
+    onBack: () -> Unit,
+) {
     val teamUIState by viewModel.teamUIState.collectAsState()
     val scrollState = rememberScrollState()
     Column(modifier = Modifier.background(viewModel.colors.primary)) {
@@ -60,7 +66,7 @@ fun TeamScreen(viewModel: TeamViewModel) {
                 .padding(top = 8.dp, start = 8.dp),
             drawableRes = R.drawable.ic_black_back,
             tint = viewModel.colors.extra2,
-            onClick = viewModel::close,
+            onClick = onBack,
         )
         UIStateScreen(
             state = teamUIState,
@@ -81,6 +87,8 @@ fun TeamScreen(viewModel: TeamViewModel) {
                 viewModel = viewModel,
                 scrollState = scrollState,
                 teamUI = teamUI,
+                navigateToPlayer = navigateToPlayer,
+                navigateToBoxScore = navigateToBoxScore,
             )
         }
     }
@@ -93,6 +101,8 @@ private fun TeamDetails(
     viewModel: TeamViewModel,
     scrollState: ScrollState,
     teamUI: TeamUI,
+    navigateToPlayer: (playerId: Int) -> Unit,
+    navigateToBoxScore: (gameId: String) -> Unit,
 ) {
     val pagerState = rememberPagerState()
     val detailHeight = LocalConfiguration.current.screenHeightDp.dp - TopMargin
@@ -113,6 +123,8 @@ private fun TeamDetails(
                 pagerState = pagerState,
                 scrollState = scrollState,
                 teamPlayers = teamUI.players,
+                navigateToPlayer = navigateToPlayer,
+                navigateToBoxScore = navigateToBoxScore,
             )
         }
     }
@@ -199,6 +211,8 @@ private fun TeamPager(
     pagerState: PagerState,
     scrollState: ScrollState,
     teamPlayers: List<TeamPlayerRowData>,
+    navigateToPlayer: (playerId: Int) -> Unit,
+    navigateToBoxScore: (gameId: String) -> Unit,
 ) {
     val nestedScrollConnection = remember {
         object : NestedScrollConnection {
@@ -227,6 +241,7 @@ private fun TeamPager(
                     modifier = Modifier.fillMaxHeight(),
                     viewModel = viewModel,
                     teamPlayers = teamPlayers,
+                    navigateToPlayer = navigateToPlayer,
                 )
             }
             1 -> {
@@ -234,7 +249,8 @@ private fun TeamPager(
                 TeamGamePage(
                     modifier = Modifier.fillMaxHeight(),
                     viewModel = viewModel,
-                    gamesState = gamesBefore
+                    gamesState = gamesBefore,
+                    navigateToBoxScore = navigateToBoxScore,
                 )
             }
             2 -> {
@@ -242,7 +258,8 @@ private fun TeamPager(
                 TeamGamePage(
                     modifier = Modifier.fillMaxHeight(),
                     viewModel = viewModel,
-                    gamesState = gamesAfter
+                    gamesState = gamesAfter,
+                    navigateToBoxScore = navigateToBoxScore,
                 )
             }
         }

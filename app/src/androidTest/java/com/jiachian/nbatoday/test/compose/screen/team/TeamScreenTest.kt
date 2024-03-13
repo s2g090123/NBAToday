@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.performClick
+import androidx.lifecycle.SavedStateHandle
 import com.jiachian.nbatoday.AwayTeamAbbr
 import com.jiachian.nbatoday.BaseAndroidTest
 import com.jiachian.nbatoday.BasicNumber
@@ -25,11 +26,10 @@ import com.jiachian.nbatoday.compose.screen.team.models.TeamPlayerLabel
 import com.jiachian.nbatoday.data.local.TeamPlayerGenerator
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.navigation.MainRoute
-import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.testing.testtag.GameCardTestTag
 import com.jiachian.nbatoday.testing.testtag.TeamTestTag
 import com.jiachian.nbatoday.utils.assertIs
-import com.jiachian.nbatoday.utils.assertIsA
+import com.jiachian.nbatoday.utils.assertIsTrue
 import com.jiachian.nbatoday.utils.decimalFormat
 import com.jiachian.nbatoday.utils.onAllNodesWithUnmergedTree
 import com.jiachian.nbatoday.utils.onNodeWithTag
@@ -47,28 +47,39 @@ import org.junit.Test
 class TeamScreenTest : BaseAndroidTest() {
     private lateinit var viewModel: TeamViewModel
 
+    private var navigateToGame: String? = null
+    private var navigateToBack: Boolean? = null
+
     @Before
     fun setup() = runTest {
+        navigateToGame = null
+        navigateToBack = null
         repositoryProvider.team.insertTeams()
         repositoryProvider.schedule.updateSchedule()
         viewModel = spyk(
             TeamViewModel(
-                teamId = HomeTeamId,
+                savedStateHandle = SavedStateHandle(mapOf(MainRoute.Team.param to "$HomeTeamId")),
                 teamRepository = repositoryProvider.team,
                 gameRepository = repositoryProvider.game,
-                navigationController = navigationController,
-                composeViewModelProvider = composeViewModelProvider,
                 dispatcherProvider = dispatcherProvider,
             )
         )
     }
 
     @Composable
-    override fun provideComposable(): Any {
+    override fun ProvideComposable() {
         TeamScreen(
-            viewModel = viewModel
+            viewModel = viewModel,
+            navigateToPlayer = {
+                // do nothing
+            },
+            navigateToBoxScore = {
+                navigateToGame = it
+            },
+            onBack = {
+                navigateToBack = true
+            },
         )
-        return super.provideComposable()
     }
 
     @Test
@@ -118,7 +129,6 @@ class TeamScreenTest : BaseAndroidTest() {
 
     @Test
     fun teamScreen_checksPreviousGamesUI() = inCompose {
-        val event = navigationController.eventFlow.defer(it)
         onAllNodesWithUnmergedTree(TeamTestTag.TeamTab)[1]
             .performClick()
         onAllNodesWithUnmergedTree(TeamTestTag.TeamGamePage_GameCard)[0].apply {
@@ -140,16 +150,11 @@ class TeamScreenTest : BaseAndroidTest() {
                 .assertDoesNotExist()
             performClick()
         }
-        event
-            .await()
-            .assertIsA(NavigationController.Event.NavigateToBoxScore::class.java)
-            .gameId
-            .assertIs(FinalGameId)
+        navigateToGame.assertIs(FinalGameId)
     }
 
     @Test
     fun teamScreen_checksNextGamesUI() = inCompose {
-        val event = navigationController.eventFlow.defer(it)
         onAllNodesWithUnmergedTree(TeamTestTag.TeamTab)[2]
             .performClick()
         onAllNodesWithUnmergedTree(TeamTestTag.TeamGamePage_GameCard)[0].apply {
@@ -171,11 +176,7 @@ class TeamScreenTest : BaseAndroidTest() {
                 .assertDoesNotExist()
             performClick()
         }
-        event
-            .await()
-            .assertIsA(NavigationController.Event.NavigateToBoxScore::class.java)
-            .gameId
-            .assertIs(PlayingGameId)
+        navigateToGame.assertIs(PlayingGameId)
         onAllNodesWithUnmergedTree(TeamTestTag.TeamGamePage_GameCard)[1].apply {
             onNodeWithTag(GameCardTestTag.GameDetail_GameTeamInfo_Home).apply {
                 onNodeWithTag(GameCardTestTag.GameTeamInfo_Text_TeamAbbr)
@@ -198,14 +199,9 @@ class TeamScreenTest : BaseAndroidTest() {
 
     @Test
     fun teamScreen_clicksBack() = inCompose {
-        val event = navigationController.eventFlow.defer(it)
         onNodeWithUnmergedTree(TeamTestTag.TeamScreen_Button_Back)
             .performClick()
-        event
-            .await()
-            .assertIsA(NavigationController.Event.BackScreen::class.java)
-            .departure
-            .assertIs(MainRoute.Team)
+        navigateToBack.assertIsTrue()
     }
 
     @Test
