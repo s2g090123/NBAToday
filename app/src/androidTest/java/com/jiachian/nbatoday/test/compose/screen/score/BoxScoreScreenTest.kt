@@ -62,7 +62,9 @@ class BoxScoreScreenTest : BaseAndroidTest() {
     override fun ProvideComposable() {
         BoxScoreScreen(
             viewModel = viewModel,
-            openPlayerInfo = {},
+            openPlayerInfo = {
+                // do nothing
+            },
             onBack = {
                 navigateToBack = true
             }

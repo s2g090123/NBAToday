@@ -33,7 +33,9 @@ class StandingPageTest : BaseAndroidTest() {
     override fun ProvideComposable() {
         StandingPage(
             viewModel = viewModel,
-            navigateToTeam = {}
+            navigateToTeam = {
+                // do nothing
+            }
         )
     }
 

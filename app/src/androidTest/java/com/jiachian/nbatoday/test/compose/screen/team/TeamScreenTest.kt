@@ -70,7 +70,9 @@ class TeamScreenTest : BaseAndroidTest() {
     override fun ProvideComposable() {
         TeamScreen(
             viewModel = viewModel,
-            navigateToPlayer = {},
+            navigateToPlayer = {
+                // do nothing
+            },
             navigateToBoxScore = {
                 navigateToGame = it
             },
