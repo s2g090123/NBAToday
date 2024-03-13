@@ -22,7 +22,7 @@ jobs:
     name: Run AndroidTests
     runs-on: self-hosted
     needs: [ build ]
-    timeout-minutes: 15
+    timeout-minutes: 20
 
     steps:
       - name: Check emulator command is exists
