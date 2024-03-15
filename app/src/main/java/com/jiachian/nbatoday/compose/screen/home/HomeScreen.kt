@@ -37,6 +37,8 @@ fun HomeScreen(
     navigateToTeam: (teamId: Int) -> Unit,
     navigateToCalendar: (DateData) -> Unit,
     navigateToBet: (account: String) -> Unit,
+    showLoginDialog: () -> Unit,
+    showBetDialog: (String) -> Unit,
 ) {
     Scaffold(
         bottomBar = {
@@ -59,6 +61,8 @@ fun HomeScreen(
                     navigateToBoxScore = navigateToBoxScore,
                     navigateToTeam = navigateToTeam,
                     navigateToCalendar = navigateToCalendar,
+                    showLoginDialog = showLoginDialog,
+                    showBetDialog = showBetDialog,
                 )
             }
             composable(HomePage.STANDING.route) {
@@ -71,6 +75,7 @@ fun HomeScreen(
                 UserPage(
                     modifier = Modifier.fillMaxSize(),
                     navigateToBet = navigateToBet,
+                    showLoginDialog = showLoginDialog,
                 )
             }
         }

@@ -12,11 +12,12 @@ import com.jiachian.nbatoday.compose.screen.team.models.TeamUI
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.models.local.game.Game
-import com.jiachian.nbatoday.models.local.game.toGameCardUIDataList
+import com.jiachian.nbatoday.models.local.game.toGameCardState
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.navigation.MainRoute
 import com.jiachian.nbatoday.repository.game.GameRepository
 import com.jiachian.nbatoday.repository.team.TeamRepository
+import com.jiachian.nbatoday.usecase.user.UserUseCase
 import com.jiachian.nbatoday.utils.DateUtils
 import com.jiachian.nbatoday.utils.WhileSubscribed5000
 import java.util.Calendar
@@ -42,8 +43,11 @@ class TeamViewModel(
     savedStateHandle: SavedStateHandle,
     private val teamRepository: TeamRepository,
     gameRepository: GameRepository,
+    userUseCase: UserUseCase,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
 ) : ViewModel() {
+    private val user = userUseCase.getUser()
+
     private val teamId: Int = savedStateHandle.get<String>(MainRoute.Team.param)?.toIntOrNull() ?: throw Exception("teamId is null.")
     private val team = NBATeam.getTeamById(teamId)
     val colors = team.colors
@@ -70,7 +74,7 @@ class TeamViewModel(
             set(Calendar.MILLISECOND, 0)
         }.timeInMillis
     ).map {
-        UIState.Loaded(it.toGameCardUIDataList())
+        UIState.Loaded(it.toGameCardState(user))
     }
         .flowOn(dispatcherProvider.default)
         .stateIn(viewModelScope, SharingStarted.Lazily, UIState.Loading())
@@ -82,7 +86,7 @@ class TeamViewModel(
             set(Calendar.MILLISECOND, 0)
         }.timeInMillis
     ).map {
-        UIState.Loaded(it.toGameCardUIDataList())
+        UIState.Loaded(it.toGameCardState(user))
     }
         .flowOn(dispatcherProvider.default)
         .stateIn(viewModelScope, SharingStarted.Lazily, UIState.Loading())

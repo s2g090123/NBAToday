@@ -37,7 +37,7 @@ import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.screen.card.GameCard
-import com.jiachian.nbatoday.compose.screen.card.GameCardUIData
+import com.jiachian.nbatoday.compose.screen.card.GameCardState
 import com.jiachian.nbatoday.compose.screen.home.schedule.models.DateData
 import com.jiachian.nbatoday.compose.widget.IconButton
 import com.jiachian.nbatoday.compose.widget.LoadingScreen
@@ -56,6 +56,8 @@ fun SchedulePage(
     navigateToBoxScore: (gameId: String) -> Unit,
     navigateToTeam: (teamId: Int) -> Unit,
     navigateToCalendar: (DateData) -> Unit,
+    showLoginDialog: () -> Unit,
+    showBetDialog: (String) -> Unit,
 ) {
     val dateData = viewModel.dateData
     val pagerState = rememberPagerState(initialPage = dateData.size / 2)
@@ -100,6 +102,8 @@ fun SchedulePage(
                         }
                     },
                     onClickCalendar = navigateToCalendar,
+                    showLoginDialog = showLoginDialog,
+                    showBetDialog = showBetDialog,
                 )
             }
         }
@@ -117,9 +121,11 @@ private fun ScheduleContent(
     viewModel: SchedulePageViewModel,
     refreshState: PullRefreshState,
     refreshing: Boolean,
-    games: List<GameCardUIData>,
+    games: List<GameCardState>,
     onClickGame: (game: Game) -> Unit,
     onClickCalendar: (DateData) -> Unit,
+    showLoginDialog: () -> Unit,
+    showBetDialog: (String) -> Unit,
 ) {
     Box(
         modifier = Modifier
@@ -142,7 +148,7 @@ private fun ScheduleContent(
                     onClick = { onClickCalendar(viewModel.selectedDate) }
                 )
             }
-            itemsIndexed(games) { index, uiData ->
+            itemsIndexed(games) { index, state ->
                 GameCard(
                     modifier = Modifier
                         .testTag(ScheduleTestTag.ScheduleContent_GameCard)
@@ -157,10 +163,12 @@ private fun ScheduleContent(
                         .fillMaxWidth()
                         .wrapContentHeight()
                         .background(MaterialTheme.colors.secondary)
-                        .rippleClickable { onClickGame(uiData.gameAndBets.game) },
-                    uiData = uiData,
+                        .rippleClickable { onClickGame(state.data.game) },
+                    state = state,
                     color = MaterialTheme.colors.primary,
                     expandable = true,
+                    showLoginDialog = showLoginDialog,
+                    showBetDialog = showBetDialog,
                 )
             }
         }

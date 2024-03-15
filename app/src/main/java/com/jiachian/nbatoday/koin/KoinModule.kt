@@ -1,7 +1,9 @@
 package com.jiachian.nbatoday.koin
 
 import com.jiachian.nbatoday.SplashViewModel
+import com.jiachian.nbatoday.compose.screen.account.LoginDialogViewModel
 import com.jiachian.nbatoday.compose.screen.bet.BetViewModel
+import com.jiachian.nbatoday.compose.screen.bet.dialog.BetDialogViewModel
 import com.jiachian.nbatoday.compose.screen.calendar.CalendarViewModel
 import com.jiachian.nbatoday.compose.screen.home.schedule.SchedulePageViewModel
 import com.jiachian.nbatoday.compose.screen.home.standing.StandingPageViewModel
@@ -51,7 +53,12 @@ import com.jiachian.nbatoday.usecase.bet.AddBet
 import com.jiachian.nbatoday.usecase.bet.BetUseCase
 import com.jiachian.nbatoday.usecase.bet.DeleteBet
 import com.jiachian.nbatoday.usecase.bet.GetBetGames
+import com.jiachian.nbatoday.usecase.game.GameUseCase
+import com.jiachian.nbatoday.usecase.game.GetGame
 import com.jiachian.nbatoday.usecase.user.AddPoints
+import com.jiachian.nbatoday.usecase.user.GetUser
+import com.jiachian.nbatoday.usecase.user.UserLogin
+import com.jiachian.nbatoday.usecase.user.UserRegister
 import com.jiachian.nbatoday.usecase.user.UserUseCase
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
@@ -79,8 +86,13 @@ val module = module {
     factory { GetBetGames(get()) }
     factory { AddBet(get()) }
     factory { DeleteBet(get()) }
-    factory { UserUseCase(get()) }
+    factory { UserUseCase(get(), get(), get(), get()) }
+    factory { GetUser(get()) }
     factory { AddPoints(get()) }
+    factory { UserLogin(get()) }
+    factory { UserRegister(get()) }
+    factory { GameUseCase(get()) }
+    factory { GetGame(get()) }
 
     single { NBADatabase.getInstance(androidContext()) }
     single { NBADataStore(androidApplication()) as BaseDataStore }
@@ -88,16 +100,18 @@ val module = module {
     single { NBAGameRepository(get(), get(), get()) as GameRepository }
     single { NBATeamRepository(get(), get()) as TeamRepository }
     single { NBAPlayerRepository(get(), get()) as PlayerRepository }
-    single { NBABetRepository(get(), get()) as BetRepository }
+    single { NBABetRepository(get()) as BetRepository }
     single { NBAUserRepository(get(), get()) as UserRepository }
 
     viewModel { SplashViewModel(get(), get(), get(), get()) }
     viewModel { BoxScoreViewModel(get(), get()) }
-    viewModel { TeamViewModel(get(), get(), get()) }
+    viewModel { TeamViewModel(get(), get(), get(), get()) }
     viewModel { PlayerViewModel(get(), get()) }
-    viewModel { CalendarViewModel(get(), get()) }
+    viewModel { CalendarViewModel(get(), get(), get()) }
     viewModel { BetViewModel(get(), get(), get()) }
-    viewModel { SchedulePageViewModel(get(), get()) }
+    viewModel { SchedulePageViewModel(get(), get(), get()) }
     viewModel { StandingPageViewModel(get()) }
     viewModel { UserPageViewModel(get(), get()) }
+    viewModel { LoginDialogViewModel(get()) }
+    viewModel { BetDialogViewModel(get(), get(), get(), get()) }
 }

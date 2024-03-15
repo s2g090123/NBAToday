@@ -1,16 +1,20 @@
 package com.jiachian.nbatoday.usecase.bet
 
+import com.jiachian.nbatoday.models.local.user.User
 import com.jiachian.nbatoday.repository.bet.BetRepository
 
 class AddBet(
     private val repository: BetRepository
 ) {
     suspend operator fun invoke(
+        user: User,
         gameId: String,
-        account: String,
         homePoints: Long,
         awayPoints: Long,
     ) {
-        repository.addBet(gameId, homePoints, awayPoints)
+        if (user.points < homePoints + awayPoints) {
+            throw Exception("There are no enough points to bet.")
+        }
+        repository.addBet(gameId, user.account, homePoints, awayPoints)
     }
 }

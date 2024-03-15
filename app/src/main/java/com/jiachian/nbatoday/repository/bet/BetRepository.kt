@@ -16,7 +16,7 @@ abstract class BetRepository : BaseRepository() {
      * @param homePoints The points predicted for the home team.
      * @param awayPoints The points predicted for the away team.
      */
-    abstract suspend fun addBet(gameId: String, homePoints: Long, awayPoints: Long)
+    abstract suspend fun addBet(gameId: String, account: String, homePoints: Long, awayPoints: Long)
 
     /**
      * Deletes a bet from the repository.

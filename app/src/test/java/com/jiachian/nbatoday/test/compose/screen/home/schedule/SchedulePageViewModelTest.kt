@@ -6,7 +6,7 @@ import com.jiachian.nbatoday.ScheduleDateRange
 import com.jiachian.nbatoday.compose.screen.home.schedule.SchedulePageViewModel
 import com.jiachian.nbatoday.compose.screen.home.schedule.models.DateData
 import com.jiachian.nbatoday.compose.screen.state.UIState
-import com.jiachian.nbatoday.models.local.game.toGameCardUIDataList
+import com.jiachian.nbatoday.models.local.game.toGameCardState
 import com.jiachian.nbatoday.rule.SetMainDispatcherRule
 import com.jiachian.nbatoday.utils.DateUtils
 import com.jiachian.nbatoday.utils.assertIs
@@ -71,7 +71,7 @@ class SchedulePageViewModelTest : BaseUnitTest() {
         val actual = dateDataToGames?.get(dateData)
         val expected = gamesAndBets.value.filter {
             it.game.gameDateTime.time == PlayingGameTimeMs
-        }.toGameCardUIDataList()
+        }.toGameCardState()
         assertIs(actual, expected)
     }
 
@@ -108,7 +108,7 @@ class SchedulePageViewModelTest : BaseUnitTest() {
         val actual = dateDataToGames?.get(dateData)
         val expected = gamesAndBets.value.filter {
             it.game.gameDateTime.time == PlayingGameTimeMs
-        }.toGameCardUIDataList()
+        }.toGameCardState()
         assertIs(actual, expected)
     }
 }

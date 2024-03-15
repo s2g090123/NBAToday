@@ -15,6 +15,10 @@ class NBAGameLocalSource(
         return gameDao.getGamesAndBets()
     }
 
+    override suspend fun getGameAndBet(gameId: String): GameAndBets {
+        return gameDao.getGameAndBet(gameId)
+    }
+
     override fun getGamesAndBetsDuring(from: Long, to: Long): Flow<List<GameAndBets>> {
         return gameDao.getGamesAndBetsDuring(from, to)
     }

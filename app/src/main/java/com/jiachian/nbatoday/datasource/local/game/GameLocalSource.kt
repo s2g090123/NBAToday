@@ -18,6 +18,8 @@ abstract class GameLocalSource {
      */
     abstract fun getGamesAndBets(): Flow<List<GameAndBets>>
 
+    abstract suspend fun getGameAndBet(gameId: String): GameAndBets
+
     /**
      * Retrieves a flow of [GameAndBets] objects representing games and associated bets within a specified date range.
      *

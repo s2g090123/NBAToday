@@ -2,6 +2,7 @@ package com.jiachian.nbatoday.compose.screen.bet.dialog
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -16,12 +17,7 @@ import androidx.compose.material.AlertDialog
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,64 +32,65 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.Transparency25
 import com.jiachian.nbatoday.compose.widget.CustomOutlinedTextField
+import com.jiachian.nbatoday.compose.widget.NullCheckScreen
 import com.jiachian.nbatoday.compose.widget.TeamLogoImage
-import com.jiachian.nbatoday.models.local.game.Game
 import com.jiachian.nbatoday.models.local.game.GameTeam
 import com.jiachian.nbatoday.testing.testtag.BetTestTag
 import com.jiachian.nbatoday.utils.getOrZero
 import com.jiachian.nbatoday.utils.rippleClickable
-import kotlin.math.min
+import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun BetDialog(
-    game: Game,
-    userPoints: Long,
-    onConfirm: (homePoints: Long, awayPoints: Long) -> Unit,
+    viewModel: BetDialogViewModel = koinViewModel(),
     onDismiss: () -> Unit
 ) {
-    var warning by rememberSaveable { mutableStateOf(false) }
-    var homePoints by rememberSaveable { mutableStateOf(0L) }
-    var awayPoints by rememberSaveable { mutableStateOf(0L) }
-    val enabled by remember(userPoints) {
-        derivedStateOf {
-            homePoints > 0L || awayPoints > 0L
-        }
-    }
-    Dialog(onDismissRequest = onDismiss) {
+    val state = viewModel.state.value
+    val coroutineScope = rememberCoroutineScope()
+    NullCheckScreen(
+        data = state.game,
+        ifNull = {
+            Box(modifier = Modifier.size(300.dp, 280.dp))
+        },
+    ) { game ->
         Column(
             modifier = Modifier
                 .testTag(BetTestTag.BetDialog)
                 .clip(RoundedCornerShape(8.dp))
                 .background(MaterialTheme.colors.secondary),
-            horizontalAlignment = Alignment.End
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             BetDialogDetail(
-                userPoints = userPoints,
-                homePoints = homePoints,
-                awayPoints = awayPoints,
+                userPoints = state.userPoints,
+                homePoints = viewModel.homePoints.value,
+                awayPoints = viewModel.awayPoints.value,
                 home = game.homeTeam,
                 away = game.awayTeam,
-                updateHome = { homePoints = min(it, userPoints - awayPoints) },
-                updateAway = { awayPoints = min(it, userPoints - homePoints) }
+                updateHome = viewModel::updateHomePoints,
+                updateAway = viewModel::updateAwayPoints
             )
             BetDialogConfirmButton(
-                modifier = Modifier.padding(top = 8.dp, end = 8.dp),
-                enabled = enabled,
-                onConfirm = { warning = true }
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .padding(top = 8.dp, end = 8.dp),
+                enabled = viewModel.valid.value,
+                onConfirm = { viewModel.updateWarning(true) }
             )
         }
     }
-    if (warning) {
+    if (viewModel.warning.value) {
         BetWarningDialog(
             onConfirm = {
-                onConfirm(homePoints, awayPoints)
-                onDismiss()
+                coroutineScope.launch {
+                    viewModel.bet()
+                    onDismiss()
+                }
             },
-            onDismiss = { warning = false }
+            onDismiss = { viewModel.updateWarning(false) }
         )
     }
 }

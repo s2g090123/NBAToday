@@ -45,6 +45,9 @@ interface GameDao {
     @Query("SELECT * FROM game WHERE game_date > :from AND (home_team_id == :teamId OR away_team_id == :teamId)")
     fun getGamesAndBetsAfter(teamId: Int, from: Long): Flow<List<GameAndBets>>
 
+    @Query("SELECT * FROM game WHERE game_id == :gameId")
+    suspend fun getGameAndBet(gameId: String): GameAndBets
+
     /**
      * Retrieves a flow of games and associated bets within a specific date range from the database.
      *

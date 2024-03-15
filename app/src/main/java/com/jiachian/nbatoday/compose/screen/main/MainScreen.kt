@@ -39,11 +39,14 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.SplashViewModel
 import com.jiachian.nbatoday.Transparency25
+import com.jiachian.nbatoday.compose.screen.account.LoginDialog
 import com.jiachian.nbatoday.compose.screen.bet.BetScreen
+import com.jiachian.nbatoday.compose.screen.bet.dialog.BetDialog
 import com.jiachian.nbatoday.compose.screen.calendar.CalendarScreen
 import com.jiachian.nbatoday.compose.screen.home.HomeScreen
 import com.jiachian.nbatoday.compose.screen.player.PlayerScreen
@@ -82,6 +85,8 @@ fun MainScreen(
                 navigateToTeam = navigationController::navigateToTeam,
                 navigateToCalendar = navigationController::navigateToCalendar,
                 navigateToBet = navigationController::navigateToBet,
+                showLoginDialog = navigationController::showLoginDialog,
+                showBetDialog = navigationController::showBetDialog,
             )
         }
         composable(MainRoute.BoxScore.route) {
@@ -94,6 +99,8 @@ fun MainScreen(
             TeamScreen(
                 navigateToPlayer = navigationController::navigateToPlayer,
                 navigateToBoxScore = navigationController::navigateToBoxScore,
+                showLoginDialog = navigationController::showLoginDialog,
+                showBetDialog = navigationController::showBetDialog,
                 onBack = navController::popBackStack
             )
         }
@@ -106,6 +113,8 @@ fun MainScreen(
             CalendarScreen(
                 navigateToBoxScore = navigationController::navigateToBoxScore,
                 navigateToTeam = navigationController::navigateToTeam,
+                showLoginDialog = navigationController::showLoginDialog,
+                showBetDialog = navigationController::showBetDialog,
                 onBack = navController::popBackStack
             )
         }
@@ -115,6 +124,16 @@ fun MainScreen(
                 navigateToTeam = navigationController::navigateToTeam,
                 back = navController::popBackStack,
             )
+        }
+        dialog(MainRoute.LoginDialog.route) {
+            LoginDialog {
+                navController.popBackStack()
+            }
+        }
+        dialog(MainRoute.BetDialog.route) {
+            BetDialog {
+                navController.popBackStack()
+            }
         }
     }
 }

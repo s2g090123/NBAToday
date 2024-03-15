@@ -42,6 +42,10 @@ class NBAGameRepository(
         return gameLocalSource.getGamesAndBets()
     }
 
+    override suspend fun getGameAndBet(gameId: String): GameAndBets {
+        return gameLocalSource.getGameAndBet(gameId)
+    }
+
     override fun getGamesAndBetsBefore(teamId: Int, from: Long): Flow<List<GameAndBets>> {
         return gameLocalSource.getGamesAndBetsBefore(teamId, from)
     }

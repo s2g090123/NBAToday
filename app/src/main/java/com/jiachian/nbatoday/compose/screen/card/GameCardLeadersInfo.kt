@@ -29,7 +29,9 @@ import com.jiachian.nbatoday.utils.dividerPrimaryColor
 @Composable
 fun GameCardLeadersInfo(
     modifier: Modifier = Modifier,
-    viewModel: GameCardUIData,
+    gamePlayed: Boolean,
+    homePlayer: GameLeaders.GameLeader,
+    awayPlayer: GameLeaders.GameLeader,
     color: Color,
 ) {
     Column(modifier = modifier) {
@@ -42,8 +44,8 @@ fun GameCardLeadersInfo(
                 .testTag(GameCardTestTag.GameCardLeadersInfo_LeaderInfoRow_Home)
                 .padding(top = 8.dp)
                 .fillMaxWidth(),
-            player = viewModel.homeLeader,
-            isGamePlayed = viewModel.gamePlayed,
+            player = homePlayer,
+            isGamePlayed = gamePlayed,
             color = color
         )
         LeaderInfoRow(
@@ -51,8 +53,8 @@ fun GameCardLeadersInfo(
                 .testTag(GameCardTestTag.GameCardLeadersInfo_LeaderInfoRow_Away)
                 .padding(top = 8.dp)
                 .fillMaxWidth(),
-            player = viewModel.awayLeader,
-            isGamePlayed = viewModel.gamePlayed,
+            player = awayPlayer,
+            isGamePlayed = gamePlayed,
             color = color
         )
     }

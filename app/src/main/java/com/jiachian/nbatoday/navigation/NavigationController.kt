@@ -44,6 +44,14 @@ class NavigationController(
     fun navigateToBet(account: String) {
         navController.navigate(MainRoute.Bet.build(account))
     }
+
+    fun showLoginDialog() {
+        navController.navigate(MainRoute.LoginDialog.build())
+    }
+
+    fun showBetDialog(gameId: String) {
+        navController.navigate(MainRoute.BetDialog.build(gameId))
+    }
 }
 
 @Composable

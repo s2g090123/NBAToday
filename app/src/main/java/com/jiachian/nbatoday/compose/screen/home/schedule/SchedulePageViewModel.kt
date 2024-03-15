@@ -3,15 +3,16 @@ package com.jiachian.nbatoday.compose.screen.home.schedule
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jiachian.nbatoday.ScheduleDateRange
-import com.jiachian.nbatoday.compose.screen.card.GameCardUIData
+import com.jiachian.nbatoday.compose.screen.card.GameCardState
 import com.jiachian.nbatoday.compose.screen.home.schedule.models.DateData
 import com.jiachian.nbatoday.compose.screen.state.UIState
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.models.local.game.GameAndBets
-import com.jiachian.nbatoday.models.local.game.toGameCardUIDataList
+import com.jiachian.nbatoday.models.local.game.toGameCardState
 import com.jiachian.nbatoday.repository.game.GameRepository
 import com.jiachian.nbatoday.repository.schedule.ScheduleRepository
+import com.jiachian.nbatoday.usecase.user.UserUseCase
 import com.jiachian.nbatoday.utils.DateUtils
 import java.util.Calendar
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,8 +33,11 @@ import kotlinx.coroutines.launch
 class SchedulePageViewModel(
     private val scheduleRepository: ScheduleRepository,
     private val gameRepository: GameRepository,
+    userUseCase: UserUseCase,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
 ) : ViewModel() {
+    private val user = userUseCase.getUser()
+
     // the date data for the schedule page on the TabBar
     val dateData = createDateData()
 
@@ -88,12 +92,12 @@ class SchedulePageViewModel(
      * @param games List of GameAndBets instances.
      * @return Map with DateData as keys and lists of GameAndBets as values.
      */
-    private fun getGroupedGames(games: List<GameAndBets>): Map<DateData, List<GameCardUIData>> {
+    private fun getGroupedGames(games: List<GameAndBets>): Map<DateData, List<GameCardState>> {
         return DateUtils.getCalendar().run {
             games
-                .toGameCardUIDataList()
-                .groupBy { uiData ->
-                    time = uiData.gameAndBets.game.gameDateTime
+                .toGameCardState(user)
+                .groupBy { state ->
+                    time = state.data.game.gameDateTime
                     DateData(
                         get(Calendar.YEAR),
                         get(Calendar.MONTH) + 1,

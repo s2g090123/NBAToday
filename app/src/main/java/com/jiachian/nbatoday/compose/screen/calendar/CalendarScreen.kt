@@ -40,7 +40,7 @@ import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.Transparency25
 import com.jiachian.nbatoday.compose.screen.calendar.models.CalendarDate
 import com.jiachian.nbatoday.compose.screen.card.GameCard
-import com.jiachian.nbatoday.compose.screen.card.GameCardUIData
+import com.jiachian.nbatoday.compose.screen.card.GameCardState
 import com.jiachian.nbatoday.compose.widget.IconButton
 import com.jiachian.nbatoday.compose.widget.LoadingScreen
 import com.jiachian.nbatoday.compose.widget.UIStateScreen
@@ -56,6 +56,8 @@ fun CalendarScreen(
     viewModel: CalendarViewModel = koinViewModel(),
     navigateToBoxScore: (gameId: String) -> Unit,
     navigateToTeam: (teamId: Int) -> Unit,
+    showLoginDialog: () -> Unit,
+    showBetDialog: (String) -> Unit,
     onBack: () -> Unit,
 ) {
     Column(
@@ -80,6 +82,8 @@ fun CalendarScreen(
                     navigateToTeam(game.homeTeamId)
                 }
             },
+            showLoginDialog = showLoginDialog,
+            showBetDialog = showBetDialog,
         )
     }
 }
@@ -176,6 +180,8 @@ private fun CalendarContent(
     modifier: Modifier = Modifier,
     viewModel: CalendarViewModel,
     onClickGame: (game: Game) -> Unit,
+    showLoginDialog: () -> Unit,
+    showBetDialog: (String) -> Unit,
 ) {
     val selectedGames by viewModel.selectedGames.collectAsState()
     val selectedGamesVisible by viewModel.selectedGamesVisible.collectAsState()
@@ -217,6 +223,8 @@ private fun CalendarContent(
                     calendarGameCards(
                         games = selectedGames,
                         onClickGame = onClickGame,
+                        showLoginDialog = showLoginDialog,
+                        showBetDialog = showBetDialog,
                     )
                 }
             }
@@ -240,12 +248,14 @@ private fun LazyGridScope.dateBoxes(
 }
 
 private fun LazyGridScope.calendarGameCards(
-    games: List<GameCardUIData>,
+    games: List<GameCardState>,
     onClickGame: (game: Game) -> Unit,
+    showLoginDialog: () -> Unit,
+    showBetDialog: (String) -> Unit,
 ) = itemsIndexed(
     items = games,
     span = { _, _ -> GridItemSpan(DaysPerWeek) }
-) { index, uiData ->
+) { index, state ->
     CalendarGameCard(
         modifier = Modifier
             .testTag(CalendarTestTag.CalendarGameCard)
@@ -255,16 +265,20 @@ private fun LazyGridScope.calendarGameCards(
                 top = if (index == 0) 16.dp else 8.dp,
                 bottom = if (index == games.size - 1) 16.dp else 0.dp
             ),
-        uiData = uiData,
-        onClick = { onClickGame(uiData.gameAndBets.game) }
+        state = state,
+        onClick = { onClickGame(state.data.game) },
+        showLoginDialog = showLoginDialog,
+        showBetDialog = showBetDialog,
     )
 }
 
 @Composable
 private fun CalendarGameCard(
     modifier: Modifier = Modifier,
-    uiData: GameCardUIData,
+    state: GameCardState,
     onClick: () -> Unit,
+    showLoginDialog: () -> Unit,
+    showBetDialog: (String) -> Unit,
 ) {
     GameCard(
         modifier = modifier.then(
@@ -277,9 +291,11 @@ private fun CalendarGameCard(
                 .rippleClickable { onClick() }
                 .padding(bottom = 8.dp)
         ),
-        uiData = uiData,
+        state = state,
         expandable = false,
         color = MaterialTheme.colors.primary,
+        showLoginDialog = showLoginDialog,
+        showBetDialog = showBetDialog,
     )
 }
 

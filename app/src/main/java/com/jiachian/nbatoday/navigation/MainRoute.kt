@@ -48,6 +48,16 @@ sealed class MainRoute(
         }
     }
 
+    object LoginDialog : MainRoute("login_dialog") {
+        fun build(): String = path
+    }
+
+    object BetDialog : MainRoute("bet_dialog", "gameId") {
+        fun build(gameId: String): String {
+            return "$path/$gameId"
+        }
+    }
+
     // The full route string, including the parameter if present
     val route = if (param.isEmpty()) path else "$path/{$param}"
 }

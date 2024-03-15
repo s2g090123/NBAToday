@@ -7,14 +7,15 @@ import androidx.lifecycle.viewModelScope
 import com.jiachian.nbatoday.DaysPerWeek
 import com.jiachian.nbatoday.annotation.ExcludeFromJacocoGeneratedReport
 import com.jiachian.nbatoday.compose.screen.calendar.models.CalendarDate
-import com.jiachian.nbatoday.compose.screen.card.GameCardUIData
+import com.jiachian.nbatoday.compose.screen.card.GameCardState
 import com.jiachian.nbatoday.compose.screen.state.UIState
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.models.local.game.GameAndBets
-import com.jiachian.nbatoday.models.local.game.toGameCardUIDataList
+import com.jiachian.nbatoday.models.local.game.toGameCardState
 import com.jiachian.nbatoday.navigation.MainRoute
 import com.jiachian.nbatoday.repository.game.GameRepository
+import com.jiachian.nbatoday.usecase.user.UserUseCase
 import com.jiachian.nbatoday.utils.DateUtils
 import com.jiachian.nbatoday.utils.WhileSubscribed5000
 import java.util.Calendar
@@ -39,10 +40,13 @@ import kotlinx.coroutines.launch
 class CalendarViewModel(
     savedStateHandle: SavedStateHandle,
     private val repository: GameRepository,
+    userUseCase: UserUseCase,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
 ) : ViewModel() {
     private val dateTime: Long =
         savedStateHandle.get<String>(MainRoute.Calendar.param)?.toLongOrNull() ?: throw Exception("dateTime is null.")
+
+    private val user = userUseCase.getUser()
 
     private val currentCalendar: MutableStateFlow<Calendar> = DateUtils.getCalendar().let {
         it.timeInMillis = dateTime
@@ -53,7 +57,7 @@ class CalendarViewModel(
     val selectedDate = selectedDateImp.asStateFlow()
 
     // the list of games for the selected date
-    private val selectedGamesImp = MutableStateFlow(emptyList<GameCardUIData>())
+    private val selectedGamesImp = MutableStateFlow(emptyList<GameCardState>())
     val selectedGames = selectedGamesImp.asStateFlow()
 
     // the loading status of [selectedGames]
@@ -136,7 +140,7 @@ class CalendarViewModel(
                             repository.getGamesAndBetsDuring(after, before)
                         }
                 }
-                .map { it.toGameCardUIDataList() }
+                .map { it.toGameCardState(user) }
                 .collect { games ->
                     selectedGamesImp.value = games
                     loadingGamesImp.value = false

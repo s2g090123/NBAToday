@@ -16,7 +16,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.screen.card.GameCard
-import com.jiachian.nbatoday.compose.screen.card.GameCardUIData
+import com.jiachian.nbatoday.compose.screen.card.GameCardState
 import com.jiachian.nbatoday.compose.screen.state.UIState
 import com.jiachian.nbatoday.compose.screen.team.TeamViewModel
 import com.jiachian.nbatoday.compose.widget.LoadingScreen
@@ -29,8 +29,10 @@ import com.jiachian.nbatoday.utils.showToast
 fun TeamGamePage(
     modifier: Modifier = Modifier,
     viewModel: TeamViewModel,
-    gamesState: UIState<List<GameCardUIData>>,
+    gamesState: UIState<List<GameCardState>>,
     navigateToBoxScore: (gameId: String) -> Unit,
+    showLoginDialog: () -> Unit,
+    showBetDialog: (String) -> Unit,
 ) {
     UIStateScreen(
         state = gamesState,
@@ -46,7 +48,7 @@ fun TeamGamePage(
             modifier = modifier,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            itemsIndexed(games) { index, uiData ->
+            itemsIndexed(games) { index, state ->
                 GameCard(
                     modifier = Modifier
                         .testTag(TeamTestTag.TeamGamePage_GameCard)
@@ -62,16 +64,18 @@ fun TeamGamePage(
                         .wrapContentHeight()
                         .background(viewModel.colors.secondary)
                         .rippleClickable {
-                            if (!uiData.gamePlayed) {
+                            if (!state.data.game.gamePlayed) {
                                 showToast(R.string.game_is_coming_soon)
                             } else {
-                                navigateToBoxScore(uiData.gameAndBets.game.gameId)
+                                navigateToBoxScore(state.data.game.gameId)
                             }
                         }
                         .padding(bottom = 8.dp),
-                    uiData = uiData,
+                    state = state,
                     expandable = false,
                     color = viewModel.colors.primary,
+                    showLoginDialog = showLoginDialog,
+                    showBetDialog = showBetDialog,
                 )
             }
         }

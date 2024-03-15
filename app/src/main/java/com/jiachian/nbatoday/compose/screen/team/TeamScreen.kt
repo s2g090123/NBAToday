@@ -55,6 +55,8 @@ fun TeamScreen(
     viewModel: TeamViewModel = koinViewModel(),
     navigateToPlayer: (playerId: Int) -> Unit,
     navigateToBoxScore: (gameId: String) -> Unit,
+    showLoginDialog: () -> Unit,
+    showBetDialog: (String) -> Unit,
     onBack: () -> Unit,
 ) {
     val teamUIState by viewModel.teamUIState.collectAsState()
@@ -89,6 +91,8 @@ fun TeamScreen(
                 teamUI = teamUI,
                 navigateToPlayer = navigateToPlayer,
                 navigateToBoxScore = navigateToBoxScore,
+                showLoginDialog = showLoginDialog,
+                showBetDialog = showBetDialog,
             )
         }
     }
@@ -103,6 +107,8 @@ private fun TeamDetails(
     teamUI: TeamUI,
     navigateToPlayer: (playerId: Int) -> Unit,
     navigateToBoxScore: (gameId: String) -> Unit,
+    showLoginDialog: () -> Unit,
+    showBetDialog: (String) -> Unit,
 ) {
     val pagerState = rememberPagerState()
     val detailHeight = LocalConfiguration.current.screenHeightDp.dp - TopMargin
@@ -125,6 +131,8 @@ private fun TeamDetails(
                 teamPlayers = teamUI.players,
                 navigateToPlayer = navigateToPlayer,
                 navigateToBoxScore = navigateToBoxScore,
+                showLoginDialog = showLoginDialog,
+                showBetDialog = showBetDialog,
             )
         }
     }
@@ -213,6 +221,8 @@ private fun TeamPager(
     teamPlayers: List<TeamPlayerRowData>,
     navigateToPlayer: (playerId: Int) -> Unit,
     navigateToBoxScore: (gameId: String) -> Unit,
+    showLoginDialog: () -> Unit,
+    showBetDialog: (String) -> Unit,
 ) {
     val nestedScrollConnection = remember {
         object : NestedScrollConnection {
@@ -251,6 +261,8 @@ private fun TeamPager(
                     viewModel = viewModel,
                     gamesState = gamesBefore,
                     navigateToBoxScore = navigateToBoxScore,
+                    showLoginDialog = showLoginDialog,
+                    showBetDialog = showBetDialog,
                 )
             }
             2 -> {
@@ -260,6 +272,8 @@ private fun TeamPager(
                     viewModel = viewModel,
                     gamesState = gamesAfter,
                     navigateToBoxScore = navigateToBoxScore,
+                    showLoginDialog = showLoginDialog,
+                    showBetDialog = showBetDialog,
                 )
             }
         }

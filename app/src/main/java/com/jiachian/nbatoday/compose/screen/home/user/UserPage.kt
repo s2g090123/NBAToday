@@ -25,9 +25,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,7 +39,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.R
-import com.jiachian.nbatoday.compose.screen.account.LoginDialog
 import com.jiachian.nbatoday.compose.theme.NBAColors
 import com.jiachian.nbatoday.compose.widget.IconButton
 import com.jiachian.nbatoday.compose.widget.LoadingScreen
@@ -59,6 +55,7 @@ fun UserPage(
     modifier: Modifier = Modifier,
     viewModel: UserPageViewModel = koinViewModel(),
     navigateToBet: (account: String) -> Unit,
+    showLoginDialog: () -> Unit,
 ) {
     val userState by viewModel.userState.collectAsState()
     UIStateScreen(
@@ -74,8 +71,7 @@ fun UserPage(
                 modifier = Modifier
                     .testTag(UserTestTag.UserPage_LoginScreen)
                     .then(modifier),
-                onLogin = viewModel::login,
-                onRegister = viewModel::register
+                onClickLogin = showLoginDialog,
             )
         }
     ) { user ->
@@ -149,10 +145,8 @@ private fun ThemeTable(
 @Composable
 private fun LoginScreen(
     modifier: Modifier = Modifier,
-    onLogin: (String, String) -> Unit,
-    onRegister: (String, String) -> Unit
+    onClickLogin: () -> Unit,
 ) {
-    var dialogVisible by remember { mutableStateOf(false) }
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -168,7 +162,7 @@ private fun LoginScreen(
             modifier = Modifier
                 .testTag(UserTestTag.LoginScreen_Button_Login)
                 .padding(top = 8.dp),
-            onClick = { dialogVisible = true },
+            onClick = onClickLogin,
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = MaterialTheme.colors.secondary
             )
@@ -176,19 +170,6 @@ private fun LoginScreen(
             Text(
                 text = stringResource(R.string.user_login),
                 color = MaterialTheme.colors.secondaryVariant
-            )
-        }
-        if (dialogVisible) {
-            LoginDialog(
-                onLogin = { account, password ->
-                    onLogin(account, password)
-                    dialogVisible = false
-                },
-                onRegister = { account, password ->
-                    onRegister(account, password)
-                    dialogVisible = false
-                },
-                onDismiss = { dialogVisible = false }
             )
         }
     }
