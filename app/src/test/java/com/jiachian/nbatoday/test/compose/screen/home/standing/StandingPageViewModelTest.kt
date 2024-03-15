@@ -7,10 +7,8 @@ import com.jiachian.nbatoday.compose.screen.home.standing.models.StandingRowData
 import com.jiachian.nbatoday.compose.screen.home.standing.models.StandingSorting
 import com.jiachian.nbatoday.compose.screen.label.LabelHelper
 import com.jiachian.nbatoday.compose.screen.state.UIState
-import com.jiachian.nbatoday.data.local.NBATeamGenerator
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.models.local.team.Team
-import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsA
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -18,6 +16,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
+import org.koin.test.get
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class StandingPageViewModelTest : BaseUnitTest() {
@@ -45,8 +44,7 @@ class StandingPageViewModelTest : BaseUnitTest() {
     fun setup() = runTest {
         repositoryProvider.team.insertTeams()
         viewModel = StandingPageViewModel(
-            repository = repositoryProvider.team,
-            navigationController = navigationController,
+            repository = get(),
             dispatcherProvider = dispatcherProvider,
         )
     }
@@ -304,28 +302,6 @@ class StandingPageViewModelTest : BaseUnitTest() {
         assertIs(viewModel.westSorting.value, StandingSorting.BLK)
         assertIs(actualEastRowData, expectedEastRowData)
         assertIs(actualWestRowData, expectedWestRowData)
-    }
-
-    @Test
-    fun `onClickTeam(Home) expects screen navigates to Team`() = launch {
-        val event = navigationController.eventFlow.defer(this)
-        viewModel.onClickTeam(NBATeamGenerator.getHome())
-        event
-            .await()
-            .assertIsA(NavigationController.Event.NavigateToTeam::class.java)
-            .teamId
-            .assertIs(NBATeamGenerator.getHome().teamId)
-    }
-
-    @Test
-    fun `onClickTeam(Away) expects screen navigates to Team`() = launch {
-        val event = navigationController.eventFlow.defer(this)
-        viewModel.onClickTeam(NBATeamGenerator.getAway())
-        event
-            .await()
-            .assertIsA(NavigationController.Event.NavigateToTeam::class.java)
-            .teamId
-            .assertIs(NBATeamGenerator.getAway().teamId)
     }
 
     private fun List<StandingRowData>.sortedWith(sorting: StandingSorting): List<StandingRowData> {

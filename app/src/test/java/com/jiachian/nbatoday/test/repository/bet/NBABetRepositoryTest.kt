@@ -67,7 +67,9 @@ class NBABetRepositoryTest : BaseUnitTest() {
             .firstOrNull { it.game.gameId == FinalGameId }
             ?.bet
             .assertIs(expectedBet)
-        repositoryProvider.user.user
+        repositoryProvider
+            .user
+            .user
             .stateIn(null)
             .value
             ?.points
@@ -86,7 +88,9 @@ class NBABetRepositoryTest : BaseUnitTest() {
             .firstOrNull { it.game.gameId == FinalGameId }
             ?.bet
             .assertIsNull()
-        repositoryProvider.user.user
+        repositoryProvider
+            .user
+            .user
             .stateIn(null)
             .value
             ?.points
@@ -114,7 +118,9 @@ class NBABetRepositoryTest : BaseUnitTest() {
             .firstOrNull { it.game.gameId == FinalGameId }
             ?.bet
             .assertIsNull()
-        repositoryProvider.user.user
+        repositoryProvider
+            .user
+            .user
             .stateIn(null)
             .value
             ?.points
@@ -129,7 +135,9 @@ class NBABetRepositoryTest : BaseUnitTest() {
             .value
             .firstOrNull { it.game.gameId == FinalGameId }
             .assertIsNull()
-        repositoryProvider.user.user
+        repositoryProvider
+            .user
+            .user
             .stateIn(null)
             .value
             ?.points
@@ -165,7 +173,8 @@ class NBABetRepositoryTest : BaseUnitTest() {
                 .value
                 .firstOrNull { it.bet.betId == betAndGame.bet.betId }
                 .assertIsNull()
-            repositoryProvider.user
+            repositoryProvider
+                .user
                 .user
                 .stateIn(null)
                 .value
@@ -177,7 +186,8 @@ class NBABetRepositoryTest : BaseUnitTest() {
     @Test
     fun `addPoints() expects user's points are updated`() = launch {
         repository.addPoints(BetPoints)
-        repositoryProvider.user
+        repositoryProvider
+            .user
             .user
             .stateIn(null)
             .value

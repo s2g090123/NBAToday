@@ -40,18 +40,24 @@ import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.Transparency25
 import com.jiachian.nbatoday.compose.screen.calendar.models.CalendarDate
 import com.jiachian.nbatoday.compose.screen.card.GameCard
-import com.jiachian.nbatoday.compose.screen.card.GameCardViewModel
+import com.jiachian.nbatoday.compose.screen.card.GameCardUIData
 import com.jiachian.nbatoday.compose.widget.IconButton
 import com.jiachian.nbatoday.compose.widget.LoadingScreen
 import com.jiachian.nbatoday.compose.widget.UIStateScreen
-import com.jiachian.nbatoday.models.local.game.GameAndBets
+import com.jiachian.nbatoday.models.local.game.Game
 import com.jiachian.nbatoday.testing.testtag.CalendarTestTag
 import com.jiachian.nbatoday.utils.rippleClickable
 import com.jiachian.nbatoday.utils.slideSpec
 import java.util.Date
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun CalendarScreen(viewModel: CalendarViewModel) {
+fun CalendarScreen(
+    viewModel: CalendarViewModel = koinViewModel(),
+    navigateToBoxScore: (gameId: String) -> Unit,
+    navigateToTeam: (teamId: Int) -> Unit,
+    onBack: () -> Unit,
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -60,13 +66,20 @@ fun CalendarScreen(viewModel: CalendarViewModel) {
         CalendarTopBar(
             modifier = Modifier.fillMaxWidth(),
             viewModel = viewModel,
-            onClose = viewModel::close
+            onClose = onBack,
         )
         CalendarContent(
             modifier = Modifier
                 .padding(top = 8.dp)
                 .fillMaxSize(),
-            viewModel = viewModel
+            viewModel = viewModel,
+            onClickGame = { game ->
+                if (game.gamePlayed) {
+                    navigateToBoxScore(game.gameId)
+                } else {
+                    navigateToTeam(game.homeTeamId)
+                }
+            },
         )
     }
 }
@@ -161,7 +174,8 @@ private fun CalendarArrowButton(
 @Composable
 private fun CalendarContent(
     modifier: Modifier = Modifier,
-    viewModel: CalendarViewModel
+    viewModel: CalendarViewModel,
+    onClickGame: (game: Game) -> Unit,
 ) {
     val selectedGames by viewModel.selectedGames.collectAsState()
     val selectedGamesVisible by viewModel.selectedGamesVisible.collectAsState()
@@ -201,8 +215,8 @@ private fun CalendarContent(
                     }
                 } else {
                     calendarGameCards(
-                        viewModel = viewModel,
                         games = selectedGames,
+                        onClickGame = onClickGame,
                     )
                 }
             }
@@ -226,12 +240,12 @@ private fun LazyGridScope.dateBoxes(
 }
 
 private fun LazyGridScope.calendarGameCards(
-    viewModel: CalendarViewModel,
-    games: List<GameAndBets>
+    games: List<GameCardUIData>,
+    onClickGame: (game: Game) -> Unit,
 ) = itemsIndexed(
     items = games,
     span = { _, _ -> GridItemSpan(DaysPerWeek) }
-) { index, game ->
+) { index, uiData ->
     CalendarGameCard(
         modifier = Modifier
             .testTag(CalendarTestTag.CalendarGameCard)
@@ -241,15 +255,15 @@ private fun LazyGridScope.calendarGameCards(
                 top = if (index == 0) 16.dp else 8.dp,
                 bottom = if (index == games.size - 1) 16.dp else 0.dp
             ),
-        viewModel = viewModel.getGameCardViewModel(game),
-        onClick = { viewModel.clickGameCard(game.game) }
+        uiData = uiData,
+        onClick = { onClickGame(uiData.gameAndBets.game) }
     )
 }
 
 @Composable
 private fun CalendarGameCard(
     modifier: Modifier = Modifier,
-    viewModel: GameCardViewModel,
+    uiData: GameCardUIData,
     onClick: () -> Unit,
 ) {
     GameCard(
@@ -263,7 +277,7 @@ private fun CalendarGameCard(
                 .rippleClickable { onClick() }
                 .padding(bottom = 8.dp)
         ),
-        viewModel = viewModel,
+        uiData = uiData,
         expandable = false,
         color = MaterialTheme.colors.primary,
     )

@@ -52,11 +52,13 @@ import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.models.local.user.User
 import com.jiachian.nbatoday.testing.testtag.UserTestTag
 import com.jiachian.nbatoday.utils.rippleClickable
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun UserPage(
     modifier: Modifier = Modifier,
-    viewModel: UserPageViewModel
+    viewModel: UserPageViewModel = koinViewModel(),
+    navigateToBet: (account: String) -> Unit,
 ) {
     val userState by viewModel.userState.collectAsState()
     UIStateScreen(
@@ -81,6 +83,7 @@ fun UserPage(
             modifier = modifier,
             viewModel = viewModel,
             user = user,
+            onBetClick = { navigateToBet(user.account) }
         )
     }
 }
@@ -90,6 +93,7 @@ private fun UserScreen(
     modifier: Modifier = Modifier,
     viewModel: UserPageViewModel,
     user: User,
+    onBetClick: () -> Unit,
 ) {
     Column(modifier = modifier) {
         UserTopBar(
@@ -98,7 +102,7 @@ private fun UserScreen(
                 .background(MaterialTheme.colors.secondary),
             name = user.name,
             points = user.points,
-            onBet = viewModel::onBetClick,
+            onBet = onBetClick,
             onLogout = viewModel::logout
         )
         ThemeTable(

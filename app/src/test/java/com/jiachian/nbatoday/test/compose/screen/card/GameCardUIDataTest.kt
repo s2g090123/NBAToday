@@ -8,7 +8,7 @@ import com.jiachian.nbatoday.UserName
 import com.jiachian.nbatoday.UserPassword
 import com.jiachian.nbatoday.UserPoints
 import com.jiachian.nbatoday.UserToken
-import com.jiachian.nbatoday.compose.screen.card.GameCardViewModel
+import com.jiachian.nbatoday.compose.screen.card.GameCardUIData
 import com.jiachian.nbatoday.data.local.GameAndBetsGenerator
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsFalse
@@ -17,9 +17,10 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
+import org.koin.test.get
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class GameCardViewModelTest : BaseUnitTest() {
+class GameCardUIDataTest : BaseUnitTest() {
     @Before
     fun setup() = runTest {
         repositoryProvider.schedule.updateSchedule()
@@ -27,8 +28,8 @@ class GameCardViewModelTest : BaseUnitTest() {
 
     @Test
     fun `login() expects user's information is correct`() {
-        val viewModel = getFinalViewModel()
-        viewModel.login(UserAccount, UserPassword)
+        val data = getFinal()
+        data.login(UserAccount, UserPassword)
         assertIs(dataHolder.user.value?.account, UserAccount)
         assertIs(dataHolder.user.value?.name, UserName)
         assertIs(dataHolder.user.value?.points, UserPoints)
@@ -39,8 +40,8 @@ class GameCardViewModelTest : BaseUnitTest() {
 
     @Test
     fun `register() expects user's information is correct`() {
-        val viewModel = getFinalViewModel()
-        viewModel.register(UserAccount, UserPassword)
+        val data = getFinal()
+        data.register(UserAccount, UserPassword)
         assertIs(dataHolder.user.value?.account, UserAccount)
         assertIs(dataHolder.user.value?.name, UserName)
         assertIs(dataHolder.user.value?.points, UserPoints)
@@ -51,9 +52,9 @@ class GameCardViewModelTest : BaseUnitTest() {
 
     @Test
     fun `bet() expects the bet is saved`() {
-        val viewModel = getFinalViewModel()
-        viewModel.login(UserAccount, UserPassword)
-        viewModel.bet(BetPoints, BetPoints)
+        val data = getFinal()
+        data.login(UserAccount, UserPassword)
+        data.bet(BetPoints, BetPoints)
         val betsAndGames = dataHolder.betsAndGames.stateIn(emptyList())
         assertIsTrue(dataHolder.bets.value.isNotEmpty())
         assertIsTrue(betsAndGames.value.any { it.game.gameId == FinalGameId })
@@ -61,79 +62,79 @@ class GameCardViewModelTest : BaseUnitTest() {
 
     @Test
     fun `setBetDialogVisible(visible) expects betDialogVisible is true`() {
-        val viewModel = getFinalViewModel()
-        viewModel.setBetDialogVisible(true)
-        assertIsTrue(viewModel.betDialogVisible.value)
+        val data = getFinal()
+        data.setBetDialogVisible(true)
+        assertIsTrue(data.betDialogVisible.value)
     }
 
     @Test
     fun `setBetDialogVisible(invisible) expects betDialogVisible is false`() {
-        val viewModel = getFinalViewModel()
-        viewModel.setBetDialogVisible(false)
-        assertIsFalse(viewModel.betDialogVisible.value)
+        val data = getFinal()
+        data.setBetDialogVisible(false)
+        assertIsFalse(data.betDialogVisible.value)
     }
 
     @Test
     fun `createBetDialogViewModel() with finalGame expects gameAndBets is correct`() {
-        val viewModel = getFinalViewModel()
-        val dialogViewModel = viewModel.createBetDialogViewModel()
+        val data = getFinal()
+        val dialogViewModel = data.createBetDialogViewModel()
         val expected = GameAndBetsGenerator.getFinal()
         assertIs(dialogViewModel.gameAndBets, expected)
     }
 
     @Test
     fun `createBetDialogViewModel() with playingGame expects gameAndBets is correct`() {
-        val viewModel = getPlayingViewModel()
-        val dialogViewModel = viewModel.createBetDialogViewModel()
+        val data = getPlaying()
+        val dialogViewModel = data.createBetDialogViewModel()
         val expected = GameAndBetsGenerator.getPlaying()
         assertIs(dialogViewModel.gameAndBets, expected)
     }
 
     @Test
     fun `createBetDialogViewModel() with comingSoonGame expects gameAndBets is correct`() {
-        val viewModel = getComingSoonViewModel()
-        val dialogViewModel = viewModel.createBetDialogViewModel()
+        val data = getComingSoon()
+        val dialogViewModel = data.createBetDialogViewModel()
         val expected = GameAndBetsGenerator.getComingSoon()
         assertIs(dialogViewModel.gameAndBets, expected)
     }
 
     @Test
     fun `setCardExpanded(expanded) expects expanded is true`() {
-        val viewModel = getFinalViewModel()
-        viewModel.setCardExpanded(true)
-        assertIsTrue(viewModel.expanded.value)
+        val data = getFinal()
+        data.setCardExpanded(true)
+        assertIsTrue(data.expanded.value)
     }
 
     @Test
     fun `setCardExpanded(unExpanded) expects expanded is false`() {
-        val viewModel = getFinalViewModel()
-        viewModel.setCardExpanded(false)
-        assertIsFalse(viewModel.expanded.value)
+        val data = getFinal()
+        data.setCardExpanded(false)
+        assertIsFalse(data.expanded.value)
     }
 
-    private fun getFinalViewModel(): GameCardViewModel {
-        return GameCardViewModel(
+    private fun getFinal(): GameCardUIData {
+        return GameCardUIData(
             gameAndBets = GameAndBetsGenerator.getFinal(),
-            betRepository = repositoryProvider.bet,
-            userRepository = repositoryProvider.user,
+            betRepository = get(),
+            userRepository = get(),
             dispatcherProvider = dispatcherProvider,
         )
     }
 
-    private fun getPlayingViewModel(): GameCardViewModel {
-        return GameCardViewModel(
+    private fun getPlaying(): GameCardUIData {
+        return GameCardUIData(
             gameAndBets = GameAndBetsGenerator.getPlaying(),
-            betRepository = repositoryProvider.bet,
-            userRepository = repositoryProvider.user,
+            betRepository = get(),
+            userRepository = get(),
             dispatcherProvider = dispatcherProvider,
         )
     }
 
-    private fun getComingSoonViewModel(): GameCardViewModel {
-        return GameCardViewModel(
+    private fun getComingSoon(): GameCardUIData {
+        return GameCardUIData(
             gameAndBets = GameAndBetsGenerator.getComingSoon(),
-            betRepository = repositoryProvider.bet,
-            userRepository = repositoryProvider.user,
+            betRepository = get(),
+            userRepository = get(),
             dispatcherProvider = dispatcherProvider,
         )
     }

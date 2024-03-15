@@ -1,28 +1,29 @@
 package com.jiachian.nbatoday
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jiachian.nbatoday.compose.theme.updateColors
 import com.jiachian.nbatoday.datastore.BaseDataStore
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
-import com.jiachian.nbatoday.navigation.NavigationController
-import com.jiachian.nbatoday.repository.RepositoryProvider
-import com.jiachian.nbatoday.utils.ComposeViewModelProvider
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
+import com.jiachian.nbatoday.repository.schedule.ScheduleRepository
+import com.jiachian.nbatoday.repository.team.TeamRepository
+import com.jiachian.nbatoday.repository.user.UserRepository
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 
-class MainViewModel(
-    private val repositoryProvider: RepositoryProvider,
+class SplashViewModel(
+    private val scheduleRepository: ScheduleRepository,
+    private val teamRepository: TeamRepository,
+    private val userRepository: UserRepository,
     private val dataStore: BaseDataStore,
-    private val navigationController: NavigationController,
-    val viewModelProvider: ComposeViewModelProvider,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
 ) : ViewModel() {
-
-    val navigationEvent = navigationController.eventFlow
+    private val isLoadedImp = mutableStateOf(false)
+    val isLoaded by isLoadedImp
 
     init {
         loadData()
@@ -39,33 +40,33 @@ class MainViewModel(
      */
     private fun loadData() {
         viewModelScope.launch(dispatcherProvider.io) {
-            val updateScheduleDeferred = async {
-                repositoryProvider.schedule.updateSchedule()
+            val updateScheduleJob = launch {
+                scheduleRepository.updateSchedule()
             }
-            val updateTeamsDeferred = async {
-                repositoryProvider.team.insertTeams()
+            val updateTeamsJob = launch {
+                teamRepository.insertTeams()
             }
-            val updateColorsDeferred = async {
+            val updateColorsJob = launch {
                 dataStore
                     .themeColors
                     .first()
                     .also { updateColors(it) }
             }
-            val loginUserDeferred = async {
+            val loginUserJob = launch {
                 dataStore
                     .user
                     .first()
                     ?.also { user ->
-                        repositoryProvider.user.login(user.account, user.password)
+                        userRepository.login(user.account, user.password)
                     }
             }
-            awaitAll(
-                updateScheduleDeferred,
-                updateTeamsDeferred,
-                updateColorsDeferred,
-                loginUserDeferred
+            joinAll(
+                updateScheduleJob,
+                updateTeamsJob,
+                updateColorsJob,
+                loginUserJob
             )
-            navigationController.navigateToHome()
+            isLoadedImp.value = true
         }
     }
 }

@@ -11,15 +11,10 @@ import org.junit.runner.Description
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class CoroutineRule : TestWatcher() {
-    lateinit var coroutineEnvironment: CoroutineEnvironment
-        private set
+    private val coroutineEnvironment = CoroutineEnvironment()
 
     val dispatcherProvider: DispatcherProvider
         get() = coroutineEnvironment.testDispatcherProvider
-
-    override fun starting(description: Description) {
-        coroutineEnvironment = CoroutineEnvironment()
-    }
 
     override fun finished(description: Description) {
         coroutineEnvironment.testScope.cancel()

@@ -1,23 +1,25 @@
 package com.jiachian.nbatoday.compose.screen.bet
 
-import com.jiachian.nbatoday.compose.screen.ComposeViewModel
-import com.jiachian.nbatoday.compose.screen.bet.models.TurnTablePoints
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.jiachian.nbatoday.compose.screen.bet.models.Lose
+import com.jiachian.nbatoday.compose.screen.bet.models.TurnTableUIState
+import com.jiachian.nbatoday.compose.screen.bet.models.Win
 import com.jiachian.nbatoday.compose.screen.state.UIState
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.models.local.bet.BetAndGame
-import com.jiachian.nbatoday.models.local.game.GameStatus
 import com.jiachian.nbatoday.navigation.MainRoute
-import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.repository.bet.BetRepository
 import com.jiachian.nbatoday.utils.WhileSubscribed5000
 import java.util.Random
 import kotlin.math.abs
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -44,116 +46,73 @@ private const val MaxMagnification = 4
 /**
  * ViewModel for handling business logic related to [BetScreen].
  *
- * @property account The user account associated with the logged-in user.
  * @property repository The repository for interacting with [BetAndGame].
- * @property navigationController The controller for navigation within the app.
  * @property dispatcherProvider The provider for obtaining dispatchers for coroutines (default is [DefaultDispatcherProvider]).
- * @property coroutineScope The coroutine scope for managing coroutines (default is [CoroutineScope] with main dispatcher).
  */
+@OptIn(ExperimentalCoroutinesApi::class)
 class BetViewModel(
-    account: String,
+    savedStateHandle: SavedStateHandle,
     private val repository: BetRepository,
-    navigationController: NavigationController,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
-    coroutineScope: CoroutineScope = CoroutineScope(dispatcherProvider.main)
-) : ComposeViewModel(
-    coroutineScope = coroutineScope,
-    navigationController = navigationController,
-    route = MainRoute.Bet
-) {
+) : ViewModel() {
+    private val account: String = savedStateHandle[MainRoute.Bet.param] ?: throw Exception("account is null.")
+
     // state representing the stats of [BetAndGame]
     val betsAndGamesState = repository
         .getBetsAndGames(account)
-        .map { UIState.Loaded(it) }
-        .stateIn(coroutineScope, WhileSubscribed5000, UIState.Loading())
+        .mapLatest { UIState.Loaded(it) }
+        .stateIn(viewModelScope, WhileSubscribed5000, UIState.Loading())
 
-    // the current points on the turn table
-    private val turnTablePointsImp = MutableStateFlow<TurnTablePoints?>(null)
-    val turnTablePoints = turnTablePointsImp.asStateFlow()
+    private var turnTableUIStateImp = mutableStateOf<TurnTableUIState>(TurnTableUIState.Idle)
+    val turnTableUIState by turnTableUIStateImp
 
-    // whether the turn table is currently running
-    private val turnTableRunningImp = MutableStateFlow(false)
-    val turnTableRunning = turnTableRunningImp.asStateFlow()
-
-    // the current angle of the turn table
-    private val turnTableAngleImp = MutableStateFlow(0f)
-    val turnTableAngle = turnTableAngleImp.asStateFlow()
-
-    // the visibility of the turn table
-    private val turnTableVisibleImp = MutableStateFlow(false)
-    val turnTableVisible = turnTableVisibleImp.asStateFlow()
-
-    // the points rewarded after the turn table animation
-    private val rewardedPointsImp = MutableStateFlow<Long?>(null)
-    val rewardedPoints = rewardedPointsImp.asStateFlow()
-
-    /**
-     * Handles the click event on a specific [BetAndGame].
-     *
-     * @param betAndGame The clicked [BetAndGame].
-     */
-    fun clickBetAndGame(betAndGame: BetAndGame) {
-        when (betAndGame.game.gameStatus) {
-            GameStatus.COMING_SOON -> {
-                navigationController.navigateToTeam(betAndGame.game.homeTeamId)
-            }
-            GameStatus.PLAYING -> {
-                navigationController.navigateToBoxScore(betAndGame.game.gameId)
-            }
-            GameStatus.FINAL -> {
-                settleBet(betAndGame)
-            }
-        }
-    }
-
-    private fun settleBet(betAndGame: BetAndGame) {
-        coroutineScope.launch(dispatcherProvider.io) {
+    fun settleBet(betAndGame: BetAndGame) {
+        viewModelScope.launch(dispatcherProvider.io) {
             val (win, lose) = repository.settleBet(betAndGame)
-            turnTablePointsImp.value = TurnTablePoints(
-                win = win,
-                lose = lose
-            )
+            turnTableUIStateImp.value = TurnTableUIState.Asking(Win(win), Lose(lose))
         }
     }
 
     fun closeTurnTable() {
-        turnTableVisibleImp.value = false
-        turnTablePointsImp.value = null
-        turnTableRunningImp.value = false
-        turnTableAngleImp.value = 0f
+        turnTableUIStateImp.value = TurnTableUIState.Idle
     }
 
-    fun showTurnTable() {
-        turnTableVisibleImp.value = true
+    fun showTurnTable(win: Win, lose: Lose) {
+        turnTableUIStateImp.value = TurnTableUIState.TurnTable(win, lose)
     }
 
     /**
      * Starts the turn table animation with the specified points configuration.
      *
-     * @param turnTablePoints The points configuration for the turn table.
+     * @param win The win points configuration for the turn table.
+     * @param lose The lose points configuration for the turn table.
      */
-    fun startTurnTable(turnTablePoints: TurnTablePoints) {
-        coroutineScope.launch(dispatcherProvider.io) {
-            turnTableRunningImp.value = true
+    fun startTurnTable(win: Win, lose: Lose) {
+        val state = turnTableUIState
+        if (state !is TurnTableUIState.TurnTable) {
+            turnTableUIStateImp.value = TurnTableUIState.Idle
+            return
+        }
+        viewModelScope.launch(dispatcherProvider.io) {
+            state.running = true
             val rewardedAngle = Random().nextInt(RandomBound).toFloat()
-            val rewardedPoints = getRewardedPoints(turnTablePoints, rewardedAngle)
+            val rewardedPoints = getRewardedPoints(win, lose, rewardedAngle)
             repository.addPoints(rewardedPoints)
             var remainingTime = TurnTableDuration
-            while (remainingTime > 0 || turnTableAngle.value != rewardedAngle) {
-                val currentAngle = turnTableAngle.value
+            while (remainingTime > 0 || state.angle != rewardedAngle) {
+                val currentAngle = state.angle
                 val step = getTurnTableStep(remainingTime, currentAngle, rewardedAngle)
                 val delay = if (remainingTime <= 0) MaxDelay else MinDelay
                 delay(delay.toLong())
                 remainingTime -= delay
-                turnTableAngleImp.value = if (remainingTime <= 0 && currentAngle < rewardedAngle) {
+                state.angle = if (remainingTime <= 0 && currentAngle < rewardedAngle) {
                     (currentAngle + step).coerceAtMost(rewardedAngle)
                 } else {
                     (currentAngle + step) % AnglePerRound
                 }
             }
             delay(ReceivedDelay)
-            closeTurnTable()
-            rewardedPointsImp.value = rewardedPoints
+            turnTableUIStateImp.value = TurnTableUIState.Rewarded(rewardedPoints)
         }
     }
 
@@ -167,36 +126,29 @@ class BetViewModel(
                 val remainingAngle = AnglePerRound - currentAngle + rewardedAngle
                 val rewardAngleDifference = rewardedAngle - currentAngle
                 val differenceTooLarge = currentAngle > rewardedAngle && remainingAngle > AnglePerHalfRound
-                if (differenceTooLarge || rewardAngleDifference > AnglePerHalfRound) {
-                    2
-                } else {
-                    1
-                }
+                if (differenceTooLarge || rewardAngleDifference > AnglePerHalfRound) 2 else 1
             }
             else -> (remainingTime * 2 / OneSecondMs).coerceIn(MinOneStep, MaxOneStep)
         }
     }
 
-    fun closeRewardedPoints() {
-        rewardedPointsImp.value = null
-    }
-
     private fun getRewardedPoints(
-        turnTablePoints: TurnTablePoints,
+        win: Win,
+        lose: Lose,
         rewardedAngle: Float
     ): Long {
         return when (rewardedAngle) {
             in FirstSectorMinAngle..FirstSectorMaxAngle -> {
-                -abs(turnTablePoints.win) + abs(turnTablePoints.lose)
+                -abs(win.points) + abs(lose.points)
             }
             in SecondSectorMinAngle..SecondSectorMaxAngle -> {
-                abs(turnTablePoints.win) * MaxMagnification
+                abs(win.points) * MaxMagnification
             }
             in ThirdSectorMinAngle..ThirdSectorMaxAngle -> {
-                -abs(turnTablePoints.win)
+                -abs(win.points)
             }
             else -> {
-                abs(turnTablePoints.win) + abs(turnTablePoints.lose)
+                abs(win.points) + abs(lose.points)
             }
         }
     }

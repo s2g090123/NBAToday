@@ -1,9 +1,9 @@
 package com.jiachian.nbatoday.test.compose.screen.team
 
+import androidx.lifecycle.SavedStateHandle
 import com.jiachian.nbatoday.BaseUnitTest
 import com.jiachian.nbatoday.ComingSoonGameId
 import com.jiachian.nbatoday.FinalGameId
-import com.jiachian.nbatoday.HomePlayerId
 import com.jiachian.nbatoday.PlayingGameId
 import com.jiachian.nbatoday.compose.screen.label.LabelHelper
 import com.jiachian.nbatoday.compose.screen.state.UIState
@@ -12,24 +12,29 @@ import com.jiachian.nbatoday.compose.screen.team.models.TeamPlayerLabel
 import com.jiachian.nbatoday.compose.screen.team.models.TeamPlayerRowData
 import com.jiachian.nbatoday.compose.screen.team.models.TeamPlayerSorting
 import com.jiachian.nbatoday.compose.screen.team.models.TeamUI
-import com.jiachian.nbatoday.data.local.GameAndBetsGenerator
-import com.jiachian.nbatoday.data.local.GameGenerator
 import com.jiachian.nbatoday.data.local.TeamGenerator
 import com.jiachian.nbatoday.data.local.TeamPlayerGenerator
+import com.jiachian.nbatoday.models.local.game.toGameCardUIDataList
 import com.jiachian.nbatoday.models.local.team.Team
 import com.jiachian.nbatoday.models.local.team.TeamPlayer
 import com.jiachian.nbatoday.models.local.team.TeamRank
-import com.jiachian.nbatoday.navigation.NavigationController
+import com.jiachian.nbatoday.navigation.MainRoute
+import com.jiachian.nbatoday.rule.SetMainDispatcherRule
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsA
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
+import org.koin.test.get
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class TeamViewModelTest : BaseUnitTest() {
+    @get:Rule
+    val mainDispatcherRule = SetMainDispatcherRule(dispatcherProvider)
+
     private lateinit var viewModel: TeamViewModel
 
     private val team: Team
@@ -67,11 +72,9 @@ class TeamViewModelTest : BaseUnitTest() {
         repositoryProvider.schedule.updateSchedule()
         repositoryProvider.team.insertTeams()
         viewModel = TeamViewModel(
-            teamId = team.teamId,
-            teamRepository = repositoryProvider.team,
-            gameRepository = repositoryProvider.game,
-            navigationController = navigationController,
-            composeViewModelProvider = composeViewModelProvider,
+            savedStateHandle = SavedStateHandle(mapOf(MainRoute.Team.param to "${team.teamId}")),
+            teamRepository = get(),
+            gameRepository = get(),
             dispatcherProvider = dispatcherProvider
         )
     }
@@ -103,6 +106,7 @@ class TeamViewModelTest : BaseUnitTest() {
             .map { games -> games.filter { it.game.gameId == FinalGameId } }
             .stateIn(emptyList())
             .value
+            .toGameCardUIDataList()
         assertIs(actual, expected)
     }
 
@@ -123,6 +127,7 @@ class TeamViewModelTest : BaseUnitTest() {
             .map { games -> games.filter { it.game.gameId in listOf(PlayingGameId, ComingSoonGameId) } }
             .stateIn(emptyList())
             .value
+            .toGameCardUIDataList()
         assertIs(actual, expected)
     }
 
@@ -160,35 +165,6 @@ class TeamViewModelTest : BaseUnitTest() {
             )
             assertIs(actual, expected)
         }
-    }
-
-    @Test
-    fun `onGameCardClick(finalGame) expects screen navigates to BoxScore`() = launch {
-        val event = navigationController.eventFlow.defer(this)
-        viewModel.onGameCardClick(GameGenerator.getFinal())
-        event
-            .await()
-            .assertIsA(NavigationController.Event.NavigateToBoxScore::class.java)
-            .gameId
-            .assertIs(FinalGameId)
-    }
-
-    @Test
-    fun `onPlayerClick(homePlayer) expects screen navigates to Player`() = launch {
-        val event = navigationController.eventFlow.defer(this)
-        viewModel.onPlayerClick(HomePlayerId)
-        event
-            .await()
-            .assertIsA(NavigationController.Event.NavigateToPlayer::class.java)
-            .playerId
-            .assertIs(HomePlayerId)
-    }
-
-    @Test
-    fun `getGameCardViewModel(finalGame) expects correct`() {
-        val finalGame = GameAndBetsGenerator.getFinal()
-        val cardViewModel = viewModel.getGameCardViewModel(finalGame)
-        assertIs(cardViewModel.gameAndBets, finalGame)
     }
 
     private fun List<TeamPlayerRowData>.sortedWith(sorting: TeamPlayerSorting): List<TeamPlayerRowData> {

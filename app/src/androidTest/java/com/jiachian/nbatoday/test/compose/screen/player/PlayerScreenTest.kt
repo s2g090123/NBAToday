@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.performClick
+import androidx.lifecycle.SavedStateHandle
 import com.jiachian.nbatoday.BaseAndroidTest
 import com.jiachian.nbatoday.BasicNumber
 import com.jiachian.nbatoday.BasicPosition
@@ -20,10 +21,8 @@ import com.jiachian.nbatoday.compose.screen.player.models.PlayerTableLabel
 import com.jiachian.nbatoday.compose.screen.state.UIState
 import com.jiachian.nbatoday.data.local.PlayerGenerator
 import com.jiachian.nbatoday.navigation.MainRoute
-import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.testing.testtag.PlayerTestTag
-import com.jiachian.nbatoday.utils.assertIs
-import com.jiachian.nbatoday.utils.assertIsA
+import com.jiachian.nbatoday.utils.assertIsTrue
 import com.jiachian.nbatoday.utils.onAllNodesWithUnmergedTree
 import com.jiachian.nbatoday.utils.onNodeWithUnmergedTree
 import io.mockk.every
@@ -37,13 +36,15 @@ import org.junit.Test
 class PlayerScreenTest : BaseAndroidTest() {
     private lateinit var viewModel: PlayerViewModel
 
+    private var navigateToBack: Boolean? = null
+
     @Before
     fun setup() {
+        navigateToBack = null
         viewModel = spyk(
             PlayerViewModel(
-                playerId = HomePlayerId,
+                savedStateHandle = SavedStateHandle(mapOf(MainRoute.Player.param to "$HomePlayerId")),
                 repository = repositoryProvider.player,
-                navigationController = navigationController,
                 dispatcherProvider = dispatcherProvider,
             )
         )
@@ -55,11 +56,13 @@ class PlayerScreenTest : BaseAndroidTest() {
     }
 
     @Composable
-    override fun provideComposable(): Any {
+    override fun ProvideComposable() {
         PlayerScreen(
-            viewModel = viewModel
+            viewModel = viewModel,
+            onBack = {
+                navigateToBack = true
+            }
         )
-        return super.provideComposable()
     }
 
     @Test
@@ -114,13 +117,8 @@ class PlayerScreenTest : BaseAndroidTest() {
 
     @Test
     fun playerScreen_clicksBack() = inCompose {
-        val event = navigationController.eventFlow.defer(it)
         onNodeWithUnmergedTree(PlayerTestTag.PlayerScreen_Button_Back)
             .performClick()
-        event
-            .await()
-            .assertIsA(NavigationController.Event.BackScreen::class.java)
-            .departure
-            .assertIs(MainRoute.Player)
+        navigateToBack.assertIsTrue()
     }
 }

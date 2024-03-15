@@ -48,6 +48,7 @@ fun ScorePlayerPage(
     modifier: Modifier = Modifier,
     viewModel: BoxScoreViewModel,
     players: List<BoxScorePlayerRowData>,
+    onClickPlayer: (playerId: Int) -> Unit,
 ) {
     val scrollState = rememberScrollState()
     LazyColumn(modifier = modifier) {
@@ -59,9 +60,9 @@ fun ScorePlayerPage(
         }
         items(players) { rowData ->
             ScorePlayerScrollableRow(
-                viewModel = viewModel,
                 rowData = rowData,
                 scrollState = scrollState,
+                onClickPlayer = onClickPlayer
             )
         }
     }
@@ -178,15 +179,15 @@ private fun ScorePlayerLabelPopup(
 @Composable
 private fun ScorePlayerScrollableRow(
     modifier: Modifier = Modifier,
-    viewModel: BoxScoreViewModel,
     rowData: BoxScorePlayerRowData,
     scrollState: ScrollState,
+    onClickPlayer: (playerId: Int) -> Unit,
 ) {
     ScorePlayerRow(
         modifier = modifier,
-        viewModel = viewModel,
         scrollState = scrollState,
         rowData = rowData,
+        onClickPlayer = onClickPlayer
     )
     Divider(color = dividerSecondaryColor())
 }
@@ -194,16 +195,16 @@ private fun ScorePlayerScrollableRow(
 @Composable
 private fun ScorePlayerRow(
     modifier: Modifier = Modifier,
-    viewModel: BoxScoreViewModel,
     scrollState: ScrollState,
     rowData: BoxScorePlayerRowData,
+    onClickPlayer: (playerId: Int) -> Unit,
 ) {
     Row(modifier = modifier) {
         ScorePlayerNameText(
             modifier = Modifier
                 .testTag(BoxScoreTestTag.ScorePlayerRow_ScorePlayerNameText)
                 .size(120.dp, 40.dp)
-                .rippleClickable { viewModel.openPlayerInfo(rowData.player.playerId) }
+                .rippleClickable { onClickPlayer(rowData.player.playerId) }
                 .padding(top = 8.dp, bottom = 8.dp, start = 4.dp),
             playerName = rowData.player.nameAbbr,
         )

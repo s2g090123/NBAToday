@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.performClick
+import androidx.lifecycle.SavedStateHandle
 import com.jiachian.nbatoday.BaseAndroidTest
 import com.jiachian.nbatoday.BasicNumber
 import com.jiachian.nbatoday.BetPoints
@@ -19,10 +20,10 @@ import com.jiachian.nbatoday.compose.screen.bet.BetScreen
 import com.jiachian.nbatoday.compose.screen.bet.BetViewModel
 import com.jiachian.nbatoday.compose.screen.state.UIState
 import com.jiachian.nbatoday.navigation.MainRoute
-import com.jiachian.nbatoday.navigation.NavigationController
+import com.jiachian.nbatoday.repository.bet.BetRepository
 import com.jiachian.nbatoday.testing.testtag.BetTestTag
 import com.jiachian.nbatoday.utils.assertIs
-import com.jiachian.nbatoday.utils.assertIsA
+import com.jiachian.nbatoday.utils.assertIsTrue
 import com.jiachian.nbatoday.utils.onAllNodesWithUnmergedTree
 import com.jiachian.nbatoday.utils.onNodeWithTag
 import com.jiachian.nbatoday.utils.onNodeWithUnmergedTree
@@ -34,24 +35,39 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
+import org.koin.java.KoinJavaComponent.get
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class BetScreenTest : BaseAndroidTest() {
+    private var navigateGameId: String? = null
+    private var navigateTeamId: Int? = null
+    private var navigateBack: Boolean? = null
+
     @Composable
-    override fun provideComposable(): Any {
+    override fun ProvideComposable() {
         BetScreen(
             viewModel = BetViewModel(
-                account = UserAccount,
-                repository = repositoryProvider.bet,
-                navigationController = navigationController,
+                savedStateHandle = SavedStateHandle(mapOf(MainRoute.Bet.param to UserAccount)),
+                repository = get(BetRepository::class.java),
                 dispatcherProvider = dispatcherProvider
-            )
+            ),
+            navigateToBoxScore = {
+                navigateGameId = it
+            },
+            navigateToTeam = {
+                navigateTeamId = it
+            },
+            onBack = {
+                navigateBack = true
+            },
         )
-        return super.provideComposable()
     }
 
     @Before
     fun setup() = runTest {
+        navigateTeamId = null
+        navigateGameId = null
+        navigateBack = null
         repositoryProvider.user.login(UserAccount, UserPassword)
         repositoryProvider.schedule.updateSchedule()
     }
@@ -60,9 +76,8 @@ class BetScreenTest : BaseAndroidTest() {
     fun betScreen_checkLoadingUI() {
         val viewModel = spyk(
             BetViewModel(
-                account = UserAccount,
-                repository = repositoryProvider.bet,
-                navigationController = navigationController,
+                savedStateHandle = SavedStateHandle(mapOf(MainRoute.Bet.param to UserAccount)),
+                repository = get(BetRepository::class.java),
                 dispatcherProvider = dispatcherProvider
             )
         )
@@ -70,7 +85,18 @@ class BetScreenTest : BaseAndroidTest() {
             viewModel.betsAndGamesState
         } returns MutableStateFlow(UIState.Loading())
         composeTestRule.setContent {
-            BetScreen(viewModel = viewModel)
+            BetScreen(
+                viewModel = viewModel,
+                navigateToBoxScore = {
+                    navigateGameId = it
+                },
+                navigateToTeam = {
+                    navigateTeamId = it
+                },
+                onBack = {
+                    navigateBack = true
+                },
+            )
         }
         composeTestRule
             .onNodeWithUnmergedTree(BetTestTag.BetScreen_BetBody_Loading)
@@ -152,14 +178,9 @@ class BetScreenTest : BaseAndroidTest() {
     @Test
     fun betScreen_clicksPlayingGame_navigateToBoxScore() = inCompose {
         insertBets()
-        val event = navigationController.eventFlow.defer(it)
         onAllNodesWithUnmergedTree(BetTestTag.BetScreen_BetBody_BetCard)[1]
             .performClick()
-        event
-            .await()
-            .assertIsA(NavigationController.Event.NavigateToBoxScore::class.java)
-            .gameId
-            .assertIs(PlayingGameId)
+        navigateGameId.assertIs(PlayingGameId)
     }
 
     @Test
@@ -193,26 +214,16 @@ class BetScreenTest : BaseAndroidTest() {
     @Test
     fun betScreen_clicksComingSoonGame_navigateToTeam() = inCompose {
         insertBets()
-        val event = navigationController.eventFlow.defer(it)
         onAllNodesWithUnmergedTree(BetTestTag.BetScreen_BetBody_BetCard)[2]
             .performClick()
-        event
-            .await()
-            .assertIsA(NavigationController.Event.NavigateToTeam::class.java)
-            .teamId
-            .assertIs(HomeTeamId)
+        navigateTeamId.assertIs(HomeTeamId)
     }
 
     @Test
     fun betScreen_clicksBack_backScreenIsTriggered() = inCompose {
-        val event = navigationController.eventFlow.defer(it)
         onNodeWithUnmergedTree(BetTestTag.BetScreen_BetTop_Button_Back)
             .performClick()
-        event
-            .await()
-            .assertIsA(NavigationController.Event.BackScreen::class.java)
-            .departure
-            .assertIs(MainRoute.Bet)
+        navigateBack.assertIsTrue()
     }
 
     private suspend fun insertBets() {

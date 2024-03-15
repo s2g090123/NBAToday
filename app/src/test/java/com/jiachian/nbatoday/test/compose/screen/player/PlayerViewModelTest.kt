@@ -1,5 +1,6 @@
 package com.jiachian.nbatoday.test.compose.screen.player
 
+import androidx.lifecycle.SavedStateHandle
 import com.jiachian.nbatoday.BaseUnitTest
 import com.jiachian.nbatoday.compose.screen.label.LabelHelper
 import com.jiachian.nbatoday.compose.screen.player.PlayerViewModel
@@ -12,12 +13,19 @@ import com.jiachian.nbatoday.compose.screen.player.models.PlayerUI
 import com.jiachian.nbatoday.compose.screen.state.UIState
 import com.jiachian.nbatoday.data.local.PlayerGenerator
 import com.jiachian.nbatoday.models.local.player.Player
+import com.jiachian.nbatoday.navigation.MainRoute
+import com.jiachian.nbatoday.rule.SetMainDispatcherRule
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsA
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
+import org.koin.test.get
 
 class PlayerViewModelTest : BaseUnitTest() {
+    @get:Rule
+    val mainDispatcherRule = SetMainDispatcherRule(dispatcherProvider)
+
     private lateinit var viewModel: PlayerViewModel
 
     private val player: Player
@@ -59,9 +67,8 @@ class PlayerViewModelTest : BaseUnitTest() {
     @Before
     fun setup() {
         viewModel = PlayerViewModel(
-            playerId = player.playerId,
-            repository = repositoryProvider.player,
-            navigationController = navigationController,
+            savedStateHandle = SavedStateHandle(mapOf(MainRoute.Player.param to "${player.playerId}")),
+            repository = get(),
             dispatcherProvider = dispatcherProvider,
         )
     }
