@@ -1,7 +1,6 @@
 package com.jiachian.nbatoday.compose.screen.bet.turntable
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Text
@@ -39,19 +38,17 @@ fun TurnTableStartButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
-    Box(modifier = modifier) {
-        Text(
-            modifier = Modifier
-                .testTag(BetTestTag.TurnTableStartButton_Text_Start)
-                .clip(CircleShape)
-                .shadow(8.dp)
-                .background(Color.Red)
-                .rippleClickable { onClick() }
-                .padding(12.dp),
-            text = stringResource(R.string.bet_turn_table_start),
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Medium,
-            color = Color.Black
-        )
-    }
+    Text(
+        modifier = modifier
+            .testTag(BetTestTag.TurnTableStartButton_Text_Start)
+            .clip(CircleShape)
+            .shadow(8.dp)
+            .background(Color.Red)
+            .rippleClickable { onClick() }
+            .padding(12.dp),
+        text = stringResource(R.string.bet_turn_table_start),
+        fontSize = 16.sp,
+        fontWeight = FontWeight.Medium,
+        color = Color.Black
+    )
 }

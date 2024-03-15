@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.screen.account.LoginDialog
-import com.jiachian.nbatoday.compose.screen.bet.BetDialog
+import com.jiachian.nbatoday.compose.screen.bet.dialog.BetDialog
 import com.jiachian.nbatoday.compose.widget.IconButton
 import com.jiachian.nbatoday.models.local.game.GameAndBets
 import com.jiachian.nbatoday.testing.testtag.GameCardTestTag
@@ -42,10 +42,12 @@ fun GameCardBetScreen(viewModel: GameCardUIData) {
             }
         }
         else -> {
+            val userPoints by viewModel.userPoints.collectAsState()
             BetDialog(
-                viewModel = viewModel.createBetDialogViewModel(),
+                game = viewModel.gameAndBets.game,
+                userPoints = userPoints,
                 onConfirm = viewModel::bet,
-                onDismiss = { viewModel.setBetDialogVisible(false) }
+                onDismiss = { viewModel.setBetDialogVisible(false) },
             )
         }
     }

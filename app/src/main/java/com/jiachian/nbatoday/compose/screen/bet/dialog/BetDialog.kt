@@ -1,4 +1,4 @@
-package com.jiachian.nbatoday.compose.screen.bet
+package com.jiachian.nbatoday.compose.screen.bet.dialog
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -16,8 +16,12 @@ import androidx.compose.material.AlertDialog
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,21 +41,28 @@ import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.Transparency25
 import com.jiachian.nbatoday.compose.widget.CustomOutlinedTextField
 import com.jiachian.nbatoday.compose.widget.TeamLogoImage
+import com.jiachian.nbatoday.models.local.game.Game
 import com.jiachian.nbatoday.models.local.game.GameTeam
 import com.jiachian.nbatoday.testing.testtag.BetTestTag
 import com.jiachian.nbatoday.utils.getOrZero
 import com.jiachian.nbatoday.utils.rippleClickable
+import kotlin.math.min
 
 @Composable
 fun BetDialog(
-    viewModel: BetDialogViewModel,
+    game: Game,
+    userPoints: Long,
     onConfirm: (homePoints: Long, awayPoints: Long) -> Unit,
     onDismiss: () -> Unit
 ) {
-    val warning by viewModel.warning.collectAsState()
-    val homePoints by viewModel.homePoints.collectAsState()
-    val awayPoints by viewModel.awayPoints.collectAsState()
-    val enabled by viewModel.enabled.collectAsState()
+    var warning by rememberSaveable { mutableStateOf(false) }
+    var homePoints by rememberSaveable { mutableStateOf(0L) }
+    var awayPoints by rememberSaveable { mutableStateOf(0L) }
+    val enabled by remember(userPoints) {
+        derivedStateOf {
+            homePoints > 0L || awayPoints > 0L
+        }
+    }
     Dialog(onDismissRequest = onDismiss) {
         Column(
             modifier = Modifier
@@ -61,14 +72,18 @@ fun BetDialog(
             horizontalAlignment = Alignment.End
         ) {
             BetDialogDetail(
-                viewModel = viewModel,
+                userPoints = userPoints,
                 homePoints = homePoints,
                 awayPoints = awayPoints,
+                home = game.homeTeam,
+                away = game.awayTeam,
+                updateHome = { homePoints = min(it, userPoints - awayPoints) },
+                updateAway = { awayPoints = min(it, userPoints - homePoints) }
             )
             BetDialogConfirmButton(
                 modifier = Modifier.padding(top = 8.dp, end = 8.dp),
                 enabled = enabled,
-                onConfirm = viewModel::showWarning
+                onConfirm = { warning = true }
             )
         }
     }
@@ -78,7 +93,7 @@ fun BetDialog(
                 onConfirm(homePoints, awayPoints)
                 onDismiss()
             },
-            onDismiss = viewModel::hideWarning
+            onDismiss = { warning = false }
         )
     }
 }
@@ -109,11 +124,15 @@ private fun BetDialogConfirmButton(
 @Composable
 private fun BetDialogDetail(
     modifier: Modifier = Modifier,
-    viewModel: BetDialogViewModel,
+    userPoints: Long,
     homePoints: Long,
-    awayPoints: Long
+    awayPoints: Long,
+    home: GameTeam,
+    away: GameTeam,
+    updateHome: (Long) -> Unit,
+    updateAway: (Long) -> Unit,
 ) {
-    val remainingPoint by viewModel.remainingPoints.collectAsState()
+    val remainingPoints = userPoints - homePoints - awayPoints
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -127,9 +146,9 @@ private fun BetDialogDetail(
                     .testTag(BetTestTag.BetDialogDetail_TeamInfo_Home)
                     .padding(start = 16.dp)
                     .width(IntrinsicSize.Min),
-                team = viewModel.gameAndBets.game.homeTeam,
+                team = home,
                 value = homePoints,
-                onValueChanged = viewModel::updateHomePoints
+                onValueChanged = updateHome,
             )
             OddsText(modifier = Modifier.padding(horizontal = 16.dp))
             BetDialogTeamInfo(
@@ -137,16 +156,16 @@ private fun BetDialogDetail(
                     .testTag(BetTestTag.BetDialogDetail_TeamInfo_Away)
                     .padding(end = 16.dp)
                     .width(IntrinsicSize.Min),
-                team = viewModel.gameAndBets.game.awayTeam,
+                team = away,
                 value = awayPoints,
-                onValueChanged = viewModel::updateAwayPoints
+                onValueChanged = updateAway,
             )
         }
         Text(
             modifier = Modifier
                 .testTag(BetTestTag.BetDialogDetail_Text_Remainder)
                 .padding(top = 16.dp, start = 16.dp, end = 16.dp),
-            text = stringResource(R.string.bet_remain, remainingPoint),
+            text = stringResource(R.string.bet_remain, remainingPoints),
             color = MaterialTheme.colors.primary,
             fontSize = 12.sp,
         )

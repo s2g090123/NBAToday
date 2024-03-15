@@ -37,7 +37,7 @@ interface BetDao {
      * @param bet The [Bet] object to be inserted.
      */
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertBet(bet: Bet)
+    suspend fun addBet(bet: Bet)
 
     /**
      * Deletes a bet from the database.

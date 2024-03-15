@@ -113,7 +113,7 @@ fun MainScreen(
             BetScreen(
                 navigateToBoxScore = navigationController::navigateToBoxScore,
                 navigateToTeam = navigationController::navigateToTeam,
-                onBack = navController::popBackStack,
+                back = navController::popBackStack,
             )
         }
     }

@@ -1,6 +1,5 @@
 package com.jiachian.nbatoday.compose.screen.card
 
-import com.jiachian.nbatoday.compose.screen.bet.BetDialogViewModel
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.models.local.game.GameAndBets
@@ -29,7 +28,7 @@ data class GameCardUIData(
     private val user = userRepository.user
 
     // the user's points
-    private val userPoints = user.map {
+    val userPoints = user.map {
         it?.points ?: 0
     }.stateIn(coroutineScope, SharingStarted.Eagerly, 0)
 
@@ -99,21 +98,12 @@ data class GameCardUIData(
      */
     fun bet(homePoints: Long, awayPoints: Long) {
         coroutineScope.launch(dispatcherProvider.io) {
-            betRepository.insertBet(gameAndBets.game.gameId, homePoints, awayPoints)
+            betRepository.addBet(gameAndBets.game.gameId, homePoints, awayPoints)
         }
     }
 
     fun setBetDialogVisible(visible: Boolean) {
         betDialogVisibleImp.value = visible
-    }
-
-    fun createBetDialogViewModel(): BetDialogViewModel {
-        return BetDialogViewModel(
-            gameAndBets = gameAndBets,
-            userPoints = userPoints.value,
-            dispatcherProvider = dispatcherProvider,
-            coroutineScope = coroutineScope
-        )
     }
 
     fun setCardExpanded(expanded: Boolean) {

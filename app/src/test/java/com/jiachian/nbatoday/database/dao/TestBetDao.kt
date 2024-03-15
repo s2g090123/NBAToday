@@ -21,7 +21,7 @@ class TestBetDao(
         }
     }
 
-    override suspend fun insertBet(bet: Bet) {
+    override suspend fun addBet(bet: Bet) {
         dataHolder.bets.value = dataHolder.bets.value.toMutableList().apply {
             removeIf { it.betId == bet.betId }
             add(bet)

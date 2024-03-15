@@ -4,15 +4,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 
-sealed class TurnTableUIState {
-    object Idle : TurnTableUIState()
+sealed class TurnTableState {
+    object Idle : TurnTableState()
 
-    data class Asking(val win: Win, val lose: Lose) : TurnTableUIState()
+    data class Asking(val win: Win, val lose: Lose) : TurnTableState()
 
-    data class TurnTable(val win: Win, val lose: Lose) : TurnTableUIState() {
+    data class TurnTable(val win: Win, val lose: Lose) : TurnTableState() {
         var running by mutableStateOf(false)
         var angle by mutableStateOf(0f)
     }
 
-    data class Rewarded(val points: Long) : TurnTableUIState()
+    data class Rewarded(val points: Long) : TurnTableState()
 }

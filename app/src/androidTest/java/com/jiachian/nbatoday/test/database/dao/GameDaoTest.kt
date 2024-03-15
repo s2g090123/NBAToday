@@ -62,7 +62,7 @@ class GameDaoTest : BaseAndroidTest() {
     @Test
     fun gameDao_getGamesAndBets_withBets() = launch {
         dao.insertGames(listOf(GameGenerator.getFinal()))
-        database.getBetDao().insertBet(BetGenerator.getFinal())
+        database.getBetDao().addBet(BetGenerator.getFinal())
         dao.getGamesAndBets().collectOnce(this) {
             it.assertIs(listOf(GameAndBetsGenerator.getFinal(true)))
         }

@@ -47,6 +47,12 @@ import com.jiachian.nbatoday.service.GameService
 import com.jiachian.nbatoday.service.PlayerService
 import com.jiachian.nbatoday.service.TeamService
 import com.jiachian.nbatoday.service.UserService
+import com.jiachian.nbatoday.usecase.bet.AddBet
+import com.jiachian.nbatoday.usecase.bet.BetUseCase
+import com.jiachian.nbatoday.usecase.bet.DeleteBet
+import com.jiachian.nbatoday.usecase.bet.GetBetGames
+import com.jiachian.nbatoday.usecase.user.AddPoints
+import com.jiachian.nbatoday.usecase.user.UserUseCase
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -68,6 +74,14 @@ val module = module {
     factory { NBAPlayerLocalSource(get()) as PlayerLocalSource }
     factory { NBABetLocalSource(get()) as BetLocalSource }
 
+    // use case
+    factory { BetUseCase(get(), get(), get()) }
+    factory { GetBetGames(get()) }
+    factory { AddBet(get()) }
+    factory { DeleteBet(get()) }
+    factory { UserUseCase(get()) }
+    factory { AddPoints(get()) }
+
     single { NBADatabase.getInstance(androidContext()) }
     single { NBADataStore(androidApplication()) as BaseDataStore }
     single { NBAScheduleRepository(get(), get(), get()) as ScheduleRepository }
@@ -82,7 +96,7 @@ val module = module {
     viewModel { TeamViewModel(get(), get(), get()) }
     viewModel { PlayerViewModel(get(), get()) }
     viewModel { CalendarViewModel(get(), get()) }
-    viewModel { BetViewModel(get(), get()) }
+    viewModel { BetViewModel(get(), get(), get()) }
     viewModel { SchedulePageViewModel(get(), get()) }
     viewModel { StandingPageViewModel(get()) }
     viewModel { UserPageViewModel(get(), get()) }

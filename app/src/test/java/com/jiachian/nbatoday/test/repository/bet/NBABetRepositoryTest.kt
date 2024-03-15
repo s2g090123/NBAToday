@@ -54,7 +54,7 @@ class NBABetRepositoryTest : BaseUnitTest() {
 
     @Test
     fun `insertBet() expects the bet is inserted and user's points are updated`() = launch {
-        repository.insertBet(FinalGameId, BetPoints, BetPoints)
+        repository.addBet(FinalGameId, BetPoints, BetPoints)
         val expectedBet = Bet(
             account = UserAccount,
             gameId = FinalGameId,
@@ -81,7 +81,7 @@ class NBABetRepositoryTest : BaseUnitTest() {
         every { userRepository.user } answers {
             flowOf(null)
         }
-        repository.insertBet(FinalGameId, BetPoints, BetPoints)
+        repository.addBet(FinalGameId, BetPoints, BetPoints)
         localSource.getBetsAndGames(UserAccount)
             .stateIn(emptyList())
             .value
@@ -111,7 +111,7 @@ class NBABetRepositoryTest : BaseUnitTest() {
                 )
             )
         }
-        repository.insertBet(FinalGameId, BetPoints, BetPoints)
+        repository.addBet(FinalGameId, BetPoints, BetPoints)
         localSource.getBetsAndGames(UserAccount)
             .stateIn(emptyList())
             .value
@@ -129,7 +129,7 @@ class NBABetRepositoryTest : BaseUnitTest() {
 
     @Test
     fun `insertBet() with exceeding user's points expects onError is trigger`() = launch {
-        repository.insertBet(FinalGameId, UserPoints, UserPoints)
+        repository.addBet(FinalGameId, UserPoints, UserPoints)
         localSource.getBetsAndGames(UserAccount)
             .stateIn(emptyList())
             .value
@@ -197,7 +197,7 @@ class NBABetRepositoryTest : BaseUnitTest() {
 
     @Test
     fun `getBetsAndGames() with not inserting bet expects correct`() {
-        repository.getBetsAndGames(UserAccount)
+        repository.getBetGames(UserAccount)
             .stateIn(emptyList())
             .value
             .assertIs(emptyList())
@@ -207,7 +207,7 @@ class NBABetRepositoryTest : BaseUnitTest() {
     fun `getBetsAndGames() with inserting bet expects correct`() = launch {
         val bet = BetGenerator.getFinal()
         localSource.insertBet(bet)
-        repository.getBetsAndGames(UserAccount)
+        repository.getBetGames(UserAccount)
             .stateIn(emptyList())
             .value
             .assertIs(listOf(BetAndGameGenerator.getFinal()))

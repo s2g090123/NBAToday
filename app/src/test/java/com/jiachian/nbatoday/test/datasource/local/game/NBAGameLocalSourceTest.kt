@@ -53,13 +53,13 @@ class NBAGameLocalSourceTest : BaseUnitTest() {
         repositoryProvider.schedule.updateSchedule()
         repositoryProvider.user.login(UserAccount, UserPassword)
         BetGenerator.getFinal().also {
-            repositoryProvider.bet.insertBet(it.gameId, it.homePoints, it.awayPoints)
+            repositoryProvider.bet.addBet(it.gameId, it.homePoints, it.awayPoints)
         }
         BetGenerator.getPlaying().also {
-            repositoryProvider.bet.insertBet(it.gameId, it.homePoints, it.awayPoints)
+            repositoryProvider.bet.addBet(it.gameId, it.homePoints, it.awayPoints)
         }
         BetGenerator.getComingSoon().also {
-            repositoryProvider.bet.insertBet(it.gameId, it.homePoints, it.awayPoints)
+            repositoryProvider.bet.addBet(it.gameId, it.homePoints, it.awayPoints)
         }
         val actual =
             localSource.getGamesAndBets().stateIn(emptyList()).value

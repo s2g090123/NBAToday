@@ -1,20 +1,46 @@
 package com.jiachian.nbatoday.compose.screen.bet.turntable
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import com.jiachian.nbatoday.compose.screen.bet.models.TurnTableUIState
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
+import com.jiachian.nbatoday.compose.screen.bet.models.Lose
+import com.jiachian.nbatoday.compose.screen.bet.models.TurnTableState
+import com.jiachian.nbatoday.compose.screen.bet.models.Win
+import com.jiachian.nbatoday.testing.testtag.BetTestTag
 
 @Composable
 fun TurnTableScreen(
-    uiState: TurnTableUIState,
-    idle: (@Composable () -> Unit)?,
-    asking: @Composable (TurnTableUIState.Asking) -> Unit,
-    turntable: @Composable (TurnTableUIState.TurnTable) -> Unit,
-    rewarded: @Composable (TurnTableUIState.Rewarded) -> Unit,
+    state: TurnTableState,
+    openTurnTable: (Win, Lose) -> Unit,
+    startTurnTable: (Win, Lose) -> Unit,
+    close: () -> Unit,
 ) {
-    when (uiState) {
-        TurnTableUIState.Idle -> idle?.invoke()
-        is TurnTableUIState.Asking -> asking(uiState)
-        is TurnTableUIState.TurnTable -> turntable(uiState)
-        is TurnTableUIState.Rewarded -> rewarded(uiState)
+    when (state) {
+        TurnTableState.Idle -> {}
+        is TurnTableState.Asking -> {
+            AskTurnTableDialog(
+                win = state.win,
+                lose = state.lose,
+                onContinue = { openTurnTable(state.win, state.lose) },
+                onCancel = close
+            )
+        }
+        is TurnTableState.TurnTable -> {
+            BetTurnTable(
+                modifier = Modifier
+                    .testTag(BetTestTag.BetTurnTable)
+                    .fillMaxSize(),
+                state = state,
+                onStart = { startTurnTable(state.win, state.lose) },
+                onClose = close
+            )
+        }
+        is TurnTableState.Rewarded -> {
+            TurnTableRewardedDialog(
+                points = state.points,
+                onDismiss = close
+            )
+        }
     }
 }

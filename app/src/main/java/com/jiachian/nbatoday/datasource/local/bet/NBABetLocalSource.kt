@@ -13,7 +13,7 @@ class NBABetLocalSource(
     }
 
     override suspend fun insertBet(bet: Bet) {
-        betDao.insertBet(bet)
+        betDao.addBet(bet)
     }
 
     override suspend fun deleteBet(bet: Bet) {

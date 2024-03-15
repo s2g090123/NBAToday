@@ -1,26 +1,26 @@
 package com.jiachian.nbatoday.compose.screen.bet
 
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jiachian.nbatoday.compose.screen.bet.models.BetState
 import com.jiachian.nbatoday.compose.screen.bet.models.Lose
-import com.jiachian.nbatoday.compose.screen.bet.models.TurnTableUIState
+import com.jiachian.nbatoday.compose.screen.bet.models.TurnTableState
 import com.jiachian.nbatoday.compose.screen.bet.models.Win
-import com.jiachian.nbatoday.compose.screen.state.UIState
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.models.local.bet.BetAndGame
 import com.jiachian.nbatoday.navigation.MainRoute
-import com.jiachian.nbatoday.repository.bet.BetRepository
-import com.jiachian.nbatoday.utils.WhileSubscribed5000
+import com.jiachian.nbatoday.usecase.bet.BetUseCase
+import com.jiachian.nbatoday.usecase.user.UserUseCase
 import java.util.Random
 import kotlin.math.abs
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.mapLatest
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 private const val RandomBound = 359
@@ -43,42 +43,51 @@ private const val ThirdSectorMaxAngle = 269f
 
 private const val MaxMagnification = 4
 
-/**
- * ViewModel for handling business logic related to [BetScreen].
- *
- * @property repository The repository for interacting with [BetAndGame].
- * @property dispatcherProvider The provider for obtaining dispatchers for coroutines (default is [DefaultDispatcherProvider]).
- */
-@OptIn(ExperimentalCoroutinesApi::class)
 class BetViewModel(
     savedStateHandle: SavedStateHandle,
-    private val repository: BetRepository,
+    private val betUseCase: BetUseCase,
+    private val userUseCase: UserUseCase,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
 ) : ViewModel() {
     private val account: String = savedStateHandle[MainRoute.Bet.param] ?: throw Exception("account is null.")
 
     // state representing the stats of [BetAndGame]
-    val betsAndGamesState = repository
-        .getBetsAndGames(account)
-        .mapLatest { UIState.Loaded(it) }
-        .stateIn(viewModelScope, WhileSubscribed5000, UIState.Loading())
+    private val stateImp = mutableStateOf(BetState(loading = true))
+    val state: State<BetState> = stateImp
 
-    private var turnTableUIStateImp = mutableStateOf<TurnTableUIState>(TurnTableUIState.Idle)
-    val turnTableUIState by turnTableUIStateImp
+    private var turnTableStateImp = mutableStateOf<TurnTableState>(TurnTableState.Idle)
+    val turnTableState by turnTableStateImp
 
-    fun settleBet(betAndGame: BetAndGame) {
-        viewModelScope.launch(dispatcherProvider.io) {
-            val (win, lose) = repository.settleBet(betAndGame)
-            turnTableUIStateImp.value = TurnTableUIState.Asking(Win(win), Lose(lose))
+    init {
+        getBetGames()
+    }
+
+    private fun getBetGames() {
+        betUseCase
+            .getBetGames(account)
+            .onEach {
+                stateImp.value = BetState(data = it, loading = false)
+            }
+            .launchIn(viewModelScope)
+    }
+
+    fun onEvent(event: BetEvent) {
+        when (event) {
+            BetEvent.CloseTurnTable -> turnTableStateImp.value = TurnTableState.Idle
+            is BetEvent.OpenTurnTable -> turnTableStateImp.value = TurnTableState.TurnTable(event.win, event.lose)
+            is BetEvent.Settle -> settleBet(event.betGame)
+            is BetEvent.StartTurnTable -> startTurnTable(event.win, event.lose)
         }
     }
 
-    fun closeTurnTable() {
-        turnTableUIStateImp.value = TurnTableUIState.Idle
-    }
-
-    fun showTurnTable(win: Win, lose: Lose) {
-        turnTableUIStateImp.value = TurnTableUIState.TurnTable(win, lose)
+    private fun settleBet(betAndGame: BetAndGame) {
+        viewModelScope.launch {
+            val win = betAndGame.getWonPoints() * 2
+            val lose = betAndGame.getLostPoints()
+            userUseCase.addPoints(win)
+            betUseCase.deleteBet(betAndGame.bet)
+            turnTableStateImp.value = TurnTableState.Asking(Win(win), Lose(lose))
+        }
     }
 
     /**
@@ -88,16 +97,16 @@ class BetViewModel(
      * @param lose The lose points configuration for the turn table.
      */
     fun startTurnTable(win: Win, lose: Lose) {
-        val state = turnTableUIState
-        if (state !is TurnTableUIState.TurnTable) {
-            turnTableUIStateImp.value = TurnTableUIState.Idle
+        val state = turnTableState
+        if (state !is TurnTableState.TurnTable) {
+            turnTableStateImp.value = TurnTableState.Idle
             return
         }
-        viewModelScope.launch(dispatcherProvider.io) {
+        viewModelScope.launch(dispatcherProvider.default) {
             state.running = true
             val rewardedAngle = Random().nextInt(RandomBound).toFloat()
             val rewardedPoints = getRewardedPoints(win, lose, rewardedAngle)
-            repository.addPoints(rewardedPoints)
+            userUseCase.addPoints(rewardedPoints)
             var remainingTime = TurnTableDuration
             while (remainingTime > 0 || state.angle != rewardedAngle) {
                 val currentAngle = state.angle
@@ -112,7 +121,7 @@ class BetViewModel(
                 }
             }
             delay(ReceivedDelay)
-            turnTableUIStateImp.value = TurnTableUIState.Rewarded(rewardedPoints)
+            turnTableStateImp.value = TurnTableState.Rewarded(rewardedPoints)
         }
     }
 

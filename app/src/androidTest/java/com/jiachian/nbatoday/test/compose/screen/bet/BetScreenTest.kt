@@ -57,7 +57,7 @@ class BetScreenTest : BaseAndroidTest() {
             navigateToTeam = {
                 navigateTeamId = it
             },
-            onBack = {
+            back = {
                 navigateBack = true
             },
         )
@@ -93,7 +93,7 @@ class BetScreenTest : BaseAndroidTest() {
                 navigateToTeam = {
                     navigateTeamId = it
                 },
-                onBack = {
+                back = {
                     navigateBack = true
                 },
             )
@@ -106,14 +106,14 @@ class BetScreenTest : BaseAndroidTest() {
 
     @Test
     fun betScreen_checksEmptyUI() = inCompose {
-        onNodeWithUnmergedTree(BetTestTag.BetScreen_BetEmptyScreen)
+        onNodeWithUnmergedTree(BetTestTag.BetScreen_BetEmptyText)
             .assertIsDisplayed()
     }
 
     @Test
     fun betScreen_checksFinalGameUI() = inCompose {
         insertBets()
-        onNodeWithUnmergedTree(BetTestTag.BetScreen_BetEmptyScreen)
+        onNodeWithUnmergedTree(BetTestTag.BetScreen_BetEmptyText)
             .assertDoesNotExist()
         onAllNodesWithUnmergedTree(BetTestTag.BetScreen_BetBody_BetCard)[0]
             .apply {
@@ -150,7 +150,7 @@ class BetScreenTest : BaseAndroidTest() {
     @Test
     fun betScreen_checksPlayingGameUI() = inCompose {
         insertBets()
-        onNodeWithUnmergedTree(BetTestTag.BetScreen_BetEmptyScreen)
+        onNodeWithUnmergedTree(BetTestTag.BetScreen_BetEmptyText)
             .assertDoesNotExist()
         onAllNodesWithUnmergedTree(BetTestTag.BetScreen_BetBody_BetCard)[1]
             .apply {
@@ -186,7 +186,7 @@ class BetScreenTest : BaseAndroidTest() {
     @Test
     fun betScreen_checksComingSoonGameUI() = inCompose {
         insertBets()
-        onNodeWithUnmergedTree(BetTestTag.BetScreen_BetEmptyScreen)
+        onNodeWithUnmergedTree(BetTestTag.BetScreen_BetEmptyText)
             .assertDoesNotExist()
         onAllNodesWithUnmergedTree(BetTestTag.BetScreen_BetBody_BetCard)[2]
             .apply {
@@ -227,8 +227,8 @@ class BetScreenTest : BaseAndroidTest() {
     }
 
     private suspend fun insertBets() {
-        repositoryProvider.bet.insertBet(FinalGameId, BetPoints, BetPoints)
-        repositoryProvider.bet.insertBet(PlayingGameId, BetPoints, BetPoints)
-        repositoryProvider.bet.insertBet(ComingSoonGameId, BetPoints, BetPoints)
+        repositoryProvider.bet.addBet(FinalGameId, BetPoints, BetPoints)
+        repositoryProvider.bet.addBet(PlayingGameId, BetPoints, BetPoints)
+        repositoryProvider.bet.addBet(ComingSoonGameId, BetPoints, BetPoints)
     }
 }

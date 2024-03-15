@@ -8,7 +8,7 @@ import com.jiachian.nbatoday.UserPassword
 import com.jiachian.nbatoday.UserPoints
 import com.jiachian.nbatoday.compose.screen.bet.BetViewModel
 import com.jiachian.nbatoday.compose.screen.bet.models.Lose
-import com.jiachian.nbatoday.compose.screen.bet.models.TurnTableUIState
+import com.jiachian.nbatoday.compose.screen.bet.models.TurnTableState
 import com.jiachian.nbatoday.compose.screen.bet.models.Win
 import com.jiachian.nbatoday.navigation.MainRoute
 import com.jiachian.nbatoday.utils.assertIs
@@ -39,17 +39,17 @@ class BetViewModelTest : BaseUnitTest() {
     @Test
     fun `closeTurnTable() expects all data are reset`() {
         viewModel.closeTurnTable()
-        viewModel.turnTableUIState.assertIs(TurnTableUIState.Idle)
+        viewModel.turnTableState.assertIs(TurnTableState.Idle)
     }
 
     @Test
     fun `startTurnTable() expects rewardedPoints is updated`() = launch {
-        viewModel.showTurnTable(Win(BasicNumber.toLong()), Lose(BasicNumber.toLong() + 1))
+        viewModel.openTurnTable(Win(BasicNumber.toLong()), Lose(BasicNumber.toLong() + 1))
         viewModel.startTurnTable(Win(BasicNumber.toLong()), Lose(BasicNumber.toLong() + 1))
         advanceUntilIdle()
         viewModel
-            .turnTableUIState
-            .assertIsA(TurnTableUIState.Rewarded::class.java)
+            .turnTableState
+            .assertIsA(TurnTableState.Rewarded::class.java)
         dataHolder
             .user
             .value

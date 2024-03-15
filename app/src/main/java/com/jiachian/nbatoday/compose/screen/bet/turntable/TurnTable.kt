@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.jiachian.nbatoday.compose.screen.bet.models.TurnTableUIState
+import com.jiachian.nbatoday.compose.screen.bet.models.TurnTableState
 import com.jiachian.nbatoday.testing.testtag.BetTestTag
 import com.jiachian.nbatoday.utils.drawText
 import com.jiachian.nbatoday.utils.drawTurnTableArc
@@ -46,7 +46,7 @@ private const val MinusText2 = "+0\n-0"
 @Composable
 fun BetTurnTable(
     modifier: Modifier = Modifier,
-    uiState: TurnTableUIState.TurnTable,
+    state: TurnTableState.TurnTable,
     onStart: () -> Unit,
     onClose: () -> Unit
 ) {
@@ -58,13 +58,13 @@ fun BetTurnTable(
     Dialog(
         onDismissRequest = onClose,
         properties = DialogProperties(
-            dismissOnBackPress = !uiState.running,
+            dismissOnBackPress = !state.running,
             dismissOnClickOutside = false,
             usePlatformDefaultWidth = false,
         )
     ) {
         Box(modifier = modifier) {
-            if (!uiState.running) {
+            if (!state.running) {
                 TurnTableCancelButton(
                     modifier = Modifier
                         .testTag(BetTestTag.BetTurnTable_Button_Cancel)
@@ -78,7 +78,7 @@ fun BetTurnTable(
                 modifier = Modifier
                     .align(Alignment.Center)
                     .size(320.dp)
-                    .graphicsLayer { rotationZ = uiState.angle },
+                    .graphicsLayer { rotationZ = state.angle },
                 textMeasurer = textMeasure,
                 plusTextSize1 = plusTextSize1,
                 plusTextSize2 = plusTextSize2,
@@ -93,7 +93,7 @@ fun BetTurnTable(
                     }
                     .size(48.dp, 56.dp),
             )
-            if (!uiState.running) {
+            if (!state.running) {
                 TurnTableStartButton(
                     modifier = Modifier.align(Alignment.Center),
                     onClick = onStart

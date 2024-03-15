@@ -40,7 +40,7 @@ class BetDaoTest : BaseAndroidTest() {
 
     @Test
     fun betDao_getBetsAndGames() = launch {
-        dao.insertBet(BetGenerator.getFinal())
+        dao.addBet(BetGenerator.getFinal())
         dao.getBetsAndGames().collectOnce(this) {
             it.assertIs(listOf(BetAndGameGenerator.getFinal()))
         }
@@ -48,7 +48,7 @@ class BetDaoTest : BaseAndroidTest() {
 
     @Test
     fun betDao_getBetsAndGames_withAccounts() = launch {
-        dao.insertBet(BetGenerator.getFinal())
+        dao.addBet(BetGenerator.getFinal())
         dao.getBetsAndGames(UserAccount).collectOnce(this) {
             it.assertIs(listOf(BetAndGameGenerator.getFinal()))
         }
@@ -56,7 +56,7 @@ class BetDaoTest : BaseAndroidTest() {
 
     @Test
     fun betDao_deleteBet() = launch {
-        dao.insertBet(BetGenerator.getFinal())
+        dao.addBet(BetGenerator.getFinal())
         dao.deleteBet(BetGenerator.getFinal())
         dao.getBetsAndGames().collectOnce(this) {
             it.assertIs(emptyList())

@@ -13,7 +13,7 @@ import com.jiachian.nbatoday.BetPoints
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.UserAccount
 import com.jiachian.nbatoday.compose.screen.bet.BetViewModel
-import com.jiachian.nbatoday.compose.screen.bet.models.TurnTableUIState
+import com.jiachian.nbatoday.compose.screen.bet.models.TurnTableState
 import com.jiachian.nbatoday.compose.screen.bet.turntable.AskTurnTableDialog
 import com.jiachian.nbatoday.compose.screen.bet.turntable.BetTurnTable
 import com.jiachian.nbatoday.compose.screen.bet.turntable.TurnTableRewardedDialog
@@ -43,13 +43,13 @@ class TurnTableScreenTest : BaseAndroidTest() {
     @Composable
     override fun ProvideComposable() {
         TurnTableScreen(
-            uiState = viewModel.turnTableUIState,
+            state = viewModel.turnTableState,
             idle = null,
             asking = {
                 AskTurnTableDialog(
                     win = it.win,
                     lose = it.lose,
-                    onContinue = { viewModel.showTurnTable(it.win, it.lose) },
+                    onContinue = { viewModel.openTurnTable(it.win, it.lose) },
                     onCancel = viewModel::closeTurnTable
                 )
             },
@@ -108,8 +108,8 @@ class TurnTableScreenTest : BaseAndroidTest() {
         onNodeWithUnmergedTree(BetTestTag.BetTurnTable_Button_Cancel)
             .assertDoesNotExist()
         awaitIdle()
-        waitUntil(1000) { viewModel.turnTableUIState !is TurnTableUIState.TurnTable }
-        viewModel.turnTableUIState.assertIsA(TurnTableUIState.Rewarded::class.java)
+        waitUntil(1000) { viewModel.turnTableState !is TurnTableState.TurnTable }
+        viewModel.turnTableState.assertIsA(TurnTableState.Rewarded::class.java)
     }
 
     @Test
@@ -122,6 +122,6 @@ class TurnTableScreenTest : BaseAndroidTest() {
             .performClick()
         onNodeWithUnmergedTree(BetTestTag.BetTurnTable)
             .assertDoesNotExist()
-        viewModel.turnTableUIState.assertIs(TurnTableUIState.Idle)
+        viewModel.turnTableState.assertIs(TurnTableState.Idle)
     }
 }
