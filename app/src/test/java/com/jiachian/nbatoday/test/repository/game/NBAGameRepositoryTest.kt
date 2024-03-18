@@ -57,7 +57,7 @@ class NBAGameRepositoryTest : BaseUnitTest() {
 
     @Test
     fun `insertBoxScore(final) expects boxScore is inserted`() = launch {
-        repository.insertBoxScore(FinalGameId)
+        repository.addBoxScore(FinalGameId)
         dataHolder
             .boxScores
             .value
@@ -69,7 +69,7 @@ class NBAGameRepositoryTest : BaseUnitTest() {
         coEvery { gameRemoteSource.getBoxScore(any()) } answers {
             Response.error(404, "".toResponseBody())
         }
-        repository.insertBoxScore(FinalGameId)
+        repository.addBoxScore(FinalGameId)
         dataHolder
             .boxScores
             .value
@@ -81,7 +81,7 @@ class NBAGameRepositoryTest : BaseUnitTest() {
         coEvery { gameRemoteSource.getBoxScore(any()) } answers {
             Response.success(RemoteBoxScore(null))
         }
-        repository.insertBoxScore(FinalGameId)
+        repository.addBoxScore(FinalGameId)
         dataHolder
             .boxScores
             .value
@@ -94,7 +94,7 @@ class NBAGameRepositoryTest : BaseUnitTest() {
         every {
             any<RemoteBoxScore.RemoteGame>().toBoxScore()
         } returns null
-        repository.insertBoxScore(FinalGameId)
+        repository.addBoxScore(FinalGameId)
         dataHolder
             .boxScores
             .value
@@ -116,7 +116,7 @@ class NBAGameRepositoryTest : BaseUnitTest() {
     @Test
     fun `getBoxScoreAndGame(final) expects correct`() = launch {
         repositoryProvider.schedule.updateSchedule()
-        repository.insertBoxScore(FinalGameId)
+        repository.addBoxScore(FinalGameId)
         repository
             .getBoxScoreAndGame(FinalGameId)
             .stateIn(null)
@@ -180,7 +180,7 @@ class NBAGameRepositoryTest : BaseUnitTest() {
     fun `getLastGameDateTime() expects the result is comingSoonGameDate`() = launch {
         repositoryProvider.schedule.updateSchedule()
         repository
-            .getLastGameDateTime()
+            .getLastGame()
             .stateIn(Date())
             .value
             .assertIs(GameGenerator.getComingSoon().gameDateTime)

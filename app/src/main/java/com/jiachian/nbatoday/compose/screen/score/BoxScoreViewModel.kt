@@ -42,7 +42,7 @@ class BoxScoreViewModel(
     // Update box score data into the repository
     init {
         viewModelScope.launch(dispatcherProvider.io) {
-            repository.insertBoxScore(gameId)
+            repository.addBoxScore(gameId)
         }
     }
 

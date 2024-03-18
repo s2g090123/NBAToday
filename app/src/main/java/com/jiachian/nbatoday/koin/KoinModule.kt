@@ -54,7 +54,9 @@ import com.jiachian.nbatoday.usecase.bet.BetUseCase
 import com.jiachian.nbatoday.usecase.bet.DeleteBet
 import com.jiachian.nbatoday.usecase.bet.GetBetGames
 import com.jiachian.nbatoday.usecase.game.GameUseCase
+import com.jiachian.nbatoday.usecase.game.GetFirstLastGameDate
 import com.jiachian.nbatoday.usecase.game.GetGame
+import com.jiachian.nbatoday.usecase.game.GetGamesDuring
 import com.jiachian.nbatoday.usecase.user.AddPoints
 import com.jiachian.nbatoday.usecase.user.GetUser
 import com.jiachian.nbatoday.usecase.user.UserLogin
@@ -71,6 +73,7 @@ val module = module {
     factory { (get() as NBADatabase).getTeamDao() }
     factory { (get() as NBADatabase).getPlayerDao() }
     factory { (get() as NBADatabase).getBetDao() }
+    factory { RemoteSource.createService(GameService::class.java) }
     factory { NBAGameRemoteSource(RemoteSource.createService(GameService::class.java)) as GameRemoteSource }
     factory { NBATeamRemoteSource(RemoteSource.createService(TeamService::class.java)) as TeamRemoteSource }
     factory { NBAPlayerRemoteSource(RemoteSource.createService(PlayerService::class.java)) as PlayerRemoteSource }
@@ -91,8 +94,10 @@ val module = module {
     factory { AddPoints(get()) }
     factory { UserLogin(get()) }
     factory { UserRegister(get()) }
-    factory { GameUseCase(get()) }
+    factory { GameUseCase(get(), get(), get()) }
     factory { GetGame(get()) }
+    factory { GetFirstLastGameDate(get()) }
+    factory { GetGamesDuring(get()) }
 
     single { NBADatabase.getInstance(androidContext()) }
     single { NBADataStore(androidApplication()) as BaseDataStore }

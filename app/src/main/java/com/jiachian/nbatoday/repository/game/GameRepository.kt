@@ -1,9 +1,9 @@
 package com.jiachian.nbatoday.repository.game
 
 import com.jiachian.nbatoday.models.local.game.GameAndBets
+import com.jiachian.nbatoday.models.local.score.BoxScore
 import com.jiachian.nbatoday.models.local.score.BoxScoreAndGame
 import com.jiachian.nbatoday.repository.BaseRepository
-import java.util.Date
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -15,7 +15,7 @@ abstract class GameRepository : BaseRepository() {
      *
      * @param gameId The ID of the game for which the box score is inserted.
      */
-    abstract suspend fun insertBoxScore(gameId: String)
+    abstract suspend fun addBoxScore(gameId: String): BoxScore?
 
     /**
      * Retrieves a flow of games and associated bets that occurred within a specified time range.
@@ -60,18 +60,4 @@ abstract class GameRepository : BaseRepository() {
      * @return A Flow emitting a list of GameAndBets objects.
      */
     abstract fun getGamesAndBetsAfter(teamId: Int, from: Long): Flow<List<GameAndBets>>
-
-    /**
-     * Retrieves a flow of the date-time of the last recorded game.
-     *
-     * @return A Flow emitting the date-time of the last recorded game.
-     */
-    abstract fun getLastGameDateTime(): Flow<Date>
-
-    /**
-     * Retrieves a flow of the date-time of the first recorded game.
-     *
-     * @return A Flow emitting the date-time of the first recorded game.
-     */
-    abstract fun getFirstGameDateTime(): Flow<Date>
 }

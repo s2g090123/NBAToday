@@ -24,7 +24,7 @@ class NBABoxScoreLocalSourceTest : BaseUnitTest() {
 
     @Test
     fun `getBoxScoreAndGame(final) with inserting finalGame expects correct`() = launch {
-        repositoryProvider.game.insertBoxScore(FinalGameId)
+        repositoryProvider.game.addBoxScore(FinalGameId)
         val actual =
             localSource.getBoxScoreAndGame(FinalGameId).stateIn(null).value?.boxScore
         assertIs(actual, BoxScoreGenerator.getFinal())
@@ -32,7 +32,7 @@ class NBABoxScoreLocalSourceTest : BaseUnitTest() {
 
     @Test
     fun `getBoxScoreAndGame(playing) with inserting playingGame expects correct`() = launch {
-        repositoryProvider.game.insertBoxScore(PlayingGameId)
+        repositoryProvider.game.addBoxScore(PlayingGameId)
         val actual =
             localSource.getBoxScoreAndGame(PlayingGameId).stateIn(null).value?.boxScore
         assertIs(actual, BoxScoreGenerator.getPlaying())

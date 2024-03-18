@@ -111,11 +111,7 @@ fun MainScreen(
         }
         composable(MainRoute.Calendar.route) {
             CalendarScreen(
-                navigateToBoxScore = navigationController::navigateToBoxScore,
-                navigateToTeam = navigationController::navigateToTeam,
-                showLoginDialog = navigationController::showLoginDialog,
-                showBetDialog = navigationController::showBetDialog,
-                onBack = navController::popBackStack
+                navigationController = navigationController
             )
         }
         composable(MainRoute.Bet.route) {

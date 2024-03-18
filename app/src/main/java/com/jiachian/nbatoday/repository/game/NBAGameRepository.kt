@@ -1,68 +1,52 @@
 package com.jiachian.nbatoday.repository.game
 
-import com.jiachian.nbatoday.datasource.local.boxscore.BoxScoreLocalSource
-import com.jiachian.nbatoday.datasource.local.game.GameLocalSource
-import com.jiachian.nbatoday.datasource.remote.game.GameRemoteSource
+import com.jiachian.nbatoday.database.dao.BoxScoreDao
+import com.jiachian.nbatoday.database.dao.GameDao
 import com.jiachian.nbatoday.models.local.game.GameAndBets
+import com.jiachian.nbatoday.models.local.score.BoxScore
 import com.jiachian.nbatoday.models.local.score.BoxScoreAndGame
 import com.jiachian.nbatoday.models.remote.score.extensions.toBoxScore
-import java.util.Date
+import com.jiachian.nbatoday.service.GameService
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 
 class NBAGameRepository(
-    private val gameLocalSource: GameLocalSource,
-    private val boxScoreLocalSource: BoxScoreLocalSource,
-    private val gameRemoteSource: GameRemoteSource,
+    private val gameDao: GameDao,
+    private val boxScoreDao: BoxScoreDao,
+    private val gameService: GameService,
 ) : GameRepository() {
-    override suspend fun insertBoxScore(gameId: String) {
-        loading {
-            gameRemoteSource
-                .getBoxScore(gameId)
-                .takeIf { !it.isError() }
-                ?.body()
-                ?.game
-                ?.toBoxScore()
-                ?.also { boxScore ->
-                    boxScoreLocalSource.insertBoxScore(boxScore)
-                }
-                ?: onError()
-        }
+    override suspend fun addBoxScore(gameId: String): BoxScore? {
+        return gameService
+            .getBoxScore(gameId)
+            .takeIf { !it.isError() }
+            ?.body()
+            ?.game
+            ?.toBoxScore()
+            ?.also { boxScore ->
+                boxScoreDao.insertBoxScore(boxScore)
+            }
     }
 
     override fun getGamesAndBetsDuring(from: Long, to: Long): Flow<List<GameAndBets>> {
-        return gameLocalSource.getGamesAndBetsDuring(from, to)
+        return gameDao.getGamesAndBetsDuring(from, to)
     }
 
     override fun getBoxScoreAndGame(gameId: String): Flow<BoxScoreAndGame?> {
-        return boxScoreLocalSource.getBoxScoreAndGame(gameId)
+        return boxScoreDao.getBoxScoreAndGame(gameId)
     }
 
     override fun getGamesAndBets(): Flow<List<GameAndBets>> {
-        return gameLocalSource.getGamesAndBets()
+        return gameDao.getGamesAndBets()
     }
 
     override suspend fun getGameAndBet(gameId: String): GameAndBets {
-        return gameLocalSource.getGameAndBet(gameId)
+        return gameDao.getGameAndBet(gameId)
     }
 
     override fun getGamesAndBetsBefore(teamId: Int, from: Long): Flow<List<GameAndBets>> {
-        return gameLocalSource.getGamesAndBetsBefore(teamId, from)
+        return gameDao.getGamesAndBetsBefore(teamId, from)
     }
 
     override fun getGamesAndBetsAfter(teamId: Int, from: Long): Flow<List<GameAndBets>> {
-        return gameLocalSource.getGamesAndBetsAfter(teamId, from)
-    }
-
-    override fun getLastGameDateTime(): Flow<Date> {
-        return gameLocalSource.getLastGameDateTime().map {
-            it ?: Date()
-        }
-    }
-
-    override fun getFirstGameDateTime(): Flow<Date> {
-        return gameLocalSource.getFirstGameDateTime().map {
-            it ?: Date()
-        }
+        return gameDao.getGamesAndBetsAfter(teamId, from)
     }
 }

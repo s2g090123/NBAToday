@@ -16,7 +16,7 @@ class TestGameRepository(
     private val boxScoreLocalSource: BoxScoreLocalSource,
     private val gameRemoteSource: GameRemoteSource,
 ) : GameRepository() {
-    override suspend fun insertBoxScore(gameId: String) {
+    override suspend fun addBoxScore(gameId: String) {
         gameRemoteSource
             .getBoxScore(gameId)
             .takeIf { !it.isError() }
@@ -48,7 +48,7 @@ class TestGameRepository(
         return gameLocalSource.getGamesAndBetsAfter(teamId, from)
     }
 
-    override fun getLastGameDateTime(): Flow<Date> {
+    override fun getLastGame(): Flow<Date> {
         return gameLocalSource.getLastGameDateTime().map {
             it ?: Date()
         }

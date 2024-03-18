@@ -52,6 +52,10 @@ class NavigationController(
     fun showBetDialog(gameId: String) {
         navController.navigate(MainRoute.BetDialog.build(gameId))
     }
+
+    fun back() {
+        navController.popBackStack()
+    }
 }
 
 @Composable

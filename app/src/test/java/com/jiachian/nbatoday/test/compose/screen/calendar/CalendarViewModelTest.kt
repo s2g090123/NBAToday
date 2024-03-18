@@ -84,7 +84,7 @@ class CalendarViewModelTest : BaseUnitTest() {
         val spy = spyk(viewModel) {
             every { hasLastMonth() } returns true
         }
-        spy.lastMonth()
+        spy.prevMonth()
         val expected = currentCalendar.let { cal ->
             cal.add(Calendar.MONTH, -1)
             val year = cal.get(Calendar.YEAR)
@@ -100,21 +100,21 @@ class CalendarViewModelTest : BaseUnitTest() {
             every { hasLastMonth() } returns false
         }
         val expected = spy.numberAndDateString.value
-        spy.lastMonth()
+        spy.prevMonth()
         assertIs(spy.numberAndDateString.value, expected)
     }
 
     @Test
     fun `selectedGamesVisible with selecting today expects visible`() {
-        viewModel.selectedGamesVisible.launchAndCollect()
+        viewModel.gamesVisible.launchAndCollect()
         viewModel.selectDate(Date(BasicTime))
-        assertIsTrue(viewModel.selectedGamesVisible.value)
+        assertIsTrue(viewModel.gamesVisible.value)
     }
 
     @Test
     fun `selectedGamesVisible with selecting next two month expects invisible`() {
-        viewModel.selectedGamesVisible.launchAndCollect()
+        viewModel.gamesVisible.launchAndCollect()
         viewModel.selectDate(Date(BasicTime + 24 * 60 * 60 * 1000 * 60L))
-        assertIsFalse(viewModel.selectedGamesVisible.value)
+        assertIsFalse(viewModel.gamesVisible.value)
     }
 }

@@ -22,7 +22,7 @@ interface GameDao {
      *
      * @return Flow emitting a list of [GameAndBets].
      */
-    @Query("SELECT * FROM game")
+    @Query("SELECT * FROM game ORDER BY game_date_time")
     fun getGamesAndBets(): Flow<List<GameAndBets>>
 
     /**

@@ -21,6 +21,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -38,13 +39,16 @@ import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.DaysPerWeek
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.Transparency25
+import com.jiachian.nbatoday.compose.screen.calendar.event.CalendarEvent
 import com.jiachian.nbatoday.compose.screen.calendar.models.CalendarDate
+import com.jiachian.nbatoday.compose.screen.calendar.state.CalendarDatesState
+import com.jiachian.nbatoday.compose.screen.calendar.state.CalendarTopBarState
 import com.jiachian.nbatoday.compose.screen.card.GameCard
 import com.jiachian.nbatoday.compose.screen.card.GameCardState
 import com.jiachian.nbatoday.compose.widget.IconButton
 import com.jiachian.nbatoday.compose.widget.LoadingScreen
-import com.jiachian.nbatoday.compose.widget.UIStateScreen
 import com.jiachian.nbatoday.models.local.game.Game
+import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.testing.testtag.CalendarTestTag
 import com.jiachian.nbatoday.utils.rippleClickable
 import com.jiachian.nbatoday.utils.slideSpec
@@ -54,44 +58,74 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun CalendarScreen(
     viewModel: CalendarViewModel = koinViewModel(),
-    navigateToBoxScore: (gameId: String) -> Unit,
-    navigateToTeam: (teamId: Int) -> Unit,
-    showLoginDialog: () -> Unit,
-    showBetDialog: (String) -> Unit,
-    onBack: () -> Unit,
+    navigationController: NavigationController,
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colors.primary)
-    ) {
-        CalendarTopBar(
-            modifier = Modifier.fillMaxWidth(),
-            viewModel = viewModel,
-            onClose = onBack,
-        )
-        CalendarContent(
-            modifier = Modifier
-                .padding(top = 8.dp)
-                .fillMaxSize(),
-            viewModel = viewModel,
-            onClickGame = { game ->
-                if (game.gamePlayed) {
-                    navigateToBoxScore(game.gameId)
-                } else {
-                    navigateToTeam(game.homeTeamId)
+    val topBarState by viewModel.topBarState.collectAsState()
+    val datesState by viewModel.datesStateFlow.collectAsState()
+    val gamesState by viewModel.gamesState.collectAsState()
+    Scaffold(
+        backgroundColor = MaterialTheme.colors.primary,
+        topBar = {
+            CalendarTopBar(
+                state = topBarState,
+                onEvent = viewModel::onEvent,
+                onClose = navigationController::back,
+            )
+        }
+    ) { padding ->
+        if (datesState.loading) {
+            LoadingScreen(
+                modifier = Modifier
+                    .testTag(CalendarTestTag.CalendarContent_LoadingScreen_Calendar)
+                    .fillMaxSize(),
+                color = MaterialTheme.colors.secondary,
+            )
+        } else {
+            LazyVerticalGrid(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding),
+                columns = GridCells.Fixed(DaysPerWeek),
+            ) {
+                dateBoxes(
+                    state = datesState,
+                    selectDate = { viewModel.onEvent(CalendarEvent.SelectDate(it)) }
+                )
+                if (gamesState.visible) {
+                    if (gamesState.loading) {
+                        item(span = { GridItemSpan(DaysPerWeek) }) {
+                            LoadingScreen(
+                                modifier = Modifier
+                                    .testTag(CalendarTestTag.CalendarContent_LoadingScreen_Games)
+                                    .padding(top = 24.dp),
+                                color = MaterialTheme.colors.secondary,
+                            )
+                        }
+                    } else {
+                        calendarGameCards(
+                            games = gamesState.games,
+                            onClickGame = { game ->
+                                if (game.gamePlayed) {
+                                    navigationController.navigateToBoxScore(game.gameId)
+                                } else {
+                                    navigationController.navigateToTeam(game.homeTeamId)
+                                }
+                            },
+                            showLoginDialog = navigationController::showLoginDialog,
+                            showBetDialog = navigationController::showBetDialog,
+                        )
+                    }
                 }
-            },
-            showLoginDialog = showLoginDialog,
-            showBetDialog = showBetDialog,
-        )
+            }
+        }
     }
 }
 
 @Composable
 private fun CalendarTopBar(
     modifier: Modifier = Modifier,
-    viewModel: CalendarViewModel,
+    state: CalendarTopBarState,
+    onEvent: (CalendarEvent) -> Unit,
     onClose: () -> Unit
 ) {
     Column(modifier = modifier) {
@@ -107,7 +141,11 @@ private fun CalendarTopBar(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(MaterialTheme.colors.secondary),
-            viewModel = viewModel
+            index = state.index,
+            dateString = state.dateString,
+            hasPrev = state.hasPrevious,
+            hasNext = state.hasNext,
+            onEvent = onEvent
         )
         DayAbbrTextRow(
             modifier = Modifier
@@ -121,129 +159,58 @@ private fun CalendarTopBar(
 @Composable
 private fun CalendarNavigationBar(
     modifier: Modifier = Modifier,
-    viewModel: CalendarViewModel,
+    index: Int,
+    dateString: String,
+    hasPrev: Boolean,
+    hasNext: Boolean,
+    onEvent: (CalendarEvent) -> Unit,
 ) {
-    val numberAndDateString by viewModel.numberAndDateString.collectAsState()
-    val hasLastMonth by viewModel.hasLastMonth.collectAsState()
-    val hasNextMonth by viewModel.hasNextMonth.collectAsState()
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        CalendarArrowButton(
+        IconButton(
             modifier = Modifier.testTag(CalendarTestTag.CalendarNavigationBar_CalendarArrowButton_Last),
-            enabled = hasLastMonth,
-            isLeft = true,
-            onClick = viewModel::lastMonth
+            enabled = hasPrev,
+            drawableRes = R.drawable.ic_black_left_arrow,
+            tint = MaterialTheme.colors.secondaryVariant.copy(if (hasPrev) 1f else Transparency25),
+            onClick = { onEvent(CalendarEvent.PrevMonth) }
         )
         AnimatedContent(
             modifier = Modifier.weight(1f),
-            targetState = numberAndDateString,
-            transitionSpec = { slideSpec(targetState.first > initialState.first) }
-        ) { numberAndDateString ->
+            targetState = index,
+            transitionSpec = { slideSpec(targetState > initialState) }
+        ) {
             Text(
                 modifier = Modifier.testTag(CalendarTestTag.CalendarNavigationBar_Text_Date),
-                text = numberAndDateString.second,
+                text = dateString,
                 textAlign = TextAlign.Center,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Medium,
                 color = MaterialTheme.colors.secondaryVariant
             )
         }
-        CalendarArrowButton(
+        IconButton(
             modifier = Modifier.testTag(CalendarTestTag.CalendarNavigationBar_CalendarArrowButton_Next),
-            enabled = hasNextMonth,
-            isLeft = false,
-            onClick = viewModel::nextMonth
+            enabled = hasNext,
+            drawableRes = R.drawable.ic_black_right_arrow,
+            tint = MaterialTheme.colors.secondaryVariant.copy(if (hasNext) 1f else Transparency25),
+            onClick = { onEvent(CalendarEvent.NextMonth) }
         )
     }
 }
 
-@Composable
-private fun CalendarArrowButton(
-    modifier: Modifier = Modifier,
-    enabled: Boolean,
-    isLeft: Boolean,
-    onClick: () -> Unit
-) {
-    IconButton(
-        modifier = modifier,
-        enabled = enabled,
-        drawableRes = if (isLeft) R.drawable.ic_black_left_arrow else R.drawable.ic_black_right_arrow,
-        tint = MaterialTheme.colors.secondaryVariant.copy(if (enabled) 1f else Transparency25),
-        onClick = onClick
-    )
-}
-
-@Composable
-private fun CalendarContent(
-    modifier: Modifier = Modifier,
-    viewModel: CalendarViewModel,
-    onClickGame: (game: Game) -> Unit,
-    showLoginDialog: () -> Unit,
-    showBetDialog: (String) -> Unit,
-) {
-    val selectedGames by viewModel.selectedGames.collectAsState()
-    val selectedGamesVisible by viewModel.selectedGamesVisible.collectAsState()
-    val loadingGames by viewModel.loadingGames.collectAsState()
-    val calendarDatesState by viewModel.calendarDatesState.collectAsState()
-    val selectedDate by viewModel.selectedDate.collectAsState()
-    UIStateScreen(
-        state = calendarDatesState,
-        loading = {
-            LoadingScreen(
-                modifier = Modifier
-                    .testTag(CalendarTestTag.CalendarContent_LoadingScreen_Calendar)
-                    .then(modifier),
-                color = MaterialTheme.colors.secondary,
-            )
-        },
-        ifNull = null
-    ) { calendarDates ->
-        LazyVerticalGrid(
-            modifier = modifier,
-            columns = GridCells.Fixed(DaysPerWeek),
-        ) {
-            dateBoxes(
-                viewModel = viewModel,
-                calendarDates = calendarDates,
-                selectedDate = selectedDate
-            )
-            if (selectedGamesVisible) {
-                if (loadingGames) {
-                    item(span = { GridItemSpan(DaysPerWeek) }) {
-                        LoadingScreen(
-                            modifier = Modifier
-                                .testTag(CalendarTestTag.CalendarContent_LoadingScreen_Games)
-                                .padding(top = 24.dp),
-                            color = MaterialTheme.colors.secondary,
-                        )
-                    }
-                } else {
-                    calendarGameCards(
-                        games = selectedGames,
-                        onClickGame = onClickGame,
-                        showLoginDialog = showLoginDialog,
-                        showBetDialog = showBetDialog,
-                    )
-                }
-            }
-        }
-    }
-}
-
 private fun LazyGridScope.dateBoxes(
-    viewModel: CalendarViewModel,
-    calendarDates: List<CalendarDate>,
-    selectedDate: Date,
+    state: CalendarDatesState,
+    selectDate: (Date) -> Unit,
 ) = items(
-    items = calendarDates,
+    items = state.calendarDates,
     span = { GridItemSpan(1) }
 ) { calendarDate ->
     DateBox(
         calendarDate = calendarDate,
-        selected = calendarDate.date == selectedDate,
-        onClick = viewModel::selectDate
+        selected = calendarDate.date == state.selectedDate,
+        onClick = selectDate
     )
 }
 
@@ -254,9 +221,10 @@ private fun LazyGridScope.calendarGameCards(
     showBetDialog: (String) -> Unit,
 ) = itemsIndexed(
     items = games,
+    key = { _, item -> item.data.game.gameId },
     span = { _, _ -> GridItemSpan(DaysPerWeek) }
-) { index, state ->
-    CalendarGameCard(
+) { index, game ->
+    GameCard(
         modifier = Modifier
             .testTag(CalendarTestTag.CalendarGameCard)
             .padding(
@@ -264,34 +232,15 @@ private fun LazyGridScope.calendarGameCards(
                 end = 16.dp,
                 top = if (index == 0) 16.dp else 8.dp,
                 bottom = if (index == games.size - 1) 16.dp else 0.dp
-            ),
-        state = state,
-        onClick = { onClickGame(state.data.game) },
-        showLoginDialog = showLoginDialog,
-        showBetDialog = showBetDialog,
-    )
-}
-
-@Composable
-private fun CalendarGameCard(
-    modifier: Modifier = Modifier,
-    state: GameCardState,
-    onClick: () -> Unit,
-    showLoginDialog: () -> Unit,
-    showBetDialog: (String) -> Unit,
-) {
-    GameCard(
-        modifier = modifier.then(
-            Modifier
-                .clip(RoundedCornerShape(16.dp))
-                .shadow(8.dp)
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .background(MaterialTheme.colors.secondary)
-                .rippleClickable { onClick() }
-                .padding(bottom = 8.dp)
-        ),
-        state = state,
+            )
+            .clip(RoundedCornerShape(16.dp))
+            .shadow(8.dp)
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .background(MaterialTheme.colors.secondary)
+            .rippleClickable { onClickGame(game.data.game) }
+            .padding(bottom = 8.dp),
+        state = game,
         expandable = false,
         color = MaterialTheme.colors.primary,
         showLoginDialog = showLoginDialog,
