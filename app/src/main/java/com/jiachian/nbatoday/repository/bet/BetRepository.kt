@@ -11,12 +11,8 @@ import kotlinx.coroutines.flow.Flow
 abstract class BetRepository : BaseRepository() {
     /**
      * Inserts a new bet for a specified game.
-     *
-     * @param gameId The ID of the game for which the bet is placed.
-     * @param homePoints The points predicted for the home team.
-     * @param awayPoints The points predicted for the away team.
      */
-    abstract suspend fun addBet(gameId: String, account: String, homePoints: Long, awayPoints: Long)
+    abstract suspend fun addBet(bet: Bet)
 
     /**
      * Deletes a bet from the repository.

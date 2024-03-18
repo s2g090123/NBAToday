@@ -1,5 +1,6 @@
 package com.jiachian.nbatoday.usecase.bet
 
+import com.jiachian.nbatoday.models.local.bet.Bet
 import com.jiachian.nbatoday.models.local.user.User
 import com.jiachian.nbatoday.repository.bet.BetRepository
 
@@ -15,6 +16,13 @@ class AddBet(
         if (user.points < homePoints + awayPoints) {
             throw Exception("There are no enough points to bet.")
         }
-        repository.addBet(gameId, user.account, homePoints, awayPoints)
+        repository.addBet(
+            Bet(
+                account = user.account,
+                gameId = gameId,
+                homePoints = homePoints,
+                awayPoints = awayPoints
+            )
+        )
     }
 }

@@ -8,17 +8,8 @@ import kotlinx.coroutines.flow.Flow
 class NBABetRepository(
     private val dao: BetDao,
 ) : BetRepository() {
-    override suspend fun addBet(gameId: String, account: String, homePoints: Long, awayPoints: Long) {
-        loading {
-            dao.addBet(
-                Bet(
-                    account = account,
-                    gameId = gameId,
-                    homePoints = homePoints,
-                    awayPoints = awayPoints
-                )
-            )
-        }
+    override suspend fun addBet(bet: Bet) {
+        dao.addBet(bet)
     }
 
     override suspend fun deleteBet(bet: Bet) {
