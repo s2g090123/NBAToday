@@ -65,7 +65,7 @@ fun SchedulePage(
                 color = MaterialTheme.colors.primary,
             )
         } else {
-            val pagerState = rememberPagerState(initialPage = state.dates.size / 2)
+            val pagerState = rememberPagerState(initialPage = viewModel.dates.size / 2)
             val pullRefreshState = rememberPullRefreshState(
                 refreshing = state.refreshing,
                 onRefresh = { viewModel.onEvent(ScheduleEvent.Refresh) }
@@ -81,11 +81,11 @@ fun SchedulePage(
                         .padding(top = 48.dp)
                         .fillMaxSize(),
                     state = pagerState,
-                    count = state.dates.size
+                    count = viewModel.dates.size
                 ) { page ->
-                    val date = state.dates[page]
+                    val date = viewModel.dates[page]
                     ScheduleContent(
-                        games = state.getGames(state.dates[page]),
+                        games = state.getGames(viewModel.dates[page]),
                         onClickGame = {
                             if (it.gamePlayed) {
                                 navigationController.navigateToBoxScore(it.gameId)
@@ -107,7 +107,7 @@ fun SchedulePage(
                 )
                 ScheduleTabRow(
                     pagerState = pagerState,
-                    dates = state.dates,
+                    dates = viewModel.dates,
                     selectDate = { viewModel.onEvent(ScheduleEvent.Select(it)) }
                 )
             }

@@ -6,8 +6,6 @@ import com.jiachian.nbatoday.compose.screen.home.schedule.models.DateData
 data class ScheduleState(
     val loading: Boolean = false,
     val refreshing: Boolean = false,
-    val selectedDate: DateData = DateData(),
-    val dates: List<DateData> = emptyList(),
     private val games: Map<DateData, List<GameCardState>> = emptyMap(),
 ) {
     fun getGames(date: DateData): List<GameCardState> {

@@ -37,6 +37,11 @@ class SchedulePageViewModel(
     private val stateImp = MutableStateFlow(ScheduleState())
     val state = stateImp.asStateFlow()
 
+    private val datesImp = mutableListOf<DateData>()
+    val dates: List<DateData> = datesImp
+
+    private var selectedDate = DateData()
+
     private val eventImp = MutableSharedFlow<ScheduleUiEvent>()
     val event = eventImp.asSharedFlow()
 
@@ -46,9 +51,8 @@ class SchedulePageViewModel(
         viewModelScope.launch {
             stateImp.value = state.value.copy(loading = true)
             withContext(dispatcherProvider.default) {
-                val dates = cal.getDates()
-                val selectedDate = dates[dates.size / 2]
-                stateImp.value = state.value.copy(dates = dates, selectedDate = selectedDate)
+                datesImp.addAll(cal.getDates())
+                selectedDate = dates[dates.size / 2]
             }
             collectGames()
         }
@@ -77,17 +81,17 @@ class SchedulePageViewModel(
     fun onEvent(event: ScheduleEvent) {
         when (event) {
             ScheduleEvent.Refresh -> refreshSchedule()
-            is ScheduleEvent.Select -> stateImp.value = state.value.copy(selectedDate = event.date)
+            is ScheduleEvent.Select -> selectedDate = event.date
         }
     }
 
     private fun refreshSchedule() {
         if (state.value.refreshing) return
-        viewModelScope.launch(dispatcherProvider.io) {
+        viewModelScope.launch {
             scheduleUseCase.updateSchedule(
-                state.value.selectedDate.year,
-                state.value.selectedDate.month,
-                state.value.selectedDate.day
+                selectedDate.year,
+                selectedDate.month,
+                selectedDate.day
             ).collect {
                 when (it) {
                     is Resource.Error -> {
