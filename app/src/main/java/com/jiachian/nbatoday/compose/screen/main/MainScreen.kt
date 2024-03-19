@@ -116,9 +116,7 @@ fun MainScreen(
         }
         composable(MainRoute.Bet.route) {
             BetScreen(
-                navigateToBoxScore = navigationController::navigateToBoxScore,
-                navigateToTeam = navigationController::navigateToTeam,
-                back = navController::popBackStack,
+                navigationController = navigationController
             )
         }
         dialog(MainRoute.LoginDialog.route) {

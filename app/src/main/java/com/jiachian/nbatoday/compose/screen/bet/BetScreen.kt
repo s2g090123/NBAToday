@@ -27,6 +27,7 @@ import com.jiachian.nbatoday.compose.screen.bet.widgets.BetCard
 import com.jiachian.nbatoday.compose.widget.IconButton
 import com.jiachian.nbatoday.models.local.bet.BetAndGame
 import com.jiachian.nbatoday.models.local.game.GameStatus
+import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.testing.testtag.BetTestTag
 import com.jiachian.nbatoday.utils.rippleClickable
 import org.koin.androidx.compose.koinViewModel
@@ -34,9 +35,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun BetScreen(
     viewModel: BetViewModel = koinViewModel(),
-    navigateToBoxScore: (gameId: String) -> Unit,
-    navigateToTeam: (teamId: Int) -> Unit,
-    back: () -> Unit,
+    navigationController: NavigationController,
 ) {
     val state = viewModel.state.value
     Scaffold(
@@ -48,7 +47,7 @@ fun BetScreen(
                     .padding(top = 8.dp, start = 8.dp),
                 drawableRes = R.drawable.ic_black_back,
                 tint = MaterialTheme.colors.secondary,
-                onClick = back
+                onClick = navigationController::back
             )
         }
     ) { padding ->
@@ -62,8 +61,12 @@ fun BetScreen(
                 list = state.data,
                 onClickItem = {
                     when (it.game.gameStatus) {
-                        GameStatus.COMING_SOON -> navigateToTeam(it.game.homeTeamId)
-                        GameStatus.PLAYING -> navigateToBoxScore(it.game.gameId)
+                        GameStatus.COMING_SOON -> {
+                            navigationController.navigateToTeam(it.game.homeTeamId)
+                        }
+                        GameStatus.PLAYING -> {
+                            navigationController.navigateToBoxScore(it.game.gameId)
+                        }
                         GameStatus.FINAL -> viewModel.onEvent(BetEvent.Settle(it))
                     }
                 }
