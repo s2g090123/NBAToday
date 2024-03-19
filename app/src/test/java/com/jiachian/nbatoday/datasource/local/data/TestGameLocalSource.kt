@@ -37,7 +37,7 @@ class TestGameLocalSource(
     }
 
     override suspend fun insertGames(games: List<Game>) {
-        gameDao.insertGames(games)
+        gameDao.addGames(games)
     }
 
     override suspend fun updateGames(games: List<GameUpdateData>) {

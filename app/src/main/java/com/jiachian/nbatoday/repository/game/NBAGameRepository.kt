@@ -1,9 +1,9 @@
 package com.jiachian.nbatoday.repository.game
 
+import com.jiachian.nbatoday.common.Response
 import com.jiachian.nbatoday.database.dao.BoxScoreDao
 import com.jiachian.nbatoday.database.dao.GameDao
 import com.jiachian.nbatoday.models.local.game.GameAndBets
-import com.jiachian.nbatoday.models.local.score.BoxScore
 import com.jiachian.nbatoday.models.local.score.BoxScoreAndGame
 import com.jiachian.nbatoday.models.remote.score.extensions.toBoxScore
 import com.jiachian.nbatoday.service.GameService
@@ -14,7 +14,7 @@ class NBAGameRepository(
     private val boxScoreDao: BoxScoreDao,
     private val gameService: GameService,
 ) : GameRepository() {
-    override suspend fun addBoxScore(gameId: String): BoxScore? {
+    override suspend fun addBoxScore(gameId: String): Response<Unit> {
         return gameService
             .getBoxScore(gameId)
             .takeIf { !it.isError() }
@@ -24,6 +24,8 @@ class NBAGameRepository(
             ?.also { boxScore ->
                 boxScoreDao.insertBoxScore(boxScore)
             }
+            ?.let { Response.Success(Unit) }
+            ?: Response.Error()
     }
 
     override fun getGamesAndBetsDuring(from: Long, to: Long): Flow<List<GameAndBets>> {

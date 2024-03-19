@@ -62,7 +62,7 @@ class TestGameDao(
         return dataHolder.games.value.isNotEmpty()
     }
 
-    override suspend fun insertGames(games: List<Game>) {
+    override suspend fun addGames(games: List<Game>) {
         dataHolder.games.value = dataHolder.games.value.toMutableList().apply {
             val id = games.map { it.gameId }
             removeAll { game -> game.gameId in id }

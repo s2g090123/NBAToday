@@ -88,7 +88,7 @@ interface GameDao {
      * @param games The list of [Game] objects to be inserted.
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertGames(games: List<Game>)
+    suspend fun addGames(games: List<Game>)
 
     /**
      * Updates a list of games in the database.

@@ -57,6 +57,8 @@ import com.jiachian.nbatoday.usecase.game.GameUseCase
 import com.jiachian.nbatoday.usecase.game.GetFirstLastGameDate
 import com.jiachian.nbatoday.usecase.game.GetGame
 import com.jiachian.nbatoday.usecase.game.GetGamesDuring
+import com.jiachian.nbatoday.usecase.schedule.ScheduleUseCase
+import com.jiachian.nbatoday.usecase.schedule.UpdateSchedule
 import com.jiachian.nbatoday.usecase.user.AddPoints
 import com.jiachian.nbatoday.usecase.user.GetUser
 import com.jiachian.nbatoday.usecase.user.UserLogin
@@ -98,6 +100,8 @@ val module = module {
     factory { GetGame(get()) }
     factory { GetFirstLastGameDate(get()) }
     factory { GetGamesDuring(get()) }
+    factory { ScheduleUseCase(get()) }
+    factory { UpdateSchedule(get()) }
 
     single { NBADatabase.getInstance(androidContext()) }
     single { NBADataStore(androidApplication()) as BaseDataStore }

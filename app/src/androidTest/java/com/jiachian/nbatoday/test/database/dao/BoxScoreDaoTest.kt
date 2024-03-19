@@ -38,7 +38,7 @@ class BoxScoreDaoTest : BaseAndroidTest() {
 
     @Test
     fun boxScoreDao_getBoxScoreAndGame() = launch {
-        database.getGameDao().insertGames(listOf(GameGenerator.getFinal()))
+        database.getGameDao().addGames(listOf(GameGenerator.getFinal()))
         dao.insertBoxScore(BoxScoreGenerator.getFinal())
         dao.getBoxScoreAndGame(FinalGameId).collectOnce(this) {
             it.assertIs(

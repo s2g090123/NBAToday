@@ -23,9 +23,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.jiachian.nbatoday.compose.screen.home.navigation.HomePage
 import com.jiachian.nbatoday.compose.screen.home.schedule.SchedulePage
-import com.jiachian.nbatoday.compose.screen.home.schedule.models.DateData
 import com.jiachian.nbatoday.compose.screen.home.standing.StandingPage
 import com.jiachian.nbatoday.compose.screen.home.user.UserPage
+import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.testing.testtag.HomeTestTag
 
 @Composable
@@ -33,12 +33,7 @@ fun HomeScreen(
     navController: NavHostController = rememberNavController().apply {
         enableOnBackPressed(false)
     },
-    navigateToBoxScore: (gameId: String) -> Unit,
-    navigateToTeam: (teamId: Int) -> Unit,
-    navigateToCalendar: (DateData) -> Unit,
-    navigateToBet: (account: String) -> Unit,
-    showLoginDialog: () -> Unit,
-    showBetDialog: (String) -> Unit,
+    navigationController: NavigationController,
 ) {
     Scaffold(
         bottomBar = {
@@ -57,25 +52,20 @@ fun HomeScreen(
         ) {
             composable(HomePage.SCHEDULE.route) {
                 SchedulePage(
-                    modifier = Modifier.fillMaxSize(),
-                    navigateToBoxScore = navigateToBoxScore,
-                    navigateToTeam = navigateToTeam,
-                    navigateToCalendar = navigateToCalendar,
-                    showLoginDialog = showLoginDialog,
-                    showBetDialog = showBetDialog,
+                    navigationController = navigationController
                 )
             }
             composable(HomePage.STANDING.route) {
                 StandingPage(
                     modifier = Modifier.fillMaxSize(),
-                    navigateToTeam = navigateToTeam,
+                    navigateToTeam = navigationController::navigateToTeam,
                 )
             }
             composable(HomePage.USER.route) {
                 UserPage(
                     modifier = Modifier.fillMaxSize(),
-                    navigateToBet = navigateToBet,
-                    showLoginDialog = showLoginDialog,
+                    navigateToBet = navigationController::navigateToBet,
+                    showLoginDialog = navigationController::showLoginDialog,
                 )
             }
         }

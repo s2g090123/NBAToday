@@ -64,7 +64,7 @@ class BetDaoTest : BaseAndroidTest() {
     }
 
     private suspend fun insertGames() {
-        database.getGameDao().insertGames(
+        database.getGameDao().addGames(
             listOf(
                 GameGenerator.getFinal(),
                 GameGenerator.getPlaying(),

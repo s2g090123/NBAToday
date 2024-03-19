@@ -1,15 +1,15 @@
 package com.jiachian.nbatoday.repository.schedule
 
-import com.jiachian.nbatoday.repository.BaseRepository
+import com.jiachian.nbatoday.common.Response
 
 /**
  * Manage schedule-related data.
  */
-abstract class ScheduleRepository : BaseRepository() {
+interface ScheduleRepository {
     /**
      * Updates the schedule data.
      */
-    abstract suspend fun updateSchedule()
+    suspend fun updateSchedule(): Response<Unit>
 
     /**
      * Updates the schedule data for a specific date.
@@ -18,5 +18,5 @@ abstract class ScheduleRepository : BaseRepository() {
      * @param month The month of the schedule date.
      * @param day The day of the schedule date.
      */
-    abstract suspend fun updateSchedule(year: Int, month: Int, day: Int)
+    suspend fun updateSchedule(year: Int, month: Int, day: Int): Response<Unit>
 }

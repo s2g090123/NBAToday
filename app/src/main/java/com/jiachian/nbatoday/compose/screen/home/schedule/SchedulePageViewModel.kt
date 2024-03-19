@@ -3,127 +3,132 @@ package com.jiachian.nbatoday.compose.screen.home.schedule
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jiachian.nbatoday.ScheduleDateRange
+import com.jiachian.nbatoday.common.Resource
 import com.jiachian.nbatoday.compose.screen.card.GameCardState
+import com.jiachian.nbatoday.compose.screen.home.schedule.event.ScheduleEvent
+import com.jiachian.nbatoday.compose.screen.home.schedule.event.ScheduleUiEvent
 import com.jiachian.nbatoday.compose.screen.home.schedule.models.DateData
-import com.jiachian.nbatoday.compose.screen.state.UIState
+import com.jiachian.nbatoday.compose.screen.home.schedule.state.ScheduleState
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.models.local.game.GameAndBets
 import com.jiachian.nbatoday.models.local.game.toGameCardState
-import com.jiachian.nbatoday.repository.game.GameRepository
-import com.jiachian.nbatoday.repository.schedule.ScheduleRepository
+import com.jiachian.nbatoday.usecase.game.GameUseCase
+import com.jiachian.nbatoday.usecase.schedule.ScheduleUseCase
 import com.jiachian.nbatoday.usecase.user.UserUseCase
 import com.jiachian.nbatoday.utils.DateUtils
+import com.jiachian.nbatoday.utils.DateUtils.reset
 import java.util.Calendar
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-/**
- * ViewModel for handling business logic related to [SchedulePage].
- *
- * @property scheduleRepository The repository for interacting with [GameAndBets].
- * @property gameRepository The repository for interacting with [GameAndBets].
- * @property dispatcherProvider The provider for obtaining dispatchers for coroutines (default is [DefaultDispatcherProvider]).
- */
 class SchedulePageViewModel(
-    private val scheduleRepository: ScheduleRepository,
-    private val gameRepository: GameRepository,
+    private val scheduleUseCase: ScheduleUseCase,
+    private val gameUseCase: GameUseCase,
     userUseCase: UserUseCase,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
 ) : ViewModel() {
     private val user = userUseCase.getUser()
 
-    // the date data for the schedule page on the TabBar
-    val dateData = createDateData()
+    private val stateImp = MutableStateFlow(ScheduleState())
+    val state = stateImp.asStateFlow()
 
-    // selected date for the schedule page
-    var selectedDate = dateData[dateData.size / 2]
-        private set
+    private val eventImp = MutableSharedFlow<ScheduleUiEvent>()
+    val event = eventImp.asSharedFlow()
 
-    // the list of games within the specified date range
-    private val games = DateUtils.getCalendar().run {
-        set(Calendar.HOUR, 0)
-        set(Calendar.MINUTE, 0)
-        set(Calendar.MILLISECOND, 0)
-        gameRepository.getGamesAndBetsDuring(
-            timeInMillis - DateUtils.DAY_IN_MILLIS * (ScheduleDateRange + 1),
-            timeInMillis + DateUtils.DAY_IN_MILLIS * (ScheduleDateRange)
-        )
+    private val cal = DateUtils.getCalendar()
+
+    init {
+        viewModelScope.launch {
+            stateImp.value = state.value.copy(loading = true)
+            withContext(dispatcherProvider.default) {
+                val dates = cal.getDates()
+                val selectedDate = dates[dates.size / 2]
+                stateImp.value = state.value.copy(dates = dates, selectedDate = selectedDate)
+            }
+            collectGames()
+        }
     }
 
-    // the grouped games based on their date
-    val groupedGamesState = games
-        .map { UIState.Loaded(getGroupedGames(it)) }
-        .flowOn(dispatcherProvider.default)
-        .stateIn(viewModelScope, SharingStarted.Lazily, UIState.Loading())
+    private suspend fun collectGames() {
+        cal.apply {
+            reset()
+            set(Calendar.HOUR, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
+        gameUseCase.getGamesDuring(
+            cal.timeInMillis - DateUtils.DAY_IN_MILLIS * (ScheduleDateRange + 1),
+            cal.timeInMillis + DateUtils.DAY_IN_MILLIS * (ScheduleDateRange)
+        ).collect { games ->
+            val groupedGames = cal.groupGames(games)
+            stateImp.value = state.value.copy(
+                games = groupedGames,
+                loading = false,
+                refreshing = false
+            )
+        }
+    }
 
-    private val refreshingImp = MutableStateFlow(false)
-    val refreshing = refreshingImp.asStateFlow()
+    fun onEvent(event: ScheduleEvent) {
+        when (event) {
+            ScheduleEvent.Refresh -> refreshSchedule()
+            is ScheduleEvent.Select -> stateImp.value = state.value.copy(selectedDate = event.date)
+        }
+    }
 
-    /**
-     * Creates a list of date data based on the specified date range.
-     *
-     * @return List of DateData instances.
-     */
-    private fun createDateData(): List<DateData> {
-        val range = ScheduleDateRange * 2 + 1
-        return DateUtils.getCalendar().run {
-            add(Calendar.DAY_OF_MONTH, -ScheduleDateRange)
-            List(range) {
-                DateData(
-                    get(Calendar.YEAR),
-                    get(Calendar.MONTH) + 1,
-                    get(Calendar.DAY_OF_MONTH)
-                ).also {
-                    add(Calendar.DAY_OF_MONTH, 1)
+    private fun refreshSchedule() {
+        if (state.value.refreshing) return
+        viewModelScope.launch(dispatcherProvider.io) {
+            scheduleUseCase.updateSchedule(
+                state.value.selectedDate.year,
+                state.value.selectedDate.month,
+                state.value.selectedDate.day
+            ).collect {
+                when (it) {
+                    is Resource.Error -> {
+                        eventImp.emit(ScheduleUiEvent.Toast(it.message))
+                        stateImp.value = state.value.copy(refreshing = false)
+                    }
+                    is Resource.Loading -> stateImp.value = state.value.copy(refreshing = true)
+                    is Resource.Success -> {
+                        stateImp.value = state.value.copy(refreshing = false)
+                    }
                 }
             }
         }
     }
 
-    /**
-     * Groups the games based on their date.
-     *
-     * @param games List of GameAndBets instances.
-     * @return Map with DateData as keys and lists of GameAndBets as values.
-     */
-    private fun getGroupedGames(games: List<GameAndBets>): Map<DateData, List<GameCardState>> {
-        return DateUtils.getCalendar().run {
-            games
-                .toGameCardState(user)
-                .groupBy { state ->
-                    time = state.data.game.gameDateTime
-                    DateData(
-                        get(Calendar.YEAR),
-                        get(Calendar.MONTH) + 1,
-                        get(Calendar.DAY_OF_MONTH)
-                    )
-                }
+    private fun Calendar.getDates(): List<DateData> {
+        val range = ScheduleDateRange * 2 + 1
+        reset()
+        add(Calendar.DAY_OF_MONTH, -ScheduleDateRange)
+        return List(range) {
+            DateData(
+                get(Calendar.YEAR),
+                get(Calendar.MONTH) + 1,
+                get(Calendar.DAY_OF_MONTH)
+            ).also {
+                add(Calendar.DAY_OF_MONTH, 1)
+            }
         }
     }
 
-    fun selectDate(dateData: DateData) {
-        selectedDate = dateData
-    }
-
-    /**
-     * Updates the selected schedule based on the chosen date.
-     */
-    fun updateSelectedSchedule() {
-        if (refreshing.value) return
-        viewModelScope.launch(dispatcherProvider.io) {
-            refreshingImp.value = true
-            scheduleRepository.updateSchedule(
-                selectedDate.year,
-                selectedDate.month,
-                selectedDate.day
-            )
-            refreshingImp.value = false
-        }
+    private fun Calendar.groupGames(games: List<GameAndBets>): Map<DateData, List<GameCardState>> {
+        reset()
+        return games
+            .toGameCardState(user)
+            .groupBy { state ->
+                time = state.data.game.gameDateTime
+                DateData(
+                    get(Calendar.YEAR),
+                    get(Calendar.MONTH) + 1,
+                    get(Calendar.DAY_OF_MONTH)
+                )
+            }
     }
 }

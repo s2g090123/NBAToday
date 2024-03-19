@@ -17,10 +17,10 @@ import androidx.compose.material.TabRowDefaults
 import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material.Text
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
-import androidx.compose.material.pullrefresh.PullRefreshState
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -38,145 +38,140 @@ import com.google.accompanist.pager.rememberPagerState
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.screen.card.GameCard
 import com.jiachian.nbatoday.compose.screen.card.GameCardState
+import com.jiachian.nbatoday.compose.screen.home.schedule.event.ScheduleEvent
+import com.jiachian.nbatoday.compose.screen.home.schedule.event.ScheduleUiEvent
 import com.jiachian.nbatoday.compose.screen.home.schedule.models.DateData
 import com.jiachian.nbatoday.compose.widget.IconButton
 import com.jiachian.nbatoday.compose.widget.LoadingScreen
-import com.jiachian.nbatoday.compose.widget.UIStateScreen
 import com.jiachian.nbatoday.models.local.game.Game
+import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.testing.testtag.ScheduleTestTag
 import com.jiachian.nbatoday.utils.rippleClickable
+import com.jiachian.nbatoday.utils.showErrorToast
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalPagerApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun SchedulePage(
-    modifier: Modifier = Modifier,
     viewModel: SchedulePageViewModel = koinViewModel(),
-    navigateToBoxScore: (gameId: String) -> Unit,
-    navigateToTeam: (teamId: Int) -> Unit,
-    navigateToCalendar: (DateData) -> Unit,
-    showLoginDialog: () -> Unit,
-    showBetDialog: (String) -> Unit,
+    navigationController: NavigationController,
 ) {
-    val dateData = viewModel.dateData
-    val pagerState = rememberPagerState(initialPage = dateData.size / 2)
-    val dateAndGamesState by viewModel.groupedGamesState.collectAsState()
-    val refreshing by viewModel.refreshing.collectAsState()
-    val pullRefreshState = rememberPullRefreshState(
-        refreshing = refreshing,
-        onRefresh = { viewModel.updateSelectedSchedule() }
-    )
-    Box(modifier = modifier) {
-        HorizontalPager(
-            modifier = Modifier
-                .testTag(ScheduleTestTag.SchedulePage_Pager)
-                .padding(top = 48.dp)
-                .fillMaxSize(),
-            state = pagerState,
-            count = dateData.size
-        ) { page ->
-            UIStateScreen(
-                state = dateAndGamesState,
-                loading = {
-                    LoadingScreen(
-                        modifier = Modifier
-                            .testTag(ScheduleTestTag.SchedulePage_LoadingScreen)
-                            .fillMaxSize(),
-                        color = MaterialTheme.colors.secondary,
+    val state by viewModel.state.collectAsState()
+    Box(modifier = Modifier.fillMaxSize()) {
+        if (state.loading) {
+            LoadingScreen(
+                modifier = Modifier.align(Alignment.Center),
+                color = MaterialTheme.colors.primary,
+            )
+        } else {
+            val pagerState = rememberPagerState(initialPage = state.dates.size / 2)
+            val pullRefreshState = rememberPullRefreshState(
+                refreshing = state.refreshing,
+                onRefresh = { viewModel.onEvent(ScheduleEvent.Refresh) }
+            )
+            Box(
+                modifier = Modifier
+                    .testTag(ScheduleTestTag.ScheduleContent)
+                    .pullRefresh(pullRefreshState)
+            ) {
+                HorizontalPager(
+                    modifier = Modifier
+                        .testTag(ScheduleTestTag.SchedulePage_Pager)
+                        .padding(top = 48.dp)
+                        .fillMaxSize(),
+                    state = pagerState,
+                    count = state.dates.size
+                ) { page ->
+                    val date = state.dates[page]
+                    ScheduleContent(
+                        games = state.getGames(state.dates[page]),
+                        onClickGame = {
+                            if (it.gamePlayed) {
+                                navigationController.navigateToBoxScore(it.gameId)
+                            } else {
+                                navigationController.navigateToTeam(it.homeTeamId)
+                            }
+                        },
+                        onClickCalendar = { navigationController.navigateToCalendar(date) },
+                        showLoginDialog = navigationController::showLoginDialog,
+                        showBetDialog = navigationController::showBetDialog,
                     )
-                },
-                ifNull = null
-            ) { dateAndGames ->
-                val date = dateData[page]
-                ScheduleContent(
-                    viewModel = viewModel,
-                    refreshing = refreshing,
-                    refreshState = pullRefreshState,
-                    games = dateAndGames[date] ?: emptyList(),
-                    onClickGame = {
-                        if (it.gamePlayed) {
-                            navigateToBoxScore(it.gameId)
-                        } else {
-                            navigateToTeam(it.homeTeamId)
-                        }
-                    },
-                    onClickCalendar = navigateToCalendar,
-                    showLoginDialog = showLoginDialog,
-                    showBetDialog = showBetDialog,
+                }
+                PullRefreshIndicator(
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .padding(top = 48.dp),
+                    refreshing = state.refreshing,
+                    state = pullRefreshState
+                )
+                ScheduleTabRow(
+                    pagerState = pagerState,
+                    dates = state.dates,
+                    selectDate = { viewModel.onEvent(ScheduleEvent.Select(it)) }
                 )
             }
         }
-        ScheduleTabRow(
-            pagerState = pagerState,
-            dates = dateData,
-            selectDate = viewModel::selectDate
-        )
+    }
+    LaunchedEffect(Unit) {
+        viewModel.event.collect {
+            when (it) {
+                is ScheduleUiEvent.Toast -> showErrorToast()
+            }
+        }
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun ScheduleContent(
-    viewModel: SchedulePageViewModel,
-    refreshState: PullRefreshState,
-    refreshing: Boolean,
     games: List<GameCardState>,
     onClickGame: (game: Game) -> Unit,
-    onClickCalendar: (DateData) -> Unit,
+    onClickCalendar: () -> Unit,
     showLoginDialog: () -> Unit,
     showBetDialog: (String) -> Unit,
 ) {
-    Box(
+    LazyColumn(
         modifier = Modifier
-            .testTag(ScheduleTestTag.ScheduleContent)
-            .pullRefresh(refreshState)
+            .testTag(ScheduleTestTag.ScheduleContent_LazyColumn)
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.End,
     ) {
-        LazyColumn(
-            modifier = Modifier
-                .testTag(ScheduleTestTag.ScheduleContent_LazyColumn)
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.End,
-        ) {
-            item {
-                IconButton(
-                    modifier = Modifier
-                        .testTag(ScheduleTestTag.ScheduleContent_Button_Calendar)
-                        .padding(top = 8.dp, end = 4.dp),
-                    drawableRes = R.drawable.ic_black_calendar,
-                    tint = MaterialTheme.colors.secondary,
-                    onClick = { onClickCalendar(viewModel.selectedDate) }
-                )
-            }
-            itemsIndexed(games) { index, state ->
-                GameCard(
-                    modifier = Modifier
-                        .testTag(ScheduleTestTag.ScheduleContent_GameCard)
-                        .padding(
-                            top = if (index == 0) 8.dp else 16.dp,
-                            bottom = if (index >= games.size - 1) 16.dp else 0.dp,
-                            start = 16.dp,
-                            end = 16.dp
-                        )
-                        .clip(RoundedCornerShape(16.dp))
-                        .shadow(8.dp)
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-                        .background(MaterialTheme.colors.secondary)
-                        .rippleClickable { onClickGame(state.data.game) },
-                    state = state,
-                    color = MaterialTheme.colors.primary,
-                    expandable = true,
-                    showLoginDialog = showLoginDialog,
-                    showBetDialog = showBetDialog,
-                )
-            }
+        item {
+            IconButton(
+                modifier = Modifier
+                    .testTag(ScheduleTestTag.ScheduleContent_Button_Calendar)
+                    .padding(top = 8.dp, end = 4.dp),
+                drawableRes = R.drawable.ic_black_calendar,
+                tint = MaterialTheme.colors.secondary,
+                onClick = onClickCalendar
+            )
         }
-        PullRefreshIndicator(
-            modifier = Modifier.align(Alignment.TopCenter),
-            refreshing = refreshing,
-            state = refreshState
-        )
+        itemsIndexed(
+            games,
+            key = { _, item -> item.data.game.gameId }
+        ) { index, state ->
+            GameCard(
+                modifier = Modifier
+                    .testTag(ScheduleTestTag.ScheduleContent_GameCard)
+                    .padding(
+                        top = if (index == 0) 8.dp else 16.dp,
+                        bottom = if (index >= games.size - 1) 16.dp else 0.dp,
+                        start = 16.dp,
+                        end = 16.dp
+                    )
+                    .clip(RoundedCornerShape(16.dp))
+                    .shadow(8.dp)
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .background(MaterialTheme.colors.secondary)
+                    .rippleClickable { onClickGame(state.data.game) },
+                state = state,
+                color = MaterialTheme.colors.primary,
+                expandable = true,
+                showLoginDialog = showLoginDialog,
+                showBetDialog = showBetDialog,
+            )
+        }
     }
 }
 

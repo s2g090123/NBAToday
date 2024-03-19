@@ -1,7 +1,7 @@
 package com.jiachian.nbatoday.repository.game
 
+import com.jiachian.nbatoday.common.Response
 import com.jiachian.nbatoday.models.local.game.GameAndBets
-import com.jiachian.nbatoday.models.local.score.BoxScore
 import com.jiachian.nbatoday.models.local.score.BoxScoreAndGame
 import com.jiachian.nbatoday.repository.BaseRepository
 import kotlinx.coroutines.flow.Flow
@@ -15,7 +15,7 @@ abstract class GameRepository : BaseRepository() {
      *
      * @param gameId The ID of the game for which the box score is inserted.
      */
-    abstract suspend fun addBoxScore(gameId: String): BoxScore?
+    abstract suspend fun addBoxScore(gameId: String): Response<Unit>
 
     /**
      * Retrieves a flow of games and associated bets that occurred within a specified time range.

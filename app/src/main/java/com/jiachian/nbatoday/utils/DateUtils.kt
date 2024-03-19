@@ -29,9 +29,13 @@ object DateUtils {
      */
     fun getCalendar(): Calendar {
         return Calendar.getInstance().apply {
-            timeZone = TimeZone.getTimeZone("EST")
-            time = Date()
+            reset()
         }
+    }
+
+    fun Calendar.reset() {
+        timeZone = TimeZone.getTimeZone("EST")
+        time = Date()
     }
 
     fun formatScoreboardGameDate(year: Int, month: Int, day: Int): String {

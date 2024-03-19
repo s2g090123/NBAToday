@@ -53,7 +53,7 @@ class GameDaoTest : BaseAndroidTest() {
 
     @Test
     fun gameDao_getGamesAndBets() = launch {
-        dao.insertGames(listOf(GameGenerator.getFinal()))
+        dao.addGames(listOf(GameGenerator.getFinal()))
         dao.getGamesAndBets().collectOnce(this) {
             it.assertIs(listOf(GameAndBetsGenerator.getFinal(false)))
         }
@@ -61,7 +61,7 @@ class GameDaoTest : BaseAndroidTest() {
 
     @Test
     fun gameDao_getGamesAndBets_withBets() = launch {
-        dao.insertGames(listOf(GameGenerator.getFinal()))
+        dao.addGames(listOf(GameGenerator.getFinal()))
         database.getBetDao().addBet(BetGenerator.getFinal())
         dao.getGamesAndBets().collectOnce(this) {
             it.assertIs(listOf(GameAndBetsGenerator.getFinal(true)))
@@ -182,7 +182,7 @@ class GameDaoTest : BaseAndroidTest() {
     }
 
     private suspend fun insertGames() {
-        dao.insertGames(
+        dao.addGames(
             listOf(
                 GameGenerator.getFinal(),
                 GameGenerator.getPlaying(),
