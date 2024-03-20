@@ -1,35 +1,55 @@
 package com.jiachian.nbatoday.compose.screen.account
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.jiachian.nbatoday.common.Resource
+import com.jiachian.nbatoday.compose.screen.account.event.LoginEvent
+import com.jiachian.nbatoday.compose.screen.account.state.LoginState
+import com.jiachian.nbatoday.compose.screen.account.state.MutableLoginState
 import com.jiachian.nbatoday.usecase.user.UserUseCase
+import kotlinx.coroutines.launch
 
 class LoginDialogViewModel(
     private val userUseCase: UserUseCase
 ) : ViewModel() {
-    private val accountImp = mutableStateOf("")
-    val account: State<String> = accountImp
+    private val stateImp = MutableLoginState()
+    val state: LoginState = stateImp
 
-    private val passwordImp = mutableStateOf("")
-    val password: State<String> = passwordImp
-
-    val valid = derivedStateOf { account.value.isNotBlank() && password.value.isNotBlank() }
-
-    fun updateAccount(account: String) {
-        accountImp.value = account
+    fun onEvent(event: LoginEvent) {
+        when (event) {
+            LoginEvent.Login -> login()
+            LoginEvent.Register -> register()
+            is LoginEvent.TextAccount -> stateImp.account = event.account
+            is LoginEvent.TextPassword -> stateImp.password = event.password
+            LoginEvent.ErrorSeen -> stateImp.error = null
+        }
     }
 
-    fun updatePassword(password: String) {
-        passwordImp.value = password
+    private fun login() {
+        viewModelScope.launch {
+            when (val resource = userUseCase.userLogin(state.account, state.password)) {
+                is Resource.Error -> {
+                    stateImp.error = resource.message
+                }
+                is Resource.Loading -> Unit
+                is Resource.Success -> {
+                    stateImp.isLogin = true
+                }
+            }
+        }
     }
 
-    suspend fun login() {
-        userUseCase.userLogin(account.value, password.value)
-    }
-
-    suspend fun register() {
-        userUseCase.userRegister(account.value, password.value)
+    private fun register() {
+        viewModelScope.launch {
+            when (val resource = userUseCase.userRegister(state.account, state.password)) {
+                is Resource.Error -> {
+                    stateImp.error = resource.message
+                }
+                is Resource.Loading -> Unit
+                is Resource.Success -> {
+                    stateImp.isLogin = true
+                }
+            }
+        }
     }
 }

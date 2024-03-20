@@ -1,5 +1,6 @@
 package com.jiachian.nbatoday.compose.screen.account
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -15,14 +16,18 @@ import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -33,18 +38,29 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.flowWithLifecycle
 import com.jiachian.nbatoday.R
+import com.jiachian.nbatoday.compose.screen.account.event.LoginEvent
 import com.jiachian.nbatoday.testing.testtag.UserTestTag
 import com.jiachian.nbatoday.utils.color
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.filter
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun LoginDialog(
     viewModel: LoginDialogViewModel = koinViewModel(),
-    dismiss: () -> Unit
+    onDismiss: () -> Unit
 ) {
-    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val lifecycle = LocalLifecycleOwner.current.lifecycle
+    val state = viewModel.state
+    val dismiss by rememberUpdatedState(onDismiss)
+    val isValid by remember {
+        derivedStateOf {
+            state.account.isNotBlank() && state.password.isNotBlank()
+        }
+    }
     Column(
         modifier = Modifier
             .testTag(UserTestTag.LoginDialog)
@@ -56,30 +72,35 @@ fun LoginDialog(
         LoginTextFiled(
             modifier = Modifier.padding(top = 24.dp, start = 16.dp, end = 16.dp),
             password = false,
-            value = viewModel.account.value,
-            onValueChanged = viewModel::updateAccount
+            value = state.account,
+            onValueChanged = { viewModel.onEvent(LoginEvent.TextAccount(it)) }
         )
         LoginTextFiled(
             modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
             password = true,
-            value = viewModel.password.value,
-            onValueChanged = viewModel::updatePassword
+            value = state.password,
+            onValueChanged = { viewModel.onEvent(LoginEvent.TextPassword(it)) }
         )
         BottomButtons(
-            enabled = viewModel.valid.value,
-            onRegister = {
-                coroutineScope.launch {
-                    viewModel.register()
-                    dismiss()
-                }
-            },
-            onLogin = {
-                coroutineScope.launch {
-                    viewModel.login()
-                    dismiss()
-                }
-            }
+            enabled = isValid,
+            onRegister = { viewModel.onEvent(LoginEvent.Register) },
+            onLogin = { viewModel.onEvent(LoginEvent.Login) }
         )
+    }
+    LaunchedEffect(state.isLogin, lifecycle) {
+        snapshotFlow { state.isLogin }
+            .filter { it }
+            .flowWithLifecycle(lifecycle)
+            .collect { dismiss() }
+    }
+    LaunchedEffect(state.error, lifecycle) {
+        snapshotFlow { state.error }
+            .filter { it != null }
+            .flowWithLifecycle(lifecycle)
+            .collectLatest {
+                Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+                viewModel.onEvent(LoginEvent.ErrorSeen)
+            }
     }
 }
 

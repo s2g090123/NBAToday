@@ -1,5 +1,6 @@
 package com.jiachian.nbatoday.repository.user
 
+import com.jiachian.nbatoday.common.Response
 import com.jiachian.nbatoday.datasource.remote.user.UserRemoteSource
 import com.jiachian.nbatoday.datastore.BaseDataStore
 import com.jiachian.nbatoday.models.local.user.User
@@ -13,19 +14,20 @@ class NBAUserRepository(
 ) : UserRepository() {
     override val user: Flow<User?> = dataStore.user
 
-    override suspend fun login(account: String, password: String) {
-        loading {
-            userRemoteSource
-                .login(account, password)
-                .takeIf { !it.isError() }
-                ?.body()
-                ?.toUser()
-                ?.takeIf { user -> user.available }
-                ?.also { user ->
-                    dataStore.updateUser(user)
-                }
-                ?: onError()
-        }
+    override suspend fun login(account: String, password: String): Response<User> {
+        return userRemoteSource
+            .login(account, password)
+            .takeIf { !it.isError() }
+            ?.body()
+            ?.toUser()
+            ?.takeIf { user -> user.available }
+            ?.also { user ->
+                dataStore.updateUser(user)
+            }
+            ?.let {
+                Response.Success(it)
+            }
+            ?: Response.Error(null)
     }
 
     override suspend fun logout() {
@@ -34,19 +36,20 @@ class NBAUserRepository(
         }
     }
 
-    override suspend fun register(account: String, password: String) {
-        loading {
-            userRemoteSource
-                .register(account, password)
-                .takeIf { !it.isError() }
-                ?.body()
-                ?.toUser()
-                ?.takeIf { user -> user.available }
-                ?.also { user ->
-                    dataStore.updateUser(user)
-                }
-                ?: onError()
-        }
+    override suspend fun register(account: String, password: String): Response<User> {
+        return userRemoteSource
+            .register(account, password)
+            .takeIf { !it.isError() }
+            ?.body()
+            ?.toUser()
+            ?.takeIf { user -> user.available }
+            ?.also { user ->
+                dataStore.updateUser(user)
+            }
+            ?.let {
+                Response.Success(it)
+            }
+            ?: Response.Error(null)
     }
 
     override suspend fun updatePoints(points: Long) {

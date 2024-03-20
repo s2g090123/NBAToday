@@ -37,7 +37,7 @@ class LoginDialogTest : BaseAndroidTest() {
                     password = password
                 )
             },
-            dismiss = { dialogDismissed = true }
+            onDismiss = { dialogDismissed = true }
         )
     }
 

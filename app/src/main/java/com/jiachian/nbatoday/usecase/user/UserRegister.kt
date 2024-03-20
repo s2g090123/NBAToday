@@ -1,17 +1,23 @@
 package com.jiachian.nbatoday.usecase.user
 
+import com.jiachian.nbatoday.common.Resource
+import com.jiachian.nbatoday.common.Response
+import com.jiachian.nbatoday.models.local.user.User
 import com.jiachian.nbatoday.repository.user.UserRepository
 
 class UserRegister(
     private val repository: UserRepository
 ) {
-    suspend operator fun invoke(account: String, password: String) {
+    suspend operator fun invoke(account: String, password: String): Resource<User> {
         if (account.isBlank()) {
-            throw Exception("Account is empty.")
+            return Resource.Error("Account is empty.")
         }
         if (password.isBlank()) {
-            throw Exception("Password is empty.")
+            return Resource.Error("Password is empty.")
         }
-        repository.register(account, password)
+        return when (val response = repository.register(account, password)) {
+            is Response.Error -> Resource.Error("Login failed.")
+            is Response.Success -> Resource.Success(response.data)
+        }
     }
 }

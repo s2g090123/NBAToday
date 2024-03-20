@@ -1,5 +1,6 @@
 package com.jiachian.nbatoday.repository.user
 
+import com.jiachian.nbatoday.common.Response
 import com.jiachian.nbatoday.models.local.user.User
 import com.jiachian.nbatoday.repository.BaseRepository
 import kotlinx.coroutines.flow.Flow
@@ -19,7 +20,7 @@ abstract class UserRepository : BaseRepository() {
      * @param account The user account for login.
      * @param password The password associated with the account.
      */
-    abstract suspend fun login(account: String, password: String)
+    abstract suspend fun login(account: String, password: String): Response<User>
 
     /**
      * Performs a user logout operation.
@@ -32,7 +33,7 @@ abstract class UserRepository : BaseRepository() {
      * @param account The user account for registration.
      * @param password The password associated with the account.
      */
-    abstract suspend fun register(account: String, password: String)
+    abstract suspend fun register(account: String, password: String): Response<User>
 
     /**
      * Updates the points for the currently logged-in user.
