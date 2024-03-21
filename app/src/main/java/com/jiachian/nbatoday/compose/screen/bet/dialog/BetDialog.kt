@@ -17,10 +17,11 @@ import androidx.compose.material.AlertDialog
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -34,14 +35,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.Transparency25
+import com.jiachian.nbatoday.compose.screen.bet.dialog.event.BetDialogDataEvent
+import com.jiachian.nbatoday.compose.screen.bet.dialog.event.BetDialogUIEvent
+import com.jiachian.nbatoday.compose.screen.bet.dialog.state.BetDialogState
 import com.jiachian.nbatoday.compose.widget.CustomOutlinedTextField
-import com.jiachian.nbatoday.compose.widget.NullCheckScreen
+import com.jiachian.nbatoday.compose.widget.LoadingScreen
 import com.jiachian.nbatoday.compose.widget.TeamLogoImage
 import com.jiachian.nbatoday.models.local.game.GameTeam
 import com.jiachian.nbatoday.testing.testtag.BetTestTag
 import com.jiachian.nbatoday.utils.getOrZero
 import com.jiachian.nbatoday.utils.rippleClickable
-import kotlinx.coroutines.launch
+import com.jiachian.nbatoday.utils.showToast
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -49,49 +53,71 @@ fun BetDialog(
     viewModel: BetDialogViewModel = koinViewModel(),
     onDismiss: () -> Unit
 ) {
-    val state = viewModel.state.value
-    val coroutineScope = rememberCoroutineScope()
-    NullCheckScreen(
-        data = state.game,
-        ifNull = {
-            Box(modifier = Modifier.size(300.dp, 280.dp))
-        },
-    ) { game ->
-        Column(
-            modifier = Modifier
-                .testTag(BetTestTag.BetDialog)
-                .clip(RoundedCornerShape(8.dp))
-                .background(MaterialTheme.colors.secondary),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            BetDialogDetail(
-                userPoints = state.userPoints,
-                homePoints = viewModel.homePoints.value,
-                awayPoints = viewModel.awayPoints.value,
-                home = game.homeTeam,
-                away = game.awayTeam,
-                updateHome = viewModel::updateHomePoints,
-                updateAway = viewModel::updateAwayPoints
-            )
-            BetDialogConfirmButton(
-                modifier = Modifier
-                    .align(Alignment.End)
-                    .padding(top = 8.dp, end = 8.dp),
-                enabled = viewModel.valid.value,
-                onConfirm = { viewModel.updateWarning(true) }
-            )
-        }
-    }
-    if (viewModel.warning.value) {
+    val context = LocalContext.current
+    val state = viewModel.state
+    BetDialogContent(
+        state = state,
+        onEvent = { viewModel.onEvent(it) }
+    )
+    if (state.warning) {
         BetWarningDialog(
-            onConfirm = {
-                coroutineScope.launch {
-                    viewModel.bet()
+            onConfirm = { viewModel.onEvent(BetDialogUIEvent.Bet) },
+            onDismiss = { viewModel.onEvent(BetDialogUIEvent.CancelConfirm) }
+        )
+    }
+    LaunchedEffect(state.event, viewModel) {
+        state.event?.let { event ->
+            when (event) {
+                BetDialogDataEvent.Done -> onDismiss()
+                is BetDialogDataEvent.Error -> {
+                    showToast(context, event.error.message)
                     onDismiss()
                 }
-            },
-            onDismiss = { viewModel.updateWarning(false) }
-        )
+            }
+            viewModel.onEvent(BetDialogUIEvent.EventReceived)
+        }
+    }
+}
+
+@Composable
+private fun BetDialogContent(
+    state: BetDialogState,
+    onEvent: (BetDialogUIEvent) -> Unit,
+) {
+    Box(
+        modifier = Modifier
+            .size(300.dp, 280.dp)
+            .clip(RoundedCornerShape(8.dp))
+            .background(MaterialTheme.colors.secondary),
+        contentAlignment = Alignment.Center
+    ) {
+        if (state.loading) {
+            LoadingScreen(color = MaterialTheme.colors.primary)
+        } else {
+            state.game?.let { game ->
+                Column(
+                    modifier = Modifier.testTag(BetTestTag.BetDialog),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    BetDialogDetail(
+                        userPoints = state.userPoints,
+                        homePoints = state.homePoints,
+                        awayPoints = state.awayPoints,
+                        home = game.game.homeTeam,
+                        away = game.game.awayTeam,
+                        updateHome = { onEvent(BetDialogUIEvent.TextHomePoints(it)) },
+                        updateAway = { onEvent(BetDialogUIEvent.TextAwayPoints(it)) }
+                    )
+                    BetDialogConfirmButton(
+                        modifier = Modifier
+                            .align(Alignment.End)
+                            .padding(top = 8.dp, end = 8.dp),
+                        enabled = state.valid,
+                        onConfirm = { onEvent(BetDialogUIEvent.Confirm) }
+                    )
+                }
+            }
+        }
     }
 }
 

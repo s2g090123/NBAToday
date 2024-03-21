@@ -2,7 +2,7 @@ package com.jiachian.nbatoday.compose.screen.account
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jiachian.nbatoday.common.Resource
+import com.jiachian.nbatoday.common.Resource2
 import com.jiachian.nbatoday.compose.screen.account.event.LoginEvent
 import com.jiachian.nbatoday.compose.screen.account.state.LoginState
 import com.jiachian.nbatoday.compose.screen.account.state.MutableLoginState
@@ -28,11 +28,11 @@ class LoginDialogViewModel(
     private fun login() {
         viewModelScope.launch {
             when (val resource = userUseCase.userLogin(state.account, state.password)) {
-                is Resource.Error -> {
+                is Resource2.Error -> {
                     stateImp.error = resource.message
                 }
-                is Resource.Loading -> Unit
-                is Resource.Success -> {
+                is Resource2.Loading -> Unit
+                is Resource2.Success -> {
                     stateImp.isLogin = true
                 }
             }
@@ -42,11 +42,11 @@ class LoginDialogViewModel(
     private fun register() {
         viewModelScope.launch {
             when (val resource = userUseCase.userRegister(state.account, state.password)) {
-                is Resource.Error -> {
+                is Resource2.Error -> {
                     stateImp.error = resource.message
                 }
-                is Resource.Loading -> Unit
-                is Resource.Success -> {
+                is Resource2.Loading -> Unit
+                is Resource2.Success -> {
                     stateImp.isLogin = true
                 }
             }

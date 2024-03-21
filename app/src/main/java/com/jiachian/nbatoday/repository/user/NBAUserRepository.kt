@@ -52,21 +52,22 @@ class NBAUserRepository(
             ?: Response.Error(null)
     }
 
-    override suspend fun updatePoints(points: Long) {
-        loading {
-            user
-                .firstOrNull()
-                ?.takeIf { user -> user.available }
-                ?.let { user ->
-                    userRemoteSource
-                        .updatePoints(user.account, points, user.token)
-                        .takeIf { !it.isError() }
-                        ?.also {
-                            dataStore.updateUser(user.copy(points = points))
-                        }
-                }
-                ?: onError()
-        }
+    override suspend fun updatePoints(points: Long): Response<Unit> {
+        return user
+            .firstOrNull()
+            ?.takeIf { user -> user.available }
+            ?.let { user ->
+                userRemoteSource
+                    .updatePoints(user.account, points, user.token)
+                    .takeIf { !it.isError() }
+                    ?.also {
+                        dataStore.updateUser(user.copy(points = points))
+                    }
+            }
+            ?.let {
+                Response.Success(Unit)
+            }
+            ?: Response.Error()
     }
 
     override suspend fun addPoints(points: Long) {

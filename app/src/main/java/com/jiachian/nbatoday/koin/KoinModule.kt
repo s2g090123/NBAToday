@@ -89,7 +89,7 @@ val module = module {
     // use case
     factory { BetUseCase(get(), get(), get()) }
     factory { GetBetGames(get()) }
-    factory { AddBet(get()) }
+    factory { AddBet(get(), get()) }
     factory { DeleteBet(get()) }
     factory { UserUseCase(get(), get(), get(), get()) }
     factory { GetUser(get()) }

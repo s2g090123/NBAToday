@@ -40,7 +40,7 @@ abstract class UserRepository : BaseRepository() {
      *
      * @param points The new points value.
      */
-    abstract suspend fun updatePoints(points: Long)
+    abstract suspend fun updatePoints(points: Long): Response<Unit>
 
     /**
      * Adds points to the currently logged-in user.

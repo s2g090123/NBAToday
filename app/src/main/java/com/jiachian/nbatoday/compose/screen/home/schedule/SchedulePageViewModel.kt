@@ -3,7 +3,7 @@ package com.jiachian.nbatoday.compose.screen.home.schedule
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jiachian.nbatoday.ScheduleDateRange
-import com.jiachian.nbatoday.common.Resource
+import com.jiachian.nbatoday.common.Resource2
 import com.jiachian.nbatoday.compose.screen.card.GameCardState
 import com.jiachian.nbatoday.compose.screen.home.schedule.event.ScheduleEvent
 import com.jiachian.nbatoday.compose.screen.home.schedule.event.ScheduleUiEvent
@@ -94,12 +94,12 @@ class SchedulePageViewModel(
                 selectedDate.day
             ).collect {
                 when (it) {
-                    is Resource.Error -> {
+                    is Resource2.Error -> {
                         eventImp.emit(ScheduleUiEvent.Toast(it.message))
                         stateImp.value = state.value.copy(refreshing = false)
                     }
-                    is Resource.Loading -> stateImp.value = state.value.copy(refreshing = true)
-                    is Resource.Success -> {
+                    is Resource2.Loading -> stateImp.value = state.value.copy(refreshing = true)
+                    is Resource2.Success -> {
                         stateImp.value = state.value.copy(refreshing = false)
                     }
                 }

@@ -1,7 +1,9 @@
 package com.jiachian.nbatoday.common
 
-sealed class Resource<T> {
-    data class Success<T>(val data: T) : Resource<T>()
-    data class Error<T>(val message: String? = null) : Resource<T>()
-    class Loading<T> : Resource<T>()
+private typealias RootError = Error
+
+sealed interface Resource<D, E : RootError> {
+    class Success<D, E : RootError>(val data: D) : Resource<D, E>
+    data class Error<D, E : RootError>(val error: E) : Resource<D, E>
+    class Loading<D, E : RootError> : Resource<D, E>
 }
