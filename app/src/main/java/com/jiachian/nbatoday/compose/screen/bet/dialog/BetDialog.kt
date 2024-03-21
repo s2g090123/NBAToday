@@ -18,6 +18,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -55,6 +57,7 @@ fun BetDialog(
 ) {
     val context = LocalContext.current
     val state = viewModel.state
+    val dismiss by rememberUpdatedState(onDismiss)
     BetDialogContent(
         state = state,
         onEvent = { viewModel.onEvent(it) }
@@ -68,10 +71,10 @@ fun BetDialog(
     LaunchedEffect(state.event, viewModel) {
         state.event?.let { event ->
             when (event) {
-                BetDialogDataEvent.Done -> onDismiss()
+                BetDialogDataEvent.Done -> dismiss()
                 is BetDialogDataEvent.Error -> {
                     showToast(context, event.error.message)
-                    onDismiss()
+                    dismiss()
                 }
             }
             viewModel.onEvent(BetDialogUIEvent.EventReceived)
