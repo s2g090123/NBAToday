@@ -1,6 +1,5 @@
 package com.jiachian.nbatoday.compose.screen.account
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -21,13 +20,11 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -38,13 +35,12 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.flowWithLifecycle
 import com.jiachian.nbatoday.R
-import com.jiachian.nbatoday.compose.screen.account.event.LoginEvent
+import com.jiachian.nbatoday.compose.screen.account.event.LoginDataEvent
+import com.jiachian.nbatoday.compose.screen.account.event.LoginUIEvent
 import com.jiachian.nbatoday.testing.testtag.UserTestTag
 import com.jiachian.nbatoday.utils.color
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.filter
+import com.jiachian.nbatoday.utils.showToast
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -53,14 +49,8 @@ fun LoginDialog(
     onDismiss: () -> Unit
 ) {
     val context = LocalContext.current
-    val lifecycle = LocalLifecycleOwner.current.lifecycle
     val state = viewModel.state
     val dismiss by rememberUpdatedState(onDismiss)
-    val isValid by remember {
-        derivedStateOf {
-            state.account.isNotBlank() && state.password.isNotBlank()
-        }
-    }
     Column(
         modifier = Modifier
             .testTag(UserTestTag.LoginDialog)
@@ -73,34 +63,28 @@ fun LoginDialog(
             modifier = Modifier.padding(top = 24.dp, start = 16.dp, end = 16.dp),
             password = false,
             value = state.account,
-            onValueChanged = { viewModel.onEvent(LoginEvent.TextAccount(it)) }
+            onValueChanged = { viewModel.onEvent(LoginUIEvent.TextAccount(it)) }
         )
         LoginTextFiled(
             modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
             password = true,
             value = state.password,
-            onValueChanged = { viewModel.onEvent(LoginEvent.TextPassword(it)) }
+            onValueChanged = { viewModel.onEvent(LoginUIEvent.TextPassword(it)) }
         )
         BottomButtons(
-            enabled = isValid,
-            onRegister = { viewModel.onEvent(LoginEvent.Register) },
-            onLogin = { viewModel.onEvent(LoginEvent.Login) }
+            enabled = state.valid,
+            onRegister = { viewModel.onEvent(LoginUIEvent.Register) },
+            onLogin = { viewModel.onEvent(LoginUIEvent.Login) }
         )
     }
-    LaunchedEffect(state.isLogin, lifecycle) {
-        snapshotFlow { state.isLogin }
-            .filter { it }
-            .flowWithLifecycle(lifecycle)
-            .collect { dismiss() }
-    }
-    LaunchedEffect(state.error, lifecycle) {
-        snapshotFlow { state.error }
-            .filter { it != null }
-            .flowWithLifecycle(lifecycle)
-            .collectLatest {
-                Toast.makeText(context, it, Toast.LENGTH_LONG).show()
-                viewModel.onEvent(LoginEvent.ErrorSeen)
+    LaunchedEffect(state.event, viewModel) {
+        state.event?.let { event ->
+            when (event) {
+                is LoginDataEvent.Error -> showToast(context, event.error.message)
+                LoginDataEvent.Login -> dismiss()
             }
+            viewModel.onEvent(LoginUIEvent.EventReceived)
+        }
     }
 }
 

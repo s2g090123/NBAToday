@@ -2,8 +2,9 @@ package com.jiachian.nbatoday.compose.screen.account
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jiachian.nbatoday.common.Resource2
-import com.jiachian.nbatoday.compose.screen.account.event.LoginEvent
+import com.jiachian.nbatoday.common.Resource
+import com.jiachian.nbatoday.compose.screen.account.event.LoginDataEvent
+import com.jiachian.nbatoday.compose.screen.account.event.LoginUIEvent
 import com.jiachian.nbatoday.compose.screen.account.state.LoginState
 import com.jiachian.nbatoday.compose.screen.account.state.MutableLoginState
 import com.jiachian.nbatoday.usecase.user.UserUseCase
@@ -15,26 +16,22 @@ class LoginDialogViewModel(
     private val stateImp = MutableLoginState()
     val state: LoginState = stateImp
 
-    fun onEvent(event: LoginEvent) {
+    fun onEvent(event: LoginUIEvent) {
         when (event) {
-            LoginEvent.Login -> login()
-            LoginEvent.Register -> register()
-            is LoginEvent.TextAccount -> stateImp.account = event.account
-            is LoginEvent.TextPassword -> stateImp.password = event.password
-            LoginEvent.ErrorSeen -> stateImp.error = null
+            LoginUIEvent.Login -> login()
+            LoginUIEvent.Register -> register()
+            is LoginUIEvent.TextAccount -> stateImp.account = event.account
+            is LoginUIEvent.TextPassword -> stateImp.password = event.password
+            LoginUIEvent.EventReceived -> stateImp.event = null
         }
     }
 
     private fun login() {
         viewModelScope.launch {
             when (val resource = userUseCase.userLogin(state.account, state.password)) {
-                is Resource2.Error -> {
-                    stateImp.error = resource.message
-                }
-                is Resource2.Loading -> Unit
-                is Resource2.Success -> {
-                    stateImp.isLogin = true
-                }
+                is Resource.Loading -> Unit
+                is Resource.Error -> stateImp.event = LoginDataEvent.Error(resource.error.asLoginDialogError())
+                is Resource.Success -> stateImp.event = LoginDataEvent.Login
             }
         }
     }
@@ -42,13 +39,9 @@ class LoginDialogViewModel(
     private fun register() {
         viewModelScope.launch {
             when (val resource = userUseCase.userRegister(state.account, state.password)) {
-                is Resource2.Error -> {
-                    stateImp.error = resource.message
-                }
-                is Resource2.Loading -> Unit
-                is Resource2.Success -> {
-                    stateImp.isLogin = true
-                }
+                is Resource.Loading -> Unit
+                is Resource.Error -> stateImp.event = LoginDataEvent.Error(resource.error.asLoginDialogError())
+                is Resource.Success -> stateImp.event = LoginDataEvent.Login
             }
         }
     }
