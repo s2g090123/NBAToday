@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jiachian.nbatoday.ScheduleDateRange
 import com.jiachian.nbatoday.common.Resource2
-import com.jiachian.nbatoday.compose.screen.card.GameCardState
+import com.jiachian.nbatoday.compose.screen.card.models.GameCardData
 import com.jiachian.nbatoday.compose.screen.home.schedule.event.ScheduleEvent
 import com.jiachian.nbatoday.compose.screen.home.schedule.event.ScheduleUiEvent
 import com.jiachian.nbatoday.compose.screen.home.schedule.models.DateData
@@ -122,7 +122,7 @@ class SchedulePageViewModel(
         }
     }
 
-    private fun Calendar.groupGames(games: List<GameAndBets>): Map<DateData, List<GameCardState>> {
+    private fun Calendar.groupGames(games: List<GameAndBets>): Map<DateData, List<GameCardData>> {
         reset()
         return games
             .toGameCardState(user)

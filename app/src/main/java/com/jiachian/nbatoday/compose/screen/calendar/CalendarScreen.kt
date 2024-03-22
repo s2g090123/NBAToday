@@ -42,7 +42,7 @@ import com.jiachian.nbatoday.compose.screen.calendar.models.CalendarDate
 import com.jiachian.nbatoday.compose.screen.calendar.state.CalendarDatesState
 import com.jiachian.nbatoday.compose.screen.calendar.state.CalendarTopBarState
 import com.jiachian.nbatoday.compose.screen.card.GameCard
-import com.jiachian.nbatoday.compose.screen.card.GameCardState
+import com.jiachian.nbatoday.compose.screen.card.models.GameCardData
 import com.jiachian.nbatoday.compose.widget.IconButton
 import com.jiachian.nbatoday.compose.widget.LoadingScreen
 import com.jiachian.nbatoday.models.local.game.Game
@@ -213,7 +213,7 @@ private fun LazyGridScope.dateBoxes(
 }
 
 private fun LazyGridScope.calendarGameCards(
-    games: List<GameCardState>,
+    games: List<GameCardData>,
     onClickGame: (game: Game) -> Unit,
     showLoginDialog: () -> Unit,
     showBetDialog: (String) -> Unit,

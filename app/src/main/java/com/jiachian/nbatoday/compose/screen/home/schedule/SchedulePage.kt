@@ -37,7 +37,7 @@ import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.screen.card.GameCard
-import com.jiachian.nbatoday.compose.screen.card.GameCardState
+import com.jiachian.nbatoday.compose.screen.card.models.GameCardData
 import com.jiachian.nbatoday.compose.screen.home.schedule.event.ScheduleEvent
 import com.jiachian.nbatoday.compose.screen.home.schedule.event.ScheduleUiEvent
 import com.jiachian.nbatoday.compose.screen.home.schedule.models.DateData
@@ -124,7 +124,7 @@ fun SchedulePage(
 
 @Composable
 private fun ScheduleContent(
-    games: List<GameCardState>,
+    games: List<GameCardData>,
     onClickGame: (game: Game) -> Unit,
     onClickCalendar: () -> Unit,
     showLoginDialog: () -> Unit,

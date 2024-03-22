@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
@@ -30,6 +31,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.R
+import com.jiachian.nbatoday.compose.screen.card.event.GameCardEvent
+import com.jiachian.nbatoday.compose.screen.card.models.GameCardData
 import com.jiachian.nbatoday.compose.widget.AnimatedExpand
 import com.jiachian.nbatoday.compose.widget.IconButton
 import com.jiachian.nbatoday.compose.widget.TeamLogoImage
@@ -44,14 +47,15 @@ import kotlinx.coroutines.launch
 @Composable
 fun GameCard(
     modifier: Modifier = Modifier,
-    state: GameCardState,
+    state: GameCardData,
     color: Color = MaterialTheme.colors.secondary,
     expandable: Boolean = false,
     showLoginDialog: () -> Unit,
     showBetDialog: (String) -> Unit,
 ) {
-    val available by state.betAvailable.collectAsState(true)
+    val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
+    val betAvailable by state.betAvailable.collectAsState(true)
     val showLogin by rememberUpdatedState(showLoginDialog)
     val showBet by rememberUpdatedState(showBetDialog)
     Column(
@@ -62,7 +66,7 @@ fun GameCard(
             modifier = Modifier.fillMaxWidth(),
             gameAndBets = state.data,
             textColor = color,
-            betAvailable = available,
+            betAvailable = betAvailable,
             onBet = {
                 coroutineScope.launch {
                     state.attemptBet()
@@ -71,7 +75,7 @@ fun GameCard(
         )
         if (expandable) {
             GameExpandedContent(
-                expanded = state.expanded.value,
+                expanded = state.expanded,
                 gamePlayed = state.data.game.gamePlayed,
                 homePlayer = state.homeLeader,
                 awayPlayer = state.awayLeader,
@@ -85,7 +89,7 @@ fun GameCard(
             when (it) {
                 is GameCardEvent.Bet -> showBet(it.gameId)
                 GameCardEvent.Login -> showLogin()
-                GameCardEvent.Unavailable -> showToast(R.string.bet_toast_already_bet_before)
+                GameCardEvent.Unavailable -> showToast(context, R.string.bet_toast_already_bet_before)
             }
         }
     }

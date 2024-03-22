@@ -1,7 +1,9 @@
-package com.jiachian.nbatoday.compose.screen.card
+package com.jiachian.nbatoday.compose.screen.card.models
 
-import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import com.jiachian.nbatoday.compose.screen.card.event.GameCardEvent
 import com.jiachian.nbatoday.models.local.game.GameAndBets
 import com.jiachian.nbatoday.models.local.game.GameLeaders
 import com.jiachian.nbatoday.models.local.user.User
@@ -11,12 +13,12 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 
-data class GameCardState(
+data class GameCardData(
     val data: GameAndBets,
     val user: Flow<User?>,
 ) {
-    private val expandedImp = mutableStateOf(false)
-    val expanded: State<Boolean> = expandedImp
+    var expanded by mutableStateOf(false)
+        private set
 
     val betAvailable = user.map { user ->
         user ?: return@map !data.game.gamePlayed
@@ -31,7 +33,7 @@ data class GameCardState(
     val event = eventImp.asSharedFlow()
 
     fun updateExpanded(expanded: Boolean) {
-        expandedImp.value = expanded
+        this.expanded = expanded
     }
 
     suspend fun attemptBet() {

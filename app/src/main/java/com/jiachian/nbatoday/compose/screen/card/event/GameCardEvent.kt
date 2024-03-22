@@ -1,4 +1,4 @@
-package com.jiachian.nbatoday.compose.screen.card
+package com.jiachian.nbatoday.compose.screen.card.event
 
 sealed class GameCardEvent {
     object Login : GameCardEvent()
