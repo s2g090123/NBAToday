@@ -6,6 +6,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import com.jiachian.nbatoday.compose.screen.bet.models.Lose
 import com.jiachian.nbatoday.compose.screen.bet.models.TurnTableState
+import com.jiachian.nbatoday.compose.screen.bet.models.TurnTableStatus
 import com.jiachian.nbatoday.compose.screen.bet.models.Win
 import com.jiachian.nbatoday.testing.testtag.BetTestTag
 
@@ -16,29 +17,29 @@ fun TurnTableScreen(
     startTurnTable: (Win, Lose) -> Unit,
     close: () -> Unit,
 ) {
-    when (state) {
-        TurnTableState.Idle -> {}
-        is TurnTableState.Asking -> {
+    when (val status = state.status) {
+        TurnTableStatus.Idle -> Unit
+        is TurnTableStatus.Asking -> {
             AskTurnTableDialog(
-                win = state.win,
-                lose = state.lose,
-                onContinue = { openTurnTable(state.win, state.lose) },
+                win = status.win,
+                lose = status.lose,
+                onContinue = { openTurnTable(status.win, status.lose) },
                 onCancel = close
             )
         }
-        is TurnTableState.TurnTable -> {
+        is TurnTableStatus.TurnTable -> {
             BetTurnTable(
                 modifier = Modifier
                     .testTag(BetTestTag.BetTurnTable)
                     .fillMaxSize(),
-                state = state,
-                onStart = { startTurnTable(state.win, state.lose) },
+                status = status,
+                onStart = { startTurnTable(status.win, status.lose) },
                 onClose = close
             )
         }
-        is TurnTableState.Rewarded -> {
+        is TurnTableStatus.Rewarded -> {
             TurnTableRewardedDialog(
-                points = state.points,
+                points = status.points,
                 onDismiss = close
             )
         }

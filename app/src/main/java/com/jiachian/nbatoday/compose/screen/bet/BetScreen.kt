@@ -13,15 +13,20 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.R
+import com.jiachian.nbatoday.compose.screen.bet.event.BetDataEvent
+import com.jiachian.nbatoday.compose.screen.bet.event.BetUIEvent
+import com.jiachian.nbatoday.compose.screen.bet.models.BetState
 import com.jiachian.nbatoday.compose.screen.bet.turntable.TurnTableScreen
 import com.jiachian.nbatoday.compose.screen.bet.widgets.BetCard
 import com.jiachian.nbatoday.compose.widget.IconButton
@@ -30,6 +35,7 @@ import com.jiachian.nbatoday.models.local.game.GameStatus
 import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.testing.testtag.BetTestTag
 import com.jiachian.nbatoday.utils.rippleClickable
+import com.jiachian.nbatoday.utils.showToast
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -37,7 +43,8 @@ fun BetScreen(
     viewModel: BetViewModel = koinViewModel(),
     navigationController: NavigationController,
 ) {
-    val state = viewModel.state.value
+    val context = LocalContext.current
+    val state = viewModel.state
     Scaffold(
         backgroundColor = MaterialTheme.colors.primary,
         topBar = {
@@ -51,42 +58,64 @@ fun BetScreen(
             )
         }
     ) { padding ->
-        Box(
+        BetContent(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding),
-        ) {
+            state = state,
+            onClickItem = {
+                when (it.game.gameStatus) {
+                    GameStatus.COMING_SOON -> {
+                        navigationController.navigateToTeam(it.game.homeTeamId)
+                    }
+                    GameStatus.PLAYING -> {
+                        navigationController.navigateToBoxScore(it.game.gameId)
+                    }
+                    GameStatus.FINAL -> viewModel.onEvent(BetUIEvent.Settle(it))
+                }
+            }
+        )
+        TurnTableScreen(
+            state = viewModel.turnTableState,
+            openTurnTable = { win, lose ->
+                viewModel.onEvent(BetUIEvent.OpenTurnTable(win, lose))
+            },
+            startTurnTable = { win, lose ->
+                viewModel.onEvent(BetUIEvent.StartTurnTable(win, lose))
+            },
+            close = { viewModel.onEvent(BetUIEvent.CloseTurnTable) },
+        )
+    }
+    LaunchedEffect(state.event) {
+        state.event?.let { event ->
+            when (event) {
+                is BetDataEvent.Error -> {
+                    showToast(context, event.error.message)
+                }
+            }
+            viewModel.onEvent(BetUIEvent.EventReceived)
+        }
+    }
+}
+
+@Composable
+private fun BetContent(
+    modifier: Modifier = Modifier,
+    state: BetState,
+    onClickItem: (BetAndGame) -> Unit
+) {
+    Box(modifier = modifier) {
+        if (state.loading) {
+            CircularProgressIndicator(
+                modifier = Modifier.align(Alignment.Center),
+                color = MaterialTheme.colors.secondary,
+            )
+        } else {
             BetList(
                 modifier = Modifier.fillMaxSize(),
-                list = state.data,
-                onClickItem = {
-                    when (it.game.gameStatus) {
-                        GameStatus.COMING_SOON -> {
-                            navigationController.navigateToTeam(it.game.homeTeamId)
-                        }
-                        GameStatus.PLAYING -> {
-                            navigationController.navigateToBoxScore(it.game.gameId)
-                        }
-                        GameStatus.FINAL -> viewModel.onEvent(BetEvent.Settle(it))
-                    }
-                }
+                list = state.games,
+                onClickItem = onClickItem
             )
-            TurnTableScreen(
-                state = viewModel.turnTableState,
-                openTurnTable = { win, lose ->
-                    viewModel.onEvent(BetEvent.OpenTurnTable(win, lose))
-                },
-                startTurnTable = { win, lose ->
-                    viewModel.onEvent(BetEvent.StartTurnTable(win, lose))
-                },
-                close = { viewModel.onEvent(BetEvent.CloseTurnTable) },
-            )
-            if (state.loading) {
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center),
-                    color = MaterialTheme.colors.secondary,
-                )
-            }
         }
     }
 }

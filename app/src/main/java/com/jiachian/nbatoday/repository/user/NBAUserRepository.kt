@@ -1,22 +1,25 @@
 package com.jiachian.nbatoday.repository.user
 
 import com.jiachian.nbatoday.common.Response
-import com.jiachian.nbatoday.datasource.remote.user.UserRemoteSource
 import com.jiachian.nbatoday.datastore.BaseDataStore
 import com.jiachian.nbatoday.models.local.user.User
+import com.jiachian.nbatoday.models.remote.user.LoginBody
+import com.jiachian.nbatoday.models.remote.user.UpdatePointsBody
 import com.jiachian.nbatoday.models.remote.user.extensions.toUser
+import com.jiachian.nbatoday.service.UserService
+import com.jiachian.nbatoday.utils.isError
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 
 class NBAUserRepository(
-    private val userRemoteSource: UserRemoteSource,
+    private val service: UserService,
     private val dataStore: BaseDataStore,
-) : UserRepository() {
+) : UserRepository {
     override val user: Flow<User?> = dataStore.user
 
     override suspend fun login(account: String, password: String): Response<User> {
-        return userRemoteSource
-            .login(account, password)
+        return service
+            .login(LoginBody(account, password))
             .takeIf { !it.isError() }
             ?.body()
             ?.toUser()
@@ -31,14 +34,12 @@ class NBAUserRepository(
     }
 
     override suspend fun logout() {
-        loading {
-            dataStore.updateUser(null)
-        }
+        dataStore.updateUser(null)
     }
 
     override suspend fun register(account: String, password: String): Response<User> {
-        return userRemoteSource
-            .register(account, password)
+        return service
+            .register(LoginBody(account, password))
             .takeIf { !it.isError() }
             ?.body()
             ?.toUser()
@@ -57,8 +58,8 @@ class NBAUserRepository(
             .firstOrNull()
             ?.takeIf { user -> user.available }
             ?.let { user ->
-                userRemoteSource
-                    .updatePoints(user.account, points, user.token)
+                service
+                    .updatePoints(UpdatePointsBody(user.account, user.token, points))
                     .takeIf { !it.isError() }
                     ?.also {
                         dataStore.updateUser(user.copy(points = points))
@@ -70,21 +71,22 @@ class NBAUserRepository(
             ?: Response.Error()
     }
 
-    override suspend fun addPoints(points: Long) {
-        loading {
-            user
-                .firstOrNull()
-                ?.takeIf { user -> user.available }
-                ?.let { user ->
-                    val updatedPoints = user.points + points
-                    userRemoteSource
-                        .updatePoints(user.account, updatedPoints, user.token)
-                        .takeIf { !it.isError() }
-                        ?.also {
-                            dataStore.updateUser(user.copy(points = updatedPoints))
-                        }
-                }
-                ?: onError()
-        }
+    override suspend fun addPoints(points: Long): Response<Unit> {
+        return user
+            .firstOrNull()
+            ?.takeIf { user -> user.available }
+            ?.let { user ->
+                val updatedPoints = user.points + points
+                service
+                    .updatePoints(UpdatePointsBody(user.account, user.token, updatedPoints))
+                    .takeIf { !it.isError() }
+                    ?.also {
+                        dataStore.updateUser(user.copy(points = updatedPoints))
+                    }
+            }
+            ?.let {
+                Response.Success(Unit)
+            }
+            ?: Response.Error()
     }
 }

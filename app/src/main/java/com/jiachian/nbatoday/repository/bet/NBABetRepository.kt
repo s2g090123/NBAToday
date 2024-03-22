@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 
 class NBABetRepository(
     private val dao: BetDao,
-) : BetRepository() {
+) : BetRepository {
     override suspend fun addBet(bet: Bet) {
         dao.addBet(bet)
     }
@@ -16,5 +16,7 @@ class NBABetRepository(
         dao.deleteBet(bet)
     }
 
-    override fun getBetGames(account: String): Flow<List<BetAndGame>> = dao.getBetsAndGames(account)
+    override fun getBetGames(account: String): Flow<List<BetAndGame>> {
+        return dao.getBetsAndGames(account)
+    }
 }

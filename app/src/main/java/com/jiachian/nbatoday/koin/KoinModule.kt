@@ -76,6 +76,7 @@ val module = module {
     factory { (get() as NBADatabase).getPlayerDao() }
     factory { (get() as NBADatabase).getBetDao() }
     factory { RemoteSource.createService(GameService::class.java) }
+    factory { RemoteSource.createService(UserService::class.java) }
     factory { NBAGameRemoteSource(RemoteSource.createService(GameService::class.java)) as GameRemoteSource }
     factory { NBATeamRemoteSource(RemoteSource.createService(TeamService::class.java)) as TeamRemoteSource }
     factory { NBAPlayerRemoteSource(RemoteSource.createService(PlayerService::class.java)) as PlayerRemoteSource }

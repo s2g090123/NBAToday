@@ -15,14 +15,6 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface BetDao {
     /**
-     * Retrieves a flow of all bets and associated games from the database.
-     *
-     * @return Flow emitting a list of [BetAndGame].
-     */
-    @Query("SELECT * FROM bet")
-    fun getBetsAndGames(): Flow<List<BetAndGame>>
-
-    /**
      * Retrieves a flow of bets and associated games for a specific account from the database.
      *
      * @param account The account for which to retrieve bets.

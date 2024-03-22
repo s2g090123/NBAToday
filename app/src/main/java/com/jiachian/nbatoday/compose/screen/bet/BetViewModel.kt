@@ -1,14 +1,17 @@
 package com.jiachian.nbatoday.compose.screen.bet
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jiachian.nbatoday.common.Resource
+import com.jiachian.nbatoday.compose.screen.bet.event.BetDataEvent
+import com.jiachian.nbatoday.compose.screen.bet.event.BetUIEvent
 import com.jiachian.nbatoday.compose.screen.bet.models.BetState
 import com.jiachian.nbatoday.compose.screen.bet.models.Lose
+import com.jiachian.nbatoday.compose.screen.bet.models.MutableBetState
+import com.jiachian.nbatoday.compose.screen.bet.models.MutableTurnTableState
 import com.jiachian.nbatoday.compose.screen.bet.models.TurnTableState
+import com.jiachian.nbatoday.compose.screen.bet.models.TurnTableStatus
 import com.jiachian.nbatoday.compose.screen.bet.models.Win
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
@@ -21,6 +24,7 @@ import kotlin.math.abs
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 
 private const val RandomBound = 359
@@ -52,11 +56,11 @@ class BetViewModel(
     private val account: String = savedStateHandle[MainRoute.Bet.param] ?: throw Exception("account is null.")
 
     // state representing the stats of [BetAndGame]
-    private val stateImp = mutableStateOf(BetState(loading = true))
-    val state: State<BetState> = stateImp
+    private val stateImp = MutableBetState()
+    val state: BetState = stateImp
 
-    private var turnTableStateImp = mutableStateOf<TurnTableState>(TurnTableState.Idle)
-    val turnTableState by turnTableStateImp
+    private var turnTableStateImp = MutableTurnTableState()
+    val turnTableState: TurnTableState = turnTableStateImp
 
     init {
         getBetGames()
@@ -65,18 +69,21 @@ class BetViewModel(
     private fun getBetGames() {
         betUseCase
             .getBetGames(account)
+            .onStart { stateImp.loading = true }
             .onEach {
-                stateImp.value = BetState(data = it, loading = false)
+                stateImp.games = it
+                stateImp.loading = false
             }
             .launchIn(viewModelScope)
     }
 
-    fun onEvent(event: BetEvent) {
+    fun onEvent(event: BetUIEvent) {
         when (event) {
-            BetEvent.CloseTurnTable -> turnTableStateImp.value = TurnTableState.Idle
-            is BetEvent.OpenTurnTable -> turnTableStateImp.value = TurnTableState.TurnTable(event.win, event.lose)
-            is BetEvent.Settle -> settleBet(event.betGame)
-            is BetEvent.StartTurnTable -> startTurnTable(event.win, event.lose)
+            BetUIEvent.CloseTurnTable -> turnTableStateImp.status = TurnTableStatus.Idle
+            BetUIEvent.EventReceived -> stateImp.event = null
+            is BetUIEvent.OpenTurnTable -> turnTableStateImp.status = TurnTableStatus.TurnTable(event.win, event.lose)
+            is BetUIEvent.Settle -> settleBet(event.betGame)
+            is BetUIEvent.StartTurnTable -> startTurnTable(event.win, event.lose)
         }
     }
 
@@ -84,9 +91,13 @@ class BetViewModel(
         viewModelScope.launch {
             val win = betAndGame.getWonPoints() * 2
             val lose = betAndGame.getLostPoints()
-            userUseCase.addPoints(win)
+            val resource = userUseCase.addPoints(win)
+            if (resource is Resource.Error) {
+                stateImp.event = BetDataEvent.Error(resource.error.asBetError())
+                return@launch
+            }
             betUseCase.deleteBet(betAndGame.bet)
-            turnTableStateImp.value = TurnTableState.Asking(Win(win), Lose(lose))
+            turnTableStateImp.status = TurnTableStatus.Asking(Win(win), Lose(lose))
         }
     }
 
@@ -96,32 +107,37 @@ class BetViewModel(
      * @param win The win points configuration for the turn table.
      * @param lose The lose points configuration for the turn table.
      */
-    fun startTurnTable(win: Win, lose: Lose) {
-        val state = turnTableState
-        if (state !is TurnTableState.TurnTable) {
-            turnTableStateImp.value = TurnTableState.Idle
+    private fun startTurnTable(win: Win, lose: Lose) {
+        val status = turnTableStateImp.status
+        if (status !is TurnTableStatus.TurnTable) {
+            turnTableStateImp.status = TurnTableStatus.Idle
             return
         }
         viewModelScope.launch(dispatcherProvider.default) {
-            state.running = true
+            status.running = true
             val rewardedAngle = Random().nextInt(RandomBound).toFloat()
             val rewardedPoints = getRewardedPoints(win, lose, rewardedAngle)
-            userUseCase.addPoints(rewardedPoints)
+            val resource = userUseCase.addPoints(rewardedPoints)
+            if (resource is Resource.Error) {
+                stateImp.event = BetDataEvent.Error(resource.error.asBetError())
+                turnTableStateImp.status = TurnTableStatus.Idle
+                return@launch
+            }
             var remainingTime = TurnTableDuration
-            while (remainingTime > 0 || state.angle != rewardedAngle) {
-                val currentAngle = state.angle
+            while (remainingTime > 0 || status.angle != rewardedAngle) {
+                val currentAngle = status.angle
                 val step = getTurnTableStep(remainingTime, currentAngle, rewardedAngle)
                 val delay = if (remainingTime <= 0) MaxDelay else MinDelay
                 delay(delay.toLong())
                 remainingTime -= delay
-                state.angle = if (remainingTime <= 0 && currentAngle < rewardedAngle) {
+                status.angle = if (remainingTime <= 0 && currentAngle < rewardedAngle) {
                     (currentAngle + step).coerceAtMost(rewardedAngle)
                 } else {
                     (currentAngle + step) % AnglePerRound
                 }
             }
             delay(ReceivedDelay)
-            turnTableStateImp.value = TurnTableState.Rewarded(rewardedPoints)
+            turnTableStateImp.status = TurnTableStatus.Rewarded(rewardedPoints)
         }
     }
 
