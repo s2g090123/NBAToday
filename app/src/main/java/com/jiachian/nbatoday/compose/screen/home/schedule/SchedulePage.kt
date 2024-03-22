@@ -21,13 +21,12 @@ import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -38,8 +37,8 @@ import com.google.accompanist.pager.rememberPagerState
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.screen.card.GameCard
 import com.jiachian.nbatoday.compose.screen.card.models.GameCardData
-import com.jiachian.nbatoday.compose.screen.home.schedule.event.ScheduleEvent
-import com.jiachian.nbatoday.compose.screen.home.schedule.event.ScheduleUiEvent
+import com.jiachian.nbatoday.compose.screen.home.schedule.event.ScheduleDataEvent
+import com.jiachian.nbatoday.compose.screen.home.schedule.event.ScheduleUIEvent
 import com.jiachian.nbatoday.compose.screen.home.schedule.models.DateData
 import com.jiachian.nbatoday.compose.widget.IconButton
 import com.jiachian.nbatoday.compose.widget.LoadingScreen
@@ -47,7 +46,7 @@ import com.jiachian.nbatoday.models.local.game.Game
 import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.testing.testtag.ScheduleTestTag
 import com.jiachian.nbatoday.utils.rippleClickable
-import com.jiachian.nbatoday.utils.showErrorToast
+import com.jiachian.nbatoday.utils.showToast
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
@@ -57,7 +56,8 @@ fun SchedulePage(
     viewModel: SchedulePageViewModel = koinViewModel(),
     navigationController: NavigationController,
 ) {
-    val state by viewModel.state.collectAsState()
+    val context = LocalContext.current
+    val state = viewModel.state
     Box(modifier = Modifier.fillMaxSize()) {
         if (state.loading) {
             LoadingScreen(
@@ -65,10 +65,10 @@ fun SchedulePage(
                 color = MaterialTheme.colors.primary,
             )
         } else {
-            val pagerState = rememberPagerState(initialPage = viewModel.dates.size / 2)
+            val pagerState = rememberPagerState(initialPage = state.dates.size / 2)
             val pullRefreshState = rememberPullRefreshState(
                 refreshing = state.refreshing,
-                onRefresh = { viewModel.onEvent(ScheduleEvent.Refresh) }
+                onRefresh = { viewModel.onEvent(ScheduleUIEvent.Refresh) }
             )
             Box(
                 modifier = Modifier
@@ -81,11 +81,11 @@ fun SchedulePage(
                         .padding(top = 48.dp)
                         .fillMaxSize(),
                     state = pagerState,
-                    count = viewModel.dates.size
+                    count = state.dates.size
                 ) { page ->
-                    val date = viewModel.dates[page]
+                    val date = state.dates[page]
                     ScheduleContent(
-                        games = state.getGames(viewModel.dates[page]),
+                        games = state.getGames(date),
                         onClickGame = {
                             if (it.gamePlayed) {
                                 navigationController.navigateToBoxScore(it.gameId)
@@ -107,17 +107,18 @@ fun SchedulePage(
                 )
                 ScheduleTabRow(
                     pagerState = pagerState,
-                    dates = viewModel.dates,
-                    selectDate = { viewModel.onEvent(ScheduleEvent.Select(it)) }
+                    dates = state.dates,
+                    selectDate = { viewModel.onEvent(ScheduleUIEvent.SelectDate(it)) }
                 )
             }
         }
     }
-    LaunchedEffect(Unit) {
-        viewModel.event.collect {
-            when (it) {
-                is ScheduleUiEvent.Toast -> showErrorToast()
+    LaunchedEffect(state.event) {
+        state.event?.let { event ->
+            when (event) {
+                is ScheduleDataEvent.Error -> showToast(context, event.error.message)
             }
+            viewModel.onEvent(ScheduleUIEvent.EventReceived)
         }
     }
 }

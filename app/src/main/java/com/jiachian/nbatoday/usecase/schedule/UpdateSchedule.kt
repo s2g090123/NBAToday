@@ -1,10 +1,15 @@
 package com.jiachian.nbatoday.usecase.schedule
 
-import com.jiachian.nbatoday.common.Resource2
+import com.jiachian.nbatoday.common.Error
+import com.jiachian.nbatoday.common.Resource
 import com.jiachian.nbatoday.common.Response
 import com.jiachian.nbatoday.repository.schedule.ScheduleRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+
+enum class UpdateScheduleError : Error {
+    UPDATE_FAILED
+}
 
 class UpdateSchedule(
     private val repository: ScheduleRepository
@@ -13,16 +18,16 @@ class UpdateSchedule(
         year: Int = -1,
         month: Int = -1,
         day: Int = -1,
-    ): Flow<Resource2<Unit>> = flow {
-        emit(Resource2.Loading())
+    ): Flow<Resource<Unit, UpdateScheduleError>> = flow {
+        emit(Resource.Loading())
         val response = if (year == -1 || month == -1 || day == -1) {
             repository.updateSchedule()
         } else {
             repository.updateSchedule(year, month, day)
         }
         when (response) {
-            is Response.Error -> emit(Resource2.Error(response.message))
-            is Response.Success -> emit(Resource2.Success(response.data))
+            is Response.Error -> emit(Resource.Error(UpdateScheduleError.UPDATE_FAILED))
+            is Response.Success -> emit(Resource.Success(response.data))
         }
     }
 }

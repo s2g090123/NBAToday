@@ -1,13 +1,15 @@
 package com.jiachian.nbatoday.compose.screen.home.schedule
 
+import androidx.compose.runtime.snapshots.Snapshot
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jiachian.nbatoday.ScheduleDateRange
-import com.jiachian.nbatoday.common.Resource2
+import com.jiachian.nbatoday.common.Resource
 import com.jiachian.nbatoday.compose.screen.card.models.GameCardData
-import com.jiachian.nbatoday.compose.screen.home.schedule.event.ScheduleEvent
-import com.jiachian.nbatoday.compose.screen.home.schedule.event.ScheduleUiEvent
+import com.jiachian.nbatoday.compose.screen.home.schedule.event.ScheduleDataEvent
+import com.jiachian.nbatoday.compose.screen.home.schedule.event.ScheduleUIEvent
 import com.jiachian.nbatoday.compose.screen.home.schedule.models.DateData
+import com.jiachian.nbatoday.compose.screen.home.schedule.state.MutableScheduleState
 import com.jiachian.nbatoday.compose.screen.home.schedule.state.ScheduleState
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
@@ -19,10 +21,7 @@ import com.jiachian.nbatoday.usecase.user.UserUseCase
 import com.jiachian.nbatoday.utils.DateUtils
 import com.jiachian.nbatoday.utils.DateUtils.reset
 import java.util.Calendar
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -34,59 +33,56 @@ class SchedulePageViewModel(
 ) : ViewModel() {
     private val user = userUseCase.getUser()
 
-    private val stateImp = MutableStateFlow(ScheduleState())
-    val state = stateImp.asStateFlow()
-
-    private val datesImp = mutableListOf<DateData>()
-    val dates: List<DateData> = datesImp
+    private val stateImp = MutableScheduleState()
+    val state: ScheduleState = stateImp
 
     private var selectedDate = DateData()
-
-    private val eventImp = MutableSharedFlow<ScheduleUiEvent>()
-    val event = eventImp.asSharedFlow()
 
     private val cal = DateUtils.getCalendar()
 
     init {
-        viewModelScope.launch {
-            stateImp.value = state.value.copy(loading = true)
-            withContext(dispatcherProvider.default) {
-                datesImp.addAll(cal.getDates())
-                selectedDate = dates[dates.size / 2]
+        collectGames()
+    }
+
+    private fun collectGames() {
+        stateImp.loading = true
+        viewModelScope.launch(dispatcherProvider.default) {
+            val dates = cal.getDates()
+            withContext(dispatcherProvider.main) {
+                stateImp.dates = dates
             }
-            collectGames()
+            selectedDate = dates[dates.size / 2]
+            cal.apply {
+                reset()
+                set(Calendar.HOUR, 0)
+                set(Calendar.MINUTE, 0)
+                set(Calendar.MILLISECOND, 0)
+            }
+            gameUseCase.getGamesDuring(
+                cal.timeInMillis - DateUtils.DAY_IN_MILLIS * (ScheduleDateRange + 1),
+                cal.timeInMillis + DateUtils.DAY_IN_MILLIS * (ScheduleDateRange)
+            ).collectLatest { games ->
+                val groupedGames = cal.groupGames(games)
+                Snapshot.withMutableSnapshot {
+                    stateImp.let { state ->
+                        state.games = groupedGames
+                        state.loading = false
+                    }
+                }
+            }
         }
     }
 
-    private suspend fun collectGames() {
-        cal.apply {
-            reset()
-            set(Calendar.HOUR, 0)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.MILLISECOND, 0)
-        }
-        gameUseCase.getGamesDuring(
-            cal.timeInMillis - DateUtils.DAY_IN_MILLIS * (ScheduleDateRange + 1),
-            cal.timeInMillis + DateUtils.DAY_IN_MILLIS * (ScheduleDateRange)
-        ).collect { games ->
-            val groupedGames = cal.groupGames(games)
-            stateImp.value = state.value.copy(
-                games = groupedGames,
-                loading = false,
-                refreshing = false
-            )
-        }
-    }
-
-    fun onEvent(event: ScheduleEvent) {
+    fun onEvent(event: ScheduleUIEvent) {
         when (event) {
-            ScheduleEvent.Refresh -> refreshSchedule()
-            is ScheduleEvent.Select -> selectedDate = event.date
+            ScheduleUIEvent.Refresh -> refreshSchedule()
+            ScheduleUIEvent.EventReceived -> stateImp.event = null
+            is ScheduleUIEvent.SelectDate -> selectedDate = event.date
         }
     }
 
     private fun refreshSchedule() {
-        if (state.value.refreshing) return
+        if (state.refreshing) return
         viewModelScope.launch {
             scheduleUseCase.updateSchedule(
                 selectedDate.year,
@@ -94,22 +90,17 @@ class SchedulePageViewModel(
                 selectedDate.day
             ).collect {
                 when (it) {
-                    is Resource2.Error -> {
-                        eventImp.emit(ScheduleUiEvent.Toast(it.message))
-                        stateImp.value = state.value.copy(refreshing = false)
-                    }
-                    is Resource2.Loading -> stateImp.value = state.value.copy(refreshing = true)
-                    is Resource2.Success -> {
-                        stateImp.value = state.value.copy(refreshing = false)
-                    }
+                    is Resource.Error -> stateImp.event = ScheduleDataEvent.Error(it.error.asScheduleError())
+                    is Resource.Loading -> stateImp.refreshing = true
+                    is Resource.Success -> stateImp.refreshing = false
                 }
             }
         }
     }
 
     private fun Calendar.getDates(): List<DateData> {
-        val range = ScheduleDateRange * 2 + 1
         reset()
+        val range = ScheduleDateRange * 2 + 1
         add(Calendar.DAY_OF_MONTH, -ScheduleDateRange)
         return List(range) {
             DateData(
