@@ -45,7 +45,7 @@ class NBATeamRepositoryTest : BaseUnitTest() {
 
     @Test
     fun `insertTeams() expects teams are inserted`() = launch {
-        repository.insertTeams()
+        repository.addTeams()
         dataHolder
             .teams
             .value
@@ -62,7 +62,7 @@ class NBATeamRepositoryTest : BaseUnitTest() {
         coEvery {
             remoteSource.getTeam()
         } returns Response.error(404, "".toResponseBody())
-        repository.insertTeams()
+        repository.addTeams()
         dataHolder
             .teams
             .value
@@ -71,7 +71,7 @@ class NBATeamRepositoryTest : BaseUnitTest() {
 
     @Test
     fun `insertTeam(home) expects the team is inserted`() = launch {
-        repository.insertTeam(HomeTeamId)
+        repository.addTeam(HomeTeamId)
         dataHolder
             .teams
             .value
@@ -83,7 +83,7 @@ class NBATeamRepositoryTest : BaseUnitTest() {
         coEvery {
             remoteSource.getTeam(any())
         } returns Response.error(404, "".toResponseBody())
-        repository.insertTeam(HomeTeamId)
+        repository.addTeam(HomeTeamId)
         dataHolder
             .teams
             .value

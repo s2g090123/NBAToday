@@ -44,7 +44,7 @@ class SplashViewModel(
                 scheduleRepository.updateSchedule()
             }
             val updateTeamsJob = launch {
-                teamRepository.insertTeams()
+                teamRepository.addTeams()
             }
             val updateColorsJob = launch {
                 dataStore

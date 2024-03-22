@@ -70,7 +70,7 @@ class TeamViewModelTest : BaseUnitTest() {
     @Before
     fun setup() = runTest {
         repositoryProvider.schedule.updateSchedule()
-        repositoryProvider.team.insertTeams()
+        repositoryProvider.team.addTeams()
         viewModel = TeamViewModel(
             savedStateHandle = SavedStateHandle(mapOf(MainRoute.Team.param to "${team.teamId}")),
             teamRepository = get(),

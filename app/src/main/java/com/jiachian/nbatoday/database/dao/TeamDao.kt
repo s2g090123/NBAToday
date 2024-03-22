@@ -156,7 +156,7 @@ interface TeamDao {
      * @param stats The list of [Team] objects to be inserted.
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertTeams(stats: List<Team>)
+    suspend fun addTeams(stats: List<Team>)
 
     /**
      * Inserts a list of team players into the database, replacing any existing entries on conflict.
@@ -164,7 +164,7 @@ interface TeamDao {
      * @param stats The list of [TeamPlayer] objects to be inserted.
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertTeamPlayers(stats: List<TeamPlayer>)
+    suspend fun addTeamPlayers(stats: List<TeamPlayer>)
 
     /**
      * Deletes team players associated with a specific team and player IDs from the database.

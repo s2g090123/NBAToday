@@ -34,7 +34,7 @@ class TestScheduleRepository(
                         gameLocalSource.updateGames(gameUpdateData)
                     }
                     updateLastAccessedDay()
-                    teamRepository.insertTeams()
+                    teamRepository.addTeams()
                 }
             }
     }

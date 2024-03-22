@@ -54,7 +54,7 @@ class TeamScreenTest : BaseAndroidTest() {
     fun setup() = runTest {
         navigateToGame = null
         navigateToBack = null
-        repositoryProvider.team.insertTeams()
+        repositoryProvider.team.addTeams()
         repositoryProvider.schedule.updateSchedule()
         viewModel = spyk(
             TeamViewModel(

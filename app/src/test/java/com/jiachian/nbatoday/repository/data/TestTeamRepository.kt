@@ -17,7 +17,7 @@ class TestTeamRepository(
     private val teamLocalSource: TeamLocalSource,
     private val teamRemoteSource: TeamRemoteSource,
 ) : TeamRepository() {
-    override suspend fun insertTeams() {
+    override suspend fun addTeams() {
         teamRemoteSource
             .getTeam()
             .takeIf { !it.isError() }
@@ -28,7 +28,7 @@ class TestTeamRepository(
             }
     }
 
-    override suspend fun insertTeam(teamId: Int) {
+    override suspend fun addTeam(teamId: Int) {
         teamRemoteSource
             .getTeam(teamId)
             .takeIf { !it.isError() }

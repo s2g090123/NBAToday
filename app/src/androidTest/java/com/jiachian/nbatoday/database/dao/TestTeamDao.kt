@@ -45,7 +45,7 @@ class TestTeamDao(
         }
     }
 
-    override suspend fun insertTeams(stats: List<Team>) {
+    override suspend fun addTeams(stats: List<Team>) {
         dataHolder.teams.value = dataHolder.teams.value.toMutableList().apply {
             val id = stats.map { it.teamId }
             removeIf { team -> team.teamId in id }
@@ -53,7 +53,7 @@ class TestTeamDao(
         }
     }
 
-    override suspend fun insertTeamPlayers(stats: List<TeamPlayer>) {
+    override suspend fun addTeamPlayers(stats: List<TeamPlayer>) {
         dataHolder.teamPlayers.value = dataHolder.teamPlayers.value.toMutableList().apply {
             val id = stats.map { it.playerId }
             removeIf { player -> player.playerId in id }

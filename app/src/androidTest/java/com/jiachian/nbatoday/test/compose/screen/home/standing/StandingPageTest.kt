@@ -41,7 +41,7 @@ class StandingPageTest : BaseAndroidTest() {
 
     @Before
     fun setup() = runTest {
-        repositoryProvider.team.insertTeams()
+        repositoryProvider.team.addTeams()
         viewModel = StandingPageViewModel(
             repository = repositoryProvider.team,
             dispatcherProvider = dispatcherProvider,

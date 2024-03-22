@@ -1,5 +1,6 @@
 package com.jiachian.nbatoday.repository.team
 
+import com.jiachian.nbatoday.common.Response
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.models.local.team.Team
 import com.jiachian.nbatoday.models.local.team.TeamAndPlayers
@@ -14,14 +15,14 @@ abstract class TeamRepository : BaseRepository() {
     /**
      * Inserts all teams.
      */
-    abstract suspend fun insertTeams()
+    abstract suspend fun addTeams(): Response<Unit>
 
     /**
      * Inserts a specific team.
      *
      * @param teamId The ID of the team to be inserted.
      */
-    abstract suspend fun insertTeam(teamId: Int)
+    abstract suspend fun addTeam(teamId: Int)
 
     /**
      * Updates the players of a specific team.

@@ -42,7 +42,7 @@ class StandingPageViewModelTest : BaseUnitTest() {
 
     @Before
     fun setup() = runTest {
-        repositoryProvider.team.insertTeams()
+        repositoryProvider.team.addTeams()
         viewModel = StandingPageViewModel(
             repository = get(),
             dispatcherProvider = dispatcherProvider,

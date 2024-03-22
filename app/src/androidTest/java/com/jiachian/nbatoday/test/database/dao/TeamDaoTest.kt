@@ -40,7 +40,7 @@ class TeamDaoTest : BaseAndroidTest() {
 
     @Test
     fun teamDao_getTeams() = launch {
-        dao.insertTeams(listOf(TeamGenerator.getHome()))
+        dao.addTeams(listOf(TeamGenerator.getHome()))
         dao.getTeams(NBATeam.Conference.EAST).collectOnce(this) {
             it.assertIs(listOf(TeamGenerator.getHome()))
         }
@@ -48,8 +48,8 @@ class TeamDaoTest : BaseAndroidTest() {
 
     @Test
     fun teamDao_getTeamAndPlayers() = launch {
-        dao.insertTeams(listOf(TeamGenerator.getHome()))
-        dao.insertTeamPlayers(listOf(TeamPlayerGenerator.getHome()))
+        dao.addTeams(listOf(TeamGenerator.getHome()))
+        dao.addTeamPlayers(listOf(TeamPlayerGenerator.getHome()))
         dao.getTeamAndPlayers(HomeTeamId).collectOnce(this) {
             it.assertIs(
                 TeamAndPlayers(
@@ -87,7 +87,7 @@ class TeamDaoTest : BaseAndroidTest() {
     @Test
     fun teamDao_deleteTeamPlayers() = launch {
         insertTeams()
-        dao.insertTeamPlayers(listOf(TeamPlayerGenerator.getHome()))
+        dao.addTeamPlayers(listOf(TeamPlayerGenerator.getHome()))
         dao.deleteTeamPlayers(HomeTeamId, listOf(HomePlayerId))
         dao.getTeamAndPlayers(HomeTeamId).collectOnce(this) {
             it.assertIs(
@@ -116,7 +116,7 @@ class TeamDaoTest : BaseAndroidTest() {
     }
 
     private suspend fun insertTeams() {
-        dao.insertTeams(
+        dao.addTeams(
             listOf(
                 TeamGenerator.getHome(),
                 TeamGenerator.getAway()

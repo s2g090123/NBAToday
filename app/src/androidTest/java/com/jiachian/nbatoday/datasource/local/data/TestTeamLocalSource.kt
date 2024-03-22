@@ -40,11 +40,11 @@ class TestTeamLocalSource(
     }
 
     override suspend fun insertTeams(teams: List<Team>) {
-        teamDao.insertTeams(teams)
+        teamDao.addTeams(teams)
     }
 
     override suspend fun insertTeamPlayers(teamPlayers: List<TeamPlayer>) {
-        teamDao.insertTeamPlayers(teamPlayers)
+        teamDao.addTeamPlayers(teamPlayers)
     }
 
     override suspend fun deleteTeamPlayers(teamId: Int, playerIds: List<Int>) {

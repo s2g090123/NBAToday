@@ -55,7 +55,7 @@ class TeamViewModel(
     // Asynchronous initialization to update teams and team players.
     init {
         viewModelScope.launch(dispatcherProvider.io) {
-            val deferred1 = async { teamRepository.insertTeams() }
+            val deferred1 = async { teamRepository.addTeams() }
             val deferred2 = async { teamRepository.updateTeamPlayers(team.teamId) }
             awaitAll(deferred1, deferred2)
         }
