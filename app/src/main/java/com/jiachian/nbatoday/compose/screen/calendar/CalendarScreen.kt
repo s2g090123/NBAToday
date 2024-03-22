@@ -24,8 +24,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,7 +37,7 @@ import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.DaysPerWeek
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.Transparency25
-import com.jiachian.nbatoday.compose.screen.calendar.event.CalendarEvent
+import com.jiachian.nbatoday.compose.screen.calendar.event.CalendarUIEvent
 import com.jiachian.nbatoday.compose.screen.calendar.models.CalendarDate
 import com.jiachian.nbatoday.compose.screen.calendar.state.CalendarDatesState
 import com.jiachian.nbatoday.compose.screen.calendar.state.CalendarTopBarState
@@ -60,9 +58,9 @@ fun CalendarScreen(
     viewModel: CalendarViewModel = koinViewModel(),
     navigationController: NavigationController,
 ) {
-    val topBarState by viewModel.topBarState.collectAsState()
-    val datesState by viewModel.datesStateFlow.collectAsState()
-    val gamesState by viewModel.gamesState.collectAsState()
+    val topBarState = viewModel.topBarState
+    val datesState = viewModel.datesState
+    val gamesState = viewModel.gamesState
     Scaffold(
         backgroundColor = MaterialTheme.colors.primary,
         topBar = {
@@ -89,7 +87,7 @@ fun CalendarScreen(
             ) {
                 dateBoxes(
                     state = datesState,
-                    selectDate = { viewModel.onEvent(CalendarEvent.SelectDate(it)) }
+                    selectDate = { viewModel.onEvent(CalendarUIEvent.SelectDate(it)) }
                 )
                 if (gamesState.visible) {
                     if (gamesState.loading) {
@@ -125,7 +123,7 @@ fun CalendarScreen(
 private fun CalendarTopBar(
     modifier: Modifier = Modifier,
     state: CalendarTopBarState,
-    onEvent: (CalendarEvent) -> Unit,
+    onEvent: (CalendarUIEvent) -> Unit,
     onClose: () -> Unit
 ) {
     Column(modifier = modifier) {
@@ -163,7 +161,7 @@ private fun CalendarNavigationBar(
     dateString: String,
     hasPrev: Boolean,
     hasNext: Boolean,
-    onEvent: (CalendarEvent) -> Unit,
+    onEvent: (CalendarUIEvent) -> Unit,
 ) {
     Row(
         modifier = modifier,
@@ -174,7 +172,7 @@ private fun CalendarNavigationBar(
             enabled = hasPrev,
             drawableRes = R.drawable.ic_black_left_arrow,
             tint = MaterialTheme.colors.secondaryVariant.copy(if (hasPrev) 1f else Transparency25),
-            onClick = { onEvent(CalendarEvent.PrevMonth) }
+            onClick = { onEvent(CalendarUIEvent.PrevMonth) }
         )
         AnimatedContent(
             modifier = Modifier.weight(1f),
@@ -195,7 +193,7 @@ private fun CalendarNavigationBar(
             enabled = hasNext,
             drawableRes = R.drawable.ic_black_right_arrow,
             tint = MaterialTheme.colors.secondaryVariant.copy(if (hasNext) 1f else Transparency25),
-            onClick = { onEvent(CalendarEvent.NextMonth) }
+            onClick = { onEvent(CalendarUIEvent.NextMonth) }
         )
     }
 }

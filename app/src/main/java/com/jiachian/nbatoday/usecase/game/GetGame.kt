@@ -10,6 +10,6 @@ class GetGame(
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
 ) {
     suspend operator fun invoke(gameId: String) = withContext(dispatcherProvider.io) {
-        repository.getGameAndBet(gameId)
+        repository.getGameAndBets(gameId)
     }
 }

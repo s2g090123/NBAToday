@@ -1,14 +1,18 @@
 package com.jiachian.nbatoday.compose.screen.calendar
 
+import androidx.compose.runtime.snapshots.Snapshot
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jiachian.nbatoday.DaysPerWeek
-import com.jiachian.nbatoday.compose.screen.calendar.event.CalendarEvent
+import com.jiachian.nbatoday.compose.screen.calendar.event.CalendarUIEvent
 import com.jiachian.nbatoday.compose.screen.calendar.models.CalendarDate
 import com.jiachian.nbatoday.compose.screen.calendar.state.CalendarDatesState
 import com.jiachian.nbatoday.compose.screen.calendar.state.CalendarGamesState
 import com.jiachian.nbatoday.compose.screen.calendar.state.CalendarTopBarState
+import com.jiachian.nbatoday.compose.screen.calendar.state.MutableCalendarDatesState
+import com.jiachian.nbatoday.compose.screen.calendar.state.MutableCalendarGamesState
+import com.jiachian.nbatoday.compose.screen.calendar.state.MutableCalendarTopBarState
 import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.models.local.game.GameAndBets
@@ -22,14 +26,13 @@ import java.util.Date
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * ViewModel for handling business logic related to [CalendarScreen].
@@ -48,14 +51,14 @@ class CalendarViewModel(
 
     private val user = userUseCase.getUser()
 
-    private val topBarStateImp = MutableStateFlow(CalendarTopBarState())
-    val topBarState = topBarStateImp.asStateFlow()
+    private val topBarStateImp = MutableCalendarTopBarState()
+    val topBarState: CalendarTopBarState = topBarStateImp
 
-    private val datesStateFlowImp = MutableStateFlow(CalendarDatesState())
-    val datesStateFlow = datesStateFlowImp.asStateFlow()
+    private val datesStateImp = MutableCalendarDatesState()
+    val datesState: CalendarDatesState = datesStateImp
 
-    private val gamesStateImp = MutableStateFlow(CalendarGamesState())
-    val gamesState = gamesStateImp.asStateFlow()
+    private val gamesStateImp = MutableCalendarGamesState()
+    val gamesState: CalendarGamesState = gamesStateImp
 
     private val currentCalendar = DateUtils.getCalendar().let {
         it.timeInMillis = dateTime
@@ -73,10 +76,10 @@ class CalendarViewModel(
     }
 
     private fun collectTopBarState() {
-        viewModelScope.launch {
+        viewModelScope.launch(dispatcherProvider.default) {
             val (firstDate, lastDate) = gameUseCase.getFirstLastGameDate()
             currentCalendar
-                .mapLatest { cal ->
+                .collectLatest { cal ->
                     val (index, dateString) = cal.run {
                         val year = get(Calendar.YEAR)
                         val month = get(Calendar.MONTH)
@@ -91,15 +94,14 @@ class CalendarViewModel(
                         time = lastDate
                         get(Calendar.YEAR) > cal.get(Calendar.YEAR) || get(Calendar.MONTH) > cal.get(Calendar.MONTH)
                     }
-                    CalendarTopBarState(
-                        index = index,
-                        dateString = dateString,
-                        hasPrevious = hasPrev,
-                        hasNext = hasNext
-                    )
-                }
-                .collect {
-                    topBarStateImp.value = it
+                    Snapshot.withMutableSnapshot {
+                        topBarStateImp.let { state ->
+                            state.index = index
+                            state.dateString = dateString
+                            state.hasPrevious = hasPrev
+                            state.hasNext = hasNext
+                        }
+                    }
                 }
         }
     }
@@ -107,25 +109,25 @@ class CalendarViewModel(
     private fun collectDatesState() {
         viewModelScope.launch {
             currentCalendar
-                .flatMapLatest { cal ->
-                    flow {
-                        val year = cal.get(Calendar.YEAR)
-                        val month = cal.get(Calendar.MONTH)
-                        val key = "$year-$month"
-                        val dates = calendarDatesMap.getOrPut(key) {
-                            emit(datesStateFlow.value.copy(loading = true))
-                            getDates(year, month)
+                .collectLatest { cal ->
+                    val year = cal.get(Calendar.YEAR)
+                    val month = cal.get(Calendar.MONTH)
+                    val key = "$year-$month"
+                    val dates = calendarDatesMap.getOrPut(key) {
+                        datesStateImp.loading = true
+                        getDates(year, month)
+                    }
+                    Snapshot.withMutableSnapshot {
+                        datesStateImp.let { state ->
+                            state.calendarDates = dates
+                            state.loading = false
                         }
-                        emit(datesStateFlow.value.copy(calendarDates = dates, loading = false))
-                    }.flowOn(dispatcherProvider.default)
-                }
-                .collect {
-                    datesStateFlowImp.value = it
+                    }
                 }
         }
         viewModelScope.launch {
             selectedDate.collect {
-                datesStateFlowImp.value = datesStateFlow.value.copy(selectedDate = it)
+                datesStateImp.selectedDate = it
             }
         }
     }
@@ -133,20 +135,19 @@ class CalendarViewModel(
     private fun collectGamesState() {
         viewModelScope.launch {
             currentCalendar
-                .mapLatest { cal ->
+                .collectLatest { cal ->
                     val year = cal.get(Calendar.YEAR)
                     val month = cal.get(Calendar.MONTH)
-                    isInCalendar(year, month, selectedDate.value)
-                }
-                .collect {
-                    gamesStateImp.value = gamesState.value.copy(visible = it)
+                    val visible = isInCalendar(year, month, selectedDate.value)
+                    gamesStateImp.visible = visible
                 }
         }
         viewModelScope.launch {
             selectedDate
                 .onEach {
-                    gamesStateImp.value = gamesState.value.copy(loading = true)
+                    gamesStateImp.loading = true
                 }
+                .flowOn(dispatcherProvider.main)
                 .flatMapLatest {
                     getGames(it)
                 }
@@ -155,13 +156,19 @@ class CalendarViewModel(
                 }
                 .flowOn(dispatcherProvider.default)
                 .collect {
-                    gamesStateImp.value = gamesState.value.copy(games = it, loading = false, visible = true)
+                    Snapshot.withMutableSnapshot {
+                        gamesStateImp.let { state ->
+                            state.games = it
+                            state.loading = false
+                            state.visible = true
+                        }
+                    }
                 }
         }
     }
 
-    private fun getDates(year: Int, month: Int): List<CalendarDate> {
-        return DateUtils.getCalendar()
+    private suspend fun getDates(year: Int, month: Int): List<CalendarDate> = withContext(dispatcherProvider.default) {
+        DateUtils.getCalendar()
             .apply {
                 set(year, month, 1, 0, 0, 0)
                 set(Calendar.MILLISECOND, 0)
@@ -204,11 +211,11 @@ class CalendarViewModel(
             }
     }
 
-    fun onEvent(event: CalendarEvent) {
+    fun onEvent(event: CalendarUIEvent) {
         when (event) {
-            CalendarEvent.NextMonth -> nextMonth()
-            CalendarEvent.PrevMonth -> prevMonth()
-            is CalendarEvent.SelectDate -> selectedDate.value = event.date
+            CalendarUIEvent.NextMonth -> nextMonth()
+            CalendarUIEvent.PrevMonth -> prevMonth()
+            is CalendarUIEvent.SelectDate -> selectedDate.value = event.date
         }
     }
 
@@ -216,7 +223,7 @@ class CalendarViewModel(
      * Moves to the next month in the calendar.
      */
     private fun nextMonth() {
-        if (topBarState.value.hasPrevious) {
+        if (topBarState.hasNext) {
             currentCalendar.value = DateUtils.getCalendar().apply {
                 time = currentCalendar.value.time
                 add(Calendar.MONTH, 1)
@@ -228,7 +235,7 @@ class CalendarViewModel(
      * Moves to the previous month in the calendar.
      */
     private fun prevMonth() {
-        if (topBarState.value.hasPrevious) {
+        if (topBarState.hasPrevious) {
             currentCalendar.value = DateUtils.getCalendar().apply {
                 time = currentCalendar.value.time
                 add(Calendar.MONTH, -1)
@@ -236,8 +243,8 @@ class CalendarViewModel(
         }
     }
 
-    private fun isInCalendar(year: Int, month: Int, date: Date): Boolean {
-        return DateUtils.getCalendar().run {
+    private suspend fun isInCalendar(year: Int, month: Int, date: Date): Boolean = withContext(dispatcherProvider.default) {
+        DateUtils.getCalendar().run {
             time = date
             add(Calendar.DATE, -(get(Calendar.DAY_OF_WEEK) - 1))
             if (get(Calendar.YEAR) == year && get(Calendar.MONTH) == month) return@run true

@@ -1,9 +1,20 @@
 package com.jiachian.nbatoday.compose.screen.calendar.state
 
+import androidx.compose.runtime.Stable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import com.jiachian.nbatoday.compose.screen.card.GameCardState
 
-data class CalendarGamesState(
-    val games: List<GameCardState> = emptyList(),
-    val loading: Boolean = false,
-    val visible: Boolean = true,
-)
+@Stable
+interface CalendarGamesState {
+    val games: List<GameCardState>
+    val loading: Boolean
+    val visible: Boolean
+}
+
+class MutableCalendarGamesState : CalendarGamesState {
+    override var games: List<GameCardState> by mutableStateOf(emptyList())
+    override var loading: Boolean by mutableStateOf(false)
+    override var visible: Boolean by mutableStateOf(false)
+}

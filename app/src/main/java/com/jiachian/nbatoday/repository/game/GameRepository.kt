@@ -41,7 +41,7 @@ abstract class GameRepository : BaseRepository() {
      */
     abstract fun getGamesAndBets(): Flow<List<GameAndBets>>
 
-    abstract suspend fun getGameAndBet(gameId: String): GameAndBets
+    abstract suspend fun getGameAndBets(gameId: String): GameAndBets
 
     /**
      * Retrieves a flow of games and associated bets that occurred before a specified date-time for a specific team.

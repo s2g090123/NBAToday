@@ -40,8 +40,8 @@ class NBAGameRepository(
         return gameDao.getGamesAndBets()
     }
 
-    override suspend fun getGameAndBet(gameId: String): GameAndBets {
-        return gameDao.getGameAndBet(gameId)
+    override suspend fun getGameAndBets(gameId: String): GameAndBets {
+        return gameDao.getGameAndBets(gameId)
     }
 
     override fun getGamesAndBetsBefore(teamId: Int, from: Long): Flow<List<GameAndBets>> {
