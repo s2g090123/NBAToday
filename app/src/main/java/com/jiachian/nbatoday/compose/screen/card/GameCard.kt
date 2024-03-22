@@ -47,7 +47,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun GameCard(
     modifier: Modifier = Modifier,
-    state: GameCardData,
+    data: GameCardData,
     color: Color = MaterialTheme.colors.secondary,
     expandable: Boolean = false,
     showLoginDialog: () -> Unit,
@@ -55,7 +55,7 @@ fun GameCard(
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-    val betAvailable by state.betAvailable.collectAsState(true)
+    val betAvailable by data.betAvailable.collectAsState(true)
     val showLogin by rememberUpdatedState(showLoginDialog)
     val showBet by rememberUpdatedState(showBetDialog)
     Column(
@@ -64,28 +64,28 @@ fun GameCard(
     ) {
         GameDetail(
             modifier = Modifier.fillMaxWidth(),
-            gameAndBets = state.data,
+            gameAndBets = data.data,
             textColor = color,
             betAvailable = betAvailable,
             onBet = {
                 coroutineScope.launch {
-                    state.attemptBet()
+                    data.attemptBet()
                 }
             }
         )
         if (expandable) {
             GameExpandedContent(
-                expanded = state.expanded,
-                gamePlayed = state.data.game.gamePlayed,
-                homePlayer = state.homeLeader,
-                awayPlayer = state.awayLeader,
+                expanded = data.expanded,
+                gamePlayed = data.data.game.gamePlayed,
+                homePlayer = data.homeLeader,
+                awayPlayer = data.awayLeader,
                 color = color,
-                updateExpanded = state::updateExpanded,
+                updateExpanded = data::updateExpanded,
             )
         }
     }
-    LaunchedEffect(state) {
-        state.event.collect {
+    LaunchedEffect(data.event) {
+        data.event.collect {
             when (it) {
                 is GameCardEvent.Bet -> showBet(it.gameId)
                 GameCardEvent.Login -> showLogin()

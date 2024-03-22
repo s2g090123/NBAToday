@@ -238,7 +238,7 @@ private fun LazyGridScope.calendarGameCards(
             .background(MaterialTheme.colors.secondary)
             .rippleClickable { onClickGame(game.data.game) }
             .padding(bottom = 8.dp),
-        state = game,
+        data = game,
         expandable = false,
         color = MaterialTheme.colors.primary,
         showLoginDialog = showLoginDialog,

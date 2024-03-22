@@ -71,7 +71,7 @@ fun TeamGamePage(
                             }
                         }
                         .padding(bottom = 8.dp),
-                    state = state,
+                    data = state,
                     expandable = false,
                     color = viewModel.colors.primary,
                     showLoginDialog = showLoginDialog,

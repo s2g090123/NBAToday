@@ -165,7 +165,7 @@ private fun ScheduleContent(
                     .wrapContentHeight()
                     .background(MaterialTheme.colors.secondary)
                     .rippleClickable { onClickGame(state.data.game) },
-                state = state,
+                data = state,
                 color = MaterialTheme.colors.primary,
                 expandable = true,
                 showLoginDialog = showLoginDialog,
