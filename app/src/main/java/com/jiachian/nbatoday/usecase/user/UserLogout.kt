@@ -2,10 +2,10 @@ package com.jiachian.nbatoday.usecase.user
 
 import com.jiachian.nbatoday.repository.user.UserRepository
 
-class ReducePoints(
+class UserLogout(
     private val repository: UserRepository
 ) {
-    suspend operator fun invoke(points: Long) {
-        repository.addPoints(-points)
+    suspend operator fun invoke() {
+        repository.logout()
     }
 }

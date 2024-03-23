@@ -63,8 +63,11 @@ import com.jiachian.nbatoday.usecase.team.AddTeams
 import com.jiachian.nbatoday.usecase.team.GetTeams
 import com.jiachian.nbatoday.usecase.team.TeamUseCase
 import com.jiachian.nbatoday.usecase.user.AddPoints
+import com.jiachian.nbatoday.usecase.user.GetTheme
 import com.jiachian.nbatoday.usecase.user.GetUser
+import com.jiachian.nbatoday.usecase.user.UpdateTheme
 import com.jiachian.nbatoday.usecase.user.UserLogin
+import com.jiachian.nbatoday.usecase.user.UserLogout
 import com.jiachian.nbatoday.usecase.user.UserRegister
 import com.jiachian.nbatoday.usecase.user.UserUseCase
 import org.koin.android.ext.koin.androidApplication
@@ -96,11 +99,14 @@ val module = module {
     factory { GetBetGames(get()) }
     factory { AddBet(get(), get()) }
     factory { DeleteBet(get()) }
-    factory { UserUseCase(get(), get(), get(), get()) }
+    factory { UserUseCase(get(), get(), get(), get(), get(), get(), get()) }
     factory { GetUser(get()) }
     factory { AddPoints(get()) }
     factory { UserLogin(get()) }
     factory { UserRegister(get()) }
+    factory { UserLogout(get()) }
+    factory { UpdateTheme(get()) }
+    factory { GetTheme(get()) }
     factory { GameUseCase(get(), get(), get()) }
     factory { GetGame(get()) }
     factory { GetFirstLastGameDate(get()) }
@@ -128,7 +134,7 @@ val module = module {
     viewModel { BetViewModel(get(), get(), get()) }
     viewModel { SchedulePageViewModel(get(), get(), get()) }
     viewModel { StandingPageViewModel(get()) }
-    viewModel { UserPageViewModel(get(), get()) }
+    viewModel { UserPageViewModel(get()) }
     viewModel { LoginDialogViewModel(get()) }
     viewModel { BetDialogViewModel(get(), get(), get(), get()) }
 }

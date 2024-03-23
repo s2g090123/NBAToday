@@ -1,7 +1,6 @@
 package com.jiachian.nbatoday.compose.screen.home
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
@@ -62,9 +61,7 @@ fun HomeScreen(
             }
             composable(HomePage.USER.route) {
                 UserPage(
-                    modifier = Modifier.fillMaxSize(),
-                    navigateToBet = navigationController::navigateToBet,
-                    showLoginDialog = navigationController::showLoginDialog,
+                    navigationController = navigationController
                 )
             }
         }

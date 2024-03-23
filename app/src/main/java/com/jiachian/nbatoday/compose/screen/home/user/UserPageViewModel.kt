@@ -1,77 +1,76 @@
 package com.jiachian.nbatoday.compose.screen.home.user
 
+import androidx.compose.runtime.snapshots.Snapshot
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.jiachian.nbatoday.compose.screen.state.UIState
+import com.jiachian.nbatoday.compose.screen.home.user.event.UserUIEvent
+import com.jiachian.nbatoday.compose.screen.home.user.state.MutableUserState
+import com.jiachian.nbatoday.compose.screen.home.user.state.UserState
 import com.jiachian.nbatoday.compose.theme.updateColors
-import com.jiachian.nbatoday.datastore.BaseDataStore
-import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
-import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.models.local.team.data.teamOfficial
-import com.jiachian.nbatoday.repository.user.UserRepository
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import com.jiachian.nbatoday.usecase.user.UserUseCase
 import kotlinx.coroutines.launch
 
-/**
- * ViewModel for handling business logic related to [UserPage].
- *
- * @property repository The repository for interacting with [User].
- * @property dataStore The data store for managing user preferences.
- * @property dispatcherProvider The provider for obtaining dispatchers for coroutines (default is [DefaultDispatcherProvider]).
- */
 class UserPageViewModel(
-    private val repository: UserRepository,
-    private val dataStore: BaseDataStore,
-    private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
+    private val userUseCase: UserUseCase,
 ) : ViewModel() {
-    // logged-in user
-    private val user = repository.user
+    private val stateImp = MutableUserState()
+    val state: UserState = stateImp
 
-    // the UIState of user
-    val userState = user.map { user ->
-        UIState.Loaded(user)
-    }.stateIn(viewModelScope, SharingStarted.Lazily, UIState.Loading())
-
-    private val account = user.map {
-        it?.account
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
-
-    // list of available NBA teams for theming
-    val teams: List<NBATeam> = mutableListOf<NBATeam>().apply {
-        add(teamOfficial)
-        addAll(NBATeam.nbaTeams)
+    init {
+        collectUserChanged()
+        collectThemeChanged()
     }
 
-    /**
-     * Updates the app theme based on the selected NBA team's colors.
-     *
-     * @param team The selected NBA team.
-     */
-    fun updateTheme(team: NBATeam) {
-        viewModelScope.launch(dispatcherProvider.io) {
-            updateColors(team.colors)
-            dataStore.updateThemeColorsTeamId(team.teamId)
+    private fun collectUserChanged() {
+        stateImp.loading = true
+        viewModelScope.launch {
+            val teams = mutableListOf<NBATeam>().apply {
+                add(teamOfficial)
+                addAll(NBATeam.nbaTeams)
+            }
+            userUseCase
+                .getUser()
+                .collect { user ->
+                    Snapshot.withMutableSnapshot {
+                        stateImp.let { state ->
+                            state.user = user
+                            state.teams = teams
+                            state.login = user != null
+                            state.loading = false
+                        }
+                    }
+                }
         }
     }
 
-    fun login(account: String, password: String) {
-        viewModelScope.launch(dispatcherProvider.io) {
-            repository.login(account, password)
+    private fun collectThemeChanged() {
+        viewModelScope.launch {
+            userUseCase
+                .getTheme()
+                .collect {
+                    updateColors(it)
+                }
         }
     }
 
-    fun logout() {
-        viewModelScope.launch(dispatcherProvider.io) {
-            repository.logout()
+    fun onEvent(event: UserUIEvent) {
+        when (event) {
+            UserUIEvent.Logout -> logout()
+            is UserUIEvent.UpdateTheme -> updateTheme(event.teamId)
         }
     }
 
-    fun register(account: String, password: String) {
-        viewModelScope.launch(dispatcherProvider.io) {
-            repository.register(account, password)
+    private fun updateTheme(teamId: Int) {
+        viewModelScope.launch {
+            userUseCase.updateTheme(teamId)
+        }
+    }
+
+    private fun logout() {
+        viewModelScope.launch {
+            userUseCase.userLogout()
         }
     }
 }

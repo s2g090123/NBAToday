@@ -5,4 +5,7 @@ data class UserUseCase(
     val addPoints: AddPoints,
     val userLogin: UserLogin,
     val userRegister: UserRegister,
+    val userLogout: UserLogout,
+    val updateTheme: UpdateTheme,
+    val getTheme: GetTheme,
 )

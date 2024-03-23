@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -21,10 +22,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,73 +39,56 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.R
+import com.jiachian.nbatoday.compose.screen.home.user.event.UserUIEvent
 import com.jiachian.nbatoday.compose.theme.NBAColors
 import com.jiachian.nbatoday.compose.widget.IconButton
 import com.jiachian.nbatoday.compose.widget.LoadingScreen
 import com.jiachian.nbatoday.compose.widget.TeamLogoImage
-import com.jiachian.nbatoday.compose.widget.UIStateScreen
 import com.jiachian.nbatoday.models.local.team.NBATeam
-import com.jiachian.nbatoday.models.local.user.User
+import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.testing.testtag.UserTestTag
 import com.jiachian.nbatoday.utils.rippleClickable
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun UserPage(
-    modifier: Modifier = Modifier,
     viewModel: UserPageViewModel = koinViewModel(),
-    navigateToBet: (account: String) -> Unit,
-    showLoginDialog: () -> Unit,
+    navigationController: NavigationController,
 ) {
-    val userState by viewModel.userState.collectAsState()
-    UIStateScreen(
-        state = userState,
-        loading = {
+    val state = viewModel.state
+    Box(modifier = Modifier.fillMaxSize()) {
+        if (state.loading) {
             LoadingScreen(
-                modifier = modifier,
+                modifier = Modifier.align(Alignment.Center),
                 color = MaterialTheme.colors.secondary
             )
-        },
-        ifNull = {
-            LoginScreen(
-                modifier = Modifier
-                    .testTag(UserTestTag.UserPage_LoginScreen)
-                    .then(modifier),
-                onClickLogin = showLoginDialog,
-            )
+        } else if (!state.login) {
+            LoginScreen(onClickLogin = navigationController::showLoginDialog)
         }
-    ) { user ->
-        UserScreen(
-            modifier = modifier,
-            viewModel = viewModel,
-            user = user,
-            onBetClick = { navigateToBet(user.account) }
-        )
-    }
-}
-
-@Composable
-private fun UserScreen(
-    modifier: Modifier = Modifier,
-    viewModel: UserPageViewModel,
-    user: User,
-    onBetClick: () -> Unit,
-) {
-    Column(modifier = modifier) {
-        UserTopBar(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(MaterialTheme.colors.secondary),
-            name = user.name,
-            points = user.points,
-            onBet = onBetClick,
-            onLogout = viewModel::logout
-        )
-        ThemeTable(
-            modifier = Modifier.testTag(UserTestTag.UserScreen_ThemesTable),
-            teams = viewModel.teams,
-            onPalette = viewModel::updateTheme
-        )
+        state.user?.let { user ->
+            Scaffold(
+                backgroundColor = MaterialTheme.colors.primary,
+                topBar = {
+                    UserTopBar(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colors.secondary),
+                        name = user.name,
+                        points = user.points,
+                        onBet = { navigationController.navigateToBet(user.account) },
+                        onLogout = { viewModel.onEvent(UserUIEvent.Logout) }
+                    )
+                }
+            ) { padding ->
+                ThemeTable(
+                    modifier = Modifier
+                        .testTag(UserTestTag.UserScreen_ThemesTable)
+                        .padding(padding),
+                    teams = state.teams,
+                    onPalette = { viewModel.onEvent(UserUIEvent.UpdateTheme(it.teamId)) }
+                )
+            }
+        }
     }
 }
 
@@ -122,7 +105,10 @@ private fun ThemeTable(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(teams) { team ->
+        items(
+            teams,
+            key = { it.teamId }
+        ) { team ->
             ThemeCard(
                 modifier = Modifier
                     .testTag(UserTestTag.ThemeTable_ThemeCard)
@@ -144,11 +130,10 @@ private fun ThemeTable(
 
 @Composable
 private fun LoginScreen(
-    modifier: Modifier = Modifier,
     onClickLogin: () -> Unit,
 ) {
     Column(
-        modifier = modifier,
+        modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
