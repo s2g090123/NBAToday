@@ -14,7 +14,7 @@ enum class UpdateScheduleError : Error {
 class UpdateSchedule(
     private val repository: ScheduleRepository
 ) {
-    suspend operator fun invoke(
+    operator fun invoke(
         year: Int = -1,
         month: Int = -1,
         day: Int = -1,

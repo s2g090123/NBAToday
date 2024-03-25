@@ -1,6 +1,5 @@
 package com.jiachian.nbatoday.koin
 
-import com.jiachian.nbatoday.SplashViewModel
 import com.jiachian.nbatoday.compose.screen.account.LoginDialogViewModel
 import com.jiachian.nbatoday.compose.screen.bet.BetViewModel
 import com.jiachian.nbatoday.compose.screen.bet.dialog.BetDialogViewModel
@@ -10,6 +9,7 @@ import com.jiachian.nbatoday.compose.screen.home.standing.StandingPageViewModel
 import com.jiachian.nbatoday.compose.screen.home.user.UserPageViewModel
 import com.jiachian.nbatoday.compose.screen.player.PlayerViewModel
 import com.jiachian.nbatoday.compose.screen.score.BoxScoreViewModel
+import com.jiachian.nbatoday.compose.screen.splash.SplashViewModel
 import com.jiachian.nbatoday.compose.screen.team.TeamViewModel
 import com.jiachian.nbatoday.database.NBADatabase
 import com.jiachian.nbatoday.datasource.local.bet.BetLocalSource
@@ -126,7 +126,7 @@ val module = module {
     single { NBABetRepository(get()) as BetRepository }
     single { NBAUserRepository(get(), get()) as UserRepository }
 
-    viewModel { SplashViewModel(get(), get(), get(), get()) }
+    viewModel { SplashViewModel(get(), get(), get()) }
     viewModel { BoxScoreViewModel(get(), get()) }
     viewModel { TeamViewModel(get(), get(), get(), get()) }
     viewModel { PlayerViewModel(get(), get()) }
