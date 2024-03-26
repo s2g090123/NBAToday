@@ -29,45 +29,49 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.screen.player.models.PlayerInfoTableData
+import com.jiachian.nbatoday.compose.screen.player.state.PlayerInfoState
 import com.jiachian.nbatoday.compose.widget.PlayerImage
 import com.jiachian.nbatoday.compose.widget.TeamLogoImage
-import com.jiachian.nbatoday.models.local.player.Player
+import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.testing.testtag.PlayerTestTag
 import com.jiachian.nbatoday.utils.modifyIf
 
 private const val PlayerImageAspectRatio = 1.36f
 
 fun LazyListScope.playerInfo(
-    player: Player,
-    tableData: PlayerInfoTableData?,
+    info: PlayerInfoState,
 ) {
     item {
-        TeamAndPlayerImage(player = player)
+        TeamAndPlayerImage(
+            playerId = info.id,
+            team = info.team
+        )
     }
     item {
         PlayerTitle(
             modifier = Modifier.padding(top = 8.dp, start = 16.dp, end = 16.dp),
-            player = player,
+            name = info.name,
+            detail = info.detail,
+            is75 = info.is75
         )
     }
-    tableData?.rowData?.let {
-        itemsIndexed(tableData.rowData) { index, rowData ->
-            PlayerInfoRow(
-                modifier = Modifier
-                    .modifyIf(index == 0) { padding(top = 8.dp) }
-                    .fillMaxWidth(),
-                rowData = rowData,
-                topDivider = index < tableData.rowData.size - 1,
-                bottomDivider = index > 0,
-            )
-        }
+    itemsIndexed(info.data.rowData) { index, rowData ->
+        PlayerInfoRow(
+            modifier = Modifier
+                .modifyIf(index == 0) { padding(top = 8.dp) }
+                .fillMaxWidth(),
+            rowData = rowData,
+            topDivider = index < info.data.rowData.size - 1,
+            bottomDivider = index > 0,
+        )
     }
 }
 
 @Composable
 private fun TeamAndPlayerImage(
     modifier: Modifier = Modifier,
-    player: Player,
+    playerId: Int,
+    team: NBATeam,
 ) {
     Row(modifier = modifier) {
         TeamLogoImage(
@@ -75,14 +79,14 @@ private fun TeamAndPlayerImage(
                 .padding(start = 16.dp)
                 .weight(1f)
                 .aspectRatio(1f),
-            team = player.info.team
+            team = team,
         )
         PlayerImage(
             modifier = Modifier
                 .padding(top = 16.dp, end = 16.dp)
                 .weight(2f)
                 .aspectRatio(PlayerImageAspectRatio),
-            playerId = player.playerId
+            playerId = playerId,
         )
     }
 }
@@ -90,7 +94,9 @@ private fun TeamAndPlayerImage(
 @Composable
 private fun PlayerTitle(
     modifier: Modifier = Modifier,
-    player: Player,
+    name: String,
+    detail: String,
+    is75: Boolean,
 ) {
     Row(modifier = modifier) {
         Column(
@@ -100,19 +106,19 @@ private fun PlayerTitle(
         ) {
             Text(
                 modifier = Modifier.testTag(PlayerTestTag.PlayerTitle_Text_Detail),
-                text = player.info.detail,
+                text = detail,
                 fontSize = 16.sp,
                 color = MaterialTheme.colors.secondaryVariant
             )
             Text(
                 modifier = Modifier.testTag(PlayerTestTag.PlayerTitle_Text_Name),
-                text = player.info.playerName,
+                text = name,
                 fontSize = 24.sp,
                 color = MaterialTheme.colors.secondaryVariant,
                 fontWeight = FontWeight.Bold
             )
         }
-        if (player.info.isGreatest75) {
+        if (is75) {
             Image(
                 modifier = Modifier
                     .testTag(PlayerTestTag.PlayerTitle_Image_Greatest)

@@ -11,7 +11,7 @@ class TestPlayerRepository(
     private val playerLocalSource: PlayerLocalSource,
     private val playerRemoteSource: PlayerRemoteSource
 ) : PlayerRepository() {
-    override suspend fun insertPlayer(playerId: Int) {
+    override suspend fun addPlayer(playerId: Int) {
         playerRemoteSource
             .getPlayer(playerId)
             .takeIf { !it.isError() }

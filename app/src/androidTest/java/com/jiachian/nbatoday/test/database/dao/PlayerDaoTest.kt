@@ -36,7 +36,7 @@ class PlayerDaoTest : BaseAndroidTest() {
 
     @Test
     fun playerDao_getPlayer() = launch {
-        dao.insertPlayer(PlayerGenerator.getHome())
+        dao.addPlayer(PlayerGenerator.getHome())
         dao.getPlayer(HomePlayerId).collectOnce(this) {
             it.assertIs(PlayerGenerator.getHome())
         }

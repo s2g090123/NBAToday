@@ -13,6 +13,6 @@ class TestPlayerLocalSource(
     }
 
     override suspend fun insertPlayer(player: Player) {
-        playerDao.insertPlayer(player)
+        playerDao.addPlayer(player)
     }
 }

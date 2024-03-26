@@ -64,7 +64,7 @@ fun MainScreen(
         }
         composable(MainRoute.Player.route) {
             PlayerScreen(
-                onBack = navController::popBackStack,
+                navigationController = navigationController
             )
         }
         composable(MainRoute.Calendar.route) {

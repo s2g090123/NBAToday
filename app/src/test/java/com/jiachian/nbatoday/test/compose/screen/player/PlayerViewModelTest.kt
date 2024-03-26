@@ -9,7 +9,6 @@ import com.jiachian.nbatoday.compose.screen.player.models.PlayerStatsLabel
 import com.jiachian.nbatoday.compose.screen.player.models.PlayerStatsRowData
 import com.jiachian.nbatoday.compose.screen.player.models.PlayerStatsSorting
 import com.jiachian.nbatoday.compose.screen.player.models.PlayerTableLabel
-import com.jiachian.nbatoday.compose.screen.player.models.PlayerUI
 import com.jiachian.nbatoday.compose.screen.state.UIState
 import com.jiachian.nbatoday.data.local.PlayerGenerator
 import com.jiachian.nbatoday.models.local.player.Player

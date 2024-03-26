@@ -45,7 +45,7 @@ class NBAPlayerRepositoryTest : BaseUnitTest() {
 
     @Test
     fun `insertPlayer(home) expects the player is inserted`() = launch {
-        repository.insertPlayer(HomePlayerId)
+        repository.addPlayer(HomePlayerId)
         dataHolder
             .players
             .value
@@ -57,7 +57,7 @@ class NBAPlayerRepositoryTest : BaseUnitTest() {
         coEvery {
             remoteSource.getPlayer(any())
         } returns Response.error(404, "".toResponseBody())
-        repository.insertPlayer(HomePlayerId)
+        repository.addPlayer(HomePlayerId)
         dataHolder
             .players
             .value
@@ -70,7 +70,7 @@ class NBAPlayerRepositoryTest : BaseUnitTest() {
         every {
             any<RemotePlayer>().toPlayer()
         } returns null
-        repository.insertPlayer(HomePlayerId)
+        repository.addPlayer(HomePlayerId)
         dataHolder
             .players
             .value

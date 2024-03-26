@@ -27,5 +27,5 @@ interface PlayerDao {
      * @param player The [Player] object to be inserted.
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertPlayer(player: Player)
+    suspend fun addPlayer(player: Player)
 }

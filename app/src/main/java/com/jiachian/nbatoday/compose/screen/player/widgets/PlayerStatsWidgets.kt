@@ -32,10 +32,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.Transparency25
-import com.jiachian.nbatoday.compose.screen.player.PlayerViewModel
 import com.jiachian.nbatoday.compose.screen.player.models.PlayerStatsLabel
 import com.jiachian.nbatoday.compose.screen.player.models.PlayerStatsRowData
 import com.jiachian.nbatoday.compose.screen.player.models.PlayerStatsSorting
+import com.jiachian.nbatoday.compose.screen.player.state.PlayerStatsState
 import com.jiachian.nbatoday.testing.testtag.PlayerTestTag
 import com.jiachian.nbatoday.utils.dividerSecondaryColor
 import com.jiachian.nbatoday.utils.modifyIf
@@ -43,10 +43,9 @@ import com.jiachian.nbatoday.utils.rippleClickable
 
 @OptIn(ExperimentalFoundationApi::class)
 fun LazyListScope.playerStats(
-    viewModel: PlayerViewModel,
     scrollState: ScrollState,
-    rowData: List<PlayerStatsRowData>,
-    sorting: PlayerStatsSorting,
+    stats: PlayerStatsState,
+    updateSorting: (PlayerStatsSorting) -> Unit,
 ) {
     item {
         PlayerStatsBar(
@@ -58,16 +57,19 @@ fun LazyListScope.playerStats(
     }
     stickyHeader {
         PlayerStatsLabelScrollableRow(
-            viewModel = viewModel,
             scrollState = scrollState,
-            sorting = sorting,
+            sorting = stats.sorting,
+            updateSorting = updateSorting,
         )
     }
-    items(rowData) {
+    items(
+        stats.data,
+        key = { it.timeFrame + it.teamAbbr }
+    ) {
         PlayerStatsScrollableRow(
             scrollState = scrollState,
             rowData = it,
-            sorting = sorting,
+            sorting = stats.sorting,
         )
     }
 }
@@ -75,16 +77,16 @@ fun LazyListScope.playerStats(
 @Composable
 private fun PlayerStatsLabelScrollableRow(
     modifier: Modifier = Modifier,
-    viewModel: PlayerViewModel,
     scrollState: ScrollState,
     sorting: PlayerStatsSorting,
+    updateSorting: (PlayerStatsSorting) -> Unit,
 ) {
     Column(modifier = Modifier.background(MaterialTheme.colors.primary)) {
         PlayerStatsLabelRow(
             modifier = modifier,
-            viewModel = viewModel,
             scrollState = scrollState,
             sorting = sorting,
+            updateSorting = updateSorting,
         )
         Divider(
             color = dividerSecondaryColor(),
@@ -128,10 +130,11 @@ private fun PlayerStatsBar(modifier: Modifier = Modifier) {
 @Composable
 private fun PlayerStatsLabelRow(
     modifier: Modifier = Modifier,
-    viewModel: PlayerViewModel,
     scrollState: ScrollState,
     sorting: PlayerStatsSorting,
+    updateSorting: (PlayerStatsSorting) -> Unit,
 ) {
+    val labels = remember { PlayerStatsLabel.values() }
     val selectTimeFrame by remember(sorting) {
         derivedStateOf { sorting == PlayerStatsSorting.TIME_FRAME }
     }
@@ -143,7 +146,7 @@ private fun PlayerStatsLabelRow(
                     if (selectTimeFrame) MaterialTheme.colors.secondary.copy(Transparency25)
                     else MaterialTheme.colors.primary,
                 )
-                .rippleClickable { viewModel.updateSorting(PlayerStatsSorting.TIME_FRAME) }
+                .rippleClickable { updateSorting(PlayerStatsSorting.TIME_FRAME) }
                 .padding(8.dp),
             text = stringResource(R.string.player_career_by_year),
             fontSize = 16.sp,
@@ -151,11 +154,11 @@ private fun PlayerStatsLabelRow(
             color = MaterialTheme.colors.secondary
         )
         Row(modifier = Modifier.horizontalScroll(scrollState)) {
-            viewModel.statsLabels.forEach { label ->
+            labels.forEach { label ->
                 PlayerStatsLabel(
                     label = label,
                     focus = label.sorting == sorting,
-                    onClick = { viewModel.updateSorting(label.sorting) }
+                    onClick = { updateSorting(label.sorting) }
                 )
             }
         }

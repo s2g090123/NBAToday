@@ -16,7 +16,7 @@ class TestPlayerDao(
         }
     }
 
-    override suspend fun insertPlayer(player: Player) {
+    override suspend fun addPlayer(player: Player) {
         dataHolder.players.value = dataHolder.players.value.toMutableList().apply {
             removeIf { it.playerId == player.playerId }
             add(player)
