@@ -59,6 +59,8 @@ import com.jiachian.nbatoday.usecase.boxscore.GetBoxScore
 import com.jiachian.nbatoday.usecase.game.GameUseCase
 import com.jiachian.nbatoday.usecase.game.GetFirstLastGameDate
 import com.jiachian.nbatoday.usecase.game.GetGame
+import com.jiachian.nbatoday.usecase.game.GetGamesAfter
+import com.jiachian.nbatoday.usecase.game.GetGamesBefore
 import com.jiachian.nbatoday.usecase.game.GetGamesDuring
 import com.jiachian.nbatoday.usecase.player.AddPlayer
 import com.jiachian.nbatoday.usecase.player.GetPlayer
@@ -66,8 +68,11 @@ import com.jiachian.nbatoday.usecase.player.PlayerUseCase
 import com.jiachian.nbatoday.usecase.schedule.ScheduleUseCase
 import com.jiachian.nbatoday.usecase.schedule.UpdateSchedule
 import com.jiachian.nbatoday.usecase.team.AddTeams
+import com.jiachian.nbatoday.usecase.team.GetTeamAndPlayers
+import com.jiachian.nbatoday.usecase.team.GetTeamRank
 import com.jiachian.nbatoday.usecase.team.GetTeams
 import com.jiachian.nbatoday.usecase.team.TeamUseCase
+import com.jiachian.nbatoday.usecase.team.UpdateTeamInfo
 import com.jiachian.nbatoday.usecase.user.AddPoints
 import com.jiachian.nbatoday.usecase.user.GetTheme
 import com.jiachian.nbatoday.usecase.user.GetUser
@@ -114,15 +119,20 @@ val module = module {
     factory { UserLogout(get()) }
     factory { UpdateTheme(get()) }
     factory { GetTheme(get()) }
-    factory { GameUseCase(get(), get(), get()) }
+    factory { GameUseCase(get(), get(), get(), get(), get()) }
     factory { GetGame(get()) }
     factory { GetFirstLastGameDate(get()) }
     factory { GetGamesDuring(get()) }
+    factory { GetGamesBefore(get()) }
+    factory { GetGamesAfter(get()) }
     factory { ScheduleUseCase(get()) }
     factory { UpdateSchedule(get()) }
-    factory { TeamUseCase(get(), get()) }
+    factory { TeamUseCase(get(), get(), get(), get(), get()) }
     factory { GetTeams(get()) }
     factory { AddTeams(get()) }
+    factory { UpdateTeamInfo(get()) }
+    factory { GetTeamAndPlayers(get()) }
+    factory { GetTeamRank(get()) }
     factory { PlayerUseCase(get(), get()) }
     factory { AddPlayer(get()) }
     factory { GetPlayer(get()) }

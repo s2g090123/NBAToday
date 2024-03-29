@@ -11,7 +11,6 @@ import com.jiachian.nbatoday.compose.screen.team.TeamViewModel
 import com.jiachian.nbatoday.compose.screen.team.models.TeamPlayerLabel
 import com.jiachian.nbatoday.compose.screen.team.models.TeamPlayerRowData
 import com.jiachian.nbatoday.compose.screen.team.models.TeamPlayerSorting
-import com.jiachian.nbatoday.compose.screen.team.models.TeamUI
 import com.jiachian.nbatoday.data.local.TeamGenerator
 import com.jiachian.nbatoday.data.local.TeamPlayerGenerator
 import com.jiachian.nbatoday.models.local.game.toGameCardState

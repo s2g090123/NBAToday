@@ -32,33 +32,18 @@ class NBATeamRepository(
             ?: Response.Error()
     }
 
-    override suspend fun addTeam(teamId: Int) {
-        loading {
-            service
-                .getTeam(CurrentSeason, teamId)
-                .takeIf { !it.isError() }
-                ?.body()
-                ?.toTeamStats()
-                ?.also { teams ->
-                    dao.addTeams(teams)
-                }
-                ?: onError()
-        }
-    }
-
-    override suspend fun updateTeamPlayers(teamId: Int) {
-        loading {
-            service
-                .getTeamPlayer(season = CurrentSeason, teamId = teamId)
-                .takeIf { !it.isError() }
-                ?.body()
-                ?.toTeamPlayerStats()
-                ?.let { remoteTeamPlayers ->
-                    deleteTradedPlayers(teamId, remoteTeamPlayers)
-                    dao.addTeamPlayers(remoteTeamPlayers)
-                }
-                ?: onError()
-        }
+    override suspend fun updateTeamPlayers(teamId: Int): Response<Unit> {
+        return service
+            .getTeamPlayer(season = CurrentSeason, teamId = teamId)
+            .takeIf { !it.isError() }
+            ?.body()
+            ?.toTeamPlayerStats()
+            ?.let { remoteTeamPlayers ->
+                deleteTradedPlayers(teamId, remoteTeamPlayers)
+                dao.addTeamPlayers(remoteTeamPlayers)
+            }
+            ?.let { Response.Success(Unit) }
+            ?: Response.Error()
     }
 
     override fun getTeams(conference: NBATeam.Conference): Flow<List<Team>> {

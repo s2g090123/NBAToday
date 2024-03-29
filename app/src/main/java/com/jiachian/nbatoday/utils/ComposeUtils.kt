@@ -19,6 +19,7 @@ import androidx.compose.ui.res.booleanResource
 import androidx.compose.ui.unit.Dp
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.Transparency25
+import com.jiachian.nbatoday.models.local.team.data.teamOfficial
 
 inline val String.color: Color get() = Color(android.graphics.Color.parseColor(this))
 
@@ -43,6 +44,8 @@ fun isPortrait() = booleanResource(R.bool.is_portrait)
 val LocalActivity = staticCompositionLocalOf<ComponentActivity> {
     error("CompositionLocal LocalActivity not present")
 }
+
+val LocalColors = staticCompositionLocalOf { teamOfficial.colors }
 
 @ExperimentalAnimationApi
 fun <S> AnimatedContentScope<S>.slideSpec(toRight: Boolean): ContentTransform {

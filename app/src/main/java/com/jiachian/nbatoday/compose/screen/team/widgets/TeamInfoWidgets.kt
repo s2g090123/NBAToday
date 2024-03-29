@@ -22,24 +22,24 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.Transparency25
-import com.jiachian.nbatoday.compose.screen.team.TeamViewModel
 import com.jiachian.nbatoday.compose.widget.TeamLogoImage
 import com.jiachian.nbatoday.models.local.team.Team
 import com.jiachian.nbatoday.models.local.team.TeamRank
 import com.jiachian.nbatoday.testing.testtag.TeamTestTag
+import com.jiachian.nbatoday.utils.LocalColors
 import com.jiachian.nbatoday.utils.toRank
 
 @Composable
 fun TeamInformation(
-    viewModel: TeamViewModel,
     team: Team,
     rank: TeamRank,
 ) {
+    val colors = LocalColors.current
     Column {
         TeamNameAndStanding(
             stats = team,
             standing = rank.standing,
-            color = viewModel.colors.extra2,
+            color = colors.extra2,
         )
         TeamStatsDetail(
             modifier = Modifier
@@ -47,7 +47,7 @@ fun TeamInformation(
                 .height(IntrinsicSize.Min),
             team = team,
             rank = rank,
-            color = viewModel.colors.extra2,
+            color = colors.extra2,
         )
     }
 }

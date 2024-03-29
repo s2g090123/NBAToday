@@ -18,18 +18,11 @@ abstract class TeamRepository : BaseRepository() {
     abstract suspend fun addTeams(): Response<Unit>
 
     /**
-     * Inserts a specific team.
-     *
-     * @param teamId The ID of the team to be inserted.
-     */
-    abstract suspend fun addTeam(teamId: Int)
-
-    /**
      * Updates the players of a specific team.
      *
      * @param teamId The ID of the team whose players need to be updated.
      */
-    abstract suspend fun updateTeamPlayers(teamId: Int)
+    abstract suspend fun updateTeamPlayers(teamId: Int): Response<Unit>
 
     /**
      * Retrieves a flow of teams based on their conference.

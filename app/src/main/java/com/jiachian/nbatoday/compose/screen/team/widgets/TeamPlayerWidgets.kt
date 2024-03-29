@@ -19,8 +19,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
@@ -30,35 +29,33 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.Transparency25
-import com.jiachian.nbatoday.compose.screen.team.TeamViewModel
 import com.jiachian.nbatoday.compose.screen.team.models.TeamPlayerLabel
 import com.jiachian.nbatoday.compose.screen.team.models.TeamPlayerRowData
 import com.jiachian.nbatoday.compose.screen.team.models.TeamPlayerSorting
 import com.jiachian.nbatoday.testing.testtag.TeamTestTag
+import com.jiachian.nbatoday.utils.LocalColors
 import com.jiachian.nbatoday.utils.modifyIf
 import com.jiachian.nbatoday.utils.rippleClickable
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TeamPlayerPage(
-    modifier: Modifier = Modifier,
-    viewModel: TeamViewModel,
     teamPlayers: List<TeamPlayerRowData>,
+    sorting: TeamPlayerSorting,
     navigateToPlayer: (playerId: Int) -> Unit,
+    updateSorting: (TeamPlayerSorting) -> Unit,
 ) {
     val scrollState = rememberScrollState()
-    val sorting by viewModel.playerSorting.collectAsState()
-    LazyColumn(modifier = modifier) {
+    LazyColumn {
         stickyHeader {
             ScorePlayerLabelScrollableRow(
-                viewModel = viewModel,
                 scrollState = scrollState,
                 sorting = sorting,
+                updateSorting = updateSorting,
             )
         }
         items(teamPlayers) { rowData ->
             TeamPlayerScrollableRow(
-                viewModel = viewModel,
                 scrollState = scrollState,
                 rowData = rowData,
                 sorting = sorting,
@@ -70,20 +67,19 @@ fun TeamPlayerPage(
 
 @Composable
 private fun ScorePlayerLabelScrollableRow(
-    modifier: Modifier = Modifier,
-    viewModel: TeamViewModel,
     scrollState: ScrollState,
     sorting: TeamPlayerSorting,
+    updateSorting: (TeamPlayerSorting) -> Unit,
 ) {
-    Column(modifier = Modifier.background(viewModel.colors.primary)) {
+    val colors = LocalColors.current
+    Column(modifier = Modifier.background(colors.primary)) {
         TeamPlayerLabelRow(
-            modifier = modifier,
-            viewModel = viewModel,
             scrollState = scrollState,
             sorting = sorting,
+            updateSorting = updateSorting,
         )
         Divider(
-            color = viewModel.colors.secondary.copy(Transparency25),
+            color = colors.secondary.copy(Transparency25),
             thickness = 3.dp,
         )
     }
@@ -91,20 +87,21 @@ private fun ScorePlayerLabelScrollableRow(
 
 @Composable
 private fun TeamPlayerLabelRow(
-    modifier: Modifier = Modifier,
-    viewModel: TeamViewModel,
     scrollState: ScrollState,
     sorting: TeamPlayerSorting,
+    updateSorting: (TeamPlayerSorting) -> Unit,
 ) {
-    Row(modifier = modifier) {
+    val colors = LocalColors.current
+    val labels = remember { TeamPlayerLabel.values() }
+    Row {
         Spacer(modifier = Modifier.width(120.dp))
         Row(modifier = Modifier.horizontalScroll(scrollState)) {
-            viewModel.labels.forEach { label ->
+            labels.forEach { label ->
                 TeamPlayerLabel(
                     focus = label.sorting == sorting,
                     label = label,
-                    color = viewModel.colors.secondary,
-                    onClick = { viewModel.updatePlayerSorting(label.sorting) }
+                    color = colors.secondary,
+                    onClick = { updateSorting(label.sorting) }
                 )
             }
         }
@@ -139,34 +136,30 @@ fun TeamPlayerLabel(
 
 @Composable
 private fun TeamPlayerScrollableRow(
-    modifier: Modifier = Modifier,
-    viewModel: TeamViewModel,
     scrollState: ScrollState,
     rowData: TeamPlayerRowData,
     sorting: TeamPlayerSorting,
     onPlayerClick: (playerId: Int) -> Unit,
 ) {
+    val colors = LocalColors.current
     TeamPlayerRow(
-        modifier = modifier,
-        viewModel = viewModel,
         scrollState = scrollState,
         rowData = rowData,
         sorting = sorting,
         onPlayerClick = onPlayerClick,
     )
-    Divider(color = viewModel.colors.secondary.copy(Transparency25))
+    Divider(color = colors.secondary.copy(Transparency25))
 }
 
 @Composable
 private fun TeamPlayerRow(
-    modifier: Modifier = Modifier,
-    viewModel: TeamViewModel,
     scrollState: ScrollState,
     rowData: TeamPlayerRowData,
     sorting: TeamPlayerSorting,
     onPlayerClick: (playerId: Int) -> Unit
 ) {
-    Row(modifier = modifier) {
+    val colors = LocalColors.current
+    Row {
         TeamPlayerNameText(
             modifier = Modifier
                 .testTag(TeamTestTag.TeamPlayerRow_Text_PlayerName)
@@ -174,14 +167,14 @@ private fun TeamPlayerRow(
                 .rippleClickable { onPlayerClick(rowData.player.playerId) }
                 .padding(top = 8.dp, bottom = 8.dp, start = 4.dp),
             name = rowData.player.playerName,
-            color = viewModel.colors.secondary,
+            color = colors.secondary,
         )
         Row(modifier = Modifier.horizontalScroll(scrollState)) {
             rowData.data.forEach { data ->
                 TeamPlayerStatsText(
                     data = data,
                     focus = data.sorting == sorting,
-                    color = viewModel.colors.secondary,
+                    color = colors.secondary,
                 )
             }
         }

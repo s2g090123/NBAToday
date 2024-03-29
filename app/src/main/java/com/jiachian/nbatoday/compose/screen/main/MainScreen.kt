@@ -54,11 +54,7 @@ fun MainScreen(
         }
         composable(MainRoute.Team.route) {
             TeamScreen(
-                navigateToPlayer = navigationController::navigateToPlayer,
-                navigateToBoxScore = navigationController::navigateToBoxScore,
-                showLoginDialog = navigationController::showLoginDialog,
-                showBetDialog = navigationController::showBetDialog,
-                onBack = navController::popBackStack
+                navigationController = navigationController
             )
         }
         composable(MainRoute.Player.route) {
