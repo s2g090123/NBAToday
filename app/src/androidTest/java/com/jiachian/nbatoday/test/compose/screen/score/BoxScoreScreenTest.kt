@@ -186,7 +186,7 @@ class BoxScoreScreenTest : BaseAndroidTest() {
             viewModel.boxScoreUIState
         } returns MutableStateFlow(UIState.Loaded(null))
         inCompose {
-            onNodeWithUnmergedTree(BoxScoreTestTag.ScoreScreen_NotFoundScreen)
+            onNodeWithUnmergedTree(BoxScoreTestTag.ScoreScreen_NotFound)
                 .assertIsDisplayed()
         }
     }

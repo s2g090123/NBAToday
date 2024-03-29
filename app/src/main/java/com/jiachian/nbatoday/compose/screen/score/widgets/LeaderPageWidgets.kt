@@ -24,16 +24,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.screen.score.models.BoxScoreLeaderRowData
-import com.jiachian.nbatoday.compose.screen.score.models.BoxScoreUI
 import com.jiachian.nbatoday.compose.widget.PlayerImage
-import com.jiachian.nbatoday.models.local.score.BoxScore
 import com.jiachian.nbatoday.testing.testtag.BoxScoreTestTag
 import com.jiachian.nbatoday.utils.dividerSecondaryColor
 
 @Composable
 fun ScoreLeaderPage(
     modifier: Modifier = Modifier,
-    leadersUI: BoxScoreUI.BoxScoreLeadersUI,
+    homeLeaderId: Int,
+    awayLeaderId: Int,
+    data: List<BoxScoreLeaderRowData>,
 ) {
     LazyColumn(modifier = modifier) {
         item {
@@ -41,11 +41,11 @@ fun ScoreLeaderPage(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 8.dp),
-                homeLeader = leadersUI.home,
-                awayLeader = leadersUI.away,
+                homeLeaderId = homeLeaderId,
+                awayLeaderId = awayLeaderId,
             )
         }
-        items(leadersUI.rowData) { rowData ->
+        items(data) { rowData ->
             ScoreLeaderRow(
                 modifier = Modifier.fillMaxWidth(),
                 rowData = rowData
@@ -60,8 +60,8 @@ fun ScoreLeaderPage(
 @Composable
 private fun ScoreLeaderTitleRow(
     modifier: Modifier = Modifier,
-    homeLeader: BoxScore.BoxScoreTeam.Player?,
-    awayLeader: BoxScore.BoxScoreTeam.Player?
+    homeLeaderId: Int,
+    awayLeaderId: Int,
 ) {
     Row(
         modifier = modifier,
@@ -70,7 +70,7 @@ private fun ScoreLeaderTitleRow(
     ) {
         PlayerImage(
             modifier = Modifier.size(56.dp),
-            playerId = homeLeader?.playerId
+            playerId = homeLeaderId,
         )
         Text(
             text = stringResource(R.string.box_score_leader_statistics_title),
@@ -80,7 +80,7 @@ private fun ScoreLeaderTitleRow(
         )
         PlayerImage(
             modifier = Modifier.size(56.dp),
-            playerId = awayLeader?.playerId
+            playerId = awayLeaderId,
         )
     }
 }

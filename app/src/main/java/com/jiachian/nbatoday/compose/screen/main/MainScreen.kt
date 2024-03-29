@@ -49,8 +49,7 @@ fun MainScreen(
         }
         composable(MainRoute.BoxScore.route) {
             BoxScoreScreen(
-                openPlayerInfo = navigationController::navigateToPlayer,
-                onBack = navController::popBackStack
+                navigationController = navigationController
             )
         }
         composable(MainRoute.Team.route) {

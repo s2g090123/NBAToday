@@ -20,9 +20,9 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.jiachian.nbatoday.R
-import com.jiachian.nbatoday.compose.screen.score.BoxScoreViewModel
-import com.jiachian.nbatoday.compose.screen.score.models.BoxScoreUI
-import com.jiachian.nbatoday.models.local.team.NBATeam
+import com.jiachian.nbatoday.compose.screen.score.state.BoxScoreLeaderState
+import com.jiachian.nbatoday.compose.screen.score.state.BoxScorePlayerState
+import com.jiachian.nbatoday.compose.screen.score.state.BoxScoreTeamState
 import com.jiachian.nbatoday.testing.testtag.BoxScoreTestTag
 import kotlinx.coroutines.launch
 
@@ -35,9 +35,10 @@ private const val LeaderPageIndex = 3
 @Composable
 fun ScoreDetailPager(
     modifier: Modifier = Modifier,
-    viewModel: BoxScoreViewModel,
     pagerState: PagerState,
-    boxScoreUI: BoxScoreUI,
+    player: BoxScorePlayerState,
+    team: BoxScoreTeamState,
+    leader: BoxScoreLeaderState,
     onClickPlayer: (playerId: Int) -> Unit,
 ) {
     HorizontalPager(
@@ -52,8 +53,7 @@ fun ScoreDetailPager(
                     modifier = Modifier
                         .testTag(BoxScoreTestTag.ScoreDetailPager_ScorePlayerPage_Home)
                         .fillMaxSize(),
-                    viewModel = viewModel,
-                    players = boxScoreUI.players.home,
+                    players = player.homePlayers,
                     onClickPlayer = onClickPlayer,
                 )
             }
@@ -62,8 +62,7 @@ fun ScoreDetailPager(
                     modifier = Modifier
                         .testTag(BoxScoreTestTag.ScoreDetailPager_ScorePlayerPage_Away)
                         .fillMaxHeight(),
-                    viewModel = viewModel,
-                    players = boxScoreUI.players.away,
+                    players = player.awayPlayers,
                     onClickPlayer = onClickPlayer,
                 )
             }
@@ -73,7 +72,9 @@ fun ScoreDetailPager(
                         .testTag(BoxScoreTestTag.ScoreDetailPager_ScoreTeamPage)
                         .fillMaxHeight()
                         .padding(horizontal = 16.dp),
-                    teamsUI = boxScoreUI.teams,
+                    homeTeam = team.homeTeam,
+                    awayTeam = team.awayTeam,
+                    data = team.data,
                 )
             }
             LeaderPageIndex -> {
@@ -82,7 +83,9 @@ fun ScoreDetailPager(
                         .testTag(BoxScoreTestTag.ScoreDetailPager_ScoreLeaderPage)
                         .fillMaxHeight()
                         .padding(horizontal = 16.dp),
-                    leadersUI = boxScoreUI.leaders,
+                    homeLeaderId = leader.homePlayerId,
+                    awayLeaderId = leader.awayPlayerId,
+                    data = leader.data,
                 )
             }
         }
@@ -94,8 +97,8 @@ fun ScoreDetailPager(
 fun ScoreTabRow(
     modifier: Modifier = Modifier,
     pagerState: PagerState,
-    homeTeam: NBATeam,
-    awayTeam: NBATeam,
+    homeAbbr: String,
+    awayAbbr: String,
 ) {
     val coroutineScope = rememberCoroutineScope()
     TabRow(
@@ -112,7 +115,7 @@ fun ScoreTabRow(
     ) {
         ScoreTab(
             modifier = Modifier.testTag(BoxScoreTestTag.ScoreTabRow_ScoreTab_Home),
-            text = homeTeam.abbreviation,
+            text = homeAbbr,
             selected = pagerState.currentPage == HomePageIndex,
             onClick = {
                 coroutineScope.launch {
@@ -122,7 +125,7 @@ fun ScoreTabRow(
         )
         ScoreTab(
             modifier = Modifier.testTag(BoxScoreTestTag.ScoreTabRow_ScoreTab_Away),
-            text = awayTeam.abbreviation,
+            text = awayAbbr,
             selected = pagerState.currentPage == AwayPageIndex,
             onClick = {
                 coroutineScope.launch {

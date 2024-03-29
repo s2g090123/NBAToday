@@ -2,7 +2,7 @@ package com.jiachian.nbatoday.testing.testtag
 
 object BoxScoreTestTag {
     const val ScoreScreen_Loading = "ScoreScreen_Loading"
-    const val ScoreScreen_NotFoundScreen = "ScoreScreen_NotFoundScreen"
+    const val ScoreScreen_NotFound = "ScoreScreen_NotFoundScreen"
 
     const val ScoreTopBar_Button_Back = "ScoreTopBar_Button_Back"
     const val ScoreTopBar_Text_Date = "ScoreTopBar_Text_Date"

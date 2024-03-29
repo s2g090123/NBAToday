@@ -10,7 +10,6 @@ import com.jiachian.nbatoday.compose.screen.score.models.BoxScorePlayerLabel
 import com.jiachian.nbatoday.compose.screen.score.models.BoxScorePlayerRowData
 import com.jiachian.nbatoday.compose.screen.score.models.BoxScoreTeamLabel
 import com.jiachian.nbatoday.compose.screen.score.models.BoxScoreTeamRowData
-import com.jiachian.nbatoday.compose.screen.score.models.BoxScoreUI
 import com.jiachian.nbatoday.compose.screen.state.UIState
 import com.jiachian.nbatoday.data.local.BoxScoreGenerator
 import com.jiachian.nbatoday.data.local.GameGenerator

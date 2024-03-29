@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.compose.screen.score.models.BoxScoreTeamRowData
-import com.jiachian.nbatoday.compose.screen.score.models.BoxScoreUI
 import com.jiachian.nbatoday.compose.widget.TeamLogoImage
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.testing.testtag.BoxScoreTestTag
@@ -33,7 +32,9 @@ import com.jiachian.nbatoday.utils.dividerSecondaryColor
 @Composable
 fun ScoreTeamPage(
     modifier: Modifier = Modifier,
-    teamsUI: BoxScoreUI.BoxScoreTeamsUI,
+    homeTeam: NBATeam,
+    awayTeam: NBATeam,
+    data: List<BoxScoreTeamRowData>,
 ) {
     LazyColumn(modifier = modifier) {
         item {
@@ -41,11 +42,11 @@ fun ScoreTeamPage(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 8.dp),
-                homeTeam = teamsUI.home,
-                awayTeam = teamsUI.away,
+                homeTeam = homeTeam,
+                awayTeam = awayTeam,
             )
         }
-        items(teamsUI.rowData) { rowData ->
+        items(data) { rowData ->
             TeamStatsRow(
                 modifier = Modifier.fillMaxWidth(),
                 rowData = rowData

@@ -53,6 +53,9 @@ import com.jiachian.nbatoday.usecase.bet.AddBet
 import com.jiachian.nbatoday.usecase.bet.BetUseCase
 import com.jiachian.nbatoday.usecase.bet.DeleteBet
 import com.jiachian.nbatoday.usecase.bet.GetBetGames
+import com.jiachian.nbatoday.usecase.boxscore.AddBoxScore
+import com.jiachian.nbatoday.usecase.boxscore.BoxScoreUseCase
+import com.jiachian.nbatoday.usecase.boxscore.GetBoxScore
 import com.jiachian.nbatoday.usecase.game.GameUseCase
 import com.jiachian.nbatoday.usecase.game.GetFirstLastGameDate
 import com.jiachian.nbatoday.usecase.game.GetGame
@@ -123,6 +126,9 @@ val module = module {
     factory { PlayerUseCase(get(), get()) }
     factory { AddPlayer(get()) }
     factory { GetPlayer(get()) }
+    factory { BoxScoreUseCase(get(), get()) }
+    factory { AddBoxScore(get()) }
+    factory { GetBoxScore(get()) }
 
     single { NBADatabase.getInstance(androidContext()) }
     single { NBADataStore(androidApplication()) as BaseDataStore }

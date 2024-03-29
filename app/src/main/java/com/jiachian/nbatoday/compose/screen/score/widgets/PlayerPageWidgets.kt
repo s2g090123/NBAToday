@@ -21,8 +21,10 @@ import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,7 +37,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import com.jiachian.nbatoday.R
-import com.jiachian.nbatoday.compose.screen.score.BoxScoreViewModel
 import com.jiachian.nbatoday.compose.screen.score.models.BoxScorePlayerLabel
 import com.jiachian.nbatoday.compose.screen.score.models.BoxScorePlayerRowData
 import com.jiachian.nbatoday.testing.testtag.BoxScoreTestTag
@@ -46,7 +47,6 @@ import com.jiachian.nbatoday.utils.rippleClickable
 @Composable
 fun ScorePlayerPage(
     modifier: Modifier = Modifier,
-    viewModel: BoxScoreViewModel,
     players: List<BoxScorePlayerRowData>,
     onClickPlayer: (playerId: Int) -> Unit,
 ) {
@@ -54,7 +54,6 @@ fun ScorePlayerPage(
     LazyColumn(modifier = modifier) {
         stickyHeader {
             ScorePlayerLabelScrollableRow(
-                viewModel = viewModel,
                 scrollState = scrollState
             )
         }
@@ -70,14 +69,10 @@ fun ScorePlayerPage(
 
 @Composable
 private fun ScorePlayerLabelScrollableRow(
-    modifier: Modifier = Modifier,
-    viewModel: BoxScoreViewModel,
     scrollState: ScrollState,
 ) {
     Column(modifier = Modifier.background(MaterialTheme.colors.primary)) {
         ScorePlayerLabelRow(
-            modifier = modifier,
-            viewModel = viewModel,
             scrollState = scrollState,
         )
         Divider(
@@ -89,12 +84,11 @@ private fun ScorePlayerLabelScrollableRow(
 
 @Composable
 private fun ScorePlayerLabelRow(
-    modifier: Modifier = Modifier,
-    viewModel: BoxScoreViewModel,
     scrollState: ScrollState,
 ) {
-    val selectedLabel by viewModel.selectedPlayerLabel.collectAsState()
-    Row(modifier = modifier) {
+    val labels = remember { BoxScorePlayerLabel.values() }
+    var selectedLabel by remember { mutableStateOf<BoxScorePlayerLabel?>(null) }
+    Row {
         Text(
             modifier = Modifier
                 .size(120.dp, 40.dp)
@@ -108,12 +102,12 @@ private fun ScorePlayerLabelRow(
         )
         Row(modifier = Modifier.horizontalScroll(scrollState)) {
             Spacer(modifier = Modifier.width(40.dp))
-            viewModel.playerLabels.forEach { label ->
+            labels.forEach { label ->
                 ScorePlayerLabel(
                     label = label,
                     popup = label == selectedLabel,
-                    onClick = { viewModel.selectPlayerLabel(label) },
-                    onDismiss = { viewModel.selectPlayerLabel(null) }
+                    onClick = { selectedLabel = label },
+                    onDismiss = { selectedLabel = null }
                 )
             }
         }
