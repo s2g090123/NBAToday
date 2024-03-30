@@ -7,13 +7,14 @@ import com.jiachian.nbatoday.models.local.game.GameAndBets
 import com.jiachian.nbatoday.models.local.score.BoxScoreAndGame
 import com.jiachian.nbatoday.models.remote.score.extensions.toBoxScore
 import com.jiachian.nbatoday.service.GameService
+import com.jiachian.nbatoday.utils.isError
 import kotlinx.coroutines.flow.Flow
 
 class NBAGameRepository(
     private val gameDao: GameDao,
     private val boxScoreDao: BoxScoreDao,
     private val gameService: GameService,
-) : GameRepository() {
+) : GameRepository {
     override suspend fun addBoxScore(gameId: String): Response<Unit> {
         return gameService
             .getBoxScore(gameId)

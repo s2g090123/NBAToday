@@ -6,12 +6,13 @@ import com.jiachian.nbatoday.database.dao.PlayerDao
 import com.jiachian.nbatoday.models.local.player.Player
 import com.jiachian.nbatoday.models.remote.player.extensions.toPlayer
 import com.jiachian.nbatoday.service.PlayerService
+import com.jiachian.nbatoday.utils.isError
 import kotlinx.coroutines.flow.Flow
 
 class NBAPlayerRepository(
     private val dao: PlayerDao,
     private val service: PlayerService,
-) : PlayerRepository() {
+) : PlayerRepository {
     override suspend fun addPlayer(playerId: Int): Response<Unit> {
         return service
             .getPlayer(season = CurrentSeason, playerId = playerId)

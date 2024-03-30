@@ -4,9 +4,11 @@ import com.jiachian.nbatoday.compose.screen.home.standing.models.StandingSorting
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.models.local.team.Team
 import com.jiachian.nbatoday.repository.team.TeamRepository
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class GetTeams(
     private val repository: TeamRepository
 ) {
@@ -16,7 +18,7 @@ class GetTeams(
     ): Flow<List<Team>> {
         return repository
             .getTeams(conference)
-            .map {
+            .mapLatest {
                 it.sortedWith(sorting)
             }
     }

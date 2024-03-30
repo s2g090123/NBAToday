@@ -11,6 +11,7 @@ import com.jiachian.nbatoday.models.local.team.TeamRank
 import com.jiachian.nbatoday.models.remote.team.extensions.toTeamPlayerStats
 import com.jiachian.nbatoday.models.remote.team.extensions.toTeamStats
 import com.jiachian.nbatoday.service.TeamService
+import com.jiachian.nbatoday.utils.isError
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
@@ -18,7 +19,7 @@ import kotlinx.coroutines.flow.firstOrNull
 class NBATeamRepository(
     private val dao: TeamDao,
     private val service: TeamService,
-) : TeamRepository() {
+) : TeamRepository {
     override suspend fun addTeams(): Response<Unit> {
         return service
             .getTeam(CurrentSeason, null)
@@ -73,18 +74,16 @@ class NBATeamRepository(
     }
 
     private suspend fun deleteTradedPlayers(teamId: Int, remoteTeamPlayers: List<TeamPlayer>) {
-        loading {
-            val remoteTeamPlayerIds = remoteTeamPlayers.map { it.playerId }
-            // delete players who were traded to another team
-            dao
-                .getTeamAndPlayers(teamId)
-                .firstOrNull()
-                ?.teamPlayers
-                ?.map { teamPlayer -> teamPlayer.playerId }
-                ?.filterNot { playerId -> playerId in remoteTeamPlayerIds }
-                ?.also { playerIds ->
-                    dao.deleteTeamPlayers(teamId, playerIds)
-                }
-        }
+        val remoteTeamPlayerIds = remoteTeamPlayers.map { it.playerId }
+        // delete players who were traded to another team
+        dao
+            .getTeamAndPlayers(teamId)
+            .firstOrNull()
+            ?.teamPlayers
+            ?.map { teamPlayer -> teamPlayer.playerId }
+            ?.filterNot { playerId -> playerId in remoteTeamPlayerIds }
+            ?.also { playerIds ->
+                dao.deleteTeamPlayers(teamId, playerIds)
+            }
     }
 }
