@@ -147,14 +147,11 @@ class CalendarViewModel(
                 .onEach {
                     gamesStateImp.loading = true
                 }
-                .flowOn(dispatcherProvider.main)
-                .flatMapLatest {
-                    getGames(it)
+                .flatMapLatest { date ->
+                    getGames(date)
+                        .mapLatest { it.toGameCardState(user) }
+                        .flowOn(dispatcherProvider.default)
                 }
-                .mapLatest {
-                    it.toGameCardState(user)
-                }
-                .flowOn(dispatcherProvider.default)
                 .collect {
                     Snapshot.withMutableSnapshot {
                         gamesStateImp.let { state ->
