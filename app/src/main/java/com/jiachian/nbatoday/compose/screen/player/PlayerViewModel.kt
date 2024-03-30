@@ -19,6 +19,7 @@ import com.jiachian.nbatoday.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.models.local.player.Player
 import com.jiachian.nbatoday.navigation.MainRoute
+import com.jiachian.nbatoday.usecase.player.GetPlayerError
 import com.jiachian.nbatoday.usecase.player.PlayerUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
@@ -52,24 +53,31 @@ class PlayerViewModel(
                 playerUseCase
                     .getPlayer(playerId, sorting)
                     .flowOn(dispatcherProvider.default)
-            }.collectLatest { player ->
-                if (player == null) {
-                    stateImp.notFound = true
-                } else {
-                    val (tableData, rowData) = withContext(dispatcherProvider.default) {
-                        player.info.toTableData() to player.stats.stats.toRowData()
+            }.collectLatest { resource ->
+                when (resource) {
+                    is Resource.Error -> {
+                        when (resource.error) {
+                            GetPlayerError.NOT_FOUND -> stateImp.notFound = true
+                        }
                     }
-                    Snapshot.withMutableSnapshot {
-                        stateImp.apply {
-                            info.let { state ->
-                                state.name = player.info.playerName
-                                state.team = player.info.team
-                                state.detail = player.info.detail
-                                state.is75 = player.info.isGreatest75
-                                state.data = tableData
+                    is Resource.Loading -> Unit
+                    is Resource.Success -> {
+                        val player = resource.data
+                        val (tableData, rowData) = withContext(dispatcherProvider.default) {
+                            player.info.toTableData() to player.stats.stats.toRowData()
+                        }
+                        Snapshot.withMutableSnapshot {
+                            stateImp.apply {
+                                info.let { state ->
+                                    state.name = player.info.playerName
+                                    state.team = player.info.team
+                                    state.detail = player.info.detail
+                                    state.is75 = player.info.isGreatest75
+                                    state.data = tableData
+                                }
+                                stats.data = rowData
+                                notFound = false
                             }
-                            stats.data = rowData
-                            notFound = false
                         }
                     }
                 }

@@ -1,5 +1,7 @@
 package com.jiachian.nbatoday.usecase.player
 
+import com.jiachian.nbatoday.common.Error
+import com.jiachian.nbatoday.common.Resource
 import com.jiachian.nbatoday.compose.screen.player.models.PlayerStatsSorting
 import com.jiachian.nbatoday.models.local.player.Player
 import com.jiachian.nbatoday.repository.player.PlayerRepository
@@ -7,20 +9,30 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapLatest
 
+enum class GetPlayerError : Error {
+    NOT_FOUND
+}
+
 @OptIn(ExperimentalCoroutinesApi::class)
 class GetPlayer(
     private val repository: PlayerRepository,
 ) {
-    operator fun invoke(playerId: Int, sorting: PlayerStatsSorting): Flow<Player?> {
+    operator fun invoke(playerId: Int, sorting: PlayerStatsSorting): Flow<Resource<Player, GetPlayerError>> {
         return repository
             .getPlayer(playerId)
             .mapLatest { player ->
-                player ?: return@mapLatest null
-                player.copy(
-                    stats = player.stats.copy(
-                        stats = player.stats.stats.sortedWith(sorting)
-                    )
-                )
+                when (player) {
+                    null -> Resource.Error(GetPlayerError.NOT_FOUND)
+                    else -> {
+                        Resource.Success(
+                            player.copy(
+                                stats = player.stats.copy(
+                                    stats = player.stats.stats.sortedWith(sorting)
+                                )
+                            )
+                        )
+                    }
+                }
             }
     }
 
