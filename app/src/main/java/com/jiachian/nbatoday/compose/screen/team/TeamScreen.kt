@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Tab
@@ -53,7 +54,6 @@ import com.jiachian.nbatoday.compose.screen.team.widgets.TeamGamePage
 import com.jiachian.nbatoday.compose.screen.team.widgets.TeamInformation
 import com.jiachian.nbatoday.compose.screen.team.widgets.TeamPlayerPage
 import com.jiachian.nbatoday.compose.widget.IconButton
-import com.jiachian.nbatoday.compose.widget.LoadingScreen
 import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.testing.testtag.TeamTestTag
 import com.jiachian.nbatoday.utils.LocalColors
@@ -93,7 +93,7 @@ fun TeamScreen(
                     .padding(padding)
             ) {
                 if (state.loading) {
-                    LoadingScreen(
+                    CircularProgressIndicator(
                         modifier = Modifier
                             .testTag(TeamTestTag.TeamScreen_LoadingScreen)
                             .align(Alignment.Center),

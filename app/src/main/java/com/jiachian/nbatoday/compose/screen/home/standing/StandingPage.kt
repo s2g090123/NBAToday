@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
@@ -51,7 +52,6 @@ import com.jiachian.nbatoday.compose.screen.home.standing.models.StandingRowData
 import com.jiachian.nbatoday.compose.screen.home.standing.models.StandingRowData.Companion.ELIMINATED_STANDING
 import com.jiachian.nbatoday.compose.screen.home.standing.models.StandingSorting
 import com.jiachian.nbatoday.compose.screen.home.standing.state.StandingTeamState
-import com.jiachian.nbatoday.compose.widget.LoadingScreen
 import com.jiachian.nbatoday.compose.widget.TeamLogoImage
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.navigation.NavigationController
@@ -165,7 +165,7 @@ private fun StandingScreen(
     val scrollState = rememberScrollState()
     Box(modifier = modifier) {
         if (state.loading) {
-            LoadingScreen(
+            CircularProgressIndicator(
                 modifier = Modifier.align(Alignment.Center),
                 color = MaterialTheme.colors.secondary,
             )

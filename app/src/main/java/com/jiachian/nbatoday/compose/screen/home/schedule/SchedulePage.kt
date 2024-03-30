@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ScrollableTabRow
@@ -41,7 +42,6 @@ import com.jiachian.nbatoday.compose.screen.home.schedule.event.ScheduleDataEven
 import com.jiachian.nbatoday.compose.screen.home.schedule.event.ScheduleUIEvent
 import com.jiachian.nbatoday.compose.screen.home.schedule.models.DateData
 import com.jiachian.nbatoday.compose.widget.IconButton
-import com.jiachian.nbatoday.compose.widget.LoadingScreen
 import com.jiachian.nbatoday.models.local.game.Game
 import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.testing.testtag.ScheduleTestTag
@@ -60,7 +60,7 @@ fun SchedulePage(
     val state = viewModel.state
     Box(modifier = Modifier.fillMaxSize()) {
         if (state.loading) {
-            LoadingScreen(
+            CircularProgressIndicator(
                 modifier = Modifier.align(Alignment.Center),
                 color = MaterialTheme.colors.primary,
             )

@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -27,7 +28,6 @@ import com.jiachian.nbatoday.compose.screen.player.state.PlayerStatsState
 import com.jiachian.nbatoday.compose.screen.player.widgets.playerInfo
 import com.jiachian.nbatoday.compose.screen.player.widgets.playerStats
 import com.jiachian.nbatoday.compose.widget.IconButton
-import com.jiachian.nbatoday.compose.widget.LoadingScreen
 import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.testing.testtag.PlayerTestTag
 import com.jiachian.nbatoday.utils.showToast
@@ -60,7 +60,7 @@ fun PlayerScreen(
         ) {
             when {
                 state.loading -> {
-                    LoadingScreen(
+                    CircularProgressIndicator(
                         modifier = Modifier
                             .testTag(PlayerTestTag.PlayerScreen_Loading)
                             .align(Alignment.Center),

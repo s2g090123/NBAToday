@@ -1,13 +1,11 @@
 package com.jiachian.nbatoday.compose.widget
 
-import androidx.activity.compose.BackHandler
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandIn
 import androidx.compose.animation.shrinkOut
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -16,7 +14,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.LocalContentColor
@@ -44,34 +41,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.jiachian.nbatoday.R
-import com.jiachian.nbatoday.annotation.ExcludeFromJacocoGeneratedReport
 import com.jiachian.nbatoday.compose.coil.SvgRequest
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.utils.NBAUtils
 import com.jiachian.nbatoday.utils.color
-import com.jiachian.nbatoday.utils.noRippleClickable
-
-/**
- * Displays a loading screen with a circular progress indicator.
- *
- * @param modifier The modifier for the loading screen.
- * @param color The color of the circular progress indicator.
- * @param interceptBack Whether to intercept the back button press.
- */
-@Composable
-fun LoadingScreen(
-    modifier: Modifier = Modifier,
-    color: Color,
-    interceptBack: Boolean = false,
-) {
-    FocusableBox(modifier = modifier) {
-        CircularProgressIndicator(
-            modifier = Modifier.align(Alignment.Center),
-            color = color
-        )
-    }
-    BackHandler(interceptBack) {}
-}
 
 /**
  * Custom implementation of an outlined text field with additional customization options.
@@ -156,17 +129,6 @@ fun CustomOutlinedTextField(
     }
 }
 
-@ExcludeFromJacocoGeneratedReport
-@Composable
-inline fun FocusableBox(
-    modifier: Modifier = Modifier,
-    content: @Composable BoxScope.() -> Unit
-) {
-    Box(modifier = modifier.then(Modifier.noRippleClickable { })) {
-        content()
-    }
-}
-
 @Composable
 fun IconButton(
     modifier: Modifier = Modifier,
@@ -236,24 +198,6 @@ fun PlayerImage(
         placeholder = painterResource(R.drawable.ic_black_person),
         contentDescription = null
     )
-}
-
-/**
- * Conditional rendering based on nullability of data.
- *
- * @param data The data to be checked for null.
- * @param ifNull Content to be displayed if data is null.
- * @param ifNotNull Content to be displayed if data is not null.
- */
-@Composable
-fun <T> NullCheckScreen(
-    data: T?,
-    ifNull: (@Composable () -> Unit)?,
-    ifNotNull: (@Composable (T) -> Unit)?
-) {
-    data?.let {
-        ifNotNull?.invoke(it)
-    } ?: ifNull?.invoke()
 }
 
 /**

@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.AlertDialog
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -41,7 +42,6 @@ import com.jiachian.nbatoday.compose.screen.bet.dialog.event.BetDialogDataEvent
 import com.jiachian.nbatoday.compose.screen.bet.dialog.event.BetDialogUIEvent
 import com.jiachian.nbatoday.compose.screen.bet.dialog.state.BetDialogState
 import com.jiachian.nbatoday.compose.widget.CustomOutlinedTextField
-import com.jiachian.nbatoday.compose.widget.LoadingScreen
 import com.jiachian.nbatoday.compose.widget.TeamLogoImage
 import com.jiachian.nbatoday.models.local.game.GameTeam
 import com.jiachian.nbatoday.testing.testtag.BetTestTag
@@ -95,7 +95,7 @@ private fun BetDialogContent(
         contentAlignment = Alignment.Center
     ) {
         if (state.loading) {
-            LoadingScreen(color = MaterialTheme.colors.primary)
+            CircularProgressIndicator(color = MaterialTheme.colors.primary)
         } else {
             state.game?.let { game ->
                 Column(

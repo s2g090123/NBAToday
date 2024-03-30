@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -43,7 +44,6 @@ import com.jiachian.nbatoday.compose.screen.score.widgets.ScoreDetailPager
 import com.jiachian.nbatoday.compose.screen.score.widgets.ScoreInfo
 import com.jiachian.nbatoday.compose.screen.score.widgets.ScoreTabRow
 import com.jiachian.nbatoday.compose.widget.IconButton
-import com.jiachian.nbatoday.compose.widget.LoadingScreen
 import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.testing.testtag.BoxScoreTestTag
 import com.jiachian.nbatoday.utils.showToast
@@ -73,7 +73,7 @@ fun BoxScoreScreen(
                 .padding(padding)
         ) {
             if (state.loading) {
-                LoadingScreen(
+                CircularProgressIndicator(
                     modifier = Modifier
                         .testTag(BoxScoreTestTag.ScoreScreen_Loading)
                         .align(Alignment.Center),

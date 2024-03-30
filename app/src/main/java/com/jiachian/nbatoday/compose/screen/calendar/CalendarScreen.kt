@@ -20,6 +20,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -44,7 +45,6 @@ import com.jiachian.nbatoday.compose.screen.calendar.state.CalendarTopBarState
 import com.jiachian.nbatoday.compose.screen.card.GameCard
 import com.jiachian.nbatoday.compose.screen.card.models.GameCardData
 import com.jiachian.nbatoday.compose.widget.IconButton
-import com.jiachian.nbatoday.compose.widget.LoadingScreen
 import com.jiachian.nbatoday.models.local.game.Game
 import com.jiachian.nbatoday.navigation.NavigationController
 import com.jiachian.nbatoday.testing.testtag.CalendarTestTag
@@ -72,7 +72,7 @@ fun CalendarScreen(
         }
     ) { padding ->
         if (datesState.loading) {
-            LoadingScreen(
+            CircularProgressIndicator(
                 modifier = Modifier
                     .testTag(CalendarTestTag.CalendarContent_LoadingScreen_Calendar)
                     .fillMaxSize(),
@@ -92,7 +92,7 @@ fun CalendarScreen(
                 if (gamesState.visible) {
                     if (gamesState.loading) {
                         item(span = { GridItemSpan(DaysPerWeek) }) {
-                            LoadingScreen(
+                            CircularProgressIndicator(
                                 modifier = Modifier
                                     .testTag(CalendarTestTag.CalendarContent_LoadingScreen_Games)
                                     .padding(top = 24.dp),
