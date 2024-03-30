@@ -12,25 +12,6 @@ import com.jiachian.nbatoday.compose.screen.score.BoxScoreViewModel
 import com.jiachian.nbatoday.compose.screen.splash.SplashViewModel
 import com.jiachian.nbatoday.compose.screen.team.TeamViewModel
 import com.jiachian.nbatoday.database.NBADatabase
-import com.jiachian.nbatoday.datasource.local.bet.BetLocalSource
-import com.jiachian.nbatoday.datasource.local.bet.NBABetLocalSource
-import com.jiachian.nbatoday.datasource.local.boxscore.BoxScoreLocalSource
-import com.jiachian.nbatoday.datasource.local.boxscore.NBABoxScoreLocalSource
-import com.jiachian.nbatoday.datasource.local.game.GameLocalSource
-import com.jiachian.nbatoday.datasource.local.game.NBAGameLocalSource
-import com.jiachian.nbatoday.datasource.local.player.NBAPlayerLocalSource
-import com.jiachian.nbatoday.datasource.local.player.PlayerLocalSource
-import com.jiachian.nbatoday.datasource.local.team.NBATeamLocalSource
-import com.jiachian.nbatoday.datasource.local.team.TeamLocalSource
-import com.jiachian.nbatoday.datasource.remote.RemoteSource
-import com.jiachian.nbatoday.datasource.remote.game.GameRemoteSource
-import com.jiachian.nbatoday.datasource.remote.game.NBAGameRemoteSource
-import com.jiachian.nbatoday.datasource.remote.player.NBAPlayerRemoteSource
-import com.jiachian.nbatoday.datasource.remote.player.PlayerRemoteSource
-import com.jiachian.nbatoday.datasource.remote.team.NBATeamRemoteSource
-import com.jiachian.nbatoday.datasource.remote.team.TeamRemoteSource
-import com.jiachian.nbatoday.datasource.remote.user.NBAUserRemoteSource
-import com.jiachian.nbatoday.datasource.remote.user.UserRemoteSource
 import com.jiachian.nbatoday.datastore.BaseDataStore
 import com.jiachian.nbatoday.datastore.NBADataStore
 import com.jiachian.nbatoday.repository.bet.BetRepository
@@ -81,6 +62,7 @@ import com.jiachian.nbatoday.usecase.user.UserLogin
 import com.jiachian.nbatoday.usecase.user.UserLogout
 import com.jiachian.nbatoday.usecase.user.UserRegister
 import com.jiachian.nbatoday.usecase.user.UserUseCase
+import com.jiachian.nbatoday.utils.RetrofitUtils
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -92,19 +74,10 @@ val module = module {
     factory { (get() as NBADatabase).getTeamDao() }
     factory { (get() as NBADatabase).getPlayerDao() }
     factory { (get() as NBADatabase).getBetDao() }
-    factory { RemoteSource.createService(GameService::class.java) }
-    factory { RemoteSource.createService(UserService::class.java) }
-    factory { RemoteSource.createService(TeamService::class.java) }
-    factory { RemoteSource.createService(PlayerService::class.java) }
-    factory { NBAGameRemoteSource(RemoteSource.createService(GameService::class.java)) as GameRemoteSource }
-    factory { NBATeamRemoteSource(RemoteSource.createService(TeamService::class.java)) as TeamRemoteSource }
-    factory { NBAPlayerRemoteSource(RemoteSource.createService(PlayerService::class.java)) as PlayerRemoteSource }
-    factory { NBAUserRemoteSource(RemoteSource.createService(UserService::class.java)) as UserRemoteSource }
-    factory { NBAGameLocalSource(get()) as GameLocalSource }
-    factory { NBABoxScoreLocalSource(get()) as BoxScoreLocalSource }
-    factory { NBATeamLocalSource(get()) as TeamLocalSource }
-    factory { NBAPlayerLocalSource(get()) as PlayerLocalSource }
-    factory { NBABetLocalSource(get()) as BetLocalSource }
+    factory { RetrofitUtils.createService(GameService::class.java) }
+    factory { RetrofitUtils.createService(UserService::class.java) }
+    factory { RetrofitUtils.createService(TeamService::class.java) }
+    factory { RetrofitUtils.createService(PlayerService::class.java) }
 
     // use case
     factory { BetUseCase(get(), get(), get()) }

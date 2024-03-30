@@ -1,4 +1,4 @@
-package com.jiachian.nbatoday.datasource.remote
+package com.jiachian.nbatoday.utils
 
 import com.google.gson.GsonBuilder
 import com.jiachian.nbatoday.NBAServerUrl
@@ -10,7 +10,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 /**
  * Creating and managing Retrofit instances for remote data sources.
  */
-object RemoteSource {
+object RetrofitUtils {
     private const val ConnectTimeOut = 5L
     private const val ReadTimeOut = 20L
 
