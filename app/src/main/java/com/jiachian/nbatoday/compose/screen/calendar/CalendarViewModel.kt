@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -151,7 +151,7 @@ class CalendarViewModel(
                 .flatMapLatest {
                     getGames(it)
                 }
-                .map {
+                .mapLatest {
                     it.toGameCardState(user)
                 }
                 .flowOn(dispatcherProvider.default)

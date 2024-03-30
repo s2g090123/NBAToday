@@ -21,18 +21,15 @@ class GetPlayer(
         return repository
             .getPlayer(playerId)
             .mapLatest { player ->
-                when (player) {
-                    null -> Resource.Error(GetPlayerError.NOT_FOUND)
-                    else -> {
-                        Resource.Success(
-                            player.copy(
-                                stats = player.stats.copy(
-                                    stats = player.stats.stats.sortedWith(sorting)
-                                )
+                player?.let {
+                    Resource.Success(
+                        player.copy(
+                            stats = player.stats.copy(
+                                stats = player.stats.stats.sortedWith(sorting)
                             )
                         )
-                    }
-                }
+                    )
+                } ?: Resource.Error(GetPlayerError.NOT_FOUND)
             }
     }
 

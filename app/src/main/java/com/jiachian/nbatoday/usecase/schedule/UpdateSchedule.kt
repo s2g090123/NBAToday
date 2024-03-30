@@ -20,7 +20,7 @@ class UpdateSchedule(
         day: Int = -1,
     ): Flow<Resource<Unit, UpdateScheduleError>> = flow {
         emit(Resource.Loading())
-        val response = if (year == -1 || month == -1 || day == -1) {
+        val response = if (year < 0 || month !in 1..12 || day !in 1..31) {
             repository.updateSchedule()
         } else {
             repository.updateSchedule(year, month, day)
