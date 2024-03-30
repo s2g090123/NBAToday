@@ -18,10 +18,6 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-class Test {
-
-}
-
 class SplashViewModel(
     private val scheduleUseCase: ScheduleUseCase,
     private val teamUseCase: TeamUseCase,

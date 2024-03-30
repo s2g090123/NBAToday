@@ -19,13 +19,12 @@ class GetTeamAndPlayers(
     private val repository: TeamRepository,
 ) {
     operator fun invoke(teamId: Int, sorting: TeamPlayerSorting): Flow<Resource<TeamAndPlayers, GetTeamAndPlayersError>> {
-        return repository.getTeamAndPlayers(teamId)
-            .mapLatest {
-                if (it == null) {
-                    Resource.Error(GetTeamAndPlayersError.TEAM_NOT_FOUND)
-                } else {
+        return repository
+            .getTeamAndPlayers(teamId)
+            .mapLatest { teamAndPlayers ->
+                teamAndPlayers?.let {
                     Resource.Success(it.copy(teamPlayers = it.teamPlayers.sortedWith(sorting)))
-                }
+                } ?: Resource.Error(GetTeamAndPlayersError.TEAM_NOT_FOUND)
             }
     }
 

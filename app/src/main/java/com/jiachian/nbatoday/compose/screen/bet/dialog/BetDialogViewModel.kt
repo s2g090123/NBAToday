@@ -11,7 +11,7 @@ import com.jiachian.nbatoday.compose.screen.bet.dialog.state.MutableBetDialogSta
 import com.jiachian.nbatoday.navigation.MainRoute
 import com.jiachian.nbatoday.usecase.bet.BetUseCase
 import com.jiachian.nbatoday.usecase.game.GameUseCase
-import com.jiachian.nbatoday.usecase.user.UserUseCase
+import com.jiachian.nbatoday.usecase.user.GetUser
 import kotlin.math.min
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.first
@@ -20,8 +20,8 @@ import kotlinx.coroutines.launch
 class BetDialogViewModel(
     savedStateHandle: SavedStateHandle,
     private val betUseCase: BetUseCase,
-    private val userUseCase: UserUseCase,
     private val gameUseCase: GameUseCase,
+    private val getUser: GetUser,
 ) : ViewModel() {
     private val gameId: String = savedStateHandle[MainRoute.BetDialog.param] ?: throw Exception("GameId is null.")
 
@@ -37,7 +37,7 @@ class BetDialogViewModel(
             try {
                 stateImp.loading = true
                 val getGame = async { gameUseCase.getGame(gameId) }
-                val getUser = async { userUseCase.getUser().first() }
+                val getUser = async { getUser().first() }
                 val user = getUser.await()
                 if (user == null) {
                     stateImp.event = BetDialogDataEvent.Error(BetDialogError.NOT_LOGIN)

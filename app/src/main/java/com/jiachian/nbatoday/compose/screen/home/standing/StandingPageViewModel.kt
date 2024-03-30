@@ -51,23 +51,19 @@ class StandingPageViewModel(
                 state.sorting
             }.onStart {
                 state.loading = true
-            }.flowOn(
-                dispatcherProvider.main
-            )
-                .flatMapLatest { sorting ->
-                    teamUseCase.getTeams(conference, sorting)
-                }.mapLatest {
-                    it.toRowData()
-                }.flowOn(
-                    dispatcherProvider.default
-                ).collect { teams ->
-                    Snapshot.withMutableSnapshot {
-                        state.let { state ->
-                            state.teams = teams
-                            state.loading = false
-                        }
+            }.flatMapLatest { sorting ->
+                teamUseCase
+                    .getTeams(conference, sorting)
+                    .mapLatest { it.toRowData() }
+                    .flowOn(dispatcherProvider.default)
+            }.collect { teams ->
+                Snapshot.withMutableSnapshot {
+                    state.let { state ->
+                        state.teams = teams
+                        state.loading = false
                     }
                 }
+            }
         }
     }
 

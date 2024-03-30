@@ -17,7 +17,7 @@ import com.jiachian.nbatoday.models.local.game.GameAndBets
 import com.jiachian.nbatoday.models.local.game.toGameCardState
 import com.jiachian.nbatoday.usecase.game.GameUseCase
 import com.jiachian.nbatoday.usecase.schedule.ScheduleUseCase
-import com.jiachian.nbatoday.usecase.user.UserUseCase
+import com.jiachian.nbatoday.usecase.user.GetUser
 import com.jiachian.nbatoday.utils.DateUtils
 import com.jiachian.nbatoday.utils.DateUtils.reset
 import java.util.Calendar
@@ -28,10 +28,10 @@ import kotlinx.coroutines.withContext
 class SchedulePageViewModel(
     private val scheduleUseCase: ScheduleUseCase,
     private val gameUseCase: GameUseCase,
-    userUseCase: UserUseCase,
+    getUser: GetUser,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
 ) : ViewModel() {
-    private val user = userUseCase.getUser()
+    private val user = getUser()
 
     private val stateImp = MutableScheduleState()
     val state: ScheduleState = stateImp

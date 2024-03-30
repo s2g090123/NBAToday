@@ -19,7 +19,7 @@ import com.jiachian.nbatoday.models.local.game.GameAndBets
 import com.jiachian.nbatoday.models.local.game.toGameCardState
 import com.jiachian.nbatoday.navigation.MainRoute
 import com.jiachian.nbatoday.usecase.game.GameUseCase
-import com.jiachian.nbatoday.usecase.user.UserUseCase
+import com.jiachian.nbatoday.usecase.user.GetUser
 import com.jiachian.nbatoday.utils.DateUtils
 import java.util.Calendar
 import java.util.Date
@@ -43,13 +43,13 @@ import kotlinx.coroutines.withContext
 class CalendarViewModel(
     savedStateHandle: SavedStateHandle,
     private val gameUseCase: GameUseCase,
-    userUseCase: UserUseCase,
+    getUser: GetUser,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
 ) : ViewModel() {
     private val dateTime: Long =
         savedStateHandle.get<String>(MainRoute.Calendar.param)?.toLongOrNull() ?: throw Exception("dateTime is null.")
 
-    private val user = userUseCase.getUser()
+    private val user = getUser()
 
     private val topBarStateImp = MutableCalendarTopBarState()
     val topBarState: CalendarTopBarState = topBarStateImp
