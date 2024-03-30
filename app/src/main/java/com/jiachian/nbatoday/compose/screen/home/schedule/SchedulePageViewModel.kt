@@ -90,7 +90,14 @@ class SchedulePageViewModel(
                 selectedDate.day
             ).collect {
                 when (it) {
-                    is Resource.Error -> stateImp.event = ScheduleDataEvent.Error(it.error.asScheduleError())
+                    is Resource.Error -> {
+                        Snapshot.withMutableSnapshot {
+                            stateImp.apply {
+                                event = ScheduleDataEvent.Error(it.error.asScheduleError())
+                                refreshing = false
+                            }
+                        }
+                    }
                     is Resource.Loading -> stateImp.refreshing = true
                     is Resource.Success -> stateImp.refreshing = false
                 }
