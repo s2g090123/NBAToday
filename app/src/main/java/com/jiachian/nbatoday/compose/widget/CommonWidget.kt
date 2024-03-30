@@ -46,7 +46,6 @@ import coil.compose.AsyncImage
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.annotation.ExcludeFromJacocoGeneratedReport
 import com.jiachian.nbatoday.compose.coil.SvgRequest
-import com.jiachian.nbatoday.compose.screen.state.UIState
 import com.jiachian.nbatoday.models.local.team.NBATeam
 import com.jiachian.nbatoday.utils.NBAUtils
 import com.jiachian.nbatoday.utils.color
@@ -255,33 +254,6 @@ fun <T> NullCheckScreen(
     data?.let {
         ifNotNull?.invoke(it)
     } ?: ifNull?.invoke()
-}
-
-/**
- * Conditional rendering based on the state of UI data.
- *
- * @param state The UIState representing the state of the data.
- * @param loading Content to be displayed when data is in a loading state.
- * @param ifNull Content to be displayed when data is null.
- * @param ifNotNull Content to be displayed when data is not null.
- */
-@Composable
-fun <T> UIStateScreen(
-    state: UIState<T>,
-    loading: (@Composable () -> Unit)?,
-    ifNull: (@Composable () -> Unit)?,
-    ifNotNull: (@Composable (T) -> Unit)?
-) {
-    when (state) {
-        is UIState.Loading -> loading?.invoke()
-        is UIState.Loaded -> {
-            NullCheckScreen(
-                data = state.data,
-                ifNull = ifNull,
-                ifNotNull = ifNotNull
-            )
-        }
-    }
 }
 
 /**
