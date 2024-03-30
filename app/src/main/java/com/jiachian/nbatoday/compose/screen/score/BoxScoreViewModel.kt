@@ -21,6 +21,7 @@ import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.models.local.score.BoxScore
 import com.jiachian.nbatoday.navigation.MainRoute
 import com.jiachian.nbatoday.usecase.boxscore.BoxScoreUseCase
+import com.jiachian.nbatoday.usecase.boxscore.GetBoxScoreError
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -45,38 +46,45 @@ class BoxScoreViewModel(
         viewModelScope.launch {
             boxScoreUseCase
                 .getBoxScore(gameId)
-                .collectLatest { game ->
-                    if (game == null) {
-                        stateImp.notFound = true
-                    } else {
-                        withContext(dispatcherProvider.default) {
-                            val periods = game.boxScore.homeTeam.periods.map { it.periodLabel }
-                            val homePlayersRowData = game.boxScore.homeTeam.players.map { it.toRowData() }
-                            val awayPlayersRowData = game.boxScore.awayTeam.players.map { it.toRowData() }
-                            val teamRowData = game.boxScore.toTeamRowData()
-                            val leaderRowData = game.boxScore.toLeaderRowData(game.game.homeLeaderId, game.game.awayLeaderId)
-                            Snapshot.withMutableSnapshot {
-                                stateImp.apply {
-                                    info.let { info ->
-                                        info.boxScore = game.boxScore
-                                        info.dateString = game.boxScore.gameDate
-                                        info.periods = periods
+                .collectLatest { resource ->
+                    when (resource) {
+                        is Resource.Error -> {
+                            when (resource.error) {
+                                GetBoxScoreError.NOT_FOUND -> stateImp.notFound = true
+                            }
+                        }
+                        is Resource.Loading -> Unit
+                        is Resource.Success -> {
+                            val game = resource.data
+                            withContext(dispatcherProvider.default) {
+                                val periods = game.boxScore.homeTeam.periods.map { it.periodLabel }
+                                val homePlayersRowData = game.boxScore.homeTeam.players.map { it.toRowData() }
+                                val awayPlayersRowData = game.boxScore.awayTeam.players.map { it.toRowData() }
+                                val teamRowData = game.boxScore.toTeamRowData()
+                                val leaderRowData = game.boxScore.toLeaderRowData(game.game.homeLeaderId, game.game.awayLeaderId)
+                                Snapshot.withMutableSnapshot {
+                                    stateImp.apply {
+                                        info.let { info ->
+                                            info.boxScore = game.boxScore
+                                            info.dateString = game.boxScore.gameDate
+                                            info.periods = periods
+                                        }
+                                        player.let { player ->
+                                            player.homePlayers = homePlayersRowData
+                                            player.awayPlayers = awayPlayersRowData
+                                        }
+                                        team.let { team ->
+                                            team.homeTeam = game.boxScore.homeTeam.team
+                                            team.awayTeam = game.boxScore.awayTeam.team
+                                            team.data = teamRowData
+                                        }
+                                        leader.let { leader ->
+                                            leader.homePlayerId = game.game.homeLeaderId
+                                            leader.awayPlayerId = game.game.awayLeaderId
+                                            leader.data = leaderRowData
+                                        }
+                                        notFound = false
                                     }
-                                    player.let { player ->
-                                        player.homePlayers = homePlayersRowData
-                                        player.awayPlayers = awayPlayersRowData
-                                    }
-                                    team.let { team ->
-                                        team.homeTeam = game.boxScore.homeTeam.team
-                                        team.awayTeam = game.boxScore.awayTeam.team
-                                        team.data = teamRowData
-                                    }
-                                    leader.let { leader ->
-                                        leader.homePlayerId = game.game.homeLeaderId
-                                        leader.awayPlayerId = game.game.awayLeaderId
-                                        leader.data = leaderRowData
-                                    }
-                                    notFound = false
                                 }
                             }
                         }
