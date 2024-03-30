@@ -1,5 +1,6 @@
 package com.jiachian.nbatoday.compose.screen.bet
 
+import androidx.compose.runtime.snapshots.Snapshot
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -71,8 +72,12 @@ class BetViewModel(
             .getBetGames(account)
             .onStart { stateImp.loading = true }
             .onEach {
-                stateImp.games = it
-                stateImp.loading = false
+                Snapshot.withMutableSnapshot {
+                    stateImp.apply {
+                        games = it
+                        loading = false
+                    }
+                }
             }
             .launchIn(viewModelScope)
     }
