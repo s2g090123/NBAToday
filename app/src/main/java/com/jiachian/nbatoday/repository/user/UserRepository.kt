@@ -35,13 +35,6 @@ interface UserRepository {
     suspend fun register(account: String, password: String): Response<User>
 
     /**
-     * Updates the points for the currently logged-in user.
-     *
-     * @param points The new points value.
-     */
-    suspend fun updatePoints(points: Long): Response<Unit>
-
-    /**
      * Adds points to the currently logged-in user.
      *
      * @param points The points to be added.

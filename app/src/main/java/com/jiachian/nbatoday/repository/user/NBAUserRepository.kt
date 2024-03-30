@@ -53,24 +53,6 @@ class NBAUserRepository(
             ?: Response.Error(null)
     }
 
-    override suspend fun updatePoints(points: Long): Response<Unit> {
-        return user
-            .firstOrNull()
-            ?.takeIf { user -> user.available }
-            ?.let { user ->
-                service
-                    .updatePoints(UpdatePointsBody(user.account, user.token, points))
-                    .takeIf { !it.isError() }
-                    ?.also {
-                        dataStore.updateUser(user.copy(points = points))
-                    }
-            }
-            ?.let {
-                Response.Success(Unit)
-            }
-            ?: Response.Error()
-    }
-
     override suspend fun addPoints(points: Long): Response<Unit> {
         return user
             .firstOrNull()
