@@ -75,7 +75,7 @@ fun BetScreen(
             }
         )
         TurnTableScreen(
-            state = viewModel.turnTableState,
+            state = state.turnTable,
             openTurnTable = { win, lose ->
                 viewModel.onEvent(BetUIEvent.OpenTurnTable(win, lose))
             },

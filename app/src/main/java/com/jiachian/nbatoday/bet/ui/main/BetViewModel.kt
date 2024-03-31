@@ -14,8 +14,6 @@ import com.jiachian.nbatoday.bet.ui.main.state.MutableBetState
 import com.jiachian.nbatoday.bet.ui.turntable.model.Lose
 import com.jiachian.nbatoday.bet.ui.turntable.model.TurnTableStatus
 import com.jiachian.nbatoday.bet.ui.turntable.model.Win
-import com.jiachian.nbatoday.bet.ui.turntable.state.MutableTurnTableState
-import com.jiachian.nbatoday.bet.ui.turntable.state.TurnTableState
 import com.jiachian.nbatoday.common.domain.Resource
 import com.jiachian.nbatoday.common.ui.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.common.ui.dispatcher.DispatcherProvider
@@ -61,9 +59,6 @@ class BetViewModel(
     private val stateImp = MutableBetState()
     val state: BetState = stateImp
 
-    private var turnTableStateImp = MutableTurnTableState()
-    val turnTableState: TurnTableState = turnTableStateImp
-
     init {
         getBetGames()
     }
@@ -85,9 +80,9 @@ class BetViewModel(
 
     fun onEvent(event: BetUIEvent) {
         when (event) {
-            BetUIEvent.CloseTurnTable -> turnTableStateImp.status = TurnTableStatus.Idle
+            BetUIEvent.CloseTurnTable -> stateImp.turnTable.status = TurnTableStatus.Idle
             BetUIEvent.EventReceived -> stateImp.event = null
-            is BetUIEvent.OpenTurnTable -> turnTableStateImp.status = TurnTableStatus.TurnTable(event.win, event.lose)
+            is BetUIEvent.OpenTurnTable -> stateImp.turnTable.status = TurnTableStatus.TurnTable(event.win, event.lose)
             is BetUIEvent.Settle -> settleBet(event.betGame)
             is BetUIEvent.StartTurnTable -> startTurnTable(event.win, event.lose)
         }
@@ -103,7 +98,7 @@ class BetViewModel(
                 return@launch
             }
             betUseCase.deleteBet(betAndGame.bet)
-            turnTableStateImp.status = TurnTableStatus.Asking(Win(win), Lose(lose))
+            stateImp.turnTable.status = TurnTableStatus.Asking(Win(win), Lose(lose))
         }
     }
 
@@ -114,9 +109,9 @@ class BetViewModel(
      * @param lose The lose points configuration for the turn table.
      */
     private fun startTurnTable(win: Win, lose: Lose) {
-        val status = turnTableStateImp.status
+        val status = state.turnTable.status
         if (status !is TurnTableStatus.TurnTable) {
-            turnTableStateImp.status = TurnTableStatus.Idle
+            stateImp.turnTable.status = TurnTableStatus.Idle
             return
         }
         viewModelScope.launch(dispatcherProvider.default) {
@@ -126,7 +121,7 @@ class BetViewModel(
             val resource = userUseCase.addPoints(rewardedPoints)
             if (resource is Resource.Error) {
                 stateImp.event = BetDataEvent.Error(resource.error.asBetError())
-                turnTableStateImp.status = TurnTableStatus.Idle
+                stateImp.turnTable.status = TurnTableStatus.Idle
                 return@launch
             }
             var remainingTime = TurnTableDuration
@@ -143,7 +138,7 @@ class BetViewModel(
                 }
             }
             delay(ReceivedDelay)
-            turnTableStateImp.status = TurnTableStatus.Rewarded(rewardedPoints)
+            stateImp.turnTable.status = TurnTableStatus.Rewarded(rewardedPoints)
         }
     }
 
