@@ -6,9 +6,9 @@ import com.jiachian.nbatoday.BaseAndroidTest
 import com.jiachian.nbatoday.HomeTeamColors
 import com.jiachian.nbatoday.UserAccount
 import com.jiachian.nbatoday.UserPassword
-import com.jiachian.nbatoday.compose.screen.card.GameCard
 import com.jiachian.nbatoday.compose.screen.card.GameCardUIData
 import com.jiachian.nbatoday.data.local.GameAndBetsGenerator
+import com.jiachian.nbatoday.game.ui.GameCard
 import com.jiachian.nbatoday.testing.testtag.BetTestTag
 import com.jiachian.nbatoday.testing.testtag.GameCardTestTag
 import com.jiachian.nbatoday.testing.testtag.UserTestTag

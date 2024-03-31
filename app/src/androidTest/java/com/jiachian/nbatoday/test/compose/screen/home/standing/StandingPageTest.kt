@@ -11,10 +11,10 @@ import com.jiachian.nbatoday.BaseAndroidTest
 import com.jiachian.nbatoday.BasicNumber
 import com.jiachian.nbatoday.GamePlayed
 import com.jiachian.nbatoday.HomeTeamName
-import com.jiachian.nbatoday.compose.screen.home.standing.StandingPage
-import com.jiachian.nbatoday.compose.screen.home.standing.StandingPageViewModel
-import com.jiachian.nbatoday.compose.screen.home.standing.models.StandingLabel
 import com.jiachian.nbatoday.data.local.TeamGenerator
+import com.jiachian.nbatoday.home.standing.ui.StandingPage
+import com.jiachian.nbatoday.home.standing.ui.StandingPageViewModel
+import com.jiachian.nbatoday.home.standing.ui.model.StandingLabel
 import com.jiachian.nbatoday.testing.testtag.StandingTestTag
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.decimalFormat

@@ -1,7 +1,8 @@
 package com.jiachian.nbatoday.database.dao
 
 import com.jiachian.nbatoday.DataHolder
-import com.jiachian.nbatoday.models.local.player.Player
+import com.jiachian.nbatoday.player.data.PlayerDao
+import com.jiachian.nbatoday.player.data.model.local.Player
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

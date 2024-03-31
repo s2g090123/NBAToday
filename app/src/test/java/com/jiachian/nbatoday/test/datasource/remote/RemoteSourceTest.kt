@@ -1,9 +1,9 @@
 package com.jiachian.nbatoday.test.datasource.remote
 
-import com.jiachian.nbatoday.service.GameService
-import com.jiachian.nbatoday.service.PlayerService
-import com.jiachian.nbatoday.service.TeamService
-import com.jiachian.nbatoday.service.UserService
+import com.jiachian.nbatoday.game.data.GameService
+import com.jiachian.nbatoday.home.user.data.UserService
+import com.jiachian.nbatoday.player.data.PlayerService
+import com.jiachian.nbatoday.team.data.TeamService
 import com.jiachian.nbatoday.utils.RetrofitUtils
 import com.jiachian.nbatoday.utils.assertIsA
 import org.junit.Test

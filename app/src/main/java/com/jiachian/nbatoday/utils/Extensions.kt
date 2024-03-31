@@ -1,12 +1,12 @@
 package com.jiachian.nbatoday.utils
 
-import com.jiachian.nbatoday.FirstRank
-import com.jiachian.nbatoday.NA
-import com.jiachian.nbatoday.OneHundredPercentage
-import com.jiachian.nbatoday.SecondRank
-import com.jiachian.nbatoday.ThirdRank
-import kotlin.math.pow
+import com.jiachian.nbatoday.common.data.FirstRank
+import com.jiachian.nbatoday.common.data.NA
+import com.jiachian.nbatoday.common.data.OneHundredPercentage
+import com.jiachian.nbatoday.common.data.SecondRank
+import com.jiachian.nbatoday.common.data.ThirdRank
 import retrofit2.Response
+import kotlin.math.pow
 
 inline fun <reified T : Any> T?.getOrNA(): String = this?.toString() ?: NA
 inline fun <reified T : Any> T?.getOrError(): T {

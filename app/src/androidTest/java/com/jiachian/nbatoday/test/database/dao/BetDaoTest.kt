@@ -3,11 +3,11 @@ package com.jiachian.nbatoday.test.database.dao
 import androidx.room.Room
 import com.jiachian.nbatoday.BaseAndroidTest
 import com.jiachian.nbatoday.UserAccount
+import com.jiachian.nbatoday.bet.data.BetDao
+import com.jiachian.nbatoday.common.data.database.NBADatabase
 import com.jiachian.nbatoday.data.local.BetAndGameGenerator
 import com.jiachian.nbatoday.data.local.BetGenerator
 import com.jiachian.nbatoday.data.local.GameGenerator
-import com.jiachian.nbatoday.database.NBADatabase
-import com.jiachian.nbatoday.database.dao.BetDao
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.collectOnce
 import kotlinx.coroutines.ExperimentalCoroutinesApi

@@ -16,32 +16,32 @@ import com.jiachian.nbatoday.HomePlayerLastName
 import com.jiachian.nbatoday.HomeTeamId
 import com.jiachian.nbatoday.PlayingGameDateTime
 import com.jiachian.nbatoday.PlayingGameId
-import com.jiachian.nbatoday.models.local.game.GameStatus
-import com.jiachian.nbatoday.models.local.score.PlayerActiveStatus
-import com.jiachian.nbatoday.models.remote.score.RemoteBoxScore
+import com.jiachian.nbatoday.boxscore.data.model.local.PlayerActiveStatus
+import com.jiachian.nbatoday.boxscore.data.model.remote.BoxScoreDto
+import com.jiachian.nbatoday.game.data.model.local.GameStatus
 
 object RemoteBoxScoreGenerator {
-    fun get(gameId: String): RemoteBoxScore {
+    fun get(gameId: String): BoxScoreDto {
         return when (gameId) {
             FinalGameId -> getFinal()
             else -> getPlaying()
         }
     }
 
-    fun getFinal(): RemoteBoxScore {
-        return RemoteBoxScore(
+    fun getFinal(): BoxScoreDto {
+        return BoxScoreDto(
             game = getFinalGame()
         )
     }
 
-    fun getPlaying(): RemoteBoxScore {
-        return RemoteBoxScore(
+    fun getPlaying(): BoxScoreDto {
+        return BoxScoreDto(
             game = getPlayingGame()
         )
     }
 
-    private fun getFinalGame(): RemoteBoxScore.RemoteGame {
-        return RemoteBoxScore.RemoteGame(
+    private fun getFinalGame(): BoxScoreDto.RemoteGame {
+        return BoxScoreDto.RemoteGame(
             gameId = FinalGameId,
             gameEt = "$FinalGameDateTime-",
             gameStatusText = GameStatusFinal,
@@ -51,8 +51,8 @@ object RemoteBoxScoreGenerator {
         )
     }
 
-    private fun getPlayingGame(): RemoteBoxScore.RemoteGame {
-        return RemoteBoxScore.RemoteGame(
+    private fun getPlayingGame(): BoxScoreDto.RemoteGame {
+        return BoxScoreDto.RemoteGame(
             gameId = PlayingGameId,
             gameEt = "$PlayingGameDateTime-",
             gameStatusText = GameStatusPrepare,
@@ -62,8 +62,8 @@ object RemoteBoxScoreGenerator {
         )
     }
 
-    private fun getHomeTeam(): RemoteBoxScore.RemoteGame.RemoteTeam {
-        return RemoteBoxScore.RemoteGame.RemoteTeam(
+    private fun getHomeTeam(): BoxScoreDto.RemoteGame.RemoteTeam {
+        return BoxScoreDto.RemoteGame.RemoteTeam(
             teamId = HomeTeamId,
             score = BasicNumber,
             periods = listOf(getPeriod()),
@@ -72,8 +72,8 @@ object RemoteBoxScoreGenerator {
         )
     }
 
-    private fun getAwayTeam(): RemoteBoxScore.RemoteGame.RemoteTeam {
-        return RemoteBoxScore.RemoteGame.RemoteTeam(
+    private fun getAwayTeam(): BoxScoreDto.RemoteGame.RemoteTeam {
+        return BoxScoreDto.RemoteGame.RemoteTeam(
             teamId = AwayTeamId,
             score = BasicNumber,
             periods = listOf(getPeriod()),
@@ -82,15 +82,15 @@ object RemoteBoxScoreGenerator {
         )
     }
 
-    private fun getPeriod(): RemoteBoxScore.RemoteGame.RemoteTeam.RemotePeriod {
-        return RemoteBoxScore.RemoteGame.RemoteTeam.RemotePeriod(
+    private fun getPeriod(): BoxScoreDto.RemoteGame.RemoteTeam.RemotePeriod {
+        return BoxScoreDto.RemoteGame.RemoteTeam.RemotePeriod(
             period = 1,
             score = BasicNumber
         )
     }
 
-    private fun getHomePlayer(): RemoteBoxScore.RemoteGame.RemoteTeam.RemotePlayer {
-        return RemoteBoxScore.RemoteGame.RemoteTeam.RemotePlayer(
+    private fun getHomePlayer(): BoxScoreDto.RemoteGame.RemoteTeam.RemotePlayer {
+        return BoxScoreDto.RemoteGame.RemoteTeam.RemotePlayer(
             status = PlayerActiveStatus.ACTIVE,
             notPlayingReason = "",
             playerId = HomePlayerId,
@@ -101,8 +101,8 @@ object RemoteBoxScoreGenerator {
         )
     }
 
-    private fun getAwayPlayer(): RemoteBoxScore.RemoteGame.RemoteTeam.RemotePlayer {
-        return RemoteBoxScore.RemoteGame.RemoteTeam.RemotePlayer(
+    private fun getAwayPlayer(): BoxScoreDto.RemoteGame.RemoteTeam.RemotePlayer {
+        return BoxScoreDto.RemoteGame.RemoteTeam.RemotePlayer(
             status = PlayerActiveStatus.ACTIVE,
             notPlayingReason = "",
             playerId = AwayPlayerId,
@@ -113,8 +113,8 @@ object RemoteBoxScoreGenerator {
         )
     }
 
-    private fun getPlayerStatistics(): RemoteBoxScore.RemoteGame.RemoteTeam.RemotePlayer.RemoteStatistics {
-        return RemoteBoxScore.RemoteGame.RemoteTeam.RemotePlayer.RemoteStatistics(
+    private fun getPlayerStatistics(): BoxScoreDto.RemoteGame.RemoteTeam.RemotePlayer.RemoteStatistics {
+        return BoxScoreDto.RemoteGame.RemoteTeam.RemotePlayer.RemoteStatistics(
             assists = BasicNumber,
             blocks = BasicNumber,
             blocksReceived = BasicNumber,
@@ -144,8 +144,8 @@ object RemoteBoxScoreGenerator {
         )
     }
 
-    private fun getTeamStatistics(): RemoteBoxScore.RemoteGame.RemoteTeam.RemoteStatistics {
-        return RemoteBoxScore.RemoteGame.RemoteTeam.RemoteStatistics(
+    private fun getTeamStatistics(): BoxScoreDto.RemoteGame.RemoteTeam.RemoteStatistics {
+        return BoxScoreDto.RemoteGame.RemoteTeam.RemoteStatistics(
             assists = BasicNumber,
             blocks = BasicNumber,
             fieldGoalsAttempted = BasicNumber,

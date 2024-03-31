@@ -1,6 +1,6 @@
 package com.jiachian.nbatoday.data.local
 
-import com.jiachian.nbatoday.models.local.game.GameAndBets
+import com.jiachian.nbatoday.game.data.model.local.GameAndBets
 
 object GameAndBetsGenerator {
     fun getFinal(includeBet: Boolean = true): GameAndBets {

@@ -5,7 +5,7 @@ import androidx.compose.ui.test.performClick
 import com.jiachian.nbatoday.BaseAndroidTest
 import com.jiachian.nbatoday.BetPoints
 import com.jiachian.nbatoday.R
-import com.jiachian.nbatoday.compose.screen.bet.turntable.TurnTableRewardedDialog
+import com.jiachian.nbatoday.bet.ui.turntable.TurnTableRewardedDialog
 import com.jiachian.nbatoday.testing.testtag.BetTestTag
 import com.jiachian.nbatoday.utils.assertIsTrue
 import com.jiachian.nbatoday.utils.onNodeWithUnmergedTree

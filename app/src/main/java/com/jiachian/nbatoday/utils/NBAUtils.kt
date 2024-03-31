@@ -1,6 +1,6 @@
 package com.jiachian.nbatoday.utils
 
-import com.jiachian.nbatoday.CdnBaseUrl
+import com.jiachian.nbatoday.common.data.CdnBaseUrl
 
 object NBAUtils {
     fun getTeamLogoUrlById(teamId: Int): String {

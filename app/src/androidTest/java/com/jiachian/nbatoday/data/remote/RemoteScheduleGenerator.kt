@@ -13,26 +13,26 @@ import com.jiachian.nbatoday.HomePlayerId
 import com.jiachian.nbatoday.HomeTeamId
 import com.jiachian.nbatoday.PlayingGameDateTime
 import com.jiachian.nbatoday.PlayingGameId
-import com.jiachian.nbatoday.models.local.game.GameStatus
-import com.jiachian.nbatoday.models.remote.game.RemoteSchedule
+import com.jiachian.nbatoday.game.data.model.local.GameStatus
+import com.jiachian.nbatoday.game.data.model.remote.ScheduleDto
 
 object RemoteScheduleGenerator {
-    fun get(): RemoteSchedule {
-        return RemoteSchedule(
+    fun get(): ScheduleDto {
+        return ScheduleDto(
             leagueSchedule = getLeagueSchedule()
         )
     }
 
-    private fun getLeagueSchedule(): RemoteSchedule.RemoteLeagueSchedule {
-        return RemoteSchedule.RemoteLeagueSchedule(
+    private fun getLeagueSchedule(): ScheduleDto.RemoteLeagueSchedule {
+        return ScheduleDto.RemoteLeagueSchedule(
             gameDates = listOf(
                 getGameDate()
             )
         )
     }
 
-    private fun getGameDate(): RemoteSchedule.RemoteLeagueSchedule.RemoteGameDate {
-        return RemoteSchedule.RemoteLeagueSchedule.RemoteGameDate(
+    private fun getGameDate(): ScheduleDto.RemoteLeagueSchedule.RemoteGameDate {
+        return ScheduleDto.RemoteLeagueSchedule.RemoteGameDate(
             games = listOf(
                 getFinalGame(),
                 getPlayingGame(),
@@ -41,8 +41,8 @@ object RemoteScheduleGenerator {
         )
     }
 
-    private fun getFinalGame(): RemoteSchedule.RemoteLeagueSchedule.RemoteGameDate.RemoteGame {
-        return RemoteSchedule.RemoteLeagueSchedule.RemoteGameDate.RemoteGame(
+    private fun getFinalGame(): ScheduleDto.RemoteLeagueSchedule.RemoteGameDate.RemoteGame {
+        return ScheduleDto.RemoteLeagueSchedule.RemoteGameDate.RemoteGame(
             awayTeam = getAwayTeam(),
             gameId = FinalGameId,
             gameStatus = GameStatus.FINAL,
@@ -58,8 +58,8 @@ object RemoteScheduleGenerator {
         )
     }
 
-    private fun getPlayingGame(): RemoteSchedule.RemoteLeagueSchedule.RemoteGameDate.RemoteGame {
-        return RemoteSchedule.RemoteLeagueSchedule.RemoteGameDate.RemoteGame(
+    private fun getPlayingGame(): ScheduleDto.RemoteLeagueSchedule.RemoteGameDate.RemoteGame {
+        return ScheduleDto.RemoteLeagueSchedule.RemoteGameDate.RemoteGame(
             awayTeam = getAwayTeam(),
             gameId = PlayingGameId,
             gameStatus = GameStatus.PLAYING,
@@ -75,8 +75,8 @@ object RemoteScheduleGenerator {
         )
     }
 
-    private fun getComingSoonGame(): RemoteSchedule.RemoteLeagueSchedule.RemoteGameDate.RemoteGame {
-        return RemoteSchedule.RemoteLeagueSchedule.RemoteGameDate.RemoteGame(
+    private fun getComingSoonGame(): ScheduleDto.RemoteLeagueSchedule.RemoteGameDate.RemoteGame {
+        return ScheduleDto.RemoteLeagueSchedule.RemoteGameDate.RemoteGame(
             awayTeam = getAwayTeam(),
             gameId = ComingSoonGameId,
             gameStatus = GameStatus.COMING_SOON,
@@ -92,8 +92,8 @@ object RemoteScheduleGenerator {
         )
     }
 
-    private fun getHomeTeam(): RemoteSchedule.RemoteLeagueSchedule.RemoteGameDate.RemoteGame.RemoteTeam {
-        return RemoteSchedule.RemoteLeagueSchedule.RemoteGameDate.RemoteGame.RemoteTeam(
+    private fun getHomeTeam(): ScheduleDto.RemoteLeagueSchedule.RemoteGameDate.RemoteGame.RemoteTeam {
+        return ScheduleDto.RemoteLeagueSchedule.RemoteGameDate.RemoteGame.RemoteTeam(
             losses = BasicNumber,
             score = BasicNumber,
             teamId = HomeTeamId,
@@ -101,8 +101,8 @@ object RemoteScheduleGenerator {
         )
     }
 
-    private fun getAwayTeam(): RemoteSchedule.RemoteLeagueSchedule.RemoteGameDate.RemoteGame.RemoteTeam {
-        return RemoteSchedule.RemoteLeagueSchedule.RemoteGameDate.RemoteGame.RemoteTeam(
+    private fun getAwayTeam(): ScheduleDto.RemoteLeagueSchedule.RemoteGameDate.RemoteGame.RemoteTeam {
+        return ScheduleDto.RemoteLeagueSchedule.RemoteGameDate.RemoteGame.RemoteTeam(
             losses = BasicNumber,
             score = BasicNumber,
             teamId = AwayTeamId,
@@ -110,16 +110,16 @@ object RemoteScheduleGenerator {
         )
     }
 
-    private fun getHomeLeader(): RemoteSchedule.RemoteLeagueSchedule.RemoteGameDate.RemoteGame.RemotePointsLeader {
-        return RemoteSchedule.RemoteLeagueSchedule.RemoteGameDate.RemoteGame.RemotePointsLeader(
+    private fun getHomeLeader(): ScheduleDto.RemoteLeagueSchedule.RemoteGameDate.RemoteGame.RemotePointsLeader {
+        return ScheduleDto.RemoteLeagueSchedule.RemoteGameDate.RemoteGame.RemotePointsLeader(
             playerId = HomePlayerId,
             points = BasicNumber.toDouble(),
             teamId = HomeTeamId
         )
     }
 
-    private fun getAwayLeader(): RemoteSchedule.RemoteLeagueSchedule.RemoteGameDate.RemoteGame.RemotePointsLeader {
-        return RemoteSchedule.RemoteLeagueSchedule.RemoteGameDate.RemoteGame.RemotePointsLeader(
+    private fun getAwayLeader(): ScheduleDto.RemoteLeagueSchedule.RemoteGameDate.RemoteGame.RemotePointsLeader {
+        return ScheduleDto.RemoteLeagueSchedule.RemoteGameDate.RemoteGame.RemotePointsLeader(
             playerId = AwayPlayerId,
             points = BasicNumber.toDouble(),
             teamId = AwayTeamId

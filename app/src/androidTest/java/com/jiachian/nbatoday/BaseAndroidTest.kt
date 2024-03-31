@@ -6,8 +6,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.core.app.ApplicationProvider
-import com.jiachian.nbatoday.datastore.BaseDataStore
-import com.jiachian.nbatoday.dispatcher.DispatcherProvider
+import com.jiachian.nbatoday.common.data.datastore.BaseDataStore
+import com.jiachian.nbatoday.common.ui.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.koin.testModule
 import com.jiachian.nbatoday.repository.RepositoryProvider
 import com.jiachian.nbatoday.rule.ApplicationRule

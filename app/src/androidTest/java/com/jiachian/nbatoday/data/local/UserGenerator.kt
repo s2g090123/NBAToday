@@ -5,7 +5,7 @@ import com.jiachian.nbatoday.UserName
 import com.jiachian.nbatoday.UserPassword
 import com.jiachian.nbatoday.UserPoints
 import com.jiachian.nbatoday.UserToken
-import com.jiachian.nbatoday.models.local.user.User
+import com.jiachian.nbatoday.home.user.data.model.local.User
 
 object UserGenerator {
     fun get(available: Boolean): User {

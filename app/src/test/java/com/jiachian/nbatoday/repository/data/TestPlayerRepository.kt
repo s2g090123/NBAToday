@@ -2,9 +2,9 @@ package com.jiachian.nbatoday.repository.data
 
 import com.jiachian.nbatoday.datasource.local.player.PlayerLocalSource
 import com.jiachian.nbatoday.datasource.remote.player.PlayerRemoteSource
-import com.jiachian.nbatoday.models.local.player.Player
 import com.jiachian.nbatoday.models.remote.player.extensions.toPlayer
-import com.jiachian.nbatoday.repository.player.PlayerRepository
+import com.jiachian.nbatoday.player.data.PlayerRepository
+import com.jiachian.nbatoday.player.data.model.local.Player
 import kotlinx.coroutines.flow.Flow
 
 class TestPlayerRepository(

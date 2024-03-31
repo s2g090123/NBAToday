@@ -1,9 +1,9 @@
 package com.jiachian.nbatoday
 
-import com.jiachian.nbatoday.compose.theme.CelticsColors
-import com.jiachian.nbatoday.compose.theme.LakersColors
-import com.jiachian.nbatoday.models.local.team.data.teamCeltics
-import com.jiachian.nbatoday.models.local.team.data.teamLakers
+import com.jiachian.nbatoday.common.ui.theme.CelticsColors
+import com.jiachian.nbatoday.common.ui.theme.LakersColors
+import com.jiachian.nbatoday.team.data.model.local.teams.teamCeltics
+import com.jiachian.nbatoday.team.data.model.local.teams.teamLakers
 
 const val FinalGameId = "0"
 const val PlayingGameId = "1"

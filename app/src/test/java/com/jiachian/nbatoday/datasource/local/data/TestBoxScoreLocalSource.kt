@@ -1,9 +1,9 @@
 package com.jiachian.nbatoday.datasource.local.data
 
-import com.jiachian.nbatoday.database.dao.BoxScoreDao
+import com.jiachian.nbatoday.boxscore.data.BoxScoreDao
+import com.jiachian.nbatoday.boxscore.data.model.local.BoxScore
+import com.jiachian.nbatoday.boxscore.data.model.local.BoxScoreAndGame
 import com.jiachian.nbatoday.datasource.local.boxscore.BoxScoreLocalSource
-import com.jiachian.nbatoday.models.local.score.BoxScore
-import com.jiachian.nbatoday.models.local.score.BoxScoreAndGame
 import kotlinx.coroutines.flow.Flow
 
 class TestBoxScoreLocalSource(

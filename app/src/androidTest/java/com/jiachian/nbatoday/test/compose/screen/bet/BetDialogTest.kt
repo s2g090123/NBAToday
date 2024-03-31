@@ -10,7 +10,7 @@ import com.jiachian.nbatoday.BasicNumber
 import com.jiachian.nbatoday.BetPoints
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.UserPoints
-import com.jiachian.nbatoday.compose.screen.bet.dialog.BetDialog
+import com.jiachian.nbatoday.common.ui.bet.BetDialog
 import com.jiachian.nbatoday.data.local.GameAndBetsGenerator
 import com.jiachian.nbatoday.testing.testtag.BetTestTag
 import com.jiachian.nbatoday.utils.assertIs

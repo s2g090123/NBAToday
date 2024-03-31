@@ -4,12 +4,12 @@ import androidx.room.Room
 import com.jiachian.nbatoday.BaseAndroidTest
 import com.jiachian.nbatoday.HomePlayerId
 import com.jiachian.nbatoday.HomeTeamId
+import com.jiachian.nbatoday.common.data.database.NBADatabase
 import com.jiachian.nbatoday.data.local.TeamGenerator
 import com.jiachian.nbatoday.data.local.TeamPlayerGenerator
-import com.jiachian.nbatoday.database.NBADatabase
-import com.jiachian.nbatoday.database.dao.TeamDao
-import com.jiachian.nbatoday.models.local.team.NBATeam
-import com.jiachian.nbatoday.models.local.team.TeamAndPlayers
+import com.jiachian.nbatoday.team.data.TeamDao
+import com.jiachian.nbatoday.team.data.model.local.TeamAndPlayers
+import com.jiachian.nbatoday.team.data.model.local.teams.NBATeam
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.collectOnce
 import kotlinx.coroutines.ExperimentalCoroutinesApi

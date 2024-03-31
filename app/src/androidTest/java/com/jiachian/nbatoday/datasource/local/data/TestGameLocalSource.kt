@@ -1,13 +1,13 @@
 package com.jiachian.nbatoday.datasource.local.data
 
-import com.jiachian.nbatoday.database.dao.GameDao
 import com.jiachian.nbatoday.datasource.local.game.GameLocalSource
-import com.jiachian.nbatoday.models.local.game.Game
-import com.jiachian.nbatoday.models.local.game.GameAndBets
-import com.jiachian.nbatoday.models.local.game.GameScoreUpdateData
-import com.jiachian.nbatoday.models.local.game.GameUpdateData
-import java.util.Date
+import com.jiachian.nbatoday.game.data.GameDao
+import com.jiachian.nbatoday.game.data.model.local.Game
+import com.jiachian.nbatoday.game.data.model.local.GameAndBets
+import com.jiachian.nbatoday.game.data.model.local.GameScoreUpdateData
+import com.jiachian.nbatoday.game.data.model.local.GameUpdateData
 import kotlinx.coroutines.flow.Flow
+import java.util.Date
 
 class TestGameLocalSource(
     private val gameDao: GameDao

@@ -12,11 +12,11 @@ import com.jiachian.nbatoday.data.local.BetGenerator
 import com.jiachian.nbatoday.data.local.GameAndBetsGenerator
 import com.jiachian.nbatoday.data.local.GameGenerator
 import com.jiachian.nbatoday.datasource.local.game.NBAGameLocalSource
-import com.jiachian.nbatoday.models.local.game.Game
-import com.jiachian.nbatoday.models.local.game.GameAndBets
-import com.jiachian.nbatoday.models.local.game.GameScoreUpdateData
-import com.jiachian.nbatoday.models.local.game.GameStatus
-import com.jiachian.nbatoday.models.local.game.GameUpdateData
+import com.jiachian.nbatoday.game.data.model.local.Game
+import com.jiachian.nbatoday.game.data.model.local.GameAndBets
+import com.jiachian.nbatoday.game.data.model.local.GameScoreUpdateData
+import com.jiachian.nbatoday.game.data.model.local.GameStatus
+import com.jiachian.nbatoday.game.data.model.local.GameUpdateData
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsFalse
 import com.jiachian.nbatoday.utils.assertIsTrue

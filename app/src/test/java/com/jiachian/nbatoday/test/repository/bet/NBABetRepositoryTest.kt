@@ -8,13 +8,13 @@ import com.jiachian.nbatoday.UserName
 import com.jiachian.nbatoday.UserPassword
 import com.jiachian.nbatoday.UserPoints
 import com.jiachian.nbatoday.UserToken
+import com.jiachian.nbatoday.bet.data.NBABetRepository
+import com.jiachian.nbatoday.bet.data.model.local.Bet
 import com.jiachian.nbatoday.data.local.BetAndGameGenerator
 import com.jiachian.nbatoday.data.local.BetGenerator
 import com.jiachian.nbatoday.datasource.local.bet.BetLocalSource
-import com.jiachian.nbatoday.models.local.bet.Bet
-import com.jiachian.nbatoday.models.local.user.User
-import com.jiachian.nbatoday.repository.bet.NBABetRepository
-import com.jiachian.nbatoday.repository.user.UserRepository
+import com.jiachian.nbatoday.home.user.data.UserRepository
+import com.jiachian.nbatoday.home.user.data.model.local.User
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsNull
 import io.mockk.every

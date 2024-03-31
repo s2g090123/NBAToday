@@ -1,9 +1,9 @@
 package com.jiachian.nbatoday.repository.data
 
+import com.jiachian.nbatoday.common.data.datastore.BaseDataStore
 import com.jiachian.nbatoday.datasource.remote.user.UserRemoteSource
-import com.jiachian.nbatoday.datastore.BaseDataStore
+import com.jiachian.nbatoday.home.user.data.UserRepository
 import com.jiachian.nbatoday.models.remote.user.extensions.toUser
-import com.jiachian.nbatoday.repository.user.UserRepository
 import kotlinx.coroutines.flow.firstOrNull
 
 class TestUserRepository(

@@ -2,16 +2,15 @@ package com.jiachian.nbatoday.test.compose.screen.home.schedule
 
 import com.jiachian.nbatoday.BaseUnitTest
 import com.jiachian.nbatoday.PlayingGameTimeMs
-import com.jiachian.nbatoday.ScheduleDateRange
-import com.jiachian.nbatoday.compose.screen.home.schedule.SchedulePageViewModel
-import com.jiachian.nbatoday.compose.screen.home.schedule.models.DateData
+import com.jiachian.nbatoday.common.data.ScheduleDateRange
 import com.jiachian.nbatoday.compose.screen.state.UIState
-import com.jiachian.nbatoday.models.local.game.toGameCardState
+import com.jiachian.nbatoday.game.data.model.toGameCardState
+import com.jiachian.nbatoday.home.schedule.ui.SchedulePageViewModel
+import com.jiachian.nbatoday.home.schedule.ui.model.DateData
 import com.jiachian.nbatoday.rule.SetMainDispatcherRule
 import com.jiachian.nbatoday.utils.DateUtils
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsA
-import java.util.Calendar
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
@@ -19,6 +18,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.koin.test.get
+import java.util.Calendar
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SchedulePageViewModelTest : BaseUnitTest() {

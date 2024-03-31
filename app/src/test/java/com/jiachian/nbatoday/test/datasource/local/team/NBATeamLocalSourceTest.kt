@@ -5,8 +5,8 @@ import com.jiachian.nbatoday.HomeTeamId
 import com.jiachian.nbatoday.data.local.TeamGenerator
 import com.jiachian.nbatoday.data.local.TeamPlayerGenerator
 import com.jiachian.nbatoday.datasource.local.team.NBATeamLocalSource
-import com.jiachian.nbatoday.models.local.team.NBATeam
-import com.jiachian.nbatoday.models.local.team.TeamRank
+import com.jiachian.nbatoday.team.data.model.local.TeamRank
+import com.jiachian.nbatoday.team.data.model.local.teams.NBATeam
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsFalse
 import kotlinx.coroutines.ExperimentalCoroutinesApi

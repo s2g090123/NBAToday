@@ -5,10 +5,10 @@ import com.jiachian.nbatoday.data.local.GameAndBetsGenerator
 import com.jiachian.nbatoday.data.local.GameGenerator
 import com.jiachian.nbatoday.datasource.local.game.GameLocalSource
 import com.jiachian.nbatoday.datasource.remote.game.GameRemoteSource
-import com.jiachian.nbatoday.models.local.game.GameAndBets
-import com.jiachian.nbatoday.models.remote.game.RemoteGame
-import com.jiachian.nbatoday.models.remote.game.RemoteSchedule
-import com.jiachian.nbatoday.repository.schedule.NBAScheduleRepository
+import com.jiachian.nbatoday.game.data.model.local.GameAndBets
+import com.jiachian.nbatoday.game.data.model.remote.GameDto
+import com.jiachian.nbatoday.game.data.model.remote.ScheduleDto
+import com.jiachian.nbatoday.home.schedule.data.NBAScheduleRepository
 import com.jiachian.nbatoday.utils.DateUtils
 import com.jiachian.nbatoday.utils.assertIs
 import io.mockk.coEvery
@@ -75,7 +75,7 @@ class NBAScheduleRepositoryTest : BaseUnitTest() {
 
     @Test
     fun `updateSchedule() with null data expects the error is triggered`() = launch {
-        coEvery { remoteSource.getSchedule() } returns Response.success(RemoteSchedule(null))
+        coEvery { remoteSource.getSchedule() } returns Response.success(ScheduleDto(null))
         repository.updateSchedule()
         localSource
             .getGamesAndBets()
@@ -179,7 +179,7 @@ class NBAScheduleRepositoryTest : BaseUnitTest() {
 
     @Test
     fun `updateSchedule(date) with null data expects onError is triggered`() = launch {
-        coEvery { remoteSource.getGame(any(), any()) } returns Response.success(RemoteGame(null))
+        coEvery { remoteSource.getGame(any(), any()) } returns Response.success(GameDto(null))
         localSource.insertGames(listOf(GameGenerator.getFinal()))
         repository.updateSchedule(0, 0, 0)
         localSource

@@ -5,11 +5,11 @@ import com.jiachian.nbatoday.FinalBetId
 import com.jiachian.nbatoday.FinalGameId
 import com.jiachian.nbatoday.PlayingBetId
 import com.jiachian.nbatoday.PlayingGameId
+import com.jiachian.nbatoday.bet.data.BetRepository
+import com.jiachian.nbatoday.bet.data.model.local.Bet
+import com.jiachian.nbatoday.bet.data.model.local.BetAndGame
 import com.jiachian.nbatoday.datasource.local.bet.BetLocalSource
-import com.jiachian.nbatoday.models.local.bet.Bet
-import com.jiachian.nbatoday.models.local.bet.BetAndGame
-import com.jiachian.nbatoday.repository.bet.BetRepository
-import com.jiachian.nbatoday.repository.user.UserRepository
+import com.jiachian.nbatoday.home.user.data.UserRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 

@@ -3,8 +3,8 @@ package com.jiachian.nbatoday.test.compose.screen.calendar
 import androidx.lifecycle.SavedStateHandle
 import com.jiachian.nbatoday.BaseUnitTest
 import com.jiachian.nbatoday.BasicTime
-import com.jiachian.nbatoday.compose.screen.calendar.CalendarViewModel
-import com.jiachian.nbatoday.navigation.MainRoute
+import com.jiachian.nbatoday.calendar.ui.CalendarViewModel
+import com.jiachian.nbatoday.main.ui.navigation.MainRoute
 import com.jiachian.nbatoday.rule.SetMainDispatcherRule
 import com.jiachian.nbatoday.utils.DateUtils
 import com.jiachian.nbatoday.utils.assertIs
@@ -12,14 +12,14 @@ import com.jiachian.nbatoday.utils.assertIsFalse
 import com.jiachian.nbatoday.utils.assertIsTrue
 import io.mockk.every
 import io.mockk.spyk
-import java.util.Calendar
-import java.util.Date
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.koin.test.get
+import java.util.Calendar
+import java.util.Date
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class CalendarViewModelTest : BaseUnitTest() {

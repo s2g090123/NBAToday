@@ -1,8 +1,9 @@
 package com.jiachian.nbatoday.database.dao
 
 import com.jiachian.nbatoday.DataHolder
-import com.jiachian.nbatoday.models.local.bet.Bet
-import com.jiachian.nbatoday.models.local.bet.BetAndGame
+import com.jiachian.nbatoday.bet.data.BetDao
+import com.jiachian.nbatoday.bet.data.model.local.Bet
+import com.jiachian.nbatoday.bet.data.model.local.BetAndGame
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

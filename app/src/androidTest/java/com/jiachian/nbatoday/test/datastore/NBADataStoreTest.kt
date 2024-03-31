@@ -3,8 +3,8 @@ package com.jiachian.nbatoday.test.datastore
 import androidx.test.core.app.ApplicationProvider
 import com.jiachian.nbatoday.HomeTeamColors
 import com.jiachian.nbatoday.HomeTeamId
+import com.jiachian.nbatoday.common.data.datastore.NBADataStore
 import com.jiachian.nbatoday.data.local.UserGenerator
-import com.jiachian.nbatoday.datastore.NBADataStore
 import com.jiachian.nbatoday.utils.DateUtils
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.collectOnce

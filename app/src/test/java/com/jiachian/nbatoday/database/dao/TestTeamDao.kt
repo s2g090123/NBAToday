@@ -1,10 +1,11 @@
 package com.jiachian.nbatoday.database.dao
 
 import com.jiachian.nbatoday.DataHolder
-import com.jiachian.nbatoday.models.local.team.NBATeam
-import com.jiachian.nbatoday.models.local.team.Team
-import com.jiachian.nbatoday.models.local.team.TeamAndPlayers
-import com.jiachian.nbatoday.models.local.team.TeamPlayer
+import com.jiachian.nbatoday.team.data.TeamDao
+import com.jiachian.nbatoday.team.data.model.local.Team
+import com.jiachian.nbatoday.team.data.model.local.TeamAndPlayers
+import com.jiachian.nbatoday.team.data.model.local.TeamPlayer
+import com.jiachian.nbatoday.team.data.model.local.teams.NBATeam
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map

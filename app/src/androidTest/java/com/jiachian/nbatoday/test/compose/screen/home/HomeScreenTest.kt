@@ -8,9 +8,9 @@ import androidx.compose.ui.test.performClick
 import androidx.navigation.compose.ComposeNavigator
 import androidx.navigation.testing.TestNavHostController
 import com.jiachian.nbatoday.BaseAndroidTest
-import com.jiachian.nbatoday.compose.screen.home.HomeScreen
-import com.jiachian.nbatoday.compose.screen.home.navigation.HomePage
-import com.jiachian.nbatoday.compose.screen.home.schedule.models.DateData
+import com.jiachian.nbatoday.home.main.ui.HomeScreen
+import com.jiachian.nbatoday.home.main.ui.navigation.HomeRoute
+import com.jiachian.nbatoday.home.schedule.ui.model.DateData
 import com.jiachian.nbatoday.testing.testtag.HomeTestTag
 import com.jiachian.nbatoday.utils.assertCurrentRoute
 import com.jiachian.nbatoday.utils.onAllNodesWithUnmergedTree
@@ -64,7 +64,7 @@ class HomeScreenTest : BaseAndroidTest() {
         onAllNodesWithUnmergedTree(HomeTestTag.HomeBottomNavigation_BottomNavigationItem)[0]
             .performClick()
         awaitIdle()
-        navController.assertCurrentRoute(HomePage.SCHEDULE.route)
+        navController.assertCurrentRoute(HomeRoute.SCHEDULE.route)
     }
 
     @Test
@@ -72,7 +72,7 @@ class HomeScreenTest : BaseAndroidTest() {
         onAllNodesWithUnmergedTree(HomeTestTag.HomeBottomNavigation_BottomNavigationItem)[1]
             .performClick()
         awaitIdle()
-        navController.assertCurrentRoute(HomePage.STANDING.route)
+        navController.assertCurrentRoute(HomeRoute.STANDING.route)
     }
 
     @Test
@@ -80,7 +80,7 @@ class HomeScreenTest : BaseAndroidTest() {
         onAllNodesWithUnmergedTree(HomeTestTag.HomeBottomNavigation_BottomNavigationItem)[2]
             .performClick()
         awaitIdle()
-        navController.assertCurrentRoute(HomePage.USER.route)
+        navController.assertCurrentRoute(HomeRoute.USER.route)
     }
 
     @Test

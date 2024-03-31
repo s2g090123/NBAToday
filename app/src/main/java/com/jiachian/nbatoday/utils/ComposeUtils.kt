@@ -18,8 +18,8 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.booleanResource
 import androidx.compose.ui.unit.Dp
 import com.jiachian.nbatoday.R
-import com.jiachian.nbatoday.Transparency25
-import com.jiachian.nbatoday.models.local.team.data.teamOfficial
+import com.jiachian.nbatoday.common.data.Transparency25
+import com.jiachian.nbatoday.team.data.model.local.teams.teamOfficial
 
 inline val String.color: Color get() = Color(android.graphics.Color.parseColor(this))
 

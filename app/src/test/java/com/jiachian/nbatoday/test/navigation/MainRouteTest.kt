@@ -5,7 +5,7 @@ import com.jiachian.nbatoday.FinalGameTimeMs
 import com.jiachian.nbatoday.HomePlayerId
 import com.jiachian.nbatoday.HomeTeamId
 import com.jiachian.nbatoday.UserAccount
-import com.jiachian.nbatoday.navigation.MainRoute
+import com.jiachian.nbatoday.main.ui.navigation.MainRoute
 import com.jiachian.nbatoday.utils.assertIs
 import org.junit.Test
 

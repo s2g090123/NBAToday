@@ -2,18 +2,18 @@ package com.jiachian.nbatoday.test.compose.screen.player
 
 import androidx.lifecycle.SavedStateHandle
 import com.jiachian.nbatoday.BaseUnitTest
-import com.jiachian.nbatoday.compose.screen.label.LabelHelper
-import com.jiachian.nbatoday.compose.screen.player.PlayerViewModel
-import com.jiachian.nbatoday.compose.screen.player.models.PlayerInfoTableData
-import com.jiachian.nbatoday.compose.screen.player.models.PlayerStatsLabel
-import com.jiachian.nbatoday.compose.screen.player.models.PlayerStatsRowData
-import com.jiachian.nbatoday.compose.screen.player.models.PlayerStatsSorting
-import com.jiachian.nbatoday.compose.screen.player.models.PlayerTableLabel
 import com.jiachian.nbatoday.compose.screen.state.UIState
 import com.jiachian.nbatoday.data.local.PlayerGenerator
-import com.jiachian.nbatoday.models.local.player.Player
-import com.jiachian.nbatoday.navigation.MainRoute
+import com.jiachian.nbatoday.main.ui.navigation.MainRoute
+import com.jiachian.nbatoday.player.data.model.local.Player
+import com.jiachian.nbatoday.player.ui.PlayerViewModel
+import com.jiachian.nbatoday.player.ui.model.PlayerInfoTableData
+import com.jiachian.nbatoday.player.ui.model.PlayerStatsLabel
+import com.jiachian.nbatoday.player.ui.model.PlayerStatsRowData
+import com.jiachian.nbatoday.player.ui.model.PlayerStatsSorting
+import com.jiachian.nbatoday.player.ui.model.PlayerTableLabel
 import com.jiachian.nbatoday.rule.SetMainDispatcherRule
+import com.jiachian.nbatoday.utils.LabelHelper
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsA
 import org.junit.Before

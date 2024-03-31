@@ -1,9 +1,9 @@
 package com.jiachian.nbatoday.datasource.local.data
 
-import com.jiachian.nbatoday.database.dao.BetDao
+import com.jiachian.nbatoday.bet.data.BetDao
+import com.jiachian.nbatoday.bet.data.model.local.Bet
+import com.jiachian.nbatoday.bet.data.model.local.BetAndGame
 import com.jiachian.nbatoday.datasource.local.bet.BetLocalSource
-import com.jiachian.nbatoday.models.local.bet.Bet
-import com.jiachian.nbatoday.models.local.bet.BetAndGame
 import kotlinx.coroutines.flow.Flow
 
 class TestBetLocalSource(

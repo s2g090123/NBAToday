@@ -6,11 +6,11 @@ import com.jiachian.nbatoday.BasicNumber
 import com.jiachian.nbatoday.UserAccount
 import com.jiachian.nbatoday.UserPassword
 import com.jiachian.nbatoday.UserPoints
-import com.jiachian.nbatoday.compose.screen.bet.BetViewModel
-import com.jiachian.nbatoday.compose.screen.bet.models.Lose
-import com.jiachian.nbatoday.compose.screen.bet.models.TurnTableState
-import com.jiachian.nbatoday.compose.screen.bet.models.Win
-import com.jiachian.nbatoday.navigation.MainRoute
+import com.jiachian.nbatoday.bet.ui.main.BetViewModel
+import com.jiachian.nbatoday.bet.ui.turntable.model.Lose
+import com.jiachian.nbatoday.bet.ui.turntable.model.Win
+import com.jiachian.nbatoday.bet.ui.turntable.state.TurnTableState
+import com.jiachian.nbatoday.main.ui.navigation.MainRoute
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsA
 import com.jiachian.nbatoday.utils.assertIsNot

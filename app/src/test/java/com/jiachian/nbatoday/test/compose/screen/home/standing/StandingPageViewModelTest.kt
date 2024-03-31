@@ -1,14 +1,14 @@
 package com.jiachian.nbatoday.test.compose.screen.home.standing
 
 import com.jiachian.nbatoday.BaseUnitTest
-import com.jiachian.nbatoday.compose.screen.home.standing.StandingPageViewModel
-import com.jiachian.nbatoday.compose.screen.home.standing.models.StandingLabel
-import com.jiachian.nbatoday.compose.screen.home.standing.models.StandingRowData
-import com.jiachian.nbatoday.compose.screen.home.standing.models.StandingSorting
-import com.jiachian.nbatoday.compose.screen.label.LabelHelper
 import com.jiachian.nbatoday.compose.screen.state.UIState
-import com.jiachian.nbatoday.models.local.team.NBATeam
-import com.jiachian.nbatoday.models.local.team.Team
+import com.jiachian.nbatoday.home.standing.ui.StandingPageViewModel
+import com.jiachian.nbatoday.home.standing.ui.model.StandingLabel
+import com.jiachian.nbatoday.home.standing.ui.model.StandingRowData
+import com.jiachian.nbatoday.home.standing.ui.model.StandingSorting
+import com.jiachian.nbatoday.team.data.model.local.Team
+import com.jiachian.nbatoday.team.data.model.local.teams.NBATeam
+import com.jiachian.nbatoday.utils.LabelHelper
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsA
 import kotlinx.coroutines.ExperimentalCoroutinesApi

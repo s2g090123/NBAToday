@@ -5,9 +5,9 @@ import com.jiachian.nbatoday.HomePlayerId
 import com.jiachian.nbatoday.data.local.PlayerGenerator
 import com.jiachian.nbatoday.datasource.local.player.PlayerLocalSource
 import com.jiachian.nbatoday.datasource.remote.player.PlayerRemoteSource
-import com.jiachian.nbatoday.models.remote.player.RemotePlayer
 import com.jiachian.nbatoday.models.remote.player.extensions.toPlayer
-import com.jiachian.nbatoday.repository.player.NBAPlayerRepository
+import com.jiachian.nbatoday.player.data.NBAPlayerRepository
+import com.jiachian.nbatoday.player.data.model.remote.PlayerDto
 import com.jiachian.nbatoday.utils.assertIs
 import io.mockk.coEvery
 import io.mockk.every
@@ -68,7 +68,7 @@ class NBAPlayerRepositoryTest : BaseUnitTest() {
     fun `insertPlayer(home) with error player expects onError is triggered`() = launch {
         mockkStatic("com.jiachian.nbatoday.models.remote.player.extensions.RemotePlayerExtKt")
         every {
-            any<RemotePlayer>().toPlayer()
+            any<PlayerDto>().toPlayer()
         } returns null
         repository.addPlayer(HomePlayerId)
         dataHolder

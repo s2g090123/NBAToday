@@ -7,9 +7,9 @@ import com.jiachian.nbatoday.UserPassword
 import com.jiachian.nbatoday.UserPoints
 import com.jiachian.nbatoday.data.local.UserGenerator
 import com.jiachian.nbatoday.datasource.remote.user.UserRemoteSource
-import com.jiachian.nbatoday.models.remote.user.RemoteUser
+import com.jiachian.nbatoday.home.user.data.NBAUserRepository
+import com.jiachian.nbatoday.home.user.data.model.remote.UserDto
 import com.jiachian.nbatoday.models.remote.user.extensions.toUser
-import com.jiachian.nbatoday.repository.user.NBAUserRepository
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsNull
 import io.mockk.coEvery
@@ -81,7 +81,7 @@ class NBAUserRepositoryTest : BaseUnitTest() {
     fun `login() with unavailable user expects onError is triggered`() = launch {
         mockkStatic("com.jiachian.nbatoday.models.remote.user.extensions.RemoteUserExtKt")
         every {
-            any<RemoteUser>().toUser()
+            any<UserDto>().toUser()
         } returns UserGenerator.get(false)
         repository.login(UserAccount, UserPassword)
         repository
@@ -129,7 +129,7 @@ class NBAUserRepositoryTest : BaseUnitTest() {
     fun `register() with unavailable user expects onError is triggered`() = launch {
         mockkStatic("com.jiachian.nbatoday.models.remote.user.extensions.RemoteUserExtKt")
         every {
-            any<RemoteUser>().toUser()
+            any<UserDto>().toUser()
         } returns UserGenerator.get(false)
         repository.register(UserAccount, UserPassword)
         repository

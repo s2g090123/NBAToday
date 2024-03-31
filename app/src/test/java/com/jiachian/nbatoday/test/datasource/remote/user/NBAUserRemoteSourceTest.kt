@@ -5,7 +5,7 @@ import com.jiachian.nbatoday.UserPassword
 import com.jiachian.nbatoday.UserPoints
 import com.jiachian.nbatoday.data.remote.RemoteUserGenerator
 import com.jiachian.nbatoday.datasource.remote.user.NBAUserRemoteSource
-import com.jiachian.nbatoday.service.UserService
+import com.jiachian.nbatoday.home.user.data.UserService
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsTrue
 import io.mockk.coEvery

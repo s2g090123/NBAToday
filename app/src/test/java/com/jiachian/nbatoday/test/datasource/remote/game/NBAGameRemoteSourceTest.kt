@@ -1,12 +1,12 @@
 package com.jiachian.nbatoday.test.datasource.remote.game
 
 import com.jiachian.nbatoday.FinalGameId
-import com.jiachian.nbatoday.NBALeagueId
+import com.jiachian.nbatoday.common.data.NBALeagueId
 import com.jiachian.nbatoday.data.remote.RemoteBoxScoreGenerator
 import com.jiachian.nbatoday.data.remote.RemoteGameGenerator
 import com.jiachian.nbatoday.data.remote.RemoteScheduleGenerator
 import com.jiachian.nbatoday.datasource.remote.game.NBAGameRemoteSource
-import com.jiachian.nbatoday.service.GameService
+import com.jiachian.nbatoday.game.data.GameService
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsTrue
 import io.mockk.coEvery

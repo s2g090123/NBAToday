@@ -1,22 +1,22 @@
 package com.jiachian.nbatoday.repository.data
 
-import com.jiachian.nbatoday.NBALeagueId
-import com.jiachian.nbatoday.ScheduleDateRange
+import com.jiachian.nbatoday.common.data.NBALeagueId
+import com.jiachian.nbatoday.common.data.ScheduleDateRange
+import com.jiachian.nbatoday.common.data.datastore.BaseDataStore
 import com.jiachian.nbatoday.datasource.local.game.GameLocalSource
 import com.jiachian.nbatoday.datasource.remote.game.GameRemoteSource
-import com.jiachian.nbatoday.datastore.BaseDataStore
-import com.jiachian.nbatoday.models.local.game.Game
-import com.jiachian.nbatoday.models.local.game.GameUpdateData
-import com.jiachian.nbatoday.models.local.game.toGameScoreUpdateData
+import com.jiachian.nbatoday.game.data.model.local.Game
+import com.jiachian.nbatoday.game.data.model.local.GameUpdateData
+import com.jiachian.nbatoday.game.data.model.toGameScoreUpdateData
+import com.jiachian.nbatoday.home.schedule.data.ScheduleRepository
 import com.jiachian.nbatoday.models.remote.game.extensions.toGameUpdateData
 import com.jiachian.nbatoday.models.remote.game.extensions.toGames
-import com.jiachian.nbatoday.repository.schedule.ScheduleRepository
-import com.jiachian.nbatoday.repository.team.TeamRepository
+import com.jiachian.nbatoday.team.data.TeamRepository
 import com.jiachian.nbatoday.utils.DateUtils
+import kotlinx.coroutines.flow.first
 import java.util.Calendar
 import java.util.Date
 import java.util.concurrent.TimeUnit
-import kotlinx.coroutines.flow.first
 
 class TestScheduleRepository(
     private val gameLocalSource: GameLocalSource,

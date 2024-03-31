@@ -16,11 +16,11 @@ import com.jiachian.nbatoday.HomeTeamId
 import com.jiachian.nbatoday.PlayingGameId
 import com.jiachian.nbatoday.UserAccount
 import com.jiachian.nbatoday.UserPassword
-import com.jiachian.nbatoday.compose.screen.bet.BetScreen
-import com.jiachian.nbatoday.compose.screen.bet.BetViewModel
+import com.jiachian.nbatoday.bet.data.BetRepository
+import com.jiachian.nbatoday.bet.ui.main.BetScreen
+import com.jiachian.nbatoday.bet.ui.main.BetViewModel
 import com.jiachian.nbatoday.compose.screen.state.UIState
-import com.jiachian.nbatoday.navigation.MainRoute
-import com.jiachian.nbatoday.repository.bet.BetRepository
+import com.jiachian.nbatoday.main.ui.navigation.MainRoute
 import com.jiachian.nbatoday.testing.testtag.BetTestTag
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsTrue

@@ -1,9 +1,9 @@
 package com.jiachian.nbatoday.datastore.data
 
 import com.jiachian.nbatoday.DataHolder
-import com.jiachian.nbatoday.datastore.BaseDataStore
-import com.jiachian.nbatoday.models.local.team.NBATeam
-import com.jiachian.nbatoday.models.local.user.User
+import com.jiachian.nbatoday.common.data.datastore.BaseDataStore
+import com.jiachian.nbatoday.home.user.data.model.local.User
+import com.jiachian.nbatoday.team.data.model.local.teams.NBATeam
 import com.jiachian.nbatoday.utils.DateUtils
 
 class TestDataStore(

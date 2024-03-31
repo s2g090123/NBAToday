@@ -1,15 +1,15 @@
 package com.jiachian.nbatoday.repository.data
 
+import com.jiachian.nbatoday.boxscore.data.model.local.BoxScoreAndGame
 import com.jiachian.nbatoday.datasource.local.boxscore.BoxScoreLocalSource
 import com.jiachian.nbatoday.datasource.local.game.GameLocalSource
 import com.jiachian.nbatoday.datasource.remote.game.GameRemoteSource
-import com.jiachian.nbatoday.models.local.game.GameAndBets
-import com.jiachian.nbatoday.models.local.score.BoxScoreAndGame
+import com.jiachian.nbatoday.game.data.GameRepository
+import com.jiachian.nbatoday.game.data.model.local.GameAndBets
 import com.jiachian.nbatoday.models.remote.score.extensions.toBoxScore
-import com.jiachian.nbatoday.repository.game.GameRepository
-import java.util.Date
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import java.util.Date
 
 class TestGameRepository(
     private val gameLocalSource: GameLocalSource,

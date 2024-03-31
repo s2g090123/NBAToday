@@ -1,8 +1,8 @@
 package com.jiachian.nbatoday.datasource.local.data
 
-import com.jiachian.nbatoday.database.dao.PlayerDao
 import com.jiachian.nbatoday.datasource.local.player.PlayerLocalSource
-import com.jiachian.nbatoday.models.local.player.Player
+import com.jiachian.nbatoday.player.data.PlayerDao
+import com.jiachian.nbatoday.player.data.model.local.Player
 import kotlinx.coroutines.flow.Flow
 
 class TestPlayerLocalSource(

@@ -6,9 +6,9 @@ import androidx.compose.ui.test.performTextInput
 import com.jiachian.nbatoday.BaseAndroidTest
 import com.jiachian.nbatoday.UserAccount
 import com.jiachian.nbatoday.UserPassword
-import com.jiachian.nbatoday.compose.screen.account.LoginDialog
+import com.jiachian.nbatoday.common.ui.login.LoginDialog
 import com.jiachian.nbatoday.data.local.UserGenerator
-import com.jiachian.nbatoday.models.local.user.User
+import com.jiachian.nbatoday.home.user.data.model.local.User
 import com.jiachian.nbatoday.testing.testtag.UserTestTag
 import com.jiachian.nbatoday.utils.assertIsNotNull
 import com.jiachian.nbatoday.utils.assertIsNull

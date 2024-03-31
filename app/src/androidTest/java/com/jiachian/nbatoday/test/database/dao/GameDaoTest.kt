@@ -10,25 +10,25 @@ import com.jiachian.nbatoday.HomePlayerId
 import com.jiachian.nbatoday.HomeTeamId
 import com.jiachian.nbatoday.PlayingGameId
 import com.jiachian.nbatoday.PlayingGameTimeMs
+import com.jiachian.nbatoday.common.data.database.NBADatabase
 import com.jiachian.nbatoday.data.local.BetGenerator
 import com.jiachian.nbatoday.data.local.GameAndBetsGenerator
 import com.jiachian.nbatoday.data.local.GameGenerator
 import com.jiachian.nbatoday.data.local.GameTeamGenerator
-import com.jiachian.nbatoday.database.NBADatabase
-import com.jiachian.nbatoday.database.dao.GameDao
-import com.jiachian.nbatoday.models.local.game.Game
-import com.jiachian.nbatoday.models.local.game.GameScoreUpdateData
-import com.jiachian.nbatoday.models.local.game.GameStatus
-import com.jiachian.nbatoday.models.local.game.GameUpdateData
+import com.jiachian.nbatoday.game.data.GameDao
+import com.jiachian.nbatoday.game.data.model.local.Game
+import com.jiachian.nbatoday.game.data.model.local.GameScoreUpdateData
+import com.jiachian.nbatoday.game.data.model.local.GameStatus
+import com.jiachian.nbatoday.game.data.model.local.GameUpdateData
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsTrue
 import com.jiachian.nbatoday.utils.collectOnce
 import com.jiachian.nbatoday.utils.getOrAssert
-import java.util.Date
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import java.util.Date
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class GameDaoTest : BaseAndroidTest() {

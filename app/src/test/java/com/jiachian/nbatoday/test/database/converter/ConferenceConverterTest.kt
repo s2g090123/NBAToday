@@ -1,7 +1,7 @@
 package com.jiachian.nbatoday.test.database.converter
 
-import com.jiachian.nbatoday.database.converter.ConferenceConverter
-import com.jiachian.nbatoday.models.local.team.NBATeam
+import com.jiachian.nbatoday.common.data.database.converter.ConferenceConverter
+import com.jiachian.nbatoday.team.data.model.local.teams.NBATeam
 import com.jiachian.nbatoday.utils.assertIs
 import org.junit.Test
 

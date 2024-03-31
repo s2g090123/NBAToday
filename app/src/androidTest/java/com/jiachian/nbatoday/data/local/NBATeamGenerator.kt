@@ -11,8 +11,8 @@ import com.jiachian.nbatoday.HomeTeamId
 import com.jiachian.nbatoday.HomeTeamLocation
 import com.jiachian.nbatoday.HomeTeamName
 import com.jiachian.nbatoday.R
-import com.jiachian.nbatoday.compose.theme.NBAColors
-import com.jiachian.nbatoday.models.local.team.NBATeam
+import com.jiachian.nbatoday.common.ui.theme.NBAColors
+import com.jiachian.nbatoday.team.data.model.local.teams.NBATeam
 
 object NBATeamGenerator {
     private val home = object : NBATeam {

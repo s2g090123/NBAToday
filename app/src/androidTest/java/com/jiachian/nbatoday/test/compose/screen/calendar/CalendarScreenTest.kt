@@ -21,11 +21,11 @@ import com.jiachian.nbatoday.HomeTeamAbbr
 import com.jiachian.nbatoday.HomeTeamId
 import com.jiachian.nbatoday.PlayingGameId
 import com.jiachian.nbatoday.PlayingGameTimeMs
-import com.jiachian.nbatoday.compose.screen.calendar.CalendarScreen
-import com.jiachian.nbatoday.compose.screen.calendar.CalendarViewModel
+import com.jiachian.nbatoday.calendar.ui.CalendarScreen
+import com.jiachian.nbatoday.calendar.ui.CalendarViewModel
 import com.jiachian.nbatoday.compose.screen.state.UIState
 import com.jiachian.nbatoday.data.local.GameGenerator
-import com.jiachian.nbatoday.navigation.MainRoute
+import com.jiachian.nbatoday.main.ui.navigation.MainRoute
 import com.jiachian.nbatoday.testing.testtag.CalendarTestTag
 import com.jiachian.nbatoday.testing.testtag.GameCardTestTag
 import com.jiachian.nbatoday.utils.DateUtils
@@ -37,13 +37,13 @@ import com.jiachian.nbatoday.utils.onNodeWithUnmergedTree
 import io.mockk.every
 import io.mockk.spyk
 import io.mockk.unmockkObject
-import java.util.Date
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import java.util.Date
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class CalendarScreenTest : BaseAndroidTest() {

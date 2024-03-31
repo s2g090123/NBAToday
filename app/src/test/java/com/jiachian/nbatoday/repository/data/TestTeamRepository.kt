@@ -2,14 +2,14 @@ package com.jiachian.nbatoday.repository.data
 
 import com.jiachian.nbatoday.datasource.local.team.TeamLocalSource
 import com.jiachian.nbatoday.datasource.remote.team.TeamRemoteSource
-import com.jiachian.nbatoday.models.local.team.NBATeam
-import com.jiachian.nbatoday.models.local.team.Team
-import com.jiachian.nbatoday.models.local.team.TeamAndPlayers
-import com.jiachian.nbatoday.models.local.team.TeamPlayer
-import com.jiachian.nbatoday.models.local.team.TeamRank
 import com.jiachian.nbatoday.models.remote.team.extensions.toTeamPlayerStats
 import com.jiachian.nbatoday.models.remote.team.extensions.toTeamStats
-import com.jiachian.nbatoday.repository.team.TeamRepository
+import com.jiachian.nbatoday.team.data.TeamRepository
+import com.jiachian.nbatoday.team.data.model.local.Team
+import com.jiachian.nbatoday.team.data.model.local.TeamAndPlayers
+import com.jiachian.nbatoday.team.data.model.local.TeamPlayer
+import com.jiachian.nbatoday.team.data.model.local.TeamRank
+import com.jiachian.nbatoday.team.data.model.local.teams.NBATeam
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 

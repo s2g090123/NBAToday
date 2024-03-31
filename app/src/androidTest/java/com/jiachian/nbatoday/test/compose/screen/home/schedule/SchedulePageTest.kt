@@ -21,11 +21,11 @@ import com.jiachian.nbatoday.HomePlayerFullName
 import com.jiachian.nbatoday.HomeTeamAbbr
 import com.jiachian.nbatoday.HomeTeamId
 import com.jiachian.nbatoday.PlayingGameId
-import com.jiachian.nbatoday.compose.screen.home.schedule.SchedulePage
-import com.jiachian.nbatoday.compose.screen.home.schedule.SchedulePageViewModel
-import com.jiachian.nbatoday.compose.screen.home.schedule.models.DateData
 import com.jiachian.nbatoday.compose.screen.state.UIState
 import com.jiachian.nbatoday.data.local.GameGenerator
+import com.jiachian.nbatoday.home.schedule.ui.SchedulePage
+import com.jiachian.nbatoday.home.schedule.ui.SchedulePageViewModel
+import com.jiachian.nbatoday.home.schedule.ui.model.DateData
 import com.jiachian.nbatoday.testing.testtag.GameCardTestTag
 import com.jiachian.nbatoday.testing.testtag.ScheduleTestTag
 import com.jiachian.nbatoday.utils.assertIs
@@ -35,14 +35,14 @@ import com.jiachian.nbatoday.utils.onNodeWithTag
 import io.mockk.every
 import io.mockk.spyk
 import io.mockk.unmockkObject
-import java.text.SimpleDateFormat
-import java.util.TimeZone
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import java.text.SimpleDateFormat
+import java.util.TimeZone
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SchedulePageTest : BaseAndroidTest() {

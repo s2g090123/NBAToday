@@ -6,10 +6,10 @@ import com.jiachian.nbatoday.data.local.TeamGenerator
 import com.jiachian.nbatoday.data.local.TeamPlayerGenerator
 import com.jiachian.nbatoday.datasource.local.team.TeamLocalSource
 import com.jiachian.nbatoday.datasource.remote.team.TeamRemoteSource
-import com.jiachian.nbatoday.models.local.team.NBATeam
-import com.jiachian.nbatoday.models.local.team.TeamAndPlayers
-import com.jiachian.nbatoday.models.local.team.TeamRank
-import com.jiachian.nbatoday.repository.team.NBATeamRepository
+import com.jiachian.nbatoday.team.data.NBATeamRepository
+import com.jiachian.nbatoday.team.data.model.local.TeamAndPlayers
+import com.jiachian.nbatoday.team.data.model.local.TeamRank
+import com.jiachian.nbatoday.team.data.model.local.teams.NBATeam
 import com.jiachian.nbatoday.utils.assertIs
 import io.mockk.coEvery
 import io.mockk.spyk

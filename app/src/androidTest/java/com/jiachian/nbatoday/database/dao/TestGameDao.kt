@@ -1,13 +1,14 @@
 package com.jiachian.nbatoday.database.dao
 
 import com.jiachian.nbatoday.DataHolder
-import com.jiachian.nbatoday.models.local.game.Game
-import com.jiachian.nbatoday.models.local.game.GameAndBets
-import com.jiachian.nbatoday.models.local.game.GameScoreUpdateData
-import com.jiachian.nbatoday.models.local.game.GameUpdateData
-import java.util.Date
+import com.jiachian.nbatoday.game.data.GameDao
+import com.jiachian.nbatoday.game.data.model.local.Game
+import com.jiachian.nbatoday.game.data.model.local.GameAndBets
+import com.jiachian.nbatoday.game.data.model.local.GameScoreUpdateData
+import com.jiachian.nbatoday.game.data.model.local.GameUpdateData
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import java.util.Date
 
 class TestGameDao(
     private val dataHolder: DataHolder

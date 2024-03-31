@@ -3,7 +3,7 @@ package com.jiachian.nbatoday.test.datasource.remote.player
 import com.jiachian.nbatoday.HomePlayerId
 import com.jiachian.nbatoday.data.remote.RemotePlayerGenerator
 import com.jiachian.nbatoday.datasource.remote.player.NBAPlayerRemoteSource
-import com.jiachian.nbatoday.service.PlayerService
+import com.jiachian.nbatoday.player.data.PlayerService
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsTrue
 import io.mockk.coEvery

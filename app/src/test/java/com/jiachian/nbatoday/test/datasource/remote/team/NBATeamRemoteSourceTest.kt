@@ -4,7 +4,7 @@ import com.jiachian.nbatoday.HomeTeamId
 import com.jiachian.nbatoday.data.remote.RemoteTeamGenerator
 import com.jiachian.nbatoday.data.remote.RemoteTeamPlayerGenerator
 import com.jiachian.nbatoday.datasource.remote.team.NBATeamRemoteSource
-import com.jiachian.nbatoday.service.TeamService
+import com.jiachian.nbatoday.team.data.TeamService
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsTrue
 import io.mockk.coEvery
