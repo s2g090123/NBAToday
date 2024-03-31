@@ -58,20 +58,18 @@ fun CalendarScreen(
     viewModel: CalendarViewModel = koinViewModel(),
     navigationController: NavigationController,
 ) {
-    val topBarState = viewModel.topBarState
-    val datesState = viewModel.datesState
-    val gamesState = viewModel.gamesState
+    val state = viewModel.state
     Scaffold(
         backgroundColor = MaterialTheme.colors.primary,
         topBar = {
             CalendarTopBar(
-                state = topBarState,
+                state = state.topBar,
                 onEvent = viewModel::onEvent,
                 onClose = navigationController::back,
             )
         }
     ) { padding ->
-        if (datesState.loading) {
+        if (state.dates.loading) {
             CircularProgressIndicator(
                 modifier = Modifier
                     .testTag(CalendarTestTag.CalendarContent_LoadingScreen_Calendar)
@@ -86,11 +84,11 @@ fun CalendarScreen(
                 columns = GridCells.Fixed(DaysPerWeek),
             ) {
                 dateBoxes(
-                    state = datesState,
+                    state = state.dates,
                     selectDate = { viewModel.onEvent(CalendarUIEvent.SelectDate(it)) }
                 )
-                if (gamesState.visible) {
-                    if (gamesState.loading) {
+                if (state.games.visible) {
+                    if (state.games.loading) {
                         item(span = { GridItemSpan(DaysPerWeek) }) {
                             CircularProgressIndicator(
                                 modifier = Modifier
@@ -101,7 +99,7 @@ fun CalendarScreen(
                         }
                     } else {
                         calendarGameCards(
-                            games = gamesState.games,
+                            games = state.games.games,
                             onClickGame = { game ->
                                 if (game.gamePlayed) {
                                     navigationController.navigateToBoxScore(game.gameId)

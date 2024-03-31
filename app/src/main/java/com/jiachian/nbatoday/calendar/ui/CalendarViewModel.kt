@@ -6,12 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jiachian.nbatoday.calendar.ui.event.CalendarUIEvent
 import com.jiachian.nbatoday.calendar.ui.model.CalendarDate
-import com.jiachian.nbatoday.calendar.ui.state.CalendarDatesState
-import com.jiachian.nbatoday.calendar.ui.state.CalendarGamesState
-import com.jiachian.nbatoday.calendar.ui.state.CalendarTopBarState
-import com.jiachian.nbatoday.calendar.ui.state.MutableCalendarDatesState
-import com.jiachian.nbatoday.calendar.ui.state.MutableCalendarGamesState
-import com.jiachian.nbatoday.calendar.ui.state.MutableCalendarTopBarState
+import com.jiachian.nbatoday.calendar.ui.state.CalendarState
+import com.jiachian.nbatoday.calendar.ui.state.MutableCalendarState
 import com.jiachian.nbatoday.common.data.DaysPerWeek
 import com.jiachian.nbatoday.common.ui.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.common.ui.dispatcher.DispatcherProvider
@@ -51,14 +47,8 @@ class CalendarViewModel(
 
     private val user = getUser()
 
-    private val topBarStateImp = MutableCalendarTopBarState()
-    val topBarState: CalendarTopBarState = topBarStateImp
-
-    private val datesStateImp = MutableCalendarDatesState()
-    val datesState: CalendarDatesState = datesStateImp
-
-    private val gamesStateImp = MutableCalendarGamesState()
-    val gamesState: CalendarGamesState = gamesStateImp
+    private val stateImp = MutableCalendarState()
+    val state: CalendarState = stateImp
 
     private val currentCalendar = DateUtils.getCalendar().let {
         it.timeInMillis = dateTime
@@ -95,7 +85,7 @@ class CalendarViewModel(
                         get(Calendar.YEAR) > cal.get(Calendar.YEAR) || get(Calendar.MONTH) > cal.get(Calendar.MONTH)
                     }
                     Snapshot.withMutableSnapshot {
-                        topBarStateImp.let { state ->
+                        stateImp.topBar.let { state ->
                             state.index = index
                             state.dateString = dateString
                             state.hasPrevious = hasPrev
@@ -114,11 +104,11 @@ class CalendarViewModel(
                     val month = cal.get(Calendar.MONTH)
                     val key = "$year-$month"
                     val dates = calendarDatesMap.getOrPut(key) {
-                        datesStateImp.loading = true
+                        stateImp.dates.loading = true
                         getDates(year, month)
                     }
                     Snapshot.withMutableSnapshot {
-                        datesStateImp.let { state ->
+                        stateImp.dates.let { state ->
                             state.calendarDates = dates
                             state.loading = false
                         }
@@ -127,7 +117,7 @@ class CalendarViewModel(
         }
         viewModelScope.launch {
             selectedDate.collect {
-                datesStateImp.selectedDate = it
+                stateImp.dates.selectedDate = it
             }
         }
     }
@@ -139,13 +129,13 @@ class CalendarViewModel(
                     val year = cal.get(Calendar.YEAR)
                     val month = cal.get(Calendar.MONTH)
                     val visible = isInCalendar(year, month, selectedDate.value)
-                    gamesStateImp.visible = visible
+                    stateImp.games.visible = visible
                 }
         }
         viewModelScope.launch {
             selectedDate
                 .onEach {
-                    gamesStateImp.loading = true
+                    stateImp.games.loading = true
                 }
                 .flatMapLatest { date ->
                     getGames(date)
@@ -154,7 +144,7 @@ class CalendarViewModel(
                 }
                 .collect {
                     Snapshot.withMutableSnapshot {
-                        gamesStateImp.let { state ->
+                        stateImp.games.let { state ->
                             state.games = it
                             state.loading = false
                             state.visible = true
@@ -220,7 +210,7 @@ class CalendarViewModel(
      * Moves to the next month in the calendar.
      */
     private fun nextMonth() {
-        if (topBarState.hasNext) {
+        if (state.topBar.hasNext) {
             currentCalendar.value = DateUtils.getCalendar().apply {
                 time = currentCalendar.value.time
                 add(Calendar.MONTH, 1)
@@ -232,7 +222,7 @@ class CalendarViewModel(
      * Moves to the previous month in the calendar.
      */
     private fun prevMonth() {
-        if (topBarState.hasPrevious) {
+        if (state.topBar.hasPrevious) {
             currentCalendar.value = DateUtils.getCalendar().apply {
                 time = currentCalendar.value.time
                 add(Calendar.MONTH, -1)
