@@ -33,7 +33,7 @@ class BoxScoreViewModel(
     private val boxScoreUseCase: BoxScoreUseCase,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
 ) : ViewModel() {
-    private val gameId: String = savedStateHandle[MainRoute.BoxScore.param] ?: throw Exception("gameId is null.")
+    private val gameId: String = savedStateHandle[MainRoute.BoxScore.param] ?: ""
 
     private val stateImp = MutableBoxScoreState()
     val state: BoxScoreState = stateImp

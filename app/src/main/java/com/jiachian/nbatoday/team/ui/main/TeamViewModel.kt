@@ -45,7 +45,7 @@ class TeamViewModel(
     getUser: GetUser,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
 ) : ViewModel() {
-    private val teamId: Int = savedStateHandle.get<String>(MainRoute.Team.param)?.toIntOrNull() ?: throw Exception("teamId is null.")
+    private val teamId: Int = savedStateHandle.get<String>(MainRoute.Team.param)?.toIntOrNull() ?: -1
 
     private val stateImp = MutableTeamState()
     val state: TeamState = stateImp
@@ -103,14 +103,7 @@ class TeamViewModel(
                     when (resource) {
                         is Resource.Error -> {
                             when (resource.error) {
-                                GetTeamAndPlayersError.TEAM_NOT_FOUND -> {
-                                    Snapshot.withMutableSnapshot {
-                                        stateImp.apply {
-                                            event = TeamDataEvent.Error(resource.error.asTeamError())
-                                            notFound = true
-                                        }
-                                    }
-                                }
+                                GetTeamAndPlayersError.TEAM_NOT_FOUND -> stateImp.notFound = true
                             }
                         }
                         is Resource.Loading -> Unit
@@ -122,6 +115,7 @@ class TeamViewModel(
                                 stateImp.apply {
                                     info.team = resource.data.team
                                     players.players = playerRowData
+                                    notFound = false
                                 }
                             }
                         }

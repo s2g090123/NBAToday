@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jiachian.nbatoday.bet.data.model.local.BetAndGame
 import com.jiachian.nbatoday.bet.domain.BetUseCase
+import com.jiachian.nbatoday.bet.ui.main.error.BetError
 import com.jiachian.nbatoday.bet.ui.main.error.asBetError
 import com.jiachian.nbatoday.bet.ui.main.event.BetDataEvent
 import com.jiachian.nbatoday.bet.ui.main.event.BetUIEvent
@@ -53,11 +54,14 @@ class BetViewModel(
     private val userUseCase: UserUseCase,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
 ) : ViewModel() {
-    private val account: String = savedStateHandle[MainRoute.Bet.param] ?: throw Exception("account is null.")
-
     // state representing the stats of [BetAndGame]
     private val stateImp = MutableBetState()
     val state: BetState = stateImp
+
+    private val account: String = savedStateHandle[MainRoute.Bet.param] ?: run {
+        stateImp.event = BetDataEvent.Error(BetError.USER_NOT_LOGIN)
+        ""
+    }
 
     init {
         getBetGames()

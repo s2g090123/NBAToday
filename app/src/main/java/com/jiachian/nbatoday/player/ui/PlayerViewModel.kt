@@ -36,7 +36,7 @@ class PlayerViewModel(
     private val playerUseCase: PlayerUseCase,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
 ) : ViewModel() {
-    private val playerId: Int = savedStateHandle.get<String>(MainRoute.Player.param)?.toIntOrNull() ?: throw Exception("playerId is null.")
+    private val playerId: Int = savedStateHandle.get<String>(MainRoute.Player.param)?.toIntOrNull() ?: -1
 
     private val stateImp = MutablePlayerState(playerId)
     val state: PlayerState = stateImp

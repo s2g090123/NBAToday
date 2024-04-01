@@ -43,7 +43,12 @@ class CalendarViewModel(
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
 ) : ViewModel() {
     private val dateTime: Long =
-        savedStateHandle.get<String>(MainRoute.Calendar.param)?.toLongOrNull() ?: throw Exception("dateTime is null.")
+        savedStateHandle.get<String>(MainRoute.Calendar.param)?.toLongOrNull() ?: DateUtils.getCalendar().apply {
+            set(Calendar.HOUR, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }.timeInMillis
 
     private val user = getUser()
 
@@ -60,6 +65,7 @@ class CalendarViewModel(
     private val calendarDatesMap = mutableMapOf<String, List<CalendarDate>>()
 
     init {
+        println("NBA123 $dateTime")
         collectTopBarState()
         collectDatesState()
         collectGamesState()
