@@ -23,6 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.bet.data.model.local.BetAndGame
+import com.jiachian.nbatoday.bet.data.model.local.getAwayPointsTextColor
+import com.jiachian.nbatoday.bet.data.model.local.getHomePointsTextColor
 import com.jiachian.nbatoday.common.ui.TeamLogoImage
 import com.jiachian.nbatoday.game.data.model.local.GameTeam
 import com.jiachian.nbatoday.testing.testtag.BetTestTag

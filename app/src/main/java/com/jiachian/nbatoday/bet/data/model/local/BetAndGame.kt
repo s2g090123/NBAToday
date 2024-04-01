@@ -51,30 +51,6 @@ data class BetAndGame(
     }
 
     /**
-     * Gets the color of home team points text, based on the game's status and result.
-     */
-    @Composable
-    fun getHomePointsTextColor(): Color {
-        return when {
-            !gameFinal -> MaterialTheme.colors.primary
-            homeWin -> MaterialTheme.colors.primaryVariant
-            else -> MaterialTheme.colors.secondaryVariant
-        }
-    }
-
-    /**
-     * Gets the color of away team points text, based on the game's status and result.
-     */
-    @Composable
-    fun getAwayPointsTextColor(): Color {
-        return when {
-            !gameFinal -> MaterialTheme.colors.primary
-            !homeWin -> MaterialTheme.colors.primaryVariant
-            else -> MaterialTheme.colors.secondaryVariant
-        }
-    }
-
-    /**
      * Gets the text representation of the bet status based on the associated game's status.
      */
     fun getBetStatusText(): String {
@@ -97,5 +73,29 @@ data class BetAndGame(
      */
     fun getLostPoints(): Long {
         return if (homeWin) bet.awayPoints else bet.homePoints
+    }
+}
+
+/**
+ * Gets the color of home team points text, based on the game's status and result.
+ */
+@Composable
+fun BetAndGame.getHomePointsTextColor(): Color {
+    return when {
+        !gameFinal -> MaterialTheme.colors.primary
+        homeWin -> MaterialTheme.colors.primaryVariant
+        else -> MaterialTheme.colors.secondaryVariant
+    }
+}
+
+/**
+ * Gets the color of away team points text, based on the game's status and result.
+ */
+@Composable
+fun BetAndGame.getAwayPointsTextColor(): Color {
+    return when {
+        !gameFinal -> MaterialTheme.colors.primary
+        !homeWin -> MaterialTheme.colors.primaryVariant
+        else -> MaterialTheme.colors.secondaryVariant
     }
 }
