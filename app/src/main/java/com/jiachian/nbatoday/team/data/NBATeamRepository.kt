@@ -62,11 +62,11 @@ class NBATeamRepository(
             dao.getPlusMinusRank(teamId)
         ) { standing, points, rebounds, assists, plusMinus ->
             TeamRank(
-                standing = standing,
-                pointsRank = points,
-                reboundsRank = rebounds,
-                assistsRank = assists,
-                plusMinusRank = plusMinus
+                standing = standing ?: 0,
+                pointsRank = points ?: 0,
+                reboundsRank = rebounds ?: 0,
+                assistsRank = assists ?: 0,
+                plusMinusRank = plusMinus ?: 0
             )
         }
     }

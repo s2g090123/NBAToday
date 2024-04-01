@@ -52,7 +52,7 @@ interface TeamDao {
             ORDER BY win_percentage
         """
     )
-    fun getTeamStanding(teamId: Int, conference: NBATeam.Conference): Flow<Int>
+    fun getTeamStanding(teamId: Int, conference: NBATeam.Conference): Flow<Int?>
 
     /**
      * Retrieves the points rank of a team from the database.
@@ -76,7 +76,7 @@ interface TeamDao {
             ORDER BY points
         """
     )
-    fun getPointsRank(teamId: Int): Flow<Int>
+    fun getPointsRank(teamId: Int): Flow<Int?>
 
     /**
      * Retrieves the rebounds rank of a team from the database.
@@ -100,7 +100,7 @@ interface TeamDao {
             ORDER BY rebounds_total
         """
     )
-    fun getReboundsRank(teamId: Int): Flow<Int>
+    fun getReboundsRank(teamId: Int): Flow<Int?>
 
     /**
      * Retrieves the assists rank of a team from the database.
@@ -124,7 +124,7 @@ interface TeamDao {
             ORDER BY assists
         """
     )
-    fun getAssistsRank(teamId: Int): Flow<Int>
+    fun getAssistsRank(teamId: Int): Flow<Int?>
 
     /**
      * Retrieves the plus-minus rank of a team from the database.
@@ -148,7 +148,7 @@ interface TeamDao {
             ORDER BY plus_minus
         """
     )
-    fun getPlusMinusRank(teamId: Int): Flow<Int>
+    fun getPlusMinusRank(teamId: Int): Flow<Int?>
 
     /**
      * Inserts a list of teams into the database, replacing any existing entries on conflict.
