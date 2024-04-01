@@ -81,12 +81,12 @@ enum class TeamPlayerLabel(
         sorting = TeamPlayerSorting.FTP
     ),
     OREB(
-        width = 48.dp,
+        width = 64.dp,
         textRes = R.string.stats_label_oreb,
         sorting = TeamPlayerSorting.OREB
     ),
     DREB(
-        width = 48.dp,
+        width = 64.dp,
         textRes = R.string.stats_label_dreb,
         sorting = TeamPlayerSorting.DREB
     ),

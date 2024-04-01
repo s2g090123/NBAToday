@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -224,7 +224,7 @@ private fun PlayerStatsLabel(
     Box(
         modifier = Modifier
             .width(label.width)
-            .height(40.dp)
+            .heightIn(40.dp)
             .modifyIf(focus, MaterialTheme.colors.secondary.copy(Transparency25)) { background(it) }
             .rippleClickable { onClick() }
             .padding(8.dp)

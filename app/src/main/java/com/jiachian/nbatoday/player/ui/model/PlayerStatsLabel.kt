@@ -97,13 +97,13 @@ enum class PlayerStatsLabel(
         sorting = PlayerStatsSorting.FTP,
     ),
     OREB(
-        width = 48.dp,
+        width = 64.dp,
         textRes = R.string.stats_label_oreb,
         align = TextAlign.End,
         sorting = PlayerStatsSorting.OREB,
     ),
     DREB(
-        width = 48.dp,
+        width = 64.dp,
         textRes = R.string.stats_label_dreb,
         align = TextAlign.End,
         sorting = PlayerStatsSorting.DREB,
