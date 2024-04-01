@@ -45,7 +45,7 @@ interface GameDao {
     fun getGamesAndBetsAfter(teamId: Int, from: Long): Flow<List<GameAndBets>>
 
     @Query("SELECT * FROM game WHERE game_id == :gameId")
-    suspend fun getGameAndBets(gameId: String): GameAndBets
+    suspend fun getGameAndBets(gameId: String): GameAndBets?
 
     /**
      * Retrieves a flow of games and associated bets within a specific date range from the database.

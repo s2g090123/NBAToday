@@ -40,7 +40,7 @@ interface GameRepository {
      */
     fun getGamesAndBets(): Flow<List<GameAndBets>>
 
-    suspend fun getGameAndBets(gameId: String): GameAndBets
+    suspend fun getGameAndBets(gameId: String): GameAndBets?
 
     /**
      * Retrieves a flow of games and associated bets that occurred before a specified date-time for a specific team.

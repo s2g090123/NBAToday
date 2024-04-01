@@ -1,5 +1,6 @@
 package com.jiachian.nbatoday.common.ui.bet
 
+import androidx.compose.runtime.snapshots.Snapshot
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -25,7 +26,7 @@ class BetDialogViewModel(
     private val gameUseCase: GameUseCase,
     private val getUser: GetUser,
 ) : ViewModel() {
-    private val gameId: String = savedStateHandle[MainRoute.BetDialog.param] ?: throw Exception("GameId is null.")
+    private val gameId: String = savedStateHandle[MainRoute.BetDialog.param] ?: ""
 
     private val stateImp = MutableBetDialogState()
     val state: BetDialogState = stateImp
@@ -45,9 +46,17 @@ class BetDialogViewModel(
                     stateImp.event = BetDialogDataEvent.Error(BetDialogError.NOT_LOGIN)
                     return@launch
                 }
-                stateImp.apply {
-                    game = getGame.await()
-                    userPoints = user.points
+                when (val resource = getGame.await()) {
+                    is Resource.Error -> stateImp.event = BetDialogDataEvent.Error(resource.error.asBetDialogError())
+                    is Resource.Loading -> Unit
+                    is Resource.Success -> {
+                        Snapshot.withMutableSnapshot {
+                            stateImp.apply {
+                                game = resource.data
+                                userPoints = user.points
+                            }
+                        }
+                    }
                 }
             } finally {
                 stateImp.loading = false

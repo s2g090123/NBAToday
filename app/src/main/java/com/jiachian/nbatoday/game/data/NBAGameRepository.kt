@@ -39,7 +39,7 @@ class NBAGameRepository(
         return gameDao.getGamesAndBets()
     }
 
-    override suspend fun getGameAndBets(gameId: String): GameAndBets {
+    override suspend fun getGameAndBets(gameId: String): GameAndBets? {
         return gameDao.getGameAndBets(gameId)
     }
 
