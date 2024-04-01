@@ -55,8 +55,8 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun CalendarScreen(
-    viewModel: CalendarViewModel = koinViewModel(),
     navigationController: NavigationController,
+    viewModel: CalendarViewModel = koinViewModel(),
 ) {
     val state = viewModel.state
     Scaffold(
@@ -119,10 +119,10 @@ fun CalendarScreen(
 
 @Composable
 private fun CalendarTopBar(
-    modifier: Modifier = Modifier,
     state: CalendarTopBarState,
     onEvent: (CalendarUIEvent) -> Unit,
-    onClose: () -> Unit
+    onClose: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
         IconButton(
@@ -154,12 +154,12 @@ private fun CalendarTopBar(
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun CalendarNavigationBar(
-    modifier: Modifier = Modifier,
     index: Int,
     dateString: String,
     hasPrev: Boolean,
     hasNext: Boolean,
     onEvent: (CalendarUIEvent) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier,

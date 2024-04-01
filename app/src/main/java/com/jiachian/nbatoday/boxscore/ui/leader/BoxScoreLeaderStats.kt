@@ -30,10 +30,10 @@ import com.jiachian.nbatoday.utils.dividerSecondaryColor
 
 @Composable
 fun ScoreLeaderPage(
-    modifier: Modifier = Modifier,
     homeLeaderId: Int,
     awayLeaderId: Int,
     data: List<BoxScoreLeaderRowData>,
+    modifier: Modifier = Modifier,
 ) {
     LazyColumn(modifier = modifier) {
         item {
@@ -59,9 +59,9 @@ fun ScoreLeaderPage(
 
 @Composable
 private fun ScoreLeaderTitleRow(
-    modifier: Modifier = Modifier,
     homeLeaderId: Int,
     awayLeaderId: Int,
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier,
@@ -87,8 +87,8 @@ private fun ScoreLeaderTitleRow(
 
 @Composable
 private fun ScoreLeaderRow(
+    rowData: BoxScoreLeaderRowData,
     modifier: Modifier = Modifier,
-    rowData: BoxScoreLeaderRowData
 ) {
     val label = rowData.label
     Column(modifier = modifier) {
@@ -132,8 +132,8 @@ private fun ScoreLeaderRow(
 
 @Composable
 private fun LeaderStatsText(
-    modifier: Modifier = Modifier,
     value: String,
+    modifier: Modifier = Modifier,
 ) {
     Text(
         modifier = modifier,

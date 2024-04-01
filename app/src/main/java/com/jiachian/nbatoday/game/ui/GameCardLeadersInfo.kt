@@ -28,11 +28,11 @@ import com.jiachian.nbatoday.utils.dividerPrimaryColor
 
 @Composable
 fun GameCardLeadersInfo(
-    modifier: Modifier = Modifier,
     gamePlayed: Boolean,
     homePlayer: GameLeaders.GameLeader,
     awayPlayer: GameLeaders.GameLeader,
     color: Color,
+    modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
         StatsLabelRow(
@@ -62,8 +62,8 @@ fun GameCardLeadersInfo(
 
 @Composable
 private fun StatsLabelRow(
+    color: Color,
     modifier: Modifier = Modifier,
-    color: Color
 ) {
     Column(modifier = modifier) {
         Row(
@@ -95,9 +95,9 @@ private fun StatsLabelRow(
 
 @Composable
 private fun LeaderLabelText(
-    modifier: Modifier = Modifier,
     text: String,
-    color: Color
+    color: Color,
+    modifier: Modifier = Modifier,
 ) {
     Text(
         modifier = modifier,
@@ -111,10 +111,10 @@ private fun LeaderLabelText(
 
 @Composable
 private fun LeaderInfoRow(
-    modifier: Modifier = Modifier,
     player: GameLeaders.GameLeader,
     isGamePlayed: Boolean,
-    color: Color
+    color: Color,
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier,
@@ -165,9 +165,9 @@ private fun LeaderInfoRow(
 
 @Composable
 private fun LeaderStatsText(
-    modifier: Modifier = Modifier,
     text: String,
-    color: Color
+    color: Color,
+    modifier: Modifier = Modifier,
 ) {
     Text(
         modifier = modifier,

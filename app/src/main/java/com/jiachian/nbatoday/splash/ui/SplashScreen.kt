@@ -54,9 +54,9 @@ private const val SplashOffsetAnimationDurationMs = 2000
 @OptIn(ExperimentalTextApi::class)
 @Composable
 fun SplashScreen(
-    viewModel: SplashViewModel = koinViewModel(),
     colors: List<Color>,
     navigationController: NavigationController,
+    viewModel: SplashViewModel = koinViewModel(),
 ) {
     val state = viewModel.state
     val infiniteAnimation = rememberInfiniteTransition()

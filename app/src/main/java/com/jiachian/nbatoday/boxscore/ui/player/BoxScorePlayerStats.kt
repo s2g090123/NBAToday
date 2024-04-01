@@ -46,9 +46,9 @@ import com.jiachian.nbatoday.utils.rippleClickable
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ScorePlayerPage(
-    modifier: Modifier = Modifier,
     players: List<BoxScorePlayerRowData>,
     onClickPlayer: (playerId: Int) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val scrollState = rememberScrollState()
     LazyColumn(modifier = modifier) {
@@ -172,10 +172,10 @@ private fun ScorePlayerLabelPopup(
 
 @Composable
 private fun ScorePlayerScrollableRow(
-    modifier: Modifier = Modifier,
     rowData: BoxScorePlayerRowData,
     scrollState: ScrollState,
     onClickPlayer: (playerId: Int) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     ScorePlayerRow(
         modifier = modifier,
@@ -188,10 +188,10 @@ private fun ScorePlayerScrollableRow(
 
 @Composable
 private fun ScorePlayerRow(
-    modifier: Modifier = Modifier,
     scrollState: ScrollState,
     rowData: BoxScorePlayerRowData,
     onClickPlayer: (playerId: Int) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Row(modifier = modifier) {
         ScorePlayerNameText(
@@ -222,8 +222,8 @@ private fun ScorePlayerRow(
 
 @Composable
 private fun ScorePlayerNameText(
-    modifier: Modifier = Modifier,
     playerName: String,
+    modifier: Modifier = Modifier,
 ) {
     Text(
         modifier = modifier,

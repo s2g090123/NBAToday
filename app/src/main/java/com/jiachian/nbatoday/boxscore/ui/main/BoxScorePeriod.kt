@@ -25,9 +25,9 @@ import com.jiachian.nbatoday.utils.dividerSecondaryColor
 
 @Composable
 fun ScorePeriod(
-    modifier: Modifier = Modifier,
     boxScore: BoxScore,
-    labels: List<String>
+    labels: List<String>,
+    modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
         Divider(
@@ -55,8 +55,8 @@ fun ScorePeriod(
 
 @Composable
 private fun PeriodLabelRow(
+    labels: List<String>,
     modifier: Modifier = Modifier,
-    labels: List<String>
 ) {
     Row(
         modifier = modifier,
@@ -82,9 +82,9 @@ private fun ScoreLabelText(label: String) {
 
 @Composable
 private fun PeriodScoreTable(
-    modifier: Modifier = Modifier,
     homeTeam: BoxScore.BoxScoreTeam,
-    awayTeam: BoxScore.BoxScoreTeam
+    awayTeam: BoxScore.BoxScoreTeam,
+    modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
         PeriodScoreRow(
@@ -104,8 +104,8 @@ private fun PeriodScoreTable(
 
 @Composable
 private fun PeriodScoreRow(
+    team: BoxScore.BoxScoreTeam,
     modifier: Modifier = Modifier,
-    team: BoxScore.BoxScoreTeam
 ) {
     Box(modifier = modifier) {
         Text(
@@ -137,8 +137,8 @@ private fun PeriodScoreRow(
 
 @Composable
 private fun ScoreText(
+    score: Int,
     modifier: Modifier = Modifier,
-    score: Int
 ) {
     Text(
         modifier = modifier,

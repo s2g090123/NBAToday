@@ -22,8 +22,8 @@ import com.jiachian.nbatoday.testing.testtag.BoxScoreTestTag
 
 @Composable
 fun ScoreTotal(
-    modifier: Modifier = Modifier,
     boxScore: BoxScore,
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier,
@@ -51,8 +51,8 @@ fun ScoreTotal(
 
 @Composable
 private fun TeamInfo(
+    team: NBATeam,
     modifier: Modifier = Modifier,
-    team: NBATeam
 ) {
     Column(
         modifier = modifier,
@@ -76,9 +76,9 @@ private fun TeamInfo(
 
 @Composable
 private fun GameScoreStatus(
-    modifier: Modifier = Modifier,
     scoreComparison: String,
-    gameStatus: String
+    gameStatus: String,
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier,

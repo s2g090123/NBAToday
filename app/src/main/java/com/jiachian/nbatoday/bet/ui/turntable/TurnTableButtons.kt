@@ -21,8 +21,8 @@ import com.jiachian.nbatoday.utils.rippleClickable
 
 @Composable
 fun TurnTableCancelButton(
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit
 ) {
     IconButton(
         modifier = modifier,
@@ -35,8 +35,8 @@ fun TurnTableCancelButton(
 
 @Composable
 fun TurnTableStartButton(
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit
 ) {
     Text(
         modifier = modifier

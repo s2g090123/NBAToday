@@ -52,8 +52,8 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun UserPage(
-    viewModel: UserPageViewModel = koinViewModel(),
     navigationController: NavigationController,
+    viewModel: UserPageViewModel = koinViewModel(),
 ) {
     val state = viewModel.state
     Box(modifier = Modifier.fillMaxSize()) {
@@ -94,9 +94,9 @@ fun UserPage(
 
 @Composable
 private fun ThemeTable(
-    modifier: Modifier = Modifier,
     teams: List<NBATeam>,
-    onPalette: (NBATeam) -> Unit
+    onPalette: (NBATeam) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     LazyVerticalGrid(
         modifier = modifier,
@@ -162,9 +162,9 @@ private fun LoginScreen(
 
 @Composable
 private fun ThemeCard(
-    modifier: Modifier = Modifier,
     team: NBATeam,
     colors: NBAColors,
+    modifier: Modifier = Modifier,
 ) {
     Row(modifier = modifier) {
         TeamLogoImage(
@@ -192,8 +192,8 @@ private fun ThemeCard(
 
 @Composable
 private fun ThemePalette(
-    modifier: Modifier = Modifier,
     colors: NBAColors,
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier,
@@ -228,11 +228,11 @@ private fun ThemePalette(
 
 @Composable
 private fun UserTopBar(
-    modifier: Modifier = Modifier,
     name: String,
     points: Long,
     onBet: () -> Unit,
-    onLogout: () -> Unit
+    onLogout: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier,
@@ -285,8 +285,8 @@ private fun UserTopBar(
 
 @Composable
 private fun ColorCircle(
+    color: Color,
     modifier: Modifier = Modifier,
-    color: Color
 ) {
     Box(
         modifier = modifier.then(

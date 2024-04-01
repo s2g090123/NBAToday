@@ -71,9 +71,9 @@ fun AskTurnTableDialog(
 
 @Composable
 private fun AskTurnTableButtons(
-    modifier: Modifier = Modifier,
     onContinue: () -> Unit,
     onCancel: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier,

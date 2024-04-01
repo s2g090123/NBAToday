@@ -43,44 +43,28 @@ fun MainScreen(
             )
         }
         composable(MainRoute.Home.route) {
-            HomeScreen(
-                navigationController = navigationController
-            )
+            HomeScreen(navigationController = navigationController)
         }
         composable(MainRoute.BoxScore.route) {
-            BoxScoreScreen(
-                navigationController = navigationController
-            )
+            BoxScoreScreen(navigationController = navigationController)
         }
         composable(MainRoute.Team.route) {
-            TeamScreen(
-                navigationController = navigationController
-            )
+            TeamScreen(navigationController = navigationController)
         }
         composable(MainRoute.Player.route) {
-            PlayerScreen(
-                navigationController = navigationController
-            )
+            PlayerScreen(navigationController = navigationController)
         }
         composable(MainRoute.Calendar.route) {
-            CalendarScreen(
-                navigationController = navigationController
-            )
+            CalendarScreen(navigationController = navigationController)
         }
         composable(MainRoute.Bet.route) {
-            BetScreen(
-                navigationController = navigationController
-            )
+            BetScreen(navigationController = navigationController)
         }
         dialog(MainRoute.LoginDialog.route) {
-            LoginDialog {
-                navController.popBackStack()
-            }
+            LoginDialog(onDismiss = navController::popBackStack)
         }
         dialog(MainRoute.BetDialog.route) {
-            BetDialog {
-                navController.popBackStack()
-            }
+            BetDialog(onDismiss = navController::popBackStack)
         }
     }
 }

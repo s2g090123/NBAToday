@@ -131,12 +131,12 @@ fun CustomOutlinedTextField(
 
 @Composable
 fun IconButton(
-    modifier: Modifier = Modifier,
     @DrawableRes drawableRes: Int,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
     padding: Dp = 12.dp,
     enabled: Boolean = true,
     tint: Color = LocalContentColor.current.copy(alpha = LocalContentAlpha.current),
-    onClick: () -> Unit
 ) {
     androidx.compose.material.IconButton(
         modifier = modifier.then(
@@ -164,8 +164,8 @@ fun IconButton(
  */
 @Composable
 fun TeamLogoImage(
+    team: NBATeam,
     modifier: Modifier = Modifier,
-    team: NBATeam
 ) {
     AsyncImage(
         modifier = modifier,
@@ -186,13 +186,13 @@ fun TeamLogoImage(
  */
 @Composable
 fun PlayerImage(
+    playerId: Int,
     modifier: Modifier = Modifier,
-    playerId: Int?
 ) {
     AsyncImage(
         modifier = modifier,
         model = SvgRequest.Builder(LocalContext.current)
-            .data(NBAUtils.getPlayerImageUrlById(playerId ?: 0))
+            .data(NBAUtils.getPlayerImageUrlById(playerId))
             .build(),
         error = painterResource(R.drawable.ic_black_person),
         placeholder = painterResource(R.drawable.ic_black_person),

@@ -29,10 +29,10 @@ import com.jiachian.nbatoday.testing.testtag.HomeTestTag
 
 @Composable
 fun HomeScreen(
+    navigationController: NavigationController,
     navController: NavHostController = rememberNavController().apply {
         enableOnBackPressed(false)
     },
-    navigationController: NavigationController,
 ) {
     Scaffold(
         bottomBar = {

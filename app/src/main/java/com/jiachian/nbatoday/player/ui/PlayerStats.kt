@@ -76,10 +76,10 @@ fun LazyListScope.playerStats(
 
 @Composable
 private fun PlayerStatsLabelScrollableRow(
-    modifier: Modifier = Modifier,
     scrollState: ScrollState,
     sorting: PlayerStatsSorting,
     onSortingUpdate: (PlayerStatsSorting) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Column(modifier = Modifier.background(MaterialTheme.colors.primary)) {
         PlayerStatsLabelRow(
@@ -97,10 +97,10 @@ private fun PlayerStatsLabelScrollableRow(
 
 @Composable
 private fun PlayerStatsScrollableRow(
-    modifier: Modifier = Modifier,
     scrollState: ScrollState,
     rowData: PlayerStatsRowData,
     sorting: PlayerStatsSorting,
+    modifier: Modifier = Modifier,
 ) {
     PlayerStatsRow(
         modifier = modifier,
@@ -129,10 +129,10 @@ private fun PlayerStatsBar(modifier: Modifier = Modifier) {
 
 @Composable
 private fun PlayerStatsLabelRow(
-    modifier: Modifier = Modifier,
     scrollState: ScrollState,
     sorting: PlayerStatsSorting,
     onSortingUpdate: (PlayerStatsSorting) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val labels = remember { PlayerStatsLabel.values() }
     val selectTimeFrame by remember(sorting) {
@@ -167,10 +167,10 @@ private fun PlayerStatsLabelRow(
 
 @Composable
 private fun PlayerStatsRow(
-    modifier: Modifier = Modifier,
     scrollState: ScrollState,
     rowData: PlayerStatsRowData,
-    sorting: PlayerStatsSorting
+    sorting: PlayerStatsSorting,
+    modifier: Modifier = Modifier,
 ) {
     val selectTimeFrame by remember(sorting) {
         derivedStateOf { sorting == PlayerStatsSorting.TIME_FRAME }
@@ -242,9 +242,9 @@ private fun PlayerStatsLabel(
 
 @Composable
 private fun PlayerStatsYearText(
-    modifier: Modifier = Modifier,
     time: String,
-    teamNameAbbr: String
+    teamNameAbbr: String,
+    modifier: Modifier = Modifier,
 ) {
     Row(modifier = modifier) {
         Text(

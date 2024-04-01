@@ -183,9 +183,9 @@ private fun TeamPlayerRow(
 
 @Composable
 private fun TeamPlayerNameText(
-    modifier: Modifier = Modifier,
     name: String,
     color: Color,
+    modifier: Modifier = Modifier,
 ) {
     Text(
         modifier = modifier,

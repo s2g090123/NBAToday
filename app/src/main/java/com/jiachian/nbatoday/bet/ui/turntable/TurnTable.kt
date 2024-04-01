@@ -45,10 +45,10 @@ private const val MinusText2 = "+0\n-0"
 @OptIn(ExperimentalTextApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun BetTurnTable(
-    modifier: Modifier = Modifier,
     status: TurnTableStatus.TurnTable,
     onStart: () -> Unit,
-    onClose: () -> Unit
+    onClose: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val textMeasure = rememberTextMeasurer()
     val plusTextSize1 = remember { textMeasure.measureSize(PlusText1) }
@@ -106,12 +106,12 @@ fun BetTurnTable(
 @OptIn(ExperimentalTextApi::class)
 @Composable
 private fun TurnTableContent(
-    modifier: Modifier = Modifier,
     textMeasurer: TextMeasurer,
     plusTextSize1: IntSize,
     plusTextSize2: IntSize,
     minusTextSize1: IntSize,
-    minusTextSize2: IntSize
+    minusTextSize2: IntSize,
+    modifier: Modifier = Modifier,
 ) {
     Canvas(modifier = modifier) {
         val borderWidth = 2.dp.toPx()

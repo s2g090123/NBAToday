@@ -50,8 +50,8 @@ private val TopMargin = 81.dp
 
 @Composable
 fun BoxScoreScreen(
-    viewModel: BoxScoreViewModel = koinViewModel(),
     navigationController: NavigationController,
+    viewModel: BoxScoreViewModel = koinViewModel(),
 ) {
     val context = LocalContext.current
     val state = viewModel.state
@@ -138,9 +138,9 @@ private fun ScoreScreen(
 
 @Composable
 private fun ScoreTopBar(
-    modifier: Modifier = Modifier,
     title: String,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier,
@@ -170,12 +170,12 @@ private fun ScoreTopBar(
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 private fun ScoreDetail(
-    modifier: Modifier = Modifier,
     scrollState: ScrollState,
     player: BoxScorePlayerState,
     team: BoxScoreTeamState,
     leader: BoxScoreLeaderState,
     onClickPlayer: (playerId: Int) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val pagerState = rememberPagerState()
     val nestedScrollConnection = remember {

@@ -31,8 +31,8 @@ private const val CrownIconRotationZ = -45f
 
 @Composable
 fun BetCard(
+    betAndGame: BetAndGame,
     modifier: Modifier = Modifier,
-    betAndGame: BetAndGame
 ) {
     val homeTeam = betAndGame.game.homeTeam
     val awayTeam = betAndGame.game.awayTeam
@@ -74,12 +74,12 @@ fun BetCard(
 
 @Composable
 private fun BetCardTeamInfo(
-    modifier: Modifier = Modifier,
     team: GameTeam,
     pointsText: String,
     pointsTextColor: Color,
     isGamePlayed: Boolean,
-    isWin: Boolean
+    isWin: Boolean,
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier,

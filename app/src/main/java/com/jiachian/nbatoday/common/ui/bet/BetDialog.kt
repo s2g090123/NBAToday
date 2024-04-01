@@ -52,8 +52,8 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun BetDialog(
+    onDismiss: () -> Unit,
     viewModel: BetDialogViewModel = koinViewModel(),
-    onDismiss: () -> Unit
 ) {
     val context = LocalContext.current
     val state = viewModel.state
@@ -126,9 +126,9 @@ private fun BetDialogContent(
 
 @Composable
 private fun BetDialogConfirmButton(
-    modifier: Modifier = Modifier,
     enabled: Boolean,
-    onConfirm: () -> Unit
+    onConfirm: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier,
@@ -149,7 +149,6 @@ private fun BetDialogConfirmButton(
 
 @Composable
 private fun BetDialogDetail(
-    modifier: Modifier = Modifier,
     userPoints: Long,
     homePoints: Long,
     awayPoints: Long,
@@ -157,6 +156,7 @@ private fun BetDialogDetail(
     away: GameTeam,
     onHomePointsChange: (Long) -> Unit,
     onAwayPointsChange: (Long) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val remainingPoints = userPoints - homePoints - awayPoints
     Column(
@@ -200,9 +200,9 @@ private fun BetDialogDetail(
 
 @Composable
 private fun OddsText(
-    modifier: Modifier = Modifier,
     homeOdds: Int = 1,
-    awayOdds: Int = 1
+    awayOdds: Int = 1,
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier,
@@ -224,10 +224,10 @@ private fun OddsText(
 
 @Composable
 private fun BetDialogTeamInfo(
-    modifier: Modifier = Modifier,
     team: GameTeam,
     value: Long,
-    onValueChange: (Long) -> Unit
+    onValueChange: (Long) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier,
@@ -310,9 +310,9 @@ private fun BetWarningDialog(
 
 @Composable
 private fun BetWarningDialogButtons(
-    modifier: Modifier = Modifier,
     onConfirm: () -> Unit,
-    onCancel: () -> Unit
+    onCancel: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier,

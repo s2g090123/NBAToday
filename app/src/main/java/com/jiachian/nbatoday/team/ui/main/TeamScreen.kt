@@ -62,8 +62,8 @@ private val TopMargin = 81.dp
 
 @Composable
 fun TeamScreen(
-    viewModel: TeamViewModel = koinViewModel(),
     navigationController: NavigationController,
+    viewModel: TeamViewModel = koinViewModel(),
 ) {
     val context = LocalContext.current
     val state = viewModel.state

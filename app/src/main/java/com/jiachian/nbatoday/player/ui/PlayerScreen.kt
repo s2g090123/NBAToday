@@ -33,8 +33,8 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun PlayerScreen(
-    viewModel: PlayerViewModel = koinViewModel(),
     navigationController: NavigationController,
+    viewModel: PlayerViewModel = koinViewModel(),
 ) {
     val context = LocalContext.current
     val state = viewModel.state
@@ -94,10 +94,10 @@ fun PlayerScreen(
 
 @Composable
 private fun PlayerDetail(
-    modifier: Modifier = Modifier,
     info: PlayerInfoState,
     stats: PlayerStatsState,
     onSortingUpdate: (PlayerStatsSorting) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val scrollState = rememberScrollState()
     LazyColumn(modifier = modifier) {

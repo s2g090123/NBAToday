@@ -54,10 +54,10 @@ fun TeamInformation(
 
 @Composable
 private fun TeamNameAndStanding(
-    modifier: Modifier = Modifier,
     stats: Team,
     standing: Int,
     color: Color,
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier,
@@ -95,10 +95,10 @@ private fun TeamNameAndStanding(
 
 @Composable
 private fun TeamStatsDetail(
-    modifier: Modifier = Modifier,
     team: Team,
     rank: TeamRank,
     color: Color,
+    modifier: Modifier = Modifier,
 ) {
     Row(modifier = modifier) {
         TeamRankBox(
@@ -138,12 +138,12 @@ private fun TeamStatsDetail(
 
 @Composable
 private fun TeamRankBox(
-    modifier: Modifier = Modifier,
     label: String,
     rank: Int,
     average: Double,
     color: Color,
     divider: Boolean,
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier,

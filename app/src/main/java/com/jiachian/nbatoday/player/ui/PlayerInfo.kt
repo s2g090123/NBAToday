@@ -69,9 +69,9 @@ fun LazyListScope.playerInfo(
 
 @Composable
 private fun TeamAndPlayerImage(
-    modifier: Modifier = Modifier,
     playerId: Int,
     team: NBATeam,
+    modifier: Modifier = Modifier,
 ) {
     Row(modifier = modifier) {
         TeamLogoImage(
@@ -93,10 +93,10 @@ private fun TeamAndPlayerImage(
 
 @Composable
 private fun PlayerTitle(
-    modifier: Modifier = Modifier,
     name: String,
     detail: String,
     is75: Boolean,
+    modifier: Modifier = Modifier,
 ) {
     Row(modifier = modifier) {
         Column(
@@ -132,10 +132,10 @@ private fun PlayerTitle(
 
 @Composable
 private fun PlayerInfoRow(
-    modifier: Modifier = Modifier,
     rowData: PlayerInfoTableData.RowData,
     topDivider: Boolean,
-    bottomDivider: Boolean
+    bottomDivider: Boolean,
+    modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
         if (topDivider) {
@@ -155,8 +155,8 @@ private fun PlayerInfoRow(
 
 @Composable
 private fun PlayerInfoRowContent(
-    modifier: Modifier = Modifier,
     rowData: PlayerInfoTableData.RowData,
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier,
@@ -182,9 +182,9 @@ private fun PlayerInfoRowContent(
 
 @Composable
 private fun PlayerInfoBox(
-    modifier: Modifier = Modifier,
     title: String,
-    value: String
+    value: String,
+    modifier: Modifier = Modifier,
 ) {
     Box(
         modifier = modifier,

@@ -65,8 +65,8 @@ import org.koin.androidx.compose.koinViewModel
 @OptIn(ExperimentalPagerApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun StandingPage(
-    viewModel: StandingPageViewModel = koinViewModel(),
     navigationController: NavigationController,
+    viewModel: StandingPageViewModel = koinViewModel(),
 ) {
     val state = viewModel.state
     val conferences = remember { NBATeam.Conference.values() }
@@ -157,10 +157,10 @@ private fun StandingTabRow(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun StandingScreen(
-    modifier: Modifier = Modifier,
     state: StandingTeamState,
     onClickTeam: (teamId: Int) -> Unit,
     onLabelClick: (StandingLabel) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val scrollState = rememberScrollState()
     Box(modifier = modifier) {
@@ -217,10 +217,10 @@ private fun StandingLabelScrollableRow(
 
 @Composable
 private fun StandingLabelRow(
-    modifier: Modifier = Modifier,
     scrollState: ScrollState,
     sorting: StandingSorting,
     onClickItem: (StandingLabel) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val labels = remember { StandingLabel.values() }
     Row(modifier = modifier) {
@@ -312,9 +312,9 @@ private fun StandingStatsRow(
 
 @Composable
 private fun StandingTeamRow(
-    modifier: Modifier = Modifier,
     standing: Int,
-    team: NBATeam
+    team: NBATeam,
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier,

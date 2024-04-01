@@ -45,8 +45,8 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun LoginDialog(
+    onDismiss: () -> Unit,
     viewModel: LoginDialogViewModel = koinViewModel(),
-    onDismiss: () -> Unit
 ) {
     val context = LocalContext.current
     val state = viewModel.state
@@ -90,10 +90,10 @@ fun LoginDialog(
 
 @Composable
 private fun LoginTextFiled(
-    modifier: Modifier = Modifier,
     password: Boolean,
     value: String,
-    onValueChange: (String) -> Unit
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val hintVisible by remember(value) { derivedStateOf { value.isEmpty() } }
     Column(modifier = modifier) {

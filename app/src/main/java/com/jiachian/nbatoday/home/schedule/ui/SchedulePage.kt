@@ -53,8 +53,8 @@ import org.koin.androidx.compose.koinViewModel
 @OptIn(ExperimentalPagerApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun SchedulePage(
-    viewModel: SchedulePageViewModel = koinViewModel(),
     navigationController: NavigationController,
+    viewModel: SchedulePageViewModel = koinViewModel(),
 ) {
     val context = LocalContext.current
     val state = viewModel.state

@@ -37,12 +37,12 @@ private const val LeaderPageIndex = 3
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun ScoreDetailPager(
-    modifier: Modifier = Modifier,
     pagerState: PagerState,
     player: BoxScorePlayerState,
     team: BoxScoreTeamState,
     leader: BoxScoreLeaderState,
     onClickPlayer: (playerId: Int) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     HorizontalPager(
         modifier = modifier,
@@ -98,10 +98,10 @@ fun ScoreDetailPager(
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun ScoreTabRow(
-    modifier: Modifier = Modifier,
     pagerState: PagerState,
     homeAbbr: String,
     awayAbbr: String,
+    modifier: Modifier = Modifier,
 ) {
     val coroutineScope = rememberCoroutineScope()
     TabRow(
@@ -161,10 +161,10 @@ fun ScoreTabRow(
 
 @Composable
 private fun ScoreTab(
-    modifier: Modifier = Modifier,
     text: String,
     selected: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Tab(
         modifier = modifier,

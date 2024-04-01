@@ -39,8 +39,8 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun BetScreen(
-    viewModel: BetViewModel = koinViewModel(),
     navigationController: NavigationController,
+    viewModel: BetViewModel = koinViewModel(),
 ) {
     val context = LocalContext.current
     val state = viewModel.state
@@ -99,9 +99,9 @@ fun BetScreen(
 
 @Composable
 private fun BetContent(
-    modifier: Modifier = Modifier,
     state: BetState,
-    onClickItem: (BetAndGame) -> Unit
+    onClickItem: (BetAndGame) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Box(modifier = modifier) {
         if (state.loading) {
@@ -121,9 +121,9 @@ private fun BetContent(
 
 @Composable
 private fun BetList(
-    modifier: Modifier = Modifier,
     list: List<BetAndGame>,
     onClickItem: (BetAndGame) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     if (list.isEmpty()) {
         Box(

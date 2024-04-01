@@ -46,12 +46,12 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun GameCard(
-    modifier: Modifier = Modifier,
     data: GameCardData,
-    color: Color = MaterialTheme.colors.secondary,
-    expandable: Boolean = false,
     onRequestLogin: () -> Unit,
     onRequestBet: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    color: Color = MaterialTheme.colors.secondary,
+    expandable: Boolean = false,
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -97,11 +97,11 @@ fun GameCard(
 
 @Composable
 private fun GameDetail(
-    modifier: Modifier = Modifier,
     gameAndBets: GameAndBets,
     textColor: Color,
     betAvailable: Boolean,
-    onBet: () -> Unit
+    onBet: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier,
@@ -133,11 +133,11 @@ private fun GameDetail(
 
 @Composable
 private fun GameStatusAndBetButton(
-    modifier: Modifier = Modifier,
     gameAndBets: GameAndBets,
     textColor: Color,
     betAvailable: Boolean,
-    onBet: () -> Unit
+    onBet: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier,
@@ -166,9 +166,9 @@ private fun GameStatusAndBetButton(
 
 @Composable
 private fun GameTeamInfo(
-    modifier: Modifier = Modifier,
     gameTeam: GameTeam,
-    textColor: Color
+    textColor: Color,
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier,
