@@ -75,29 +75,21 @@ fun SchedulePage(
                     .testTag(ScheduleTestTag.ScheduleContent)
                     .pullRefresh(pullRefreshState)
             ) {
-                HorizontalPager(
-                    modifier = Modifier
-                        .testTag(ScheduleTestTag.SchedulePage_Pager)
-                        .padding(top = 48.dp)
-                        .fillMaxSize(),
-                    state = pagerState,
-                    count = state.dates.size
-                ) { page ->
-                    val date = state.dates[page]
-                    ScheduleContent(
-                        games = state.getGames(date),
-                        onClickGame = {
-                            if (it.gamePlayed) {
-                                navigationController.navigateToBoxScore(it.gameId)
-                            } else {
-                                navigationController.navigateToTeam(it.homeTeamId)
-                            }
-                        },
-                        onClickCalendar = { navigationController.navigateToCalendar(date) },
-                        showLoginDialog = navigationController::showLoginDialog,
-                        showBetDialog = navigationController::showBetDialog,
-                    )
-                }
+                SchedulePager(
+                    pagerState = pagerState,
+                    dates = state.dates,
+                    getGames = state::getGames,
+                    onClickGame = {
+                        if (it.gamePlayed) {
+                            navigationController.navigateToBoxScore(it.gameId)
+                        } else {
+                            navigationController.navigateToTeam(it.homeTeamId)
+                        }
+                    },
+                    onClickCalendar = navigationController::navigateToCalendar,
+                    showLoginDialog = navigationController::showLoginDialog,
+                    showBetDialog = navigationController::showBetDialog,
+                )
                 PullRefreshIndicator(
                     modifier = Modifier
                         .align(Alignment.TopCenter)
@@ -120,6 +112,36 @@ fun SchedulePage(
             }
             viewModel.onEvent(ScheduleUIEvent.EventReceived)
         }
+    }
+}
+
+@OptIn(ExperimentalPagerApi::class)
+@Composable
+private fun SchedulePager(
+    pagerState: PagerState,
+    dates: List<DateData>,
+    getGames: (DateData) -> List<GameCardData>,
+    onClickGame: (game: Game) -> Unit,
+    onClickCalendar: (DateData) -> Unit,
+    showLoginDialog: () -> Unit,
+    showBetDialog: (String) -> Unit,
+) {
+    HorizontalPager(
+        modifier = Modifier
+            .testTag(ScheduleTestTag.SchedulePage_Pager)
+            .padding(top = 48.dp)
+            .fillMaxSize(),
+        state = pagerState,
+        count = dates.size,
+    ) { page ->
+        val date = dates[page]
+        ScheduleContent(
+            games = getGames(date),
+            onClickGame = onClickGame,
+            onClickCalendar = { onClickCalendar(date) },
+            showLoginDialog = showLoginDialog,
+            showBetDialog = showBetDialog,
+        )
     }
 }
 

@@ -69,7 +69,6 @@ fun TeamScreen(
 ) {
     val context = LocalContext.current
     val state = viewModel.state
-    val scrollState = rememberScrollState()
     Scaffold(
         backgroundColor = viewModel.colors.primary,
         topBar = {
@@ -83,9 +82,7 @@ fun TeamScreen(
             )
         }
     ) { padding ->
-        CompositionLocalProvider(
-            LocalColors provides viewModel.colors
-        ) {
+        CompositionLocalProvider(LocalColors provides viewModel.colors) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -110,10 +107,6 @@ fun TeamScreen(
                     )
                 } else {
                     TeamDetails(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .verticalScroll(scrollState),
-                        scrollState = scrollState,
                         info = state.info,
                         player = state.players,
                         game = state.games,
@@ -140,8 +133,6 @@ fun TeamScreen(
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 private fun TeamDetails(
-    modifier: Modifier = Modifier,
-    scrollState: ScrollState,
     info: TeamInfoState,
     player: TeamPlayersState,
     game: TeamGamesState,
@@ -151,9 +142,10 @@ private fun TeamDetails(
     showBetDialog: (String) -> Unit,
     updateSorting: (TeamPlayerSorting) -> Unit,
 ) {
+    val scrollState = rememberScrollState()
     val pagerState = rememberPagerState()
     val detailHeight = LocalConfiguration.current.screenHeightDp.dp - TopMargin
-    Column(modifier = modifier) {
+    Column(modifier = Modifier.verticalScroll(scrollState)) {
         TeamInformation(
             team = info.team,
             rank = info.rank,

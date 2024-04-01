@@ -56,34 +56,29 @@ fun PlayerScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            when {
-                state.loading -> {
-                    CircularProgressIndicator(
-                        modifier = Modifier
-                            .testTag(PlayerTestTag.PlayerScreen_Loading)
-                            .align(Alignment.Center),
-                        color = MaterialTheme.colors.secondary,
-                    )
-                }
-                state.notFound -> {
-                    Text(
-                        modifier = Modifier
-                            .testTag(PlayerTestTag.PlayerScreen_PlayerNotFound)
-                            .align(Alignment.Center),
-                        text = stringResource(R.string.player_career_not_found),
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Medium,
-                        color = MaterialTheme.colors.secondary
-                    )
-                }
-                else -> {
-                    PlayerDetail(
-                        modifier = Modifier.fillMaxSize(),
-                        info = state.info,
-                        stats = state.stats,
-                        updateSorting = { viewModel.onEvent(PlayerUIEvent.Sort(it)) }
-                    )
-                }
+            if (state.loading) {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .testTag(PlayerTestTag.PlayerScreen_Loading)
+                        .align(Alignment.Center),
+                    color = MaterialTheme.colors.secondary,
+                )
+            } else if (state.notFound) {
+                Text(
+                    modifier = Modifier
+                        .testTag(PlayerTestTag.PlayerScreen_PlayerNotFound)
+                        .align(Alignment.Center),
+                    text = stringResource(R.string.player_career_not_found),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colors.secondary
+                )
+            } else {
+                PlayerDetail(
+                    info = state.info,
+                    stats = state.stats,
+                    updateSorting = { viewModel.onEvent(PlayerUIEvent.Sort(it)) }
+                )
             }
         }
     }
