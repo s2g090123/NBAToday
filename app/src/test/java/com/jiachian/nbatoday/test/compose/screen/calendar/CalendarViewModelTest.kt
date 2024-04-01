@@ -12,14 +12,14 @@ import com.jiachian.nbatoday.utils.assertIsFalse
 import com.jiachian.nbatoday.utils.assertIsTrue
 import io.mockk.every
 import io.mockk.spyk
+import java.util.Calendar
+import java.util.Date
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.koin.test.get
-import java.util.Calendar
-import java.util.Date
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class CalendarViewModelTest : BaseUnitTest() {

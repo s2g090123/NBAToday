@@ -16,9 +16,9 @@ import com.jiachian.nbatoday.utils.DateUtils
 import com.jiachian.nbatoday.utils.getOrError
 import com.jiachian.nbatoday.utils.getOrNA
 import com.jiachian.nbatoday.utils.getOrZero
-import kotlinx.coroutines.flow.Flow
 import java.text.SimpleDateFormat
 import java.util.TimeZone
+import kotlinx.coroutines.flow.Flow
 
 fun Game.toGameScoreUpdateData(): GameScoreUpdateData {
     return GameScoreUpdateData(

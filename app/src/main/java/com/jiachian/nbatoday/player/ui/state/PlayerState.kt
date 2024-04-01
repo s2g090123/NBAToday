@@ -24,5 +24,3 @@ class MutablePlayerState(
     override var notFound: Boolean by mutableStateOf(false)
     override var event: PlayerDataEvent? by mutableStateOf(null)
 }
-
-

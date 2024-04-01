@@ -14,10 +14,10 @@ import com.jiachian.nbatoday.common.ui.bet.state.MutableBetDialogState
 import com.jiachian.nbatoday.game.domain.GameUseCase
 import com.jiachian.nbatoday.home.user.domain.GetUser
 import com.jiachian.nbatoday.main.ui.navigation.MainRoute
+import kotlin.math.min
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlin.math.min
 
 class BetDialogViewModel(
     savedStateHandle: SavedStateHandle,

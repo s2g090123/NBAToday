@@ -50,8 +50,8 @@ import com.jiachian.nbatoday.main.ui.navigation.NavigationController
 import com.jiachian.nbatoday.testing.testtag.CalendarTestTag
 import com.jiachian.nbatoday.utils.rippleClickable
 import com.jiachian.nbatoday.utils.slideSpec
-import org.koin.androidx.compose.koinViewModel
 import java.util.Date
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun CalendarScreen(

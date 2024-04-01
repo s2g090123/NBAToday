@@ -16,4 +16,3 @@ class MutableBoxScorePlayerState : BoxScorePlayerState {
     override var homePlayers: List<BoxScorePlayerRowData> by mutableStateOf(emptyList())
     override var awayPlayers: List<BoxScorePlayerRowData> by mutableStateOf(emptyList())
 }
-

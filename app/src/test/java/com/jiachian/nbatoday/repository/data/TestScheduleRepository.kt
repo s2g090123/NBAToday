@@ -13,10 +13,10 @@ import com.jiachian.nbatoday.models.remote.game.extensions.toGameUpdateData
 import com.jiachian.nbatoday.models.remote.game.extensions.toGames
 import com.jiachian.nbatoday.team.data.TeamRepository
 import com.jiachian.nbatoday.utils.DateUtils
-import kotlinx.coroutines.flow.first
 import java.util.Calendar
 import java.util.Date
 import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.flow.first
 
 class TestScheduleRepository(
     private val gameLocalSource: GameLocalSource,

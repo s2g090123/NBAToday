@@ -19,13 +19,13 @@ import com.jiachian.nbatoday.common.ui.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.common.ui.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.home.user.domain.UserUseCase
 import com.jiachian.nbatoday.main.ui.navigation.MainRoute
+import java.util.Random
+import kotlin.math.abs
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
-import java.util.Random
-import kotlin.math.abs
 
 private const val RandomBound = 359
 private const val TurnTableDuration = 8000

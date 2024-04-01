@@ -1,8 +1,8 @@
 package com.jiachian.nbatoday.game.domain
 
 import com.jiachian.nbatoday.game.data.GameRepository
-import kotlinx.coroutines.flow.first
 import java.util.Date
+import kotlinx.coroutines.flow.first
 
 class GetFirstLastGameDate(
     private val repository: GameRepository

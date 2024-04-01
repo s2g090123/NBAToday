@@ -21,6 +21,7 @@ import io.mockk.every
 import io.mockk.mockkStatic
 import io.mockk.spyk
 import io.mockk.unmockkAll
+import java.util.Date
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import okhttp3.ResponseBody.Companion.toResponseBody
@@ -29,7 +30,6 @@ import org.junit.Before
 import org.junit.Test
 import org.koin.core.component.get
 import retrofit2.Response
-import java.util.Date
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class NBAGameRepositoryTest : BaseUnitTest() {

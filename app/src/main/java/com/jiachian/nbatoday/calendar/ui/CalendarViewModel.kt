@@ -17,6 +17,8 @@ import com.jiachian.nbatoday.game.domain.GameUseCase
 import com.jiachian.nbatoday.home.user.domain.GetUser
 import com.jiachian.nbatoday.main.ui.navigation.MainRoute
 import com.jiachian.nbatoday.utils.DateUtils
+import java.util.Calendar
+import java.util.Date
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,8 +29,6 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.Calendar
-import java.util.Date
 
 /**
  * ViewModel for handling business logic related to [CalendarScreen].

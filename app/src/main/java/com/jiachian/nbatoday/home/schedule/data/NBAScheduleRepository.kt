@@ -13,10 +13,10 @@ import com.jiachian.nbatoday.game.data.model.toGameUpdateData
 import com.jiachian.nbatoday.game.data.model.toGames
 import com.jiachian.nbatoday.utils.DateUtils
 import com.jiachian.nbatoday.utils.isError
-import kotlinx.coroutines.flow.first
 import java.util.Calendar
 import java.util.Date
 import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.flow.first
 
 class NBAScheduleRepository(
     private val dao: GameDao,

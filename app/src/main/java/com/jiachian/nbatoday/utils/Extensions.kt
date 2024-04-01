@@ -5,8 +5,8 @@ import com.jiachian.nbatoday.common.data.NA
 import com.jiachian.nbatoday.common.data.OneHundredPercentage
 import com.jiachian.nbatoday.common.data.SecondRank
 import com.jiachian.nbatoday.common.data.ThirdRank
-import retrofit2.Response
 import kotlin.math.pow
+import retrofit2.Response
 
 inline fun <reified T : Any> T?.getOrNA(): String = this?.toString() ?: NA
 inline fun <reified T : Any> T?.getOrError(): T {

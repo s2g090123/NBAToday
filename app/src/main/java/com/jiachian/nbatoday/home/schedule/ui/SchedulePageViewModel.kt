@@ -21,10 +21,10 @@ import com.jiachian.nbatoday.home.schedule.ui.state.ScheduleState
 import com.jiachian.nbatoday.home.user.domain.GetUser
 import com.jiachian.nbatoday.utils.DateUtils
 import com.jiachian.nbatoday.utils.DateUtils.reset
+import java.util.Calendar
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.Calendar
 
 class SchedulePageViewModel(
     private val scheduleUseCase: ScheduleUseCase,
