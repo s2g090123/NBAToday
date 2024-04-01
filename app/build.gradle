@@ -162,6 +162,8 @@ dependencies {
   androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutine_version"
   androidTestImplementation "io.mockk:mockk-android:$mockk_version"
   androidTestImplementation "androidx.navigation:navigation-testing:$nav_version"
+
+  detektPlugins("ru.kode:detekt-rules-compose:$detekt_compose_plugin_version")
 }
 
 // Rename generated aab
