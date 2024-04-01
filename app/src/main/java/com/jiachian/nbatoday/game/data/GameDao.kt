@@ -9,7 +9,6 @@ import com.jiachian.nbatoday.game.data.model.local.Game
 import com.jiachian.nbatoday.game.data.model.local.GameAndBets
 import com.jiachian.nbatoday.game.data.model.local.GameScoreUpdateData
 import com.jiachian.nbatoday.game.data.model.local.GameUpdateData
-import java.util.Date
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -57,22 +56,6 @@ interface GameDao {
      */
     @Query("SELECT * FROM game WHERE game_date >= :from AND game_date <= :to")
     fun getGamesAndBetsDuring(from: Long, to: Long): Flow<List<GameAndBets>>
-
-    /**
-     * Retrieves the maximum game date from the database.
-     *
-     * @return Flow emitting a nullable [Date].
-     */
-    @Query("SELECT MAX(game_date_time) FROM game")
-    fun getLastGameDateTime(): Flow<Date?>
-
-    /**
-     * Retrieves the minimum game date from the database.
-     *
-     * @return Flow emitting a nullable [Date].
-     */
-    @Query("SELECT MIN(game_date_time) FROM game")
-    fun getFirstGameDateTime(): Flow<Date?>
 
     /**
      * Checks if there are any games in the database.
