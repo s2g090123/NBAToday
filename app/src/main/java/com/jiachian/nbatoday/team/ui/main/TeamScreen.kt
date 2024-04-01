@@ -43,7 +43,6 @@ import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.common.ui.IconButton
-import com.jiachian.nbatoday.game.ui.model.GameCardData
 import com.jiachian.nbatoday.main.ui.navigation.NavigationController
 import com.jiachian.nbatoday.team.ui.game.TeamGamePage
 import com.jiachian.nbatoday.team.ui.game.state.TeamGamesState
@@ -51,7 +50,6 @@ import com.jiachian.nbatoday.team.ui.main.event.TeamDataEvent
 import com.jiachian.nbatoday.team.ui.main.event.TeamUIEvent
 import com.jiachian.nbatoday.team.ui.main.state.TeamInfoState
 import com.jiachian.nbatoday.team.ui.player.TeamPlayerPage
-import com.jiachian.nbatoday.team.ui.player.model.TeamPlayerRowData
 import com.jiachian.nbatoday.team.ui.player.model.TeamPlayerSorting
 import com.jiachian.nbatoday.team.ui.player.state.TeamPlayersState
 import com.jiachian.nbatoday.testing.testtag.TeamTestTag
@@ -156,10 +154,8 @@ private fun TeamDetails(
             TeamPager(
                 pagerState = pagerState,
                 scrollState = scrollState,
-                teamPlayers = player.players,
-                sorting = player.sorting,
-                gamesBefore = game.previous,
-                gamesAfter = game.next,
+                player = player,
+                game = game,
                 navigateToPlayer = navigateToPlayer,
                 navigateToBoxScore = navigateToBoxScore,
                 showLoginDialog = showLoginDialog,
@@ -247,10 +243,8 @@ private fun TeamTab(
 private fun TeamPager(
     pagerState: PagerState,
     scrollState: ScrollState,
-    teamPlayers: List<TeamPlayerRowData>,
-    sorting: TeamPlayerSorting,
-    gamesBefore: List<GameCardData>,
-    gamesAfter: List<GameCardData>,
+    player: TeamPlayersState,
+    game: TeamGamesState,
     navigateToPlayer: (playerId: Int) -> Unit,
     navigateToBoxScore: (gameId: String) -> Unit,
     showLoginDialog: () -> Unit,
@@ -281,15 +275,15 @@ private fun TeamPager(
         when (page) {
             0 -> {
                 TeamPlayerPage(
-                    teamPlayers = teamPlayers,
-                    sorting = sorting,
+                    teamPlayers = player.players,
+                    sorting = player.sorting,
                     navigateToPlayer = navigateToPlayer,
                     updateSorting = updateSorting,
                 )
             }
             1 -> {
                 TeamGamePage(
-                    games = gamesBefore,
+                    games = game.previous,
                     navigateToBoxScore = navigateToBoxScore,
                     showLoginDialog = showLoginDialog,
                     showBetDialog = showBetDialog,
@@ -297,7 +291,7 @@ private fun TeamPager(
             }
             2 -> {
                 TeamGamePage(
-                    games = gamesAfter,
+                    games = game.next,
                     navigateToBoxScore = navigateToBoxScore,
                     showLoginDialog = showLoginDialog,
                     showBetDialog = showBetDialog,
