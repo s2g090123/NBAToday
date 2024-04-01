@@ -200,9 +200,9 @@ private fun BetDialogDetail(
 
 @Composable
 private fun OddsText(
+    modifier: Modifier = Modifier,
     homeOdds: Int = 1,
     awayOdds: Int = 1,
-    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier,
