@@ -35,7 +35,7 @@ fun List<GameAndBets>.toGameCardState(user: Flow<User?>): List<GameCardData> = m
     GameCardData(it, user)
 }
 
-fun GameDto.RemoteScoreboard.RemoteGameDetail.RemoteGameTeam.toGameTeam(): GameTeam {
+private fun GameDto.RemoteScoreboard.RemoteGameDetail.RemoteGameTeam.toGameTeam(): GameTeam {
     return GameTeam(
         team = teamId.let { NBATeam.getTeamById(it) },
         losses = losses.getOrZero(),

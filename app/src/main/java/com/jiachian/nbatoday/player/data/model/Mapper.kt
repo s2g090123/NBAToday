@@ -34,7 +34,7 @@ private fun PlayerDto.getPlayerId(): Int? {
     return info?.getPlayerInfo("PERSON_ID")?.toIntOrNull()
 }
 
-fun PlayerInfoDto.toPlayerInfo(): Player.PlayerInfo? {
+private fun PlayerInfoDto.toPlayerInfo(): Player.PlayerInfo? {
     return createPlayerCareerInfo()
 }
 
@@ -109,7 +109,7 @@ private fun getAge(birthdate: Date): Int {
     return age
 }
 
-fun PlayerStatsDto.toPlayerStats(): Player.PlayerStats {
+private fun PlayerStatsDto.toPlayerStats(): Player.PlayerStats {
     val stats = result?.rowData?.mapNotNull { data ->
         createPlayerCareerStats(data)
     } ?: emptyList()
