@@ -239,8 +239,8 @@ private fun LazyGridScope.calendarGameCards(
         data = game,
         expandable = false,
         color = MaterialTheme.colors.primary,
-        showLoginDialog = showLoginDialog,
-        showBetDialog = showBetDialog,
+        onRequestLogin = showLoginDialog,
+        onRequestBet = showBetDialog,
     )
 }
 

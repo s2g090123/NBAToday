@@ -108,8 +108,8 @@ private fun BetDialogContent(
                         awayPoints = state.awayPoints,
                         home = game.game.homeTeam,
                         away = game.game.awayTeam,
-                        updateHome = { onEvent(BetDialogUIEvent.TextHomePoints(it)) },
-                        updateAway = { onEvent(BetDialogUIEvent.TextAwayPoints(it)) }
+                        onHomePointsChange = { onEvent(BetDialogUIEvent.TextHomePoints(it)) },
+                        onAwayPointsChange = { onEvent(BetDialogUIEvent.TextAwayPoints(it)) }
                     )
                     BetDialogConfirmButton(
                         modifier = Modifier
@@ -155,8 +155,8 @@ private fun BetDialogDetail(
     awayPoints: Long,
     home: GameTeam,
     away: GameTeam,
-    updateHome: (Long) -> Unit,
-    updateAway: (Long) -> Unit,
+    onHomePointsChange: (Long) -> Unit,
+    onAwayPointsChange: (Long) -> Unit,
 ) {
     val remainingPoints = userPoints - homePoints - awayPoints
     Column(
@@ -174,7 +174,7 @@ private fun BetDialogDetail(
                     .width(IntrinsicSize.Min),
                 team = home,
                 value = homePoints,
-                onValueChanged = updateHome,
+                onValueChange = onHomePointsChange,
             )
             OddsText(modifier = Modifier.padding(horizontal = 16.dp))
             BetDialogTeamInfo(
@@ -184,7 +184,7 @@ private fun BetDialogDetail(
                     .width(IntrinsicSize.Min),
                 team = away,
                 value = awayPoints,
-                onValueChanged = updateAway,
+                onValueChange = onAwayPointsChange,
             )
         }
         Text(
@@ -227,7 +227,7 @@ private fun BetDialogTeamInfo(
     modifier: Modifier = Modifier,
     team: GameTeam,
     value: Long,
-    onValueChanged: (Long) -> Unit
+    onValueChange: (Long) -> Unit
 ) {
     Column(
         modifier = modifier,
@@ -254,7 +254,7 @@ private fun BetDialogTeamInfo(
                 .width(100.dp)
                 .height(32.dp),
             value = if (value <= 0) "" else value.toString(),
-            onValueChange = { onValueChanged(it.toLongOrNull().getOrZero()) },
+            onValueChange = { onValueChange(it.toLongOrNull().getOrZero()) },
             textStyle = TextStyle(
                 color = MaterialTheme.colors.primary,
                 textAlign = TextAlign.Center

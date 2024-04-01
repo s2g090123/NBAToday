@@ -87,8 +87,8 @@ fun SchedulePage(
                         }
                     },
                     onClickCalendar = navigationController::navigateToCalendar,
-                    showLoginDialog = navigationController::showLoginDialog,
-                    showBetDialog = navigationController::showBetDialog,
+                    onRequestLogin = navigationController::showLoginDialog,
+                    onRequestBet = navigationController::showBetDialog,
                 )
                 PullRefreshIndicator(
                     modifier = Modifier
@@ -100,7 +100,7 @@ fun SchedulePage(
                 ScheduleTabRow(
                     pagerState = pagerState,
                     dates = state.dates,
-                    selectDate = { viewModel.onEvent(ScheduleUIEvent.SelectDate(it)) }
+                    onDateSelect = { viewModel.onEvent(ScheduleUIEvent.SelectDate(it)) }
                 )
             }
         }
@@ -123,8 +123,8 @@ private fun SchedulePager(
     getGames: (DateData) -> List<GameCardData>,
     onClickGame: (game: Game) -> Unit,
     onClickCalendar: (DateData) -> Unit,
-    showLoginDialog: () -> Unit,
-    showBetDialog: (String) -> Unit,
+    onRequestLogin: () -> Unit,
+    onRequestBet: (String) -> Unit,
 ) {
     HorizontalPager(
         modifier = Modifier
@@ -139,8 +139,8 @@ private fun SchedulePager(
             games = getGames(date),
             onClickGame = onClickGame,
             onClickCalendar = { onClickCalendar(date) },
-            showLoginDialog = showLoginDialog,
-            showBetDialog = showBetDialog,
+            onRequestLogin = onRequestLogin,
+            onRequestBet = onRequestBet,
         )
     }
 }
@@ -150,8 +150,8 @@ private fun ScheduleContent(
     games: List<GameCardData>,
     onClickGame: (game: Game) -> Unit,
     onClickCalendar: () -> Unit,
-    showLoginDialog: () -> Unit,
-    showBetDialog: (String) -> Unit,
+    onRequestLogin: () -> Unit,
+    onRequestBet: (String) -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier
@@ -191,8 +191,8 @@ private fun ScheduleContent(
                 data = state,
                 color = MaterialTheme.colors.primary,
                 expandable = true,
-                showLoginDialog = showLoginDialog,
-                showBetDialog = showBetDialog,
+                onRequestLogin = onRequestLogin,
+                onRequestBet = onRequestBet,
             )
         }
     }
@@ -203,7 +203,7 @@ private fun ScheduleContent(
 private fun ScheduleTabRow(
     pagerState: PagerState,
     dates: List<DateData>,
-    selectDate: (DateData) -> Unit
+    onDateSelect: (DateData) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
     ScrollableTabRow(
@@ -232,7 +232,7 @@ private fun ScheduleTabRow(
                 onClick = {
                     coroutineScope.launch {
                         pagerState.animateScrollToPage(page)
-                        selectDate(date)
+                        onDateSelect(date)
                     }
                 }
             )

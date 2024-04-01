@@ -108,11 +108,11 @@ fun TeamScreen(
                         info = state.info,
                         player = state.players,
                         game = state.games,
-                        navigateToPlayer = navigationController::navigateToPlayer,
-                        navigateToBoxScore = navigationController::navigateToBoxScore,
-                        showLoginDialog = navigationController::showLoginDialog,
-                        showBetDialog = navigationController::showBetDialog,
-                        updateSorting = { viewModel.onEvent(TeamUIEvent.Sort(it)) }
+                        onPlayerClick = navigationController::navigateToPlayer,
+                        onGameClick = navigationController::navigateToBoxScore,
+                        onRequestLogin = navigationController::showLoginDialog,
+                        onRequestBet = navigationController::showBetDialog,
+                        onSortingChange = { viewModel.onEvent(TeamUIEvent.Sort(it)) }
                     )
                 }
             }
@@ -134,11 +134,11 @@ private fun TeamDetails(
     info: TeamInfoState,
     player: TeamPlayersState,
     game: TeamGamesState,
-    navigateToPlayer: (playerId: Int) -> Unit,
-    navigateToBoxScore: (gameId: String) -> Unit,
-    showLoginDialog: () -> Unit,
-    showBetDialog: (String) -> Unit,
-    updateSorting: (TeamPlayerSorting) -> Unit,
+    onPlayerClick: (playerId: Int) -> Unit,
+    onGameClick: (gameId: String) -> Unit,
+    onRequestLogin: () -> Unit,
+    onRequestBet: (String) -> Unit,
+    onSortingChange: (TeamPlayerSorting) -> Unit,
 ) {
     val scrollState = rememberScrollState()
     val pagerState = rememberPagerState()
@@ -156,11 +156,11 @@ private fun TeamDetails(
                 scrollState = scrollState,
                 player = player,
                 game = game,
-                navigateToPlayer = navigateToPlayer,
-                navigateToBoxScore = navigateToBoxScore,
-                showLoginDialog = showLoginDialog,
-                showBetDialog = showBetDialog,
-                updateSorting = updateSorting,
+                onPlayerClick = onPlayerClick,
+                onGameClick = onGameClick,
+                onRequestLogin = onRequestLogin,
+                onRequestBet = onRequestBet,
+                onSortingChange = onSortingChange,
             )
         }
     }
@@ -245,11 +245,11 @@ private fun TeamPager(
     scrollState: ScrollState,
     player: TeamPlayersState,
     game: TeamGamesState,
-    navigateToPlayer: (playerId: Int) -> Unit,
-    navigateToBoxScore: (gameId: String) -> Unit,
-    showLoginDialog: () -> Unit,
-    showBetDialog: (String) -> Unit,
-    updateSorting: (TeamPlayerSorting) -> Unit,
+    onPlayerClick: (playerId: Int) -> Unit,
+    onGameClick: (gameId: String) -> Unit,
+    onRequestLogin: () -> Unit,
+    onRequestBet: (String) -> Unit,
+    onSortingChange: (TeamPlayerSorting) -> Unit,
 ) {
     val nestedScrollConnection = remember {
         object : NestedScrollConnection {
@@ -277,24 +277,24 @@ private fun TeamPager(
                 TeamPlayerPage(
                     teamPlayers = player.players,
                     sorting = player.sorting,
-                    navigateToPlayer = navigateToPlayer,
-                    updateSorting = updateSorting,
+                    onPlayerClick = onPlayerClick,
+                    onSortingChange = onSortingChange,
                 )
             }
             1 -> {
                 TeamGamePage(
                     games = game.previous,
-                    navigateToBoxScore = navigateToBoxScore,
-                    showLoginDialog = showLoginDialog,
-                    showBetDialog = showBetDialog,
+                    onGameClick = onGameClick,
+                    onRequestLogin = onRequestLogin,
+                    onRequestBet = onRequestBet,
                 )
             }
             2 -> {
                 TeamGamePage(
                     games = game.next,
-                    navigateToBoxScore = navigateToBoxScore,
-                    showLoginDialog = showLoginDialog,
-                    showBetDialog = showBetDialog,
+                    onGameClick = onGameClick,
+                    onRequestLogin = onRequestLogin,
+                    onRequestBet = onRequestBet,
                 )
             }
         }

@@ -45,7 +45,7 @@ import com.jiachian.nbatoday.utils.rippleClickable
 fun LazyListScope.playerStats(
     scrollState: ScrollState,
     stats: PlayerStatsState,
-    updateSorting: (PlayerStatsSorting) -> Unit,
+    onSortingUpdate: (PlayerStatsSorting) -> Unit,
 ) {
     item {
         PlayerStatsBar(
@@ -59,7 +59,7 @@ fun LazyListScope.playerStats(
         PlayerStatsLabelScrollableRow(
             scrollState = scrollState,
             sorting = stats.sorting,
-            updateSorting = updateSorting,
+            onSortingUpdate = onSortingUpdate,
         )
     }
     items(
@@ -79,14 +79,14 @@ private fun PlayerStatsLabelScrollableRow(
     modifier: Modifier = Modifier,
     scrollState: ScrollState,
     sorting: PlayerStatsSorting,
-    updateSorting: (PlayerStatsSorting) -> Unit,
+    onSortingUpdate: (PlayerStatsSorting) -> Unit,
 ) {
     Column(modifier = Modifier.background(MaterialTheme.colors.primary)) {
         PlayerStatsLabelRow(
             modifier = modifier,
             scrollState = scrollState,
             sorting = sorting,
-            updateSorting = updateSorting,
+            onSortingUpdate = onSortingUpdate,
         )
         Divider(
             color = dividerSecondaryColor(),
@@ -132,7 +132,7 @@ private fun PlayerStatsLabelRow(
     modifier: Modifier = Modifier,
     scrollState: ScrollState,
     sorting: PlayerStatsSorting,
-    updateSorting: (PlayerStatsSorting) -> Unit,
+    onSortingUpdate: (PlayerStatsSorting) -> Unit,
 ) {
     val labels = remember { PlayerStatsLabel.values() }
     val selectTimeFrame by remember(sorting) {
@@ -146,7 +146,7 @@ private fun PlayerStatsLabelRow(
                     if (selectTimeFrame) MaterialTheme.colors.secondary.copy(Transparency25)
                     else MaterialTheme.colors.primary,
                 )
-                .rippleClickable { updateSorting(PlayerStatsSorting.TIME_FRAME) }
+                .rippleClickable { onSortingUpdate(PlayerStatsSorting.TIME_FRAME) }
                 .padding(8.dp),
             text = stringResource(R.string.player_career_by_year),
             fontSize = 16.sp,
@@ -158,7 +158,7 @@ private fun PlayerStatsLabelRow(
                 PlayerStatsLabel(
                     label = label,
                     focus = label.sorting == sorting,
-                    onClick = { updateSorting(label.sorting) }
+                    onClick = { onSortingUpdate(label.sorting) }
                 )
             }
         }

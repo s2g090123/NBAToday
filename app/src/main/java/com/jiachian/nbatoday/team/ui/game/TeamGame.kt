@@ -25,9 +25,9 @@ import com.jiachian.nbatoday.utils.showToast
 @Composable
 fun TeamGamePage(
     games: List<GameCardData>,
-    navigateToBoxScore: (gameId: String) -> Unit,
-    showLoginDialog: () -> Unit,
-    showBetDialog: (String) -> Unit,
+    onGameClick: (gameId: String) -> Unit,
+    onRequestLogin: () -> Unit,
+    onRequestBet: (String) -> Unit,
 ) {
     val colors = LocalColors.current
     LazyColumn(
@@ -52,15 +52,15 @@ fun TeamGamePage(
                         if (!state.data.game.gamePlayed) {
                             showToast(R.string.game_is_coming_soon)
                         } else {
-                            navigateToBoxScore(state.data.game.gameId)
+                            onGameClick(state.data.game.gameId)
                         }
                     }
                     .padding(bottom = 8.dp),
                 data = state,
                 expandable = false,
                 color = colors.primary,
-                showLoginDialog = showLoginDialog,
-                showBetDialog = showBetDialog,
+                onRequestLogin = onRequestLogin,
+                onRequestBet = onRequestBet,
             )
         }
     }

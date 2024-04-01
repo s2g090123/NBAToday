@@ -76,13 +76,13 @@ fun BetScreen(
         )
         TurnTableScreen(
             state = state.turnTable,
-            openTurnTable = { win, lose ->
+            onOpenTurnTable = { win, lose ->
                 viewModel.onEvent(BetUIEvent.OpenTurnTable(win, lose))
             },
-            startTurnTable = { win, lose ->
+            onStartTurnTable = { win, lose ->
                 viewModel.onEvent(BetUIEvent.StartTurnTable(win, lose))
             },
-            close = { viewModel.onEvent(BetUIEvent.CloseTurnTable) },
+            onClose = { viewModel.onEvent(BetUIEvent.CloseTurnTable) },
         )
     }
     LaunchedEffect(state.event) {

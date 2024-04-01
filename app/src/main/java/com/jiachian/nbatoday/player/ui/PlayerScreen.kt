@@ -77,7 +77,7 @@ fun PlayerScreen(
                 PlayerDetail(
                     info = state.info,
                     stats = state.stats,
-                    updateSorting = { viewModel.onEvent(PlayerUIEvent.Sort(it)) }
+                    onSortingUpdate = { viewModel.onEvent(PlayerUIEvent.Sort(it)) }
                 )
             }
         }
@@ -97,7 +97,7 @@ private fun PlayerDetail(
     modifier: Modifier = Modifier,
     info: PlayerInfoState,
     stats: PlayerStatsState,
-    updateSorting: (PlayerStatsSorting) -> Unit,
+    onSortingUpdate: (PlayerStatsSorting) -> Unit,
 ) {
     val scrollState = rememberScrollState()
     LazyColumn(modifier = modifier) {
@@ -105,7 +105,7 @@ private fun PlayerDetail(
         playerStats(
             scrollState = scrollState,
             stats = stats,
-            updateSorting = updateSorting,
+            onSortingUpdate = onSortingUpdate,
         )
     }
 }

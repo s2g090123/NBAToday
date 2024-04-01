@@ -50,14 +50,14 @@ fun GameCard(
     data: GameCardData,
     color: Color = MaterialTheme.colors.secondary,
     expandable: Boolean = false,
-    showLoginDialog: () -> Unit,
-    showBetDialog: (String) -> Unit,
+    onRequestLogin: () -> Unit,
+    onRequestBet: (String) -> Unit,
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val betAvailable by data.betAvailable.collectAsState(true)
-    val showLogin by rememberUpdatedState(showLoginDialog)
-    val showBet by rememberUpdatedState(showBetDialog)
+    val showLogin by rememberUpdatedState(onRequestLogin)
+    val showBet by rememberUpdatedState(onRequestBet)
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -80,7 +80,7 @@ fun GameCard(
                 homePlayer = data.homeLeader,
                 awayPlayer = data.awayLeader,
                 color = color,
-                updateExpanded = data::updateExpanded,
+                onExpandChange = data::updateExpanded,
             )
         }
     }
@@ -208,7 +208,7 @@ private fun GameExpandedContent(
     homePlayer: GameLeaders.GameLeader,
     awayPlayer: GameLeaders.GameLeader,
     color: Color,
-    updateExpanded: (Boolean) -> Unit,
+    onExpandChange: (Boolean) -> Unit,
 ) {
     Box {
         AnimatedExpand(
@@ -216,7 +216,7 @@ private fun GameExpandedContent(
                 .testTag(GameCardTestTag.GameExpandedContent_Button_Expand)
                 .fillMaxWidth()
                 .height(24.dp)
-                .rippleClickable { updateExpanded(true) }
+                .rippleClickable { onExpandChange(true) }
                 .padding(vertical = 2.dp),
             visible = !expanded,
         ) {
@@ -249,7 +249,7 @@ private fun GameExpandedContent(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(24.dp)
-                        .rippleClickable { updateExpanded(false) }
+                        .rippleClickable { onExpandChange(false) }
                         .padding(vertical = 2.dp),
                     painter = painterResource(R.drawable.ic_black_collpase_more),
                     alpha = 0.6f,

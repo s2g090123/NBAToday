@@ -13,9 +13,9 @@ import com.jiachian.nbatoday.testing.testtag.BetTestTag
 @Composable
 fun TurnTableScreen(
     state: TurnTableState,
-    openTurnTable: (Win, Lose) -> Unit,
-    startTurnTable: (Win, Lose) -> Unit,
-    close: () -> Unit,
+    onOpenTurnTable: (Win, Lose) -> Unit,
+    onStartTurnTable: (Win, Lose) -> Unit,
+    onClose: () -> Unit,
 ) {
     when (val status = state.status) {
         TurnTableStatus.Idle -> Unit
@@ -23,8 +23,8 @@ fun TurnTableScreen(
             AskTurnTableDialog(
                 win = status.win,
                 lose = status.lose,
-                onContinue = { openTurnTable(status.win, status.lose) },
-                onCancel = close
+                onContinue = { onOpenTurnTable(status.win, status.lose) },
+                onCancel = onClose
             )
         }
         is TurnTableStatus.TurnTable -> {
@@ -33,14 +33,14 @@ fun TurnTableScreen(
                     .testTag(BetTestTag.BetTurnTable)
                     .fillMaxSize(),
                 status = status,
-                onStart = { startTurnTable(status.win, status.lose) },
-                onClose = close
+                onStart = { onStartTurnTable(status.win, status.lose) },
+                onClose = onClose
             )
         }
         is TurnTableStatus.Rewarded -> {
             TurnTableRewardedDialog(
                 points = status.points,
-                onDismiss = close
+                onDismiss = onClose
             )
         }
     }

@@ -63,13 +63,13 @@ fun LoginDialog(
             modifier = Modifier.padding(top = 24.dp, start = 16.dp, end = 16.dp),
             password = false,
             value = state.account,
-            onValueChanged = { viewModel.onEvent(LoginUIEvent.TextAccount(it)) }
+            onValueChange = { viewModel.onEvent(LoginUIEvent.TextAccount(it)) }
         )
         LoginTextFiled(
             modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
             password = true,
             value = state.password,
-            onValueChanged = { viewModel.onEvent(LoginUIEvent.TextPassword(it)) }
+            onValueChange = { viewModel.onEvent(LoginUIEvent.TextPassword(it)) }
         )
         BottomButtons(
             enabled = state.valid,
@@ -93,14 +93,14 @@ private fun LoginTextFiled(
     modifier: Modifier = Modifier,
     password: Boolean,
     value: String,
-    onValueChanged: (String) -> Unit
+    onValueChange: (String) -> Unit
 ) {
     val hintVisible by remember(value) { derivedStateOf { value.isEmpty() } }
     Column(modifier = modifier) {
         BasicTextField(
             modifier = Modifier.testTag(if (password) UserTestTag.PasswordTextField_TextField else UserTestTag.AccountTextField_TextField),
             value = value,
-            onValueChange = onValueChanged,
+            onValueChange = onValueChange,
             singleLine = true,
             maxLines = 1,
             visualTransformation = if (password) PasswordVisualTransformation() else VisualTransformation.None,

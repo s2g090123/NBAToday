@@ -42,8 +42,8 @@ import com.jiachian.nbatoday.utils.rippleClickable
 fun TeamPlayerPage(
     teamPlayers: List<TeamPlayerRowData>,
     sorting: TeamPlayerSorting,
-    navigateToPlayer: (playerId: Int) -> Unit,
-    updateSorting: (TeamPlayerSorting) -> Unit,
+    onPlayerClick: (playerId: Int) -> Unit,
+    onSortingChange: (TeamPlayerSorting) -> Unit,
 ) {
     val scrollState = rememberScrollState()
     LazyColumn {
@@ -51,7 +51,7 @@ fun TeamPlayerPage(
             ScorePlayerLabelScrollableRow(
                 scrollState = scrollState,
                 sorting = sorting,
-                updateSorting = updateSorting,
+                onSortingChange = onSortingChange,
             )
         }
         items(teamPlayers) { rowData ->
@@ -59,7 +59,7 @@ fun TeamPlayerPage(
                 scrollState = scrollState,
                 rowData = rowData,
                 sorting = sorting,
-                onPlayerClick = navigateToPlayer,
+                onPlayerClick = onPlayerClick,
             )
         }
     }
@@ -69,14 +69,14 @@ fun TeamPlayerPage(
 private fun ScorePlayerLabelScrollableRow(
     scrollState: ScrollState,
     sorting: TeamPlayerSorting,
-    updateSorting: (TeamPlayerSorting) -> Unit,
+    onSortingChange: (TeamPlayerSorting) -> Unit,
 ) {
     val colors = LocalColors.current
     Column(modifier = Modifier.background(colors.primary)) {
         TeamPlayerLabelRow(
             scrollState = scrollState,
             sorting = sorting,
-            updateSorting = updateSorting,
+            onSortingChange = onSortingChange,
         )
         Divider(
             color = colors.secondary.copy(Transparency25),
@@ -89,7 +89,7 @@ private fun ScorePlayerLabelScrollableRow(
 private fun TeamPlayerLabelRow(
     scrollState: ScrollState,
     sorting: TeamPlayerSorting,
-    updateSorting: (TeamPlayerSorting) -> Unit,
+    onSortingChange: (TeamPlayerSorting) -> Unit,
 ) {
     val colors = LocalColors.current
     val labels = remember { TeamPlayerLabel.values() }
@@ -101,7 +101,7 @@ private fun TeamPlayerLabelRow(
                     focus = label.sorting == sorting,
                     label = label,
                     color = colors.secondary,
-                    onClick = { updateSorting(label.sorting) }
+                    onClick = { onSortingChange(label.sorting) }
                 )
             }
         }
