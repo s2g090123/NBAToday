@@ -9,14 +9,11 @@ class UserRegister(
     private val repository: UserRepository
 ) {
     suspend operator fun invoke(account: String, password: String): Resource<Unit, UserRegisterError> {
-        if (account.isBlank()) {
-            return Resource.Error(UserRegisterError.ACCOUNT_EMPTY)
-        }
-        if (password.isBlank()) {
-            return Resource.Error(UserRegisterError.PASSWORD_EMPTY)
+        if (account.isBlank() || password.isBlank()) {
+            return Resource.Error(UserRegisterError.INVALID_ACCOUNT)
         }
         return when (repository.register(account, password)) {
-            is Response.Error -> Resource.Error(UserRegisterError.LOGIN_FAILED)
+            is Response.Error -> Resource.Error(UserRegisterError.REGISTER_FAILED)
             is Response.Success -> Resource.Success(Unit)
         }
     }

@@ -4,23 +4,20 @@ import com.jiachian.nbatoday.home.user.domain.error.UserLoginError
 import com.jiachian.nbatoday.home.user.domain.error.UserRegisterError
 
 enum class LoginDialogError(val message: String) {
-    ACCOUNT_EMPTY("Account is empty."),
-    PASSWORD_EMPTY("Password is empty."),
+    INVALID_ACCOUNT("Account is invalid."),
     LOGIN_FAILED("Login failed."),
 }
 
 fun UserLoginError.asLoginDialogError(): LoginDialogError {
     return when (this) {
-        UserLoginError.ACCOUNT_EMPTY -> LoginDialogError.ACCOUNT_EMPTY
-        UserLoginError.PASSWORD_EMPTY -> LoginDialogError.PASSWORD_EMPTY
+        UserLoginError.INVALID_ACCOUNT -> LoginDialogError.INVALID_ACCOUNT
         UserLoginError.LOGIN_FAILED -> LoginDialogError.LOGIN_FAILED
     }
 }
 
 fun UserRegisterError.asLoginDialogError(): LoginDialogError {
     return when (this) {
-        UserRegisterError.ACCOUNT_EMPTY -> LoginDialogError.ACCOUNT_EMPTY
-        UserRegisterError.PASSWORD_EMPTY -> LoginDialogError.PASSWORD_EMPTY
-        UserRegisterError.LOGIN_FAILED -> LoginDialogError.LOGIN_FAILED
+        UserRegisterError.INVALID_ACCOUNT -> LoginDialogError.INVALID_ACCOUNT
+        UserRegisterError.REGISTER_FAILED -> LoginDialogError.LOGIN_FAILED
     }
 }
