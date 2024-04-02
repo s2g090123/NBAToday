@@ -234,7 +234,11 @@ class CalendarViewModel(
         }
     }
 
-    private suspend fun isInCalendar(year: Int, month: Int, date: Date): Boolean = withContext(dispatcherProvider.default) {
+    private suspend fun isInCalendar(
+        year: Int,
+        month: Int,
+        date: Date
+    ): Boolean = withContext(dispatcherProvider.default) {
         DateUtils.getCalendar().run {
             time = date
             add(Calendar.DATE, -(get(Calendar.DAY_OF_WEEK) - 1))

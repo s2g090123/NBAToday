@@ -17,7 +17,7 @@ data class ScheduleDto(
                 @SerializedName("gameId") val gameId: String?, // e.g. 0022200089
                 @SerializedName("gameStatus") val gameStatus: GameStatus?,
                 @SerializedName("gameStatusText") val gameStatusText: String?,
-                @SerializedName("gameSequence") val gameSequence: Int?, // Number of the current game today (starting from 1)
+                @SerializedName("gameSequence") val gameSequence: Int?, // starting from 1
                 @SerializedName("homeTeam") val homeTeam: RemoteTeam?,
                 @SerializedName("gameDateEst") val gameDateEst: String?,
                 @SerializedName("gameDateTimeEst") val gameDateTimeEst: String?, // e.g. 2022-10-30T12:00:00Z

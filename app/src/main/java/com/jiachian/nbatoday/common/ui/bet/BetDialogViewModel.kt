@@ -84,8 +84,12 @@ class BetDialogViewModel(
             BetDialogUIEvent.Bet -> bet()
             BetDialogUIEvent.Confirm -> stateImp.warning = true
             BetDialogUIEvent.CancelConfirm -> stateImp.warning = false
-            is BetDialogUIEvent.TextAwayPoints -> stateImp.awayPoints = min(event.points, state.userPoints - state.homePoints)
-            is BetDialogUIEvent.TextHomePoints -> stateImp.homePoints = min(event.points, state.userPoints - state.awayPoints)
+            is BetDialogUIEvent.TextAwayPoints -> {
+                stateImp.awayPoints = min(event.points, state.userPoints - state.homePoints)
+            }
+            is BetDialogUIEvent.TextHomePoints -> {
+                stateImp.homePoints = min(event.points, state.userPoints - state.awayPoints)
+            }
             BetDialogUIEvent.EventReceived -> stateImp.event = null
         }
     }

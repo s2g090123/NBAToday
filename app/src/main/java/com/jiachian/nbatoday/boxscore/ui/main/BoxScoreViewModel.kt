@@ -63,7 +63,10 @@ class BoxScoreViewModel(
                                 val homePlayersRowData = game.boxScore.homeTeam.players.map { it.toRowData() }
                                 val awayPlayersRowData = game.boxScore.awayTeam.players.map { it.toRowData() }
                                 val teamRowData = game.boxScore.toTeamRowData()
-                                val leaderRowData = game.boxScore.toLeaderRowData(game.game.homeLeaderId, game.game.awayLeaderId)
+                                val leaderRowData = game.boxScore.toLeaderRowData(
+                                    game.game.homeLeaderId,
+                                    game.game.awayLeaderId
+                                )
                                 Snapshot.withMutableSnapshot {
                                     stateImp.apply {
                                         info.let { info ->

@@ -14,7 +14,10 @@ import kotlinx.coroutines.flow.mapLatest
 class GetTeamAndPlayers(
     private val repository: TeamRepository,
 ) {
-    operator fun invoke(teamId: Int, sorting: TeamPlayerSorting): Flow<Resource<TeamAndPlayers, GetTeamAndPlayersError>> {
+    operator fun invoke(
+        teamId: Int,
+        sorting: TeamPlayerSorting
+    ): Flow<Resource<TeamAndPlayers, GetTeamAndPlayersError>> {
         return repository
             .getTeamAndPlayers(teamId)
             .mapLatest { teamAndPlayers ->

@@ -98,7 +98,10 @@ private fun LoginTextFiled(
     val hintVisible by remember(value) { derivedStateOf { value.isEmpty() } }
     Column(modifier = modifier) {
         BasicTextField(
-            modifier = Modifier.testTag(if (password) UserTestTag.PasswordTextField_TextField else UserTestTag.AccountTextField_TextField),
+            modifier = Modifier.testTag(
+                if (password) UserTestTag.PasswordTextField_TextField
+                else UserTestTag.AccountTextField_TextField
+            ),
             value = value,
             onValueChange = onValueChange,
             singleLine = true,
@@ -114,7 +117,10 @@ private fun LoginTextFiled(
             decorationBox = { innerTextField ->
                 if (hintVisible) {
                     Text(
-                        text = stringResource(if (password) R.string.user_login_password_hint else R.string.user_login_account_hint),
+                        text = stringResource(
+                            if (password) R.string.user_login_password_hint
+                            else R.string.user_login_account_hint
+                        ),
                         color = "#40000000".color,
                         fontSize = 18.sp
                     )
