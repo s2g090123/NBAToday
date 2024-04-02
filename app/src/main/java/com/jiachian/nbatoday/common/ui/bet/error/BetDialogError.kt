@@ -12,7 +12,6 @@ enum class BetDialogError(val message: String) {
 
 fun AddBetError.asBetDialogError(): BetDialogError {
     return when (this) {
-        AddBetError.NOT_LOGIN -> BetDialogError.NOT_LOGIN
         AddBetError.POINTS_NOT_ENOUGH -> BetDialogError.POINTS_NOT_ENOUGH
         AddBetError.UPDATE_FAIL -> BetDialogError.UPDATE_FAIL
     }

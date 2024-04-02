@@ -41,8 +41,7 @@ class BetDialogViewModel(
                 stateImp.loading = true
                 val getGame = async { gameUseCase.getGame(gameId) }
                 val getUser = async { getUser().first() }
-                val user = getUser.await()
-                if (user == null) {
+                val user = getUser.await() ?: run {
                     stateImp.event = BetDialogDataEvent.Error(BetDialogError.NOT_LOGIN)
                     return@launch
                 }
@@ -66,7 +65,13 @@ class BetDialogViewModel(
 
     private fun bet() {
         viewModelScope.launch {
+            stateImp.loading = true
+            val user = getUser().first() ?: run {
+                stateImp.event = BetDialogDataEvent.Error(BetDialogError.NOT_LOGIN)
+                return@launch
+            }
             val resource = betUseCase.addBet(
+                user = user,
                 gameId = gameId,
                 homePoints = state.homePoints,
                 awayPoints = state.awayPoints,
@@ -76,6 +81,7 @@ class BetDialogViewModel(
                 is Resource.Success -> stateImp.event = BetDialogDataEvent.Done
                 is Resource.Error -> stateImp.event = BetDialogDataEvent.Error(resource.error.asBetDialogError())
             }
+            stateImp.loading = false
         }
     }
 
