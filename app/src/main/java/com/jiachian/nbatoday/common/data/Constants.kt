@@ -31,3 +31,5 @@ const val ThirdRank = 3
 const val DaysPerWeek = 7
 
 const val NA = "N/A"
+
+const val WaitForFetching = 300L

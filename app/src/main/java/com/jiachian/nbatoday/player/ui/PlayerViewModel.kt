@@ -5,6 +5,7 @@ import androidx.compose.runtime.snapshots.Snapshot
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jiachian.nbatoday.common.data.WaitForFetching
 import com.jiachian.nbatoday.common.domain.Resource
 import com.jiachian.nbatoday.common.ui.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.common.ui.dispatcher.DispatcherProvider
@@ -36,6 +37,10 @@ class PlayerViewModel(
     private val playerUseCase: PlayerUseCase,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
 ) : ViewModel() {
+    companion object {
+        private const val COUNT_PER_ROW = 3
+    }
+
     private val playerId: Int = savedStateHandle.get<String>(MainRoute.Player.param)?.toIntOrNull() ?: -1
 
     private val stateImp = MutablePlayerState(playerId)
@@ -102,7 +107,7 @@ class PlayerViewModel(
                         }
                         is Resource.Loading -> stateImp.loading = true
                         is Resource.Success -> {
-                            delay(300) // delay for fetching new data
+                            delay(WaitForFetching) // delay for fetching new data
                             stateImp.loading = false
                         }
                     }
@@ -143,7 +148,7 @@ class PlayerViewModel(
                     value = LabelHelper.getValueByLabel(label, this)
                 )
             }
-                .chunked(3)
+                .chunked(COUNT_PER_ROW)
                 .map {
                     PlayerInfoTableData.RowData(it)
                 }

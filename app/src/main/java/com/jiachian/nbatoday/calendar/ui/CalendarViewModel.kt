@@ -30,11 +30,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-/**
- * ViewModel for handling business logic related to [CalendarScreen].
- *
- * @property dispatcherProvider The provider for obtaining dispatchers for coroutines (default is [DefaultDispatcherProvider]).
- */
 @OptIn(ExperimentalCoroutinesApi::class)
 class CalendarViewModel(
     savedStateHandle: SavedStateHandle,
@@ -42,6 +37,10 @@ class CalendarViewModel(
     getUser: GetUser,
     private val dispatcherProvider: DispatcherProvider = DefaultDispatcherProvider,
 ) : ViewModel() {
+    companion object {
+        private const val GROUPED_KEY_OFFSET = 100
+    }
+
     private val dateTime: Long =
         savedStateHandle.get<String>(MainRoute.Calendar.param)?.toLongOrNull() ?: DateUtils.getCalendar().apply {
             set(Calendar.HOUR, 0)
@@ -65,7 +64,6 @@ class CalendarViewModel(
     private val calendarDatesMap = mutableMapOf<String, List<CalendarDate>>()
 
     init {
-        println("NBA123 $dateTime")
         collectTopBarState()
         collectDatesState()
         collectGamesState()
@@ -79,7 +77,7 @@ class CalendarViewModel(
                     val (index, dateString) = cal.run {
                         val year = get(Calendar.YEAR)
                         val month = get(Calendar.MONTH)
-                        year * 100 + month to DateUtils.getDateString(year, month)
+                        year * GROUPED_KEY_OFFSET + month to DateUtils.getDateString(year, month)
                     }
                     val tmpCalendar = DateUtils.getCalendar()
                     val hasPrev = tmpCalendar.run {

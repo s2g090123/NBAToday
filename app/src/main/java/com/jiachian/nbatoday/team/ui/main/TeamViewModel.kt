@@ -5,6 +5,7 @@ import androidx.compose.runtime.snapshots.Snapshot
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jiachian.nbatoday.common.data.WaitForFetching
 import com.jiachian.nbatoday.common.domain.Resource
 import com.jiachian.nbatoday.common.ui.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.common.ui.dispatcher.DispatcherProvider
@@ -82,7 +83,7 @@ class TeamViewModel(
                         }
                         is Resource.Loading -> stateImp.loading = true
                         is Resource.Success -> {
-                            delay(300) // delay for fetching new data
+                            delay(WaitForFetching) // delay for fetching new data
                             stateImp.loading = false
                         }
                     }

@@ -18,6 +18,7 @@ import com.jiachian.nbatoday.boxscore.ui.player.model.BoxScorePlayerLabel
 import com.jiachian.nbatoday.boxscore.ui.player.model.BoxScorePlayerRowData
 import com.jiachian.nbatoday.boxscore.ui.team.model.BoxScoreTeamLabel
 import com.jiachian.nbatoday.boxscore.ui.team.model.BoxScoreTeamRowData
+import com.jiachian.nbatoday.common.data.WaitForFetching
 import com.jiachian.nbatoday.common.domain.Resource
 import com.jiachian.nbatoday.common.ui.dispatcher.DefaultDispatcherProvider
 import com.jiachian.nbatoday.common.ui.dispatcher.DispatcherProvider
@@ -110,7 +111,7 @@ class BoxScoreViewModel(
                         }
                         is Resource.Loading -> stateImp.loading = true
                         is Resource.Success -> {
-                            delay(300) // delay for fetching new data
+                            delay(WaitForFetching) // delay for fetching new data
                             stateImp.loading = false
                         }
                     }
