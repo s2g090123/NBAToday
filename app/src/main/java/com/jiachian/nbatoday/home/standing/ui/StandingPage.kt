@@ -31,6 +31,7 @@ import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -60,6 +61,7 @@ import com.jiachian.nbatoday.utils.dividerSecondaryColor
 import com.jiachian.nbatoday.utils.modifyIf
 import com.jiachian.nbatoday.utils.rippleClickable
 import com.jiachian.nbatoday.utils.showToast
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalPagerApi::class, ExperimentalMaterialApi::class)
@@ -111,7 +113,6 @@ fun StandingPage(
         state.event?.let { event ->
             when (event) {
                 is StandingDataEvent.Error -> showToast(context, event.error.message)
-                is StandingDataEvent.ScrollTo -> pagerState.animateScrollToPage(event.page)
             }
             viewModel.onEvent(StandingUIEvent.EventReceived)
         }
@@ -125,6 +126,7 @@ private fun StandingTabRow(
     conferences: Array<NBATeam.Conference>,
     onTabClick: (NBATeam.Conference) -> Unit,
 ) {
+    val coroutineScope = rememberCoroutineScope()
     TabRow(
         modifier = Modifier.testTag(StandingTestTag.StandingTabRow_TabRow),
         selectedTabIndex = pagerState.currentPage,
@@ -148,7 +150,12 @@ private fun StandingTabRow(
                     )
                 },
                 selected = index == pagerState.currentPage,
-                onClick = { onTabClick(conference) }
+                onClick = {
+                    coroutineScope.launch {
+                        pagerState.animateScrollToPage(index)
+                        onTabClick(conference)
+                    }
+                }
             )
         }
     }

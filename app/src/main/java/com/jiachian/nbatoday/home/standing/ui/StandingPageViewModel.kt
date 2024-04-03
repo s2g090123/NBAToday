@@ -71,10 +71,7 @@ class StandingPageViewModel(
     fun onEvent(event: StandingUIEvent) {
         when (event) {
             StandingUIEvent.Refresh -> refreshTeamStats()
-            is StandingUIEvent.SelectConference -> {
-                selectedConference = event.conference
-                stateImp.event = StandingDataEvent.ScrollTo(event.conference.ordinal)
-            }
+            is StandingUIEvent.SelectConference -> selectedConference = event.conference
             is StandingUIEvent.UpdateSorting -> {
                 when (selectedConference) {
                     NBATeam.Conference.EAST -> stateImp.eastTeamState
