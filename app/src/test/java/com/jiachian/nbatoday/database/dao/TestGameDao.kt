@@ -6,8 +6,8 @@ import com.jiachian.nbatoday.game.data.model.local.Game
 import com.jiachian.nbatoday.game.data.model.local.GameAndBets
 import com.jiachian.nbatoday.game.data.model.local.GameScoreUpdateData
 import com.jiachian.nbatoday.game.data.model.local.GameUpdateData
-import java.util.Date
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 class TestGameDao(
@@ -35,27 +35,19 @@ class TestGameDao(
         }
     }
 
+    override suspend fun getGameAndBets(gameId: String): GameAndBets? {
+        return dataHolder.gamesAndBets
+            .first()
+            .firstOrNull { gameAndBets ->
+                gameAndBets.game.gameId == gameId
+            }
+    }
+
     override fun getGamesAndBetsDuring(from: Long, to: Long): Flow<List<GameAndBets>> {
         return dataHolder.gamesAndBets.map { gamesAndBets ->
             gamesAndBets.filter { gameAndBets ->
                 gameAndBets.game.gameDate.time in from..to
             }
-        }
-    }
-
-    override fun getLastGameDateTime(): Flow<Date?> {
-        return dataHolder.gamesAndBets.map { gamesAndBets ->
-            gamesAndBets.maxByOrNull { gameAndBets ->
-                gameAndBets.game.gameDateTime.time
-            }?.game?.gameDateTime
-        }
-    }
-
-    override fun getFirstGameDateTime(): Flow<Date?> {
-        return dataHolder.gamesAndBets.map { gamesAndBets ->
-            gamesAndBets.minByOrNull { gameAndBets ->
-                gameAndBets.game.gameDateTime.time
-            }?.game?.gameDateTime
         }
     }
 

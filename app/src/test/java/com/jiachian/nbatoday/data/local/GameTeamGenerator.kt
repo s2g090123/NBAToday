@@ -2,7 +2,7 @@ package com.jiachian.nbatoday.data.local
 
 import com.jiachian.nbatoday.data.remote.RemoteGameGenerator
 import com.jiachian.nbatoday.game.data.model.local.GameTeam
-import com.jiachian.nbatoday.models.remote.game.extensions.toGameTeam
+import com.jiachian.nbatoday.game.data.model.toGameTeam
 import com.jiachian.nbatoday.utils.getOrAssert
 
 object GameTeamGenerator {

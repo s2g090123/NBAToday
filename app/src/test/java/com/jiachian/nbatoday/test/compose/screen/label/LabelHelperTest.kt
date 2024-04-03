@@ -298,7 +298,7 @@ class LabelHelperTest {
 
     @Test
     fun `getValueByLabel(TeamPlayerLabel) expects correct`() {
-        val stats = TeamPlayerGenerator.getHome()
+        val stats = TeamPlayerGenerator.getHome().first()
         assertIs(LabelHelper.getValueByLabel(TeamPlayerLabel.GP, stats), stats.gamePlayed.toString())
         assertIs(LabelHelper.getValueByLabel(TeamPlayerLabel.W, stats), stats.win.toString())
         assertIs(LabelHelper.getValueByLabel(TeamPlayerLabel.L, stats), stats.lose.toString())

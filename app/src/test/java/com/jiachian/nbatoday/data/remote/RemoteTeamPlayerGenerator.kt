@@ -83,6 +83,34 @@ object RemoteTeamPlayerGenerator {
                     BasicNumber.toString(),
                     BasicNumber.toString(),
                     BasicNumber.toString()
+                ),
+                listOf(
+                    (playerId + 1).toString(),
+                    playerName,
+                    playerName,
+                    (BasicNumber - 1).toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString()
                 )
             )
         )
