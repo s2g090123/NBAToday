@@ -19,7 +19,7 @@ interface UserRepository {
      * @param account The user account for login.
      * @param password The password associated with the account.
      */
-    suspend fun login(account: String, password: String): Response<Unit>
+    suspend fun login(account: String, password: String): Response<User>
 
     /**
      * Performs a user logout operation.
@@ -32,7 +32,7 @@ interface UserRepository {
      * @param account The user account for registration.
      * @param password The password associated with the account.
      */
-    suspend fun register(account: String, password: String): Response<Unit>
+    suspend fun register(account: String, password: String): Response<User>
 
     /**
      * Adds points to the currently logged-in user.

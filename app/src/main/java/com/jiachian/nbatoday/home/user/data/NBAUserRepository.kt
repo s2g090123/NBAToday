@@ -16,7 +16,7 @@ class NBAUserRepository(
 ) : UserRepository {
     override val user: Flow<User?> = dataStore.user
 
-    override suspend fun login(account: String, password: String): Response<Unit> {
+    override suspend fun login(account: String, password: String): Response<User> {
         return service
             .login(LoginBody(account, password))
             .takeIf { !it.isError() }
@@ -27,7 +27,7 @@ class NBAUserRepository(
                 dataStore.updateUser(user)
             }
             ?.let {
-                Response.Success(Unit)
+                Response.Success(it)
             }
             ?: Response.Error()
     }
@@ -36,7 +36,7 @@ class NBAUserRepository(
         dataStore.updateUser(null)
     }
 
-    override suspend fun register(account: String, password: String): Response<Unit> {
+    override suspend fun register(account: String, password: String): Response<User> {
         return service
             .register(LoginBody(account, password))
             .takeIf { !it.isError() }
@@ -47,7 +47,7 @@ class NBAUserRepository(
                 dataStore.updateUser(user)
             }
             ?.let {
-                Response.Success(Unit)
+                Response.Success(it)
             }
             ?: Response.Error()
     }
