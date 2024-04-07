@@ -46,4 +46,6 @@ object BoxScoreTestTag {
 
     const val TeamStatsRow_ScoreTeamStatsText_Home = "TeamStatsRow_ScoreTeamStatsText_Home"
     const val TeamStatsRow_ScoreTeamStatsText_Away = "TeamStatsRow_ScoreTeamStatsText_Away"
+
+    const val ScoreLabelText = "ScoreLabelText"
 }

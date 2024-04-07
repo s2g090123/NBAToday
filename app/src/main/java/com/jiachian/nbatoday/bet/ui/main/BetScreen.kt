@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.bet.data.model.local.BetAndGame
+import com.jiachian.nbatoday.bet.ui.main.error.BetError
 import com.jiachian.nbatoday.bet.ui.main.event.BetDataEvent
 import com.jiachian.nbatoday.bet.ui.main.event.BetUIEvent
 import com.jiachian.nbatoday.bet.ui.main.state.BetState
@@ -35,15 +36,14 @@ import com.jiachian.nbatoday.main.ui.navigation.NavigationController
 import com.jiachian.nbatoday.testing.testtag.BetTestTag
 import com.jiachian.nbatoday.utils.rippleClickable
 import com.jiachian.nbatoday.utils.showToast
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun BetScreen(
+    state: BetState,
+    onEvent: (BetUIEvent) -> Unit,
     navigationController: NavigationController,
-    viewModel: BetViewModel = koinViewModel(),
 ) {
     val context = LocalContext.current
-    val state = viewModel.state
     Scaffold(
         backgroundColor = MaterialTheme.colors.primary,
         topBar = {
@@ -70,29 +70,32 @@ fun BetScreen(
                     GameStatus.PLAYING -> {
                         navigationController.navigateToBoxScore(it.game.gameId)
                     }
-                    GameStatus.FINAL -> viewModel.onEvent(BetUIEvent.Settle(it))
+                    GameStatus.FINAL -> onEvent(BetUIEvent.Settle(it))
                 }
             }
         )
         TurnTableScreen(
             state = state.turnTable,
             onOpenTurnTable = { win, lose ->
-                viewModel.onEvent(BetUIEvent.OpenTurnTable(win, lose))
+                onEvent(BetUIEvent.OpenTurnTable(win, lose))
             },
             onStartTurnTable = { win, lose ->
-                viewModel.onEvent(BetUIEvent.StartTurnTable(win, lose))
+                onEvent(BetUIEvent.StartTurnTable(win, lose))
             },
-            onClose = { viewModel.onEvent(BetUIEvent.CloseTurnTable) },
+            onClose = { onEvent(BetUIEvent.CloseTurnTable) },
         )
     }
     LaunchedEffect(state.event) {
         state.event?.let { event ->
             when (event) {
                 is BetDataEvent.Error -> {
-                    showToast(context, event.error.message)
+                    when (event.error) {
+                        BetError.ADD_POINTS_FAILED,
+                        BetError.USER_NOT_LOGIN -> showToast(context, event.error.message)
+                    }
                 }
             }
-            viewModel.onEvent(BetUIEvent.EventReceived)
+            onEvent(BetUIEvent.EventReceived)
         }
     }
 }

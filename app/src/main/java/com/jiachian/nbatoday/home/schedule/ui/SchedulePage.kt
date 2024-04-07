@@ -40,24 +40,25 @@ import com.jiachian.nbatoday.common.ui.IconButton
 import com.jiachian.nbatoday.game.data.model.local.Game
 import com.jiachian.nbatoday.game.ui.GameCard
 import com.jiachian.nbatoday.game.ui.model.GameCardData
+import com.jiachian.nbatoday.home.schedule.ui.error.ScheduleError
 import com.jiachian.nbatoday.home.schedule.ui.event.ScheduleDataEvent
 import com.jiachian.nbatoday.home.schedule.ui.event.ScheduleUIEvent
 import com.jiachian.nbatoday.home.schedule.ui.model.DateData
+import com.jiachian.nbatoday.home.schedule.ui.state.ScheduleState
 import com.jiachian.nbatoday.main.ui.navigation.NavigationController
 import com.jiachian.nbatoday.testing.testtag.ScheduleTestTag
 import com.jiachian.nbatoday.utils.rippleClickable
 import com.jiachian.nbatoday.utils.showToast
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalPagerApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun SchedulePage(
+    state: ScheduleState,
+    onEvent: (ScheduleUIEvent) -> Unit,
     navigationController: NavigationController,
-    viewModel: SchedulePageViewModel = koinViewModel(),
 ) {
     val context = LocalContext.current
-    val state = viewModel.state
     Box(modifier = Modifier.fillMaxSize()) {
         if (state.loading) {
             CircularProgressIndicator(
@@ -68,7 +69,7 @@ fun SchedulePage(
             val pagerState = rememberPagerState(initialPage = state.dates.size / 2)
             val pullRefreshState = rememberPullRefreshState(
                 refreshing = state.refreshing,
-                onRefresh = { viewModel.onEvent(ScheduleUIEvent.Refresh) }
+                onRefresh = { onEvent(ScheduleUIEvent.Refresh) }
             )
             Box(
                 modifier = Modifier
@@ -100,7 +101,7 @@ fun SchedulePage(
                 ScheduleTabRow(
                     pagerState = pagerState,
                     dates = state.dates,
-                    onDateSelect = { viewModel.onEvent(ScheduleUIEvent.SelectDate(it)) }
+                    onDateSelect = { onEvent(ScheduleUIEvent.SelectDate(it)) }
                 )
             }
         }
@@ -108,9 +109,13 @@ fun SchedulePage(
     LaunchedEffect(state.event) {
         state.event?.let { event ->
             when (event) {
-                is ScheduleDataEvent.Error -> showToast(context, event.error.message)
+                is ScheduleDataEvent.Error -> {
+                    when (event.error) {
+                        ScheduleError.RefreshFailed -> showToast(context, event.error.message)
+                    }
+                }
             }
-            viewModel.onEvent(ScheduleUIEvent.EventReceived)
+            onEvent(ScheduleUIEvent.EventReceived)
         }
     }
 }

@@ -139,6 +139,7 @@ class TeamViewModel(
         val time = DateUtils.getCalendar().run {
             set(Calendar.HOUR, 0)
             set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
             timeInMillis
         }

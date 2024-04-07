@@ -39,6 +39,7 @@ import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.calendar.ui.event.CalendarUIEvent
 import com.jiachian.nbatoday.calendar.ui.model.CalendarDate
 import com.jiachian.nbatoday.calendar.ui.state.CalendarDatesState
+import com.jiachian.nbatoday.calendar.ui.state.CalendarState
 import com.jiachian.nbatoday.calendar.ui.state.CalendarTopBarState
 import com.jiachian.nbatoday.common.data.DaysPerWeek
 import com.jiachian.nbatoday.common.data.Transparency25
@@ -51,20 +52,19 @@ import com.jiachian.nbatoday.testing.testtag.CalendarTestTag
 import com.jiachian.nbatoday.utils.rippleClickable
 import com.jiachian.nbatoday.utils.slideSpec
 import java.util.Date
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun CalendarScreen(
+    state: CalendarState,
+    onEvent: (CalendarUIEvent) -> Unit,
     navigationController: NavigationController,
-    viewModel: CalendarViewModel = koinViewModel(),
 ) {
-    val state = viewModel.state
     Scaffold(
         backgroundColor = MaterialTheme.colors.primary,
         topBar = {
             CalendarTopBar(
                 state = state.topBar,
-                onEvent = viewModel::onEvent,
+                onEvent = onEvent,
                 onClose = navigationController::back,
             )
         }
@@ -85,7 +85,7 @@ fun CalendarScreen(
             ) {
                 dateBoxes(
                     state = state.dates,
-                    selectDate = { viewModel.onEvent(CalendarUIEvent.SelectDate(it)) }
+                    selectDate = { onEvent(CalendarUIEvent.SelectDate(it)) }
                 )
                 if (state.games.visible) {
                     if (state.games.loading) {

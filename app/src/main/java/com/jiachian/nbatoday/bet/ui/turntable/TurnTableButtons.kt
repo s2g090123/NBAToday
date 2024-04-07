@@ -15,23 +15,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.R
-import com.jiachian.nbatoday.common.ui.IconButton
 import com.jiachian.nbatoday.testing.testtag.BetTestTag
 import com.jiachian.nbatoday.utils.rippleClickable
-
-@Composable
-fun TurnTableCancelButton(
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    IconButton(
-        modifier = modifier,
-        drawableRes = R.drawable.ic_black_cancel,
-        tint = Color.White,
-        padding = 0.dp,
-        onClick = onClick,
-    )
-}
 
 @Composable
 fun TurnTableStartButton(

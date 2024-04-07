@@ -72,7 +72,9 @@ private fun PeriodLabelRow(
 @Composable
 private fun ScoreLabelText(label: String) {
     Text(
-        modifier = Modifier.width(38.dp),
+        modifier = Modifier
+            .testTag(BoxScoreTestTag.ScoreLabelText)
+            .width(38.dp),
         text = label,
         textAlign = TextAlign.Center,
         fontSize = 16.sp,

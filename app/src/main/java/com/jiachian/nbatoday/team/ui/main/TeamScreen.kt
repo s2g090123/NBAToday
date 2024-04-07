@@ -43,12 +43,14 @@ import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.common.ui.IconButton
+import com.jiachian.nbatoday.common.ui.theme.NBAColors
 import com.jiachian.nbatoday.main.ui.navigation.NavigationController
 import com.jiachian.nbatoday.team.ui.game.TeamGamePage
 import com.jiachian.nbatoday.team.ui.game.state.TeamGamesState
 import com.jiachian.nbatoday.team.ui.main.event.TeamDataEvent
 import com.jiachian.nbatoday.team.ui.main.event.TeamUIEvent
 import com.jiachian.nbatoday.team.ui.main.state.TeamInfoState
+import com.jiachian.nbatoday.team.ui.main.state.TeamState
 import com.jiachian.nbatoday.team.ui.player.TeamPlayerPage
 import com.jiachian.nbatoday.team.ui.player.model.TeamPlayerSorting
 import com.jiachian.nbatoday.team.ui.player.state.TeamPlayersState
@@ -56,31 +58,31 @@ import com.jiachian.nbatoday.testing.testtag.TeamTestTag
 import com.jiachian.nbatoday.utils.LocalColors
 import com.jiachian.nbatoday.utils.showToast
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.koinViewModel
 
 private val TopMargin = 81.dp
 
 @Composable
 fun TeamScreen(
+    state: TeamState,
+    colors: NBAColors,
+    onEvent: (TeamUIEvent) -> Unit,
     navigationController: NavigationController,
-    viewModel: TeamViewModel = koinViewModel(),
 ) {
     val context = LocalContext.current
-    val state = viewModel.state
     Scaffold(
-        backgroundColor = viewModel.colors.primary,
+        backgroundColor = colors.primary,
         topBar = {
             IconButton(
                 modifier = Modifier
                     .testTag(TeamTestTag.TeamScreen_Button_Back)
                     .padding(top = 8.dp, start = 8.dp),
                 drawableRes = R.drawable.ic_black_back,
-                tint = viewModel.colors.extra2,
+                tint = colors.extra2,
                 onClick = navigationController::back,
             )
         }
     ) { padding ->
-        CompositionLocalProvider(LocalColors provides viewModel.colors) {
+        CompositionLocalProvider(LocalColors provides colors) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -91,7 +93,7 @@ fun TeamScreen(
                         modifier = Modifier
                             .testTag(TeamTestTag.TeamScreen_LoadingScreen)
                             .align(Alignment.Center),
-                        color = viewModel.colors.secondary,
+                        color = colors.secondary,
                     )
                 } else if (state.notFound) {
                     Text(
@@ -112,7 +114,7 @@ fun TeamScreen(
                         onGameClick = navigationController::navigateToBoxScore,
                         onRequestLogin = navigationController::showLoginDialog,
                         onRequestBet = navigationController::showBetDialog,
-                        onSortingChange = { viewModel.onEvent(TeamUIEvent.Sort(it)) }
+                        onSortingChange = { onEvent(TeamUIEvent.Sort(it)) }
                     )
                 }
             }
@@ -123,7 +125,7 @@ fun TeamScreen(
             when (it) {
                 is TeamDataEvent.Error -> showToast(context, it.error.message)
             }
-            viewModel.onEvent(TeamUIEvent.EventReceived)
+            onEvent(TeamUIEvent.EventReceived)
         }
     }
 }
@@ -271,6 +273,7 @@ private fun TeamPager(
         count = 3,
         state = pagerState,
         userScrollEnabled = false,
+        verticalAlignment = Alignment.Top,
     ) { page ->
         when (page) {
             0 -> {

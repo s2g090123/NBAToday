@@ -35,26 +35,27 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.boxscore.ui.leader.state.BoxScoreLeaderState
+import com.jiachian.nbatoday.boxscore.ui.main.error.BoxScoreError
 import com.jiachian.nbatoday.boxscore.ui.main.event.BoxScoreDataEvent
 import com.jiachian.nbatoday.boxscore.ui.main.event.BoxScoreUIEvent
 import com.jiachian.nbatoday.boxscore.ui.main.state.BoxScoreInfoState
+import com.jiachian.nbatoday.boxscore.ui.main.state.BoxScoreState
 import com.jiachian.nbatoday.boxscore.ui.player.state.BoxScorePlayerState
 import com.jiachian.nbatoday.boxscore.ui.team.state.BoxScoreTeamState
 import com.jiachian.nbatoday.common.ui.IconButton
 import com.jiachian.nbatoday.main.ui.navigation.NavigationController
 import com.jiachian.nbatoday.testing.testtag.BoxScoreTestTag
 import com.jiachian.nbatoday.utils.showToast
-import org.koin.androidx.compose.koinViewModel
 
 private val TopMargin = 81.dp
 
 @Composable
 fun BoxScoreScreen(
+    state: BoxScoreState,
+    onEvent: (BoxScoreUIEvent) -> Unit,
     navigationController: NavigationController,
-    viewModel: BoxScoreViewModel = koinViewModel(),
 ) {
     val context = LocalContext.current
-    val state = viewModel.state
     Scaffold(
         backgroundColor = MaterialTheme.colors.primary,
         topBar = {
@@ -100,9 +101,13 @@ fun BoxScoreScreen(
     LaunchedEffect(state.event) {
         state.event?.let { event ->
             when (event) {
-                is BoxScoreDataEvent.Error -> showToast(context, event.error.message)
+                is BoxScoreDataEvent.Error -> {
+                    when (event.error) {
+                        BoxScoreError.UpdateFailed -> showToast(context, event.error.message)
+                    }
+                }
             }
-            viewModel.onEvent(BoxScoreUIEvent.EventReceived)
+            onEvent(BoxScoreUIEvent.EventReceived)
         }
     }
 }

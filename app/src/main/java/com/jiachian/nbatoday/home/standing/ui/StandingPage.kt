@@ -26,6 +26,7 @@ import androidx.compose.material.TabRowDefaults
 import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material.Text
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.PullRefreshState
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
@@ -47,12 +48,14 @@ import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
 import com.jiachian.nbatoday.common.data.Transparency25
 import com.jiachian.nbatoday.common.ui.TeamLogoImage
+import com.jiachian.nbatoday.home.standing.ui.error.StandingError
 import com.jiachian.nbatoday.home.standing.ui.event.StandingDataEvent
 import com.jiachian.nbatoday.home.standing.ui.event.StandingUIEvent
 import com.jiachian.nbatoday.home.standing.ui.model.StandingLabel
 import com.jiachian.nbatoday.home.standing.ui.model.StandingRowData
 import com.jiachian.nbatoday.home.standing.ui.model.StandingRowData.Companion.ELIMINATED_STANDING
 import com.jiachian.nbatoday.home.standing.ui.model.StandingSorting
+import com.jiachian.nbatoday.home.standing.ui.state.StandingState
 import com.jiachian.nbatoday.home.standing.ui.state.StandingTeamState
 import com.jiachian.nbatoday.main.ui.navigation.NavigationController
 import com.jiachian.nbatoday.team.data.model.local.teams.NBATeam
@@ -62,21 +65,20 @@ import com.jiachian.nbatoday.utils.modifyIf
 import com.jiachian.nbatoday.utils.rippleClickable
 import com.jiachian.nbatoday.utils.showToast
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalPagerApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun StandingPage(
+    state: StandingState,
+    onEvent: (StandingUIEvent) -> Unit,
     navigationController: NavigationController,
-    viewModel: StandingPageViewModel = koinViewModel(),
 ) {
-    val state = viewModel.state
     val conferences = remember { NBATeam.Conference.values() }
     val context = LocalContext.current
     val pagerState = rememberPagerState()
     val pullRefreshState = rememberPullRefreshState(
         refreshing = state.refreshing,
-        onRefresh = { viewModel.onEvent(StandingUIEvent.Refresh) }
+        onRefresh = { onEvent(StandingUIEvent.Refresh) }
     )
     Box(modifier = Modifier.fillMaxSize()) {
         HorizontalPager(
@@ -88,12 +90,10 @@ fun StandingPage(
             userScrollEnabled = false
         ) { page ->
             StandingScreen(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .pullRefresh(pullRefreshState),
+                refreshState = pullRefreshState,
                 state = if (page == 0) state.eastTeamState else state.westTeamState,
                 onClickTeam = navigationController::navigateToTeam,
-                onLabelClick = { viewModel.onEvent(StandingUIEvent.UpdateSorting(it.sorting)) }
+                onLabelClick = { onEvent(StandingUIEvent.UpdateSorting(it.sorting)) }
             )
         }
         PullRefreshIndicator(
@@ -106,15 +106,19 @@ fun StandingPage(
         StandingTabRow(
             conferences = conferences,
             pagerState = pagerState,
-            onTabClick = { viewModel.onEvent(StandingUIEvent.SelectConference(it)) }
+            onTabClick = { onEvent(StandingUIEvent.SelectConference(it)) }
         )
     }
     LaunchedEffect(state.event) {
         state.event?.let { event ->
             when (event) {
-                is StandingDataEvent.Error -> showToast(context, event.error.message)
+                is StandingDataEvent.Error -> {
+                    when (event.error) {
+                        StandingError.RefreshFailed -> showToast(context, event.error.message)
+                    }
+                }
             }
-            viewModel.onEvent(StandingUIEvent.EventReceived)
+            onEvent(StandingUIEvent.EventReceived)
         }
     }
 }
@@ -161,23 +165,28 @@ private fun StandingTabRow(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
 private fun StandingScreen(
     state: StandingTeamState,
+    refreshState: PullRefreshState,
     onClickTeam: (teamId: Int) -> Unit,
     onLabelClick: (StandingLabel) -> Unit,
-    modifier: Modifier = Modifier,
 ) {
     val scrollState = rememberScrollState()
-    Box(modifier = modifier) {
+    Box(
+        modifier = Modifier
+            .testTag(StandingTestTag.StandingPage_Content)
+            .fillMaxSize()
+            .pullRefresh(refreshState)
+    ) {
         if (state.loading) {
             CircularProgressIndicator(
                 modifier = Modifier.align(Alignment.Center),
                 color = MaterialTheme.colors.secondary,
             )
         } else {
-            LazyColumn(modifier = modifier) {
+            LazyColumn {
                 stickyHeader {
                     StandingLabelScrollableRow(
                         scrollState = scrollState,

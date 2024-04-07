@@ -61,8 +61,8 @@ fun LazyListScope.playerInfo(
                 .modifyIf(index == 0) { padding(top = 8.dp) }
                 .fillMaxWidth(),
             rowData = rowData,
-            topDivider = index < info.data.rowData.size - 1,
-            bottomDivider = index > 0,
+            topDivider = index == 0,
+            bottomDivider = true,
         )
     }
 }

@@ -40,6 +40,7 @@ import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.common.data.Transparency25
 import com.jiachian.nbatoday.common.ui.CustomOutlinedTextField
 import com.jiachian.nbatoday.common.ui.TeamLogoImage
+import com.jiachian.nbatoday.common.ui.bet.error.BetDialogError
 import com.jiachian.nbatoday.common.ui.bet.event.BetDialogDataEvent
 import com.jiachian.nbatoday.common.ui.bet.event.BetDialogUIEvent
 import com.jiachian.nbatoday.common.ui.bet.state.BetDialogState
@@ -48,36 +49,42 @@ import com.jiachian.nbatoday.testing.testtag.BetTestTag
 import com.jiachian.nbatoday.utils.getOrZero
 import com.jiachian.nbatoday.utils.rippleClickable
 import com.jiachian.nbatoday.utils.showToast
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun BetDialog(
+    state: BetDialogState,
+    onEvent: (BetDialogUIEvent) -> Unit,
     onDismiss: () -> Unit,
-    viewModel: BetDialogViewModel = koinViewModel(),
 ) {
     val context = LocalContext.current
-    val state = viewModel.state
     val dismiss by rememberUpdatedState(onDismiss)
     BetDialogContent(
         state = state,
-        onEvent = { viewModel.onEvent(it) }
+        onEvent = { onEvent(it) }
     )
     if (state.warning) {
         BetWarningDialog(
-            onConfirm = { viewModel.onEvent(BetDialogUIEvent.Bet) },
-            onDismiss = { viewModel.onEvent(BetDialogUIEvent.CancelConfirm) }
+            onConfirm = { onEvent(BetDialogUIEvent.Bet) },
+            onDismiss = { onEvent(BetDialogUIEvent.CancelConfirm) }
         )
     }
-    LaunchedEffect(state.event, viewModel) {
+    LaunchedEffect(state.event) {
         state.event?.let { event ->
             when (event) {
                 BetDialogDataEvent.Done -> dismiss()
                 is BetDialogDataEvent.Error -> {
-                    showToast(context, event.error.message)
-                    dismiss()
+                    when (event.error) {
+                        BetDialogError.NOT_LOGIN,
+                        BetDialogError.POINTS_NOT_ENOUGH,
+                        BetDialogError.UPDATE_FAIL,
+                        BetDialogError.GAME_NOT_FOUND -> {
+                            showToast(context, event.error.message)
+                            dismiss()
+                        }
+                    }
                 }
             }
-            viewModel.onEvent(BetDialogUIEvent.EventReceived)
+            onEvent(BetDialogUIEvent.EventReceived)
         }
     }
 }

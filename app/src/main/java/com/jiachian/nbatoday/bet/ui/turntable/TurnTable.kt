@@ -23,7 +23,9 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.bet.ui.turntable.model.TurnTableStatus
+import com.jiachian.nbatoday.common.ui.IconButton
 import com.jiachian.nbatoday.testing.testtag.BetTestTag
 import com.jiachian.nbatoday.utils.drawText
 import com.jiachian.nbatoday.utils.drawTurnTableArc
@@ -65,13 +67,16 @@ fun BetTurnTable(
     ) {
         Box(modifier = modifier) {
             if (!status.running) {
-                TurnTableCancelButton(
+                IconButton(
                     modifier = Modifier
                         .testTag(BetTestTag.BetTurnTable_Button_Cancel)
                         .padding(8.dp)
                         .align(Alignment.TopEnd)
                         .size(48.dp),
-                    onClick = onClose
+                    drawableRes = R.drawable.ic_black_cancel,
+                    tint = Color.White,
+                    padding = 0.dp,
+                    onClick = onClose,
                 )
             }
             TurnTableContent(

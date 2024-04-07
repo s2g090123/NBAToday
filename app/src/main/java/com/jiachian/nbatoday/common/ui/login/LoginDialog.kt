@@ -36,20 +36,21 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.R
+import com.jiachian.nbatoday.common.ui.login.error.LoginDialogError
 import com.jiachian.nbatoday.common.ui.login.event.LoginDataEvent
 import com.jiachian.nbatoday.common.ui.login.event.LoginUIEvent
+import com.jiachian.nbatoday.common.ui.login.state.LoginState
 import com.jiachian.nbatoday.testing.testtag.UserTestTag
 import com.jiachian.nbatoday.utils.color
 import com.jiachian.nbatoday.utils.showToast
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun LoginDialog(
+    state: LoginState,
+    onEvent: (LoginUIEvent) -> Unit,
     onDismiss: () -> Unit,
-    viewModel: LoginDialogViewModel = koinViewModel(),
 ) {
     val context = LocalContext.current
-    val state = viewModel.state
     val dismiss by rememberUpdatedState(onDismiss)
     Column(
         modifier = Modifier
@@ -63,27 +64,32 @@ fun LoginDialog(
             modifier = Modifier.padding(top = 24.dp, start = 16.dp, end = 16.dp),
             password = false,
             value = state.account,
-            onValueChange = { viewModel.onEvent(LoginUIEvent.TextAccount(it)) }
+            onValueChange = { onEvent(LoginUIEvent.TextAccount(it)) }
         )
         LoginTextFiled(
             modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
             password = true,
             value = state.password,
-            onValueChange = { viewModel.onEvent(LoginUIEvent.TextPassword(it)) }
+            onValueChange = { onEvent(LoginUIEvent.TextPassword(it)) }
         )
         BottomButtons(
             enabled = state.valid,
-            onRegister = { viewModel.onEvent(LoginUIEvent.Register) },
-            onLogin = { viewModel.onEvent(LoginUIEvent.Login) }
+            onRegister = { onEvent(LoginUIEvent.Register) },
+            onLogin = { onEvent(LoginUIEvent.Login) }
         )
     }
-    LaunchedEffect(state.event, viewModel) {
+    LaunchedEffect(state.event) {
         state.event?.let { event ->
             when (event) {
-                is LoginDataEvent.Error -> showToast(context, event.error.message)
+                is LoginDataEvent.Error -> {
+                    when (event.error) {
+                        LoginDialogError.INVALID_ACCOUNT,
+                        LoginDialogError.LOGIN_FAILED -> showToast(context, event.error.message)
+                    }
+                }
                 LoginDataEvent.Login -> dismiss()
             }
-            viewModel.onEvent(LoginUIEvent.EventReceived)
+            onEvent(LoginUIEvent.EventReceived)
         }
     }
 }

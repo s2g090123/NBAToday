@@ -22,10 +22,14 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.jiachian.nbatoday.home.main.ui.navigation.HomeRoute
 import com.jiachian.nbatoday.home.schedule.ui.SchedulePage
+import com.jiachian.nbatoday.home.schedule.ui.SchedulePageViewModel
 import com.jiachian.nbatoday.home.standing.ui.StandingPage
+import com.jiachian.nbatoday.home.standing.ui.StandingPageViewModel
 import com.jiachian.nbatoday.home.user.ui.UserPage
+import com.jiachian.nbatoday.home.user.ui.UserPageViewModel
 import com.jiachian.nbatoday.main.ui.navigation.NavigationController
 import com.jiachian.nbatoday.testing.testtag.HomeTestTag
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun HomeScreen(
@@ -50,18 +54,27 @@ fun HomeScreen(
             startDestination = HomeRoute.SCHEDULE.route,
         ) {
             composable(HomeRoute.SCHEDULE.route) {
+                val viewModel = koinViewModel<SchedulePageViewModel>()
                 SchedulePage(
-                    navigationController = navigationController
+                    state = viewModel.state,
+                    onEvent = viewModel::onEvent,
+                    navigationController = navigationController,
                 )
             }
             composable(HomeRoute.STANDING.route) {
+                val viewModel = koinViewModel<StandingPageViewModel>()
                 StandingPage(
+                    state = viewModel.state,
+                    onEvent = viewModel::onEvent,
                     navigationController = navigationController
                 )
             }
             composable(HomeRoute.USER.route) {
+                val viewModel = koinViewModel<UserPageViewModel>()
                 UserPage(
-                    navigationController = navigationController
+                    state = viewModel.state,
+                    onEvent = viewModel::onEvent,
+                    navigationController = navigationController,
                 )
             }
         }

@@ -20,7 +20,6 @@ import com.jiachian.nbatoday.home.schedule.ui.state.MutableScheduleState
 import com.jiachian.nbatoday.home.schedule.ui.state.ScheduleState
 import com.jiachian.nbatoday.home.user.domain.GetUser
 import com.jiachian.nbatoday.utils.DateUtils
-import com.jiachian.nbatoday.utils.DateUtils.reset
 import java.util.Calendar
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -54,7 +53,7 @@ class SchedulePageViewModel(
             }
             selectedDate = dates[dates.size / 2]
             cal.apply {
-                reset()
+                DateUtils.resetCalendar(this)
                 set(Calendar.HOUR, 0)
                 set(Calendar.MINUTE, 0)
                 set(Calendar.MILLISECOND, 0)
@@ -107,7 +106,7 @@ class SchedulePageViewModel(
     }
 
     private fun Calendar.getDates(): List<DateData> {
-        reset()
+        DateUtils.resetCalendar(this)
         val range = ScheduleDateRange * 2 + 1
         add(Calendar.DAY_OF_MONTH, -ScheduleDateRange)
         return List(range) {
@@ -122,7 +121,7 @@ class SchedulePageViewModel(
     }
 
     private fun Calendar.groupGames(games: List<GameAndBets>): Map<DateData, List<GameCardData>> {
-        reset()
+        DateUtils.resetCalendar(this)
         return games
             .toGameCardState(user)
             .groupBy { state ->

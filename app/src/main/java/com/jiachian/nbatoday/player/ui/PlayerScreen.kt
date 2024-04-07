@@ -22,22 +22,23 @@ import androidx.compose.ui.unit.sp
 import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.common.ui.IconButton
 import com.jiachian.nbatoday.main.ui.navigation.NavigationController
+import com.jiachian.nbatoday.player.ui.error.PlayerError
 import com.jiachian.nbatoday.player.ui.event.PlayerDataEvent
 import com.jiachian.nbatoday.player.ui.event.PlayerUIEvent
 import com.jiachian.nbatoday.player.ui.model.PlayerStatsSorting
 import com.jiachian.nbatoday.player.ui.state.PlayerInfoState
+import com.jiachian.nbatoday.player.ui.state.PlayerState
 import com.jiachian.nbatoday.player.ui.state.PlayerStatsState
 import com.jiachian.nbatoday.testing.testtag.PlayerTestTag
 import com.jiachian.nbatoday.utils.showToast
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun PlayerScreen(
+    state: PlayerState,
+    onEvent: (PlayerUIEvent) -> Unit,
     navigationController: NavigationController,
-    viewModel: PlayerViewModel = koinViewModel(),
 ) {
     val context = LocalContext.current
-    val state = viewModel.state
     Scaffold(
         backgroundColor = MaterialTheme.colors.primary,
         topBar = {
@@ -77,7 +78,7 @@ fun PlayerScreen(
                 PlayerDetail(
                     info = state.info,
                     stats = state.stats,
-                    onSortingUpdate = { viewModel.onEvent(PlayerUIEvent.Sort(it)) }
+                    onSortingUpdate = { onEvent(PlayerUIEvent.Sort(it)) }
                 )
             }
         }
@@ -85,9 +86,13 @@ fun PlayerScreen(
     LaunchedEffect(state.event) {
         state.event?.let { event ->
             when (event) {
-                is PlayerDataEvent.Error -> showToast(context, event.error.message)
+                is PlayerDataEvent.Error -> {
+                    when (event.error) {
+                        PlayerError.UpdateFailed -> showToast(context, event.error.message)
+                    }
+                }
             }
-            viewModel.onEvent(PlayerUIEvent.EventReceived)
+            onEvent(PlayerUIEvent.EventReceived)
         }
     }
 }

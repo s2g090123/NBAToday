@@ -44,18 +44,18 @@ import com.jiachian.nbatoday.common.ui.IconButton
 import com.jiachian.nbatoday.common.ui.TeamLogoImage
 import com.jiachian.nbatoday.common.ui.theme.NBAColors
 import com.jiachian.nbatoday.home.user.ui.event.UserUIEvent
+import com.jiachian.nbatoday.home.user.ui.state.UserState
 import com.jiachian.nbatoday.main.ui.navigation.NavigationController
 import com.jiachian.nbatoday.team.data.model.local.teams.NBATeam
 import com.jiachian.nbatoday.testing.testtag.UserTestTag
 import com.jiachian.nbatoday.utils.rippleClickable
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun UserPage(
+    state: UserState,
+    onEvent: (UserUIEvent) -> Unit,
     navigationController: NavigationController,
-    viewModel: UserPageViewModel = koinViewModel(),
 ) {
-    val state = viewModel.state
     Box(modifier = Modifier.fillMaxSize()) {
         if (state.loading) {
             CircularProgressIndicator(
@@ -76,7 +76,7 @@ fun UserPage(
                         name = user.name,
                         points = user.points,
                         onBet = { navigationController.navigateToBet(user.account) },
-                        onLogout = { viewModel.onEvent(UserUIEvent.Logout) }
+                        onLogout = { onEvent(UserUIEvent.Logout) }
                     )
                 }
             ) { padding ->
@@ -85,7 +85,7 @@ fun UserPage(
                         .testTag(UserTestTag.UserScreen_ThemesTable)
                         .padding(padding),
                     teams = state.teams,
-                    onPalette = { viewModel.onEvent(UserUIEvent.UpdateTheme(it.teamId)) }
+                    onPalette = { onEvent(UserUIEvent.UpdateTheme(it.teamId)) }
                 )
             }
         }
