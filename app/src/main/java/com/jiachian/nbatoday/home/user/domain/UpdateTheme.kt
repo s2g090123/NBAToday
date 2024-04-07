@@ -1,11 +1,11 @@
 package com.jiachian.nbatoday.home.user.domain
 
-import com.jiachian.nbatoday.common.data.datastore.BaseDataStore
+import com.jiachian.nbatoday.home.user.data.UserRepository
 
 class UpdateTheme(
-    private val dataStore: BaseDataStore
+    private val repository: UserRepository,
 ) {
     suspend operator fun invoke(teamId: Int) {
-        dataStore.updateThemeColorsTeamId(teamId)
+        repository.updateTheme(teamId)
     }
 }

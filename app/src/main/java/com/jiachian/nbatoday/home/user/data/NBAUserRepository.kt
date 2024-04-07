@@ -2,6 +2,7 @@ package com.jiachian.nbatoday.home.user.data
 
 import com.jiachian.nbatoday.common.data.Response
 import com.jiachian.nbatoday.common.data.datastore.BaseDataStore
+import com.jiachian.nbatoday.common.ui.theme.NBAColors
 import com.jiachian.nbatoday.home.user.data.model.local.User
 import com.jiachian.nbatoday.home.user.data.model.remote.LoginBody
 import com.jiachian.nbatoday.home.user.data.model.remote.UpdatePointsBody
@@ -15,6 +16,8 @@ class NBAUserRepository(
     private val dataStore: BaseDataStore,
 ) : UserRepository {
     override val user: Flow<User?> = dataStore.user
+
+    override val theme: Flow<NBAColors> = dataStore.themeColors
 
     override suspend fun login(account: String, password: String): Response<User> {
         return service
@@ -69,5 +72,9 @@ class NBAUserRepository(
                 Response.Success(Unit)
             }
             ?: Response.Error()
+    }
+
+    override suspend fun updateTheme(teamId: Int) {
+        dataStore.updateThemeColorsTeamId(teamId)
     }
 }

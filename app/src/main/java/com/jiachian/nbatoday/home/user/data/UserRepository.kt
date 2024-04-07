@@ -1,6 +1,7 @@
 package com.jiachian.nbatoday.home.user.data
 
 import com.jiachian.nbatoday.common.data.Response
+import com.jiachian.nbatoday.common.ui.theme.NBAColors
 import com.jiachian.nbatoday.home.user.data.model.local.User
 import kotlinx.coroutines.flow.Flow
 
@@ -12,6 +13,8 @@ interface UserRepository {
      * A Flow representing the current user information.
      */
     val user: Flow<User?>
+
+    val theme: Flow<NBAColors>
 
     /**
      * Performs a user login operation.
@@ -40,4 +43,6 @@ interface UserRepository {
      * @param points The points to be added.
      */
     suspend fun addPoints(points: Long): Response<Unit>
+
+    suspend fun updateTheme(teamId: Int)
 }

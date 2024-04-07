@@ -1,13 +1,13 @@
 package com.jiachian.nbatoday.home.user.domain
 
-import com.jiachian.nbatoday.common.data.datastore.BaseDataStore
 import com.jiachian.nbatoday.common.ui.theme.NBAColors
+import com.jiachian.nbatoday.home.user.data.UserRepository
 import kotlinx.coroutines.flow.Flow
 
 class GetTheme(
-    private val dataStore: BaseDataStore
+    private val repository: UserRepository,
 ) {
     operator fun invoke(): Flow<NBAColors> {
-        return dataStore.themeColors
+        return repository.theme
     }
 }

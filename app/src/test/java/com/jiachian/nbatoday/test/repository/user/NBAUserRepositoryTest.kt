@@ -1,6 +1,8 @@
 package com.jiachian.nbatoday.test.repository.user
 
 import com.jiachian.nbatoday.BaseUnitTest
+import com.jiachian.nbatoday.HomeTeamColors
+import com.jiachian.nbatoday.HomeTeamId
 import com.jiachian.nbatoday.UserAccount
 import com.jiachian.nbatoday.UserPassword
 import com.jiachian.nbatoday.UserPoints
@@ -72,5 +74,15 @@ class NBAUserRepositoryTest : BaseUnitTest() {
     @Test
     fun `addPoints user not login and check points are updated`() = runTest {
         repository.addPoints(100).assertIsA(Response.Error::class.java)
+    }
+
+    @Test
+    fun `updateTheme and verify theme is updated`() = runTest {
+        repository.updateTheme(HomeTeamId)
+        repository
+            .theme
+            .stateIn(null)
+            .value
+            .assertIs(HomeTeamColors)
     }
 }
