@@ -31,7 +31,7 @@ interface GameDao {
      * @param from The starting date for filtering games.
      * @return Flow emitting a list of [GameAndBets].
      */
-    @Query("SELECT * FROM game WHERE game_date <= :from AND (home_team_id == :teamId OR away_team_id == :teamId)")
+    @Query("SELECT * FROM game WHERE game_date < :from AND (home_team_id == :teamId OR away_team_id == :teamId)")
     fun getGamesAndBetsBefore(teamId: Int, from: Long): Flow<List<GameAndBets>>
 
     /**
@@ -41,7 +41,7 @@ interface GameDao {
      * @param from The starting date for filtering games.
      * @return Flow emitting a list of [GameAndBets].
      */
-    @Query("SELECT * FROM game WHERE game_date > :from AND (home_team_id == :teamId OR away_team_id == :teamId)")
+    @Query("SELECT * FROM game WHERE game_date >= :from AND (home_team_id == :teamId OR away_team_id == :teamId)")
     fun getGamesAndBetsAfter(teamId: Int, from: Long): Flow<List<GameAndBets>>
 
     @Query("SELECT * FROM game WHERE game_id == :gameId")
