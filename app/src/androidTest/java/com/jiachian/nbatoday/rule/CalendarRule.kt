@@ -22,6 +22,14 @@ class CalendarRule : TestWatcher() {
                 time = Date(BasicTime)
             }
         }
+        every {
+            DateUtils.resetCalendar(any())
+        } answers {
+            firstArg<Calendar>().apply {
+                timeZone = TimeZone.getTimeZone("EST")
+                time = Date(BasicTime)
+            }
+        }
     }
 
     override fun finished(description: Description) {

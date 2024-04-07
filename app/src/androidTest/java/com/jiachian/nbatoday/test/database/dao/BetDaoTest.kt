@@ -30,7 +30,13 @@ class BetDaoTest : BaseAndroidTest() {
             .allowMainThreadQueries()
             .build()
         dao = database.getBetDao()
-        insertGames()
+        database.getGameDao().addGames(
+            listOf(
+                GameGenerator.getFinal(),
+                GameGenerator.getPlaying(),
+                GameGenerator.getComingSoon()
+            )
+        )
     }
 
     @After
@@ -39,15 +45,7 @@ class BetDaoTest : BaseAndroidTest() {
     }
 
     @Test
-    fun betDao_getBetsAndGames() = launch {
-        dao.addBet(BetGenerator.getFinal())
-        dao.getBetsAndGames().collectOnce(this) {
-            it.assertIs(listOf(BetAndGameGenerator.getFinal()))
-        }
-    }
-
-    @Test
-    fun betDao_getBetsAndGames_withAccounts() = launch {
+    fun betDao_getBetsAndGames() = runTest {
         dao.addBet(BetGenerator.getFinal())
         dao.getBetsAndGames(UserAccount).collectOnce(this) {
             it.assertIs(listOf(BetAndGameGenerator.getFinal()))
@@ -55,21 +53,11 @@ class BetDaoTest : BaseAndroidTest() {
     }
 
     @Test
-    fun betDao_deleteBet() = launch {
+    fun betDao_deleteBet() = runTest {
         dao.addBet(BetGenerator.getFinal())
         dao.deleteBet(BetGenerator.getFinal())
-        dao.getBetsAndGames().collectOnce(this) {
+        dao.getBetsAndGames(UserAccount).collectOnce(this) {
             it.assertIs(emptyList())
         }
-    }
-
-    private suspend fun insertGames() {
-        database.getGameDao().addGames(
-            listOf(
-                GameGenerator.getFinal(),
-                GameGenerator.getPlaying(),
-                GameGenerator.getComingSoon()
-            )
-        )
     }
 }

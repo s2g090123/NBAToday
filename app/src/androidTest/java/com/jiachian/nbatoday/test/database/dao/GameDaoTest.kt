@@ -3,7 +3,6 @@ package com.jiachian.nbatoday.test.database.dao
 import androidx.room.Room
 import com.jiachian.nbatoday.BaseAndroidTest
 import com.jiachian.nbatoday.BasicNumber
-import com.jiachian.nbatoday.ComingSoonGameTimeMs
 import com.jiachian.nbatoday.FinalGameTimeMs
 import com.jiachian.nbatoday.GameStatusFinal
 import com.jiachian.nbatoday.HomePlayerId
@@ -24,8 +23,8 @@ import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.assertIsTrue
 import com.jiachian.nbatoday.utils.collectOnce
 import com.jiachian.nbatoday.utils.getOrAssert
-import java.util.Date
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -52,7 +51,7 @@ class GameDaoTest : BaseAndroidTest() {
     }
 
     @Test
-    fun gameDao_getGamesAndBets() = launch {
+    fun gameDao_getGamesAndBets() = runTest {
         dao.addGames(listOf(GameGenerator.getFinal()))
         dao.getGamesAndBets().collectOnce(this) {
             it.assertIs(listOf(GameAndBetsGenerator.getFinal(false)))
@@ -60,7 +59,7 @@ class GameDaoTest : BaseAndroidTest() {
     }
 
     @Test
-    fun gameDao_getGamesAndBets_withBets() = launch {
+    fun gameDao_getGamesAndBets_withBets() = runTest {
         dao.addGames(listOf(GameGenerator.getFinal()))
         database.getBetDao().addBet(BetGenerator.getFinal())
         dao.getGamesAndBets().collectOnce(this) {
@@ -69,28 +68,32 @@ class GameDaoTest : BaseAndroidTest() {
     }
 
     @Test
-    fun gameDao_getGamesAndBetsBefore() = launch {
+    fun gameDao_getGamesAndBetsBefore() = runTest {
         insertGames()
         dao.getGamesAndBetsBefore(HomeTeamId, PlayingGameTimeMs).collectOnce(this) {
             it.assertIs(
                 listOf(
                     GameAndBetsGenerator.getFinal(false),
-                    GameAndBetsGenerator.getPlaying(false)
                 )
             )
         }
     }
 
     @Test
-    fun gameDao_getGamesAndBetsAfter() = launch {
+    fun gameDao_getGamesAndBetsAfter() = runTest {
         insertGames()
         dao.getGamesAndBetsAfter(HomeTeamId, PlayingGameTimeMs).collectOnce(this) {
-            it.assertIs(listOf(GameAndBetsGenerator.getComingSoon(false)))
+            it.assertIs(
+                listOf(
+                    GameAndBetsGenerator.getPlaying(false),
+                    GameAndBetsGenerator.getComingSoon(false)
+                )
+            )
         }
     }
 
     @Test
-    fun gameDao_getGamesAndBetsDuring() = launch {
+    fun gameDao_getGamesAndBetsDuring() = runTest {
         insertGames()
         dao.getGamesAndBetsDuring(FinalGameTimeMs, PlayingGameTimeMs).collectOnce(this) {
             it.assertIs(
@@ -103,29 +106,13 @@ class GameDaoTest : BaseAndroidTest() {
     }
 
     @Test
-    fun gameDao_getLastGameDateTime() = launch {
-        insertGames()
-        dao.getLastGameDateTime().collectOnce(this) {
-            it.assertIs(Date(ComingSoonGameTimeMs))
-        }
-    }
-
-    @Test
-    fun gameDao_getFirstGameDateTime() = launch {
-        insertGames()
-        dao.getFirstGameDateTime().collectOnce(this) {
-            it.assertIs(Date(FinalGameTimeMs))
-        }
-    }
-
-    @Test
-    fun gameDao_gameExists() = launch {
+    fun gameDao_gameExists() = runTest {
         insertGames()
         dao.gameExists().assertIsTrue()
     }
 
     @Test
-    fun gameDao_updateGames() = launch {
+    fun gameDao_updateGames() = runTest {
         insertGames()
         dao.updateGames(
             listOf(
@@ -151,7 +138,7 @@ class GameDaoTest : BaseAndroidTest() {
     }
 
     @Test
-    fun gameDao_updateGameScores() = launch {
+    fun gameDao_updateGameScores() = runTest {
         insertGames()
         val pointsLeaders = listOf(
             Game.PointsLeader(

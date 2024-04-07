@@ -11,6 +11,7 @@ import com.jiachian.nbatoday.data.local.GameGenerator
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.collectOnce
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -37,7 +38,7 @@ class BoxScoreDaoTest : BaseAndroidTest() {
     }
 
     @Test
-    fun boxScoreDao_getBoxScoreAndGame() = launch {
+    fun boxScoreDao_getBoxScoreAndGame() = runTest {
         database.getGameDao().addGames(listOf(GameGenerator.getFinal()))
         dao.insertBoxScore(BoxScoreGenerator.getFinal())
         dao.getBoxScoreAndGame(FinalGameId).collectOnce(this) {

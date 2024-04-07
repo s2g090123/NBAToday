@@ -3,8 +3,8 @@ package com.jiachian.nbatoday.data.local
 import com.jiachian.nbatoday.data.remote.RemoteGameGenerator
 import com.jiachian.nbatoday.data.remote.RemoteScheduleGenerator
 import com.jiachian.nbatoday.game.data.model.local.Game
-import com.jiachian.nbatoday.models.remote.game.extensions.toGameUpdateData
-import com.jiachian.nbatoday.models.remote.game.extensions.toGames
+import com.jiachian.nbatoday.game.data.model.toGameUpdateData
+import com.jiachian.nbatoday.game.data.model.toGames
 import com.jiachian.nbatoday.utils.getOrAssert
 
 object GameGenerator {

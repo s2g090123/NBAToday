@@ -10,10 +10,6 @@ import kotlinx.coroutines.flow.map
 class TestBetDao(
     private val dataHolder: DataHolder
 ) : BetDao {
-    override fun getBetsAndGames(): Flow<List<BetAndGame>> {
-        return dataHolder.betsAndGames
-    }
-
     override fun getBetsAndGames(account: String): Flow<List<BetAndGame>> {
         return dataHolder.betsAndGames.map { betsAndGames ->
             betsAndGames.filter { betAndGame ->

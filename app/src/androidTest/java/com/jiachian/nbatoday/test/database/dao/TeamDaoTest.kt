@@ -13,6 +13,7 @@ import com.jiachian.nbatoday.team.data.model.local.teams.NBATeam
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.collectOnce
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -39,7 +40,7 @@ class TeamDaoTest : BaseAndroidTest() {
     }
 
     @Test
-    fun teamDao_getTeams() = launch {
+    fun teamDao_getTeams() = runTest {
         dao.addTeams(listOf(TeamGenerator.getHome()))
         dao.getTeams(NBATeam.Conference.EAST).collectOnce(this) {
             it.assertIs(listOf(TeamGenerator.getHome()))
@@ -47,7 +48,7 @@ class TeamDaoTest : BaseAndroidTest() {
     }
 
     @Test
-    fun teamDao_getTeamAndPlayers() = launch {
+    fun teamDao_getTeamAndPlayers() = runTest {
         dao.addTeams(listOf(TeamGenerator.getHome()))
         dao.addTeamPlayers(listOf(TeamPlayerGenerator.getHome()))
         dao.getTeamAndPlayers(HomeTeamId).collectOnce(this) {
@@ -61,7 +62,7 @@ class TeamDaoTest : BaseAndroidTest() {
     }
 
     @Test
-    fun teamDao_getTeamStanding() = launch {
+    fun teamDao_getTeamStanding() = runTest {
         insertTeams()
         dao.getTeamStanding(HomeTeamId, NBATeam.Conference.EAST).collectOnce(this) {
             it.assertIs(1)
@@ -69,7 +70,7 @@ class TeamDaoTest : BaseAndroidTest() {
     }
 
     @Test
-    fun teamDao_getPointsRank() = launch {
+    fun teamDao_getPointsRank() = runTest {
         insertTeams()
         dao.getPointsRank(HomeTeamId).collectOnce(this) {
             it.assertIs(1)
@@ -77,7 +78,7 @@ class TeamDaoTest : BaseAndroidTest() {
     }
 
     @Test
-    fun teamDao_getReboundsRank() = launch {
+    fun teamDao_getReboundsRank() = runTest {
         insertTeams()
         dao.getReboundsRank(HomeTeamId).collectOnce(this) {
             it.assertIs(1)
@@ -85,7 +86,7 @@ class TeamDaoTest : BaseAndroidTest() {
     }
 
     @Test
-    fun teamDao_deleteTeamPlayers() = launch {
+    fun teamDao_deleteTeamPlayers() = runTest {
         insertTeams()
         dao.addTeamPlayers(listOf(TeamPlayerGenerator.getHome()))
         dao.deleteTeamPlayers(HomeTeamId, listOf(HomePlayerId))
@@ -100,7 +101,7 @@ class TeamDaoTest : BaseAndroidTest() {
     }
 
     @Test
-    fun teamDao_getAssistsRank() = launch {
+    fun teamDao_getAssistsRank() = runTest {
         insertTeams()
         dao.getAssistsRank(HomeTeamId).collectOnce(this) {
             it.assertIs(1)
@@ -108,7 +109,7 @@ class TeamDaoTest : BaseAndroidTest() {
     }
 
     @Test
-    fun teamDao_getPlusMinusRank() = launch {
+    fun teamDao_getPlusMinusRank() = runTest {
         insertTeams()
         dao.getPlusMinusRank(HomeTeamId).collectOnce(this) {
             it.assertIs(1)

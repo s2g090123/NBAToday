@@ -8,6 +8,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.core.app.ApplicationProvider
 import com.jiachian.nbatoday.common.data.datastore.BaseDataStore
 import com.jiachian.nbatoday.common.ui.dispatcher.DispatcherProvider
+import com.jiachian.nbatoday.datastore.data.TestDataStore
 import com.jiachian.nbatoday.koin.testModule
 import com.jiachian.nbatoday.repository.RepositoryProvider
 import com.jiachian.nbatoday.rule.ApplicationRule
@@ -15,6 +16,7 @@ import com.jiachian.nbatoday.rule.CalendarRule
 import com.jiachian.nbatoday.rule.CoroutineRule
 import com.jiachian.nbatoday.rule.KoinTestRule
 import com.jiachian.nbatoday.rule.NBATeamRule
+import com.jiachian.nbatoday.usecase.UseCaseProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -68,8 +70,11 @@ open class BaseAndroidTest {
     protected val dataHolder: DataHolder
         get() = get(DataHolder::class.java)
 
-    protected val dataStore: BaseDataStore
+    protected val dataStore: TestDataStore
         get() = get(BaseDataStore::class.java)
+
+    protected val useCaseProvider: UseCaseProvider
+        get() = UseCaseProvider()
 
     protected val repositoryProvider by lazy {
         RepositoryProvider()

@@ -1,21 +1,16 @@
 package com.jiachian.nbatoday.test.compose.screen.player
 
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextEquals
+import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.performClick
 import androidx.lifecycle.SavedStateHandle
 import com.jiachian.nbatoday.BaseAndroidTest
-import com.jiachian.nbatoday.BasicNumber
-import com.jiachian.nbatoday.BasicPosition
-import com.jiachian.nbatoday.HomePlayerFirstName
 import com.jiachian.nbatoday.HomePlayerId
-import com.jiachian.nbatoday.HomeTeamAbbr
-import com.jiachian.nbatoday.HomeTeamLocation
-import com.jiachian.nbatoday.HomeTeamName
-import com.jiachian.nbatoday.compose.screen.state.UIState
+import com.jiachian.nbatoday.HomeTeamId
 import com.jiachian.nbatoday.data.local.PlayerGenerator
 import com.jiachian.nbatoday.main.ui.navigation.MainRoute
+import com.jiachian.nbatoday.navigation.TestNavigationController
 import com.jiachian.nbatoday.player.ui.PlayerScreen
 import com.jiachian.nbatoday.player.ui.PlayerViewModel
 import com.jiachian.nbatoday.player.ui.model.PlayerStatsLabel
@@ -25,100 +20,79 @@ import com.jiachian.nbatoday.utils.LabelHelper
 import com.jiachian.nbatoday.utils.assertIsTrue
 import com.jiachian.nbatoday.utils.onAllNodesWithUnmergedTree
 import com.jiachian.nbatoday.utils.onNodeWithUnmergedTree
-import io.mockk.every
-import io.mockk.spyk
-import io.mockk.unmockkObject
-import kotlinx.coroutines.flow.MutableStateFlow
-import org.junit.After
+import com.jiachian.nbatoday.utils.waitUntilExists
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class PlayerScreenTest : BaseAndroidTest() {
+    private lateinit var navigationController: TestNavigationController
     private lateinit var viewModel: PlayerViewModel
 
-    private var navigateToBack: Boolean? = null
-
     @Before
-    fun setup() {
-        navigateToBack = null
-        viewModel = spyk(
-            PlayerViewModel(
-                savedStateHandle = SavedStateHandle(mapOf(MainRoute.Player.param to "$HomePlayerId")),
-                repository = repositoryProvider.player,
-                dispatcherProvider = dispatcherProvider,
+    fun setup() = runTest {
+        viewModel = PlayerViewModel(
+            savedStateHandle = SavedStateHandle(mapOf(MainRoute.Player.param to "$HomePlayerId")),
+            playerUseCase = useCaseProvider.player,
+            dispatcherProvider = dispatcherProvider,
+        )
+        repositoryProvider.team.addTeams()
+        repositoryProvider.team.updateTeamPlayers(HomeTeamId)
+        composeTestRule.setContent {
+            PlayerScreen(
+                state = viewModel.state,
+                onEvent = viewModel::onEvent,
+                navigationController = TestNavigationController().apply {
+                    navigationController = this
+                },
             )
-        )
+        }
     }
 
-    @After
-    fun teardown() {
-        unmockkObject(viewModel)
-    }
-
-    @Composable
-    override fun ProvideComposable() {
-        PlayerScreen(
-            viewModel = viewModel,
-            onBack = {
-                navigateToBack = true
+    @Test
+    fun checksInfo() {
+        val player = PlayerGenerator.getHome()
+        composeTestRule.apply {
+            waitUntilExists(hasTestTag(PlayerTestTag.PlayerTitle_Text_Detail))
+            onNodeWithUnmergedTree(PlayerTestTag.PlayerTitle_Text_Detail)
+                .assertTextEquals(player.info.detail)
+            onNodeWithUnmergedTree(PlayerTestTag.PlayerTitle_Text_Name)
+                .assertTextEquals(player.info.playerName)
+            onNodeWithUnmergedTree(PlayerTestTag.PlayerTitle_Image_Greatest)
+                .assertIsDisplayed()
+            PlayerTableLabel.values().forEachIndexed { index, label ->
+                val value = LabelHelper.getValueByLabel(label, player.info)
+                onAllNodesWithUnmergedTree(PlayerTestTag.PlayerInfoBox_Text_Value)[index]
+                    .assertTextEquals(value)
             }
-        )
-    }
-
-    @Test
-    fun playerScreen_checksPlayerInfoUI() = inCompose {
-        onNodeWithUnmergedTree(PlayerTestTag.PlayerTitle_Text_Detail)
-            .assertTextEquals("$HomeTeamLocation $HomeTeamName | #$BasicNumber | $BasicPosition")
-        onNodeWithUnmergedTree(PlayerTestTag.PlayerTitle_Text_Name)
-            .assertTextEquals(HomePlayerFirstName)
-        onNodeWithUnmergedTree(PlayerTestTag.PlayerTitle_Image_Greatest)
-            .assertIsDisplayed()
-        PlayerTableLabel.values().forEachIndexed { index, label ->
-            val value = LabelHelper.getValueByLabel(label, PlayerGenerator.getHome().info)
-            onAllNodesWithUnmergedTree(PlayerTestTag.PlayerInfoBox_Text_Value)[index]
-                .assertTextEquals(value)
         }
     }
 
     @Test
-    fun playerScreen_checksPlayerStatsUI() = inCompose {
-        onNodeWithUnmergedTree(PlayerTestTag.PlayerStatsYearText_Text_Time)
-            .assertTextEquals("$BasicNumber")
-        onNodeWithUnmergedTree(PlayerTestTag.PlayerStatsYearText_Text_TeamName)
-            .assertTextEquals(HomeTeamAbbr)
-        PlayerStatsLabel.values().forEachIndexed { index, label ->
-            val value = LabelHelper.getValueByLabel(label, PlayerGenerator.getHome().stats.stats[0])
-            onAllNodesWithUnmergedTree(PlayerTestTag.PlayerStatsText_Text)[index]
-                .assertTextEquals(value)
+    fun checksStats() {
+        val player = PlayerGenerator.getHome()
+        composeTestRule.apply {
+            waitUntilExists(hasTestTag(PlayerTestTag.PlayerStatsYearText_Text_Time))
+            onNodeWithUnmergedTree(PlayerTestTag.PlayerStatsYearText_Text_Time)
+                .assertTextEquals(player.stats.stats.first().timeFrame)
+            onNodeWithUnmergedTree(PlayerTestTag.PlayerStatsYearText_Text_TeamName)
+                .assertTextEquals(player.info.team.abbreviation)
+            PlayerStatsLabel.values().forEachIndexed { index, label ->
+                val value = LabelHelper.getValueByLabel(label, player.stats.stats.first())
+                onAllNodesWithUnmergedTree(PlayerTestTag.PlayerStatsText_Text)[index]
+                    .assertTextEquals(value)
+            }
         }
     }
 
     @Test
-    fun playerScreen_checksLoading() {
-        every {
-            viewModel.playerUIState
-        } returns MutableStateFlow(UIState.Loading())
-        inCompose {
-            onNodeWithUnmergedTree(PlayerTestTag.PlayerScreen_Loading)
-                .assertIsDisplayed()
+    fun back_backScreen() {
+        composeTestRule.apply {
+            onNodeWithUnmergedTree(PlayerTestTag.PlayerScreen_Button_Back)
+                .performClick()
+            navigationController.back.assertIsTrue()
         }
-    }
-
-    @Test
-    fun playerScreen_checksNotFound() {
-        every {
-            viewModel.playerUIState
-        } returns MutableStateFlow(UIState.Loaded(null))
-        inCompose {
-            onNodeWithUnmergedTree(PlayerTestTag.PlayerScreen_PlayerNotFound)
-                .assertIsDisplayed()
-        }
-    }
-
-    @Test
-    fun playerScreen_clicksBack() = inCompose {
-        onNodeWithUnmergedTree(PlayerTestTag.PlayerScreen_Button_Back)
-            .performClick()
-        navigateToBack.assertIsTrue()
     }
 }

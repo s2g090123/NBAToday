@@ -9,6 +9,7 @@ import com.jiachian.nbatoday.player.data.PlayerDao
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.collectOnce
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -35,7 +36,7 @@ class PlayerDaoTest : BaseAndroidTest() {
     }
 
     @Test
-    fun playerDao_getPlayer() = launch {
+    fun playerDao_getPlayer() = runTest {
         dao.addPlayer(PlayerGenerator.getHome())
         dao.getPlayer(HomePlayerId).collectOnce(this) {
             it.assertIs(PlayerGenerator.getHome())
