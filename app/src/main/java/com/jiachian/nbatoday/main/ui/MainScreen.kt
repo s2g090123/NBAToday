@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -41,74 +42,128 @@ fun MainScreen(
         navController = navController,
         startDestination = MainRoute.Splash.route,
     ) {
-        composable(MainRoute.Splash.route) {
-            SplashScreen(
-                colors = listOf(
-                    MaterialTheme.colors.secondary.copy(Transparency25),
-                    MaterialTheme.colors.secondary
-                ),
-                navigationController = navigationController,
-            )
-        }
-        composable(MainRoute.Home.route) {
-            HomeScreen(navigationController = navigationController)
-        }
-        composable(MainRoute.BoxScore.route) {
-            val viewModel = koinViewModel<BoxScoreViewModel>()
-            BoxScoreScreen(
-                state = viewModel.state,
-                onEvent = viewModel::onEvent,
-                navigationController = navigationController,
-            )
-        }
-        composable(MainRoute.Team.route) {
-            val viewModel = koinViewModel<TeamViewModel>()
-            TeamScreen(
-                state = viewModel.state,
-                colors = viewModel.colors,
-                onEvent = viewModel::onEvent,
-                navigationController = navigationController
-            )
-        }
-        composable(MainRoute.Player.route) {
-            val viewModel = koinViewModel<PlayerViewModel>()
-            PlayerScreen(
-                state = viewModel.state,
-                onEvent = viewModel::onEvent,
-                navigationController = navigationController
-            )
-        }
-        composable(MainRoute.Calendar.route) {
-            val viewModel = koinViewModel<CalendarViewModel>()
-            CalendarScreen(
-                state = viewModel.state,
-                onEvent = viewModel::onEvent,
-                navigationController = navigationController,
-            )
-        }
-        composable(MainRoute.Bet.route) {
-            val viewModel = koinViewModel<BetViewModel>()
-            BetScreen(
-                state = viewModel.state,
-                onEvent = viewModel::onEvent,
-                navigationController = navigationController,
-            )
-        }
-        dialog(MainRoute.LoginDialog.route) {
-            val viewModel = koinViewModel<LoginDialogViewModel>()
-            LoginDialog(
-                state = viewModel.state,
-                onEvent = viewModel::onEvent,
-                onDismiss = navController::popBackStack,
-            )
-        }
-        dialog(MainRoute.BetDialog.route) {
-            val viewModel = koinViewModel<BetDialogViewModel>()
-            BetDialog(
-                state = viewModel.state,
-                onEvent = viewModel::onEvent,
-                onDismiss = navController::popBackStack,
-            )
-        }
+        splashRoute(navigationController)
+        homeRoute(navigationController)
+        boxScoreRoute(navigationController)
+        teamRoute(navigationController)
+        playerRoute(navigationController)
+        calendarRoute(navigationController)
+        betRoute(navigationController)
+        loginDialog { navController.popBackStack() }
+        betDialog { navController.popBackStack() }
+    }
+}
+
+private fun NavGraphBuilder.splashRoute(
+    navigationController: NavigationController,
+) {
+    composable(MainRoute.Splash.route) {
+        SplashScreen(
+            colors = listOf(
+                MaterialTheme.colors.secondary.copy(Transparency25),
+                MaterialTheme.colors.secondary
+            ),
+            navigationController = navigationController,
+        )
+    }
+}
+
+private fun NavGraphBuilder.homeRoute(
+    navigationController: NavigationController,
+) {
+    composable(MainRoute.Home.route) {
+        HomeScreen(navigationController = navigationController)
+    }
+}
+
+private fun NavGraphBuilder.boxScoreRoute(
+    navigationController: NavigationController,
+) {
+    composable(MainRoute.BoxScore.route) {
+        val viewModel = koinViewModel<BoxScoreViewModel>()
+        BoxScoreScreen(
+            state = viewModel.state,
+            onEvent = viewModel::onEvent,
+            navigationController = navigationController,
+        )
+    }
+}
+
+private fun NavGraphBuilder.teamRoute(
+    navigationController: NavigationController,
+) {
+    composable(MainRoute.Team.route) {
+        val viewModel = koinViewModel<TeamViewModel>()
+        TeamScreen(
+            state = viewModel.state,
+            colors = viewModel.colors,
+            onEvent = viewModel::onEvent,
+            navigationController = navigationController
+        )
+    }
+}
+
+private fun NavGraphBuilder.playerRoute(
+    navigationController: NavigationController,
+) {
+    composable(MainRoute.Player.route) {
+        val viewModel = koinViewModel<PlayerViewModel>()
+        PlayerScreen(
+            state = viewModel.state,
+            onEvent = viewModel::onEvent,
+            navigationController = navigationController
+        )
+    }
+}
+
+private fun NavGraphBuilder.calendarRoute(
+    navigationController: NavigationController,
+) {
+    composable(MainRoute.Calendar.route) {
+        val viewModel = koinViewModel<CalendarViewModel>()
+        CalendarScreen(
+            state = viewModel.state,
+            onEvent = viewModel::onEvent,
+            navigationController = navigationController,
+        )
+    }
+}
+
+private fun NavGraphBuilder.betRoute(
+    navigationController: NavigationController,
+) {
+    composable(MainRoute.Bet.route) {
+        val viewModel = koinViewModel<BetViewModel>()
+        BetScreen(
+            state = viewModel.state,
+            onEvent = viewModel::onEvent,
+            navigationController = navigationController,
+        )
+    }
+}
+
+private fun NavGraphBuilder.loginDialog(
+    onDismiss: () -> Unit,
+) {
+    dialog(MainRoute.LoginDialog.route) {
+        val viewModel = koinViewModel<LoginDialogViewModel>()
+        LoginDialog(
+            state = viewModel.state,
+            onEvent = viewModel::onEvent,
+            onDismiss = onDismiss,
+        )
+    }
+}
+
+private fun NavGraphBuilder.betDialog(
+    onDismiss: () -> Unit,
+) {
+    dialog(MainRoute.BetDialog.route) {
+        val viewModel = koinViewModel<BetDialogViewModel>()
+        BetDialog(
+            state = viewModel.state,
+            onEvent = viewModel::onEvent,
+            onDismiss = onDismiss,
+        )
     }
 }
