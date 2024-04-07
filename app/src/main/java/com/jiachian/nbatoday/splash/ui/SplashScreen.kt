@@ -45,20 +45,19 @@ import com.jiachian.nbatoday.R
 import com.jiachian.nbatoday.common.data.Transparency25
 import com.jiachian.nbatoday.main.ui.navigation.NavigationController
 import com.jiachian.nbatoday.splash.ui.error.SplashError
+import com.jiachian.nbatoday.splash.ui.state.SplashState
 import com.jiachian.nbatoday.utils.LocalActivity
 import kotlinx.coroutines.flow.filter
-import org.koin.androidx.compose.koinViewModel
 
 private const val SplashOffsetAnimationDurationMs = 2000
 
 @OptIn(ExperimentalTextApi::class)
 @Composable
 fun SplashScreen(
+    state: SplashState,
     colors: List<Color>,
     navigationController: NavigationController,
-    viewModel: SplashViewModel = koinViewModel(),
 ) {
-    val state = viewModel.state
     val infiniteAnimation = rememberInfiniteTransition()
     val colorAnimation by infiniteAnimation.animateColor(
         initialValue = MaterialTheme.colors.secondary.copy(Transparency25),
@@ -117,8 +116,8 @@ fun SplashScreen(
             }
         }
     }
-    LaunchedEffect(viewModel.state, navigationController) {
-        snapshotFlow { viewModel.state.loaded }
+    LaunchedEffect(state, navigationController) {
+        snapshotFlow { state.loaded }
             .filter { it }
             .collect { navigationController.navigateToHome() }
     }

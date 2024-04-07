@@ -28,6 +28,7 @@ import com.jiachian.nbatoday.main.ui.navigation.rememberNavigationController
 import com.jiachian.nbatoday.player.ui.PlayerScreen
 import com.jiachian.nbatoday.player.ui.PlayerViewModel
 import com.jiachian.nbatoday.splash.ui.SplashScreen
+import com.jiachian.nbatoday.splash.ui.SplashViewModel
 import com.jiachian.nbatoday.team.ui.main.TeamScreen
 import com.jiachian.nbatoday.team.ui.main.TeamViewModel
 import org.koin.androidx.compose.koinViewModel
@@ -58,7 +59,9 @@ private fun NavGraphBuilder.splashRoute(
     navigationController: NavigationController,
 ) {
     composable(MainRoute.Splash.route) {
+        val viewModel = koinViewModel<SplashViewModel>()
         SplashScreen(
+            state = viewModel.state,
             colors = listOf(
                 MaterialTheme.colors.secondary.copy(Transparency25),
                 MaterialTheme.colors.secondary
