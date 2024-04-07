@@ -1,7 +1,7 @@
 package com.jiachian.nbatoday.rule
 
+import com.jiachian.nbatoday.common.ui.dispatcher.DispatcherProvider
 import com.jiachian.nbatoday.coroutine.CoroutineEnvironment
-import com.jiachian.nbatoday.dispatcher.DispatcherProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.test.TestScope

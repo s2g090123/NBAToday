@@ -3,14 +3,15 @@ package com.jiachian.nbatoday.test.database.dao
 import androidx.room.Room
 import com.jiachian.nbatoday.BaseAndroidTest
 import com.jiachian.nbatoday.FinalGameId
+import com.jiachian.nbatoday.boxscore.data.BoxScoreDao
+import com.jiachian.nbatoday.boxscore.data.model.local.BoxScoreAndGame
+import com.jiachian.nbatoday.common.data.database.NBADatabase
 import com.jiachian.nbatoday.data.local.BoxScoreGenerator
 import com.jiachian.nbatoday.data.local.GameGenerator
-import com.jiachian.nbatoday.database.NBADatabase
-import com.jiachian.nbatoday.database.dao.BoxScoreDao
-import com.jiachian.nbatoday.models.local.score.BoxScoreAndGame
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.collectOnce
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -37,8 +38,8 @@ class BoxScoreDaoTest : BaseAndroidTest() {
     }
 
     @Test
-    fun boxScoreDao_getBoxScoreAndGame() = launch {
-        database.getGameDao().insertGames(listOf(GameGenerator.getFinal()))
+    fun boxScoreDao_getBoxScoreAndGame() = runTest {
+        database.getGameDao().addGames(listOf(GameGenerator.getFinal()))
         dao.insertBoxScore(BoxScoreGenerator.getFinal())
         dao.getBoxScoreAndGame(FinalGameId).collectOnce(this) {
             it.assertIs(

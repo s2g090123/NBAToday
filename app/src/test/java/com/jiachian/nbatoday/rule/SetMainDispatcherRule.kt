@@ -1,6 +1,6 @@
 package com.jiachian.nbatoday.rule
 
-import com.jiachian.nbatoday.dispatcher.DispatcherProvider
+import com.jiachian.nbatoday.common.ui.dispatcher.DispatcherProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.resetMain

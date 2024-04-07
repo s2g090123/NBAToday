@@ -15,24 +15,24 @@ import com.jiachian.nbatoday.HomePlayerId
 import com.jiachian.nbatoday.HomeTeamAbbr
 import com.jiachian.nbatoday.HomeTeamId
 import com.jiachian.nbatoday.PlayingGameId
-import com.jiachian.nbatoday.models.local.game.GameStatus
-import com.jiachian.nbatoday.models.remote.game.RemoteGame
+import com.jiachian.nbatoday.game.data.model.local.GameStatus
+import com.jiachian.nbatoday.game.data.model.remote.GameDto
 
 object RemoteGameGenerator {
-    fun get(): RemoteGame {
-        return RemoteGame(
+    fun get(): GameDto {
+        return GameDto(
             scoreboard = getScoreboard()
         )
     }
 
-    private fun getScoreboard(): RemoteGame.RemoteScoreboard {
-        return RemoteGame.RemoteScoreboard(
+    private fun getScoreboard(): GameDto.RemoteScoreboard {
+        return GameDto.RemoteScoreboard(
             games = listOf(getFinalGameDetail(), getPlayingGameDetail(), getComingSoonGameDetail())
         )
     }
 
-    private fun getFinalGameDetail(): RemoteGame.RemoteScoreboard.RemoteGameDetail {
-        return RemoteGame.RemoteScoreboard.RemoteGameDetail(
+    private fun getFinalGameDetail(): GameDto.RemoteScoreboard.RemoteGameDetail {
+        return GameDto.RemoteScoreboard.RemoteGameDetail(
             gameId = FinalGameId,
             gameStatus = GameStatus.FINAL.code,
             gameStatusText = GameStatusFinal,
@@ -43,8 +43,8 @@ object RemoteGameGenerator {
         )
     }
 
-    private fun getPlayingGameDetail(): RemoteGame.RemoteScoreboard.RemoteGameDetail {
-        return RemoteGame.RemoteScoreboard.RemoteGameDetail(
+    private fun getPlayingGameDetail(): GameDto.RemoteScoreboard.RemoteGameDetail {
+        return GameDto.RemoteScoreboard.RemoteGameDetail(
             gameId = PlayingGameId,
             gameStatus = GameStatus.PLAYING.code,
             gameStatusText = GameStatusPrepare,
@@ -55,8 +55,8 @@ object RemoteGameGenerator {
         )
     }
 
-    private fun getComingSoonGameDetail(): RemoteGame.RemoteScoreboard.RemoteGameDetail {
-        return RemoteGame.RemoteScoreboard.RemoteGameDetail(
+    private fun getComingSoonGameDetail(): GameDto.RemoteScoreboard.RemoteGameDetail {
+        return GameDto.RemoteScoreboard.RemoteGameDetail(
             gameId = ComingSoonGameId,
             gameStatus = GameStatus.COMING_SOON.code,
             gameStatusText = GameStatusPrepare,
@@ -67,15 +67,15 @@ object RemoteGameGenerator {
         )
     }
 
-    private fun getGameLeaders(): RemoteGame.RemoteScoreboard.RemoteGameDetail.RemoteGameLeaders {
-        return RemoteGame.RemoteScoreboard.RemoteGameDetail.RemoteGameLeaders(
+    private fun getGameLeaders(): GameDto.RemoteScoreboard.RemoteGameDetail.RemoteGameLeaders {
+        return GameDto.RemoteScoreboard.RemoteGameDetail.RemoteGameLeaders(
             homeLeader = getHomeGameLeader(),
             awayLeader = getAwayGameLeader(),
         )
     }
 
-    private fun getHomeGameLeader(): RemoteGame.RemoteScoreboard.RemoteGameDetail.RemoteGameLeaders.RemoteGameLeader {
-        return RemoteGame.RemoteScoreboard.RemoteGameDetail.RemoteGameLeaders.RemoteGameLeader(
+    private fun getHomeGameLeader(): GameDto.RemoteScoreboard.RemoteGameDetail.RemoteGameLeaders.RemoteGameLeader {
+        return GameDto.RemoteScoreboard.RemoteGameDetail.RemoteGameLeaders.RemoteGameLeader(
             playerId = HomePlayerId,
             name = HomePlayerFullName,
             jerseyNum = BasicNumber.toString(),
@@ -87,8 +87,8 @@ object RemoteGameGenerator {
         )
     }
 
-    private fun getAwayGameLeader(): RemoteGame.RemoteScoreboard.RemoteGameDetail.RemoteGameLeaders.RemoteGameLeader {
-        return RemoteGame.RemoteScoreboard.RemoteGameDetail.RemoteGameLeaders.RemoteGameLeader(
+    private fun getAwayGameLeader(): GameDto.RemoteScoreboard.RemoteGameDetail.RemoteGameLeaders.RemoteGameLeader {
+        return GameDto.RemoteScoreboard.RemoteGameDetail.RemoteGameLeaders.RemoteGameLeader(
             playerId = AwayPlayerId,
             name = AwayPlayerFullName,
             jerseyNum = BasicNumber.toString(),
@@ -100,8 +100,8 @@ object RemoteGameGenerator {
         )
     }
 
-    private fun getHomeGameTeam(): RemoteGame.RemoteScoreboard.RemoteGameDetail.RemoteGameTeam {
-        return RemoteGame.RemoteScoreboard.RemoteGameDetail.RemoteGameTeam(
+    private fun getHomeGameTeam(): GameDto.RemoteScoreboard.RemoteGameDetail.RemoteGameTeam {
+        return GameDto.RemoteScoreboard.RemoteGameDetail.RemoteGameTeam(
             teamId = HomeTeamId,
             losses = BasicNumber,
             score = BasicNumber,
@@ -109,8 +109,8 @@ object RemoteGameGenerator {
         )
     }
 
-    private fun getAwayGameTeam(): RemoteGame.RemoteScoreboard.RemoteGameDetail.RemoteGameTeam {
-        return RemoteGame.RemoteScoreboard.RemoteGameDetail.RemoteGameTeam(
+    private fun getAwayGameTeam(): GameDto.RemoteScoreboard.RemoteGameDetail.RemoteGameTeam {
+        return GameDto.RemoteScoreboard.RemoteGameDetail.RemoteGameTeam(
             teamId = AwayTeamId,
             losses = BasicNumber,
             score = BasicNumber,

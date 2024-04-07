@@ -1,6 +1,6 @@
 package com.jiachian.nbatoday.test.database.converter
 
-import com.jiachian.nbatoday.database.converter.DateConverter
+import com.jiachian.nbatoday.common.data.database.converter.DateConverter
 import com.jiachian.nbatoday.utils.assertIs
 import java.sql.Date
 import org.junit.Test

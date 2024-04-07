@@ -22,4 +22,5 @@ object TeamTestTag {
 
     const val TeamScreen_Button_Back = "TeamScreen_Button_Back"
     const val TeamScreen_LoadingScreen = "TeamScreen_LoadingScreen"
+    const val TeamScreen_TeamNotFound = "TeamScreen_TeamNotFound"
 }

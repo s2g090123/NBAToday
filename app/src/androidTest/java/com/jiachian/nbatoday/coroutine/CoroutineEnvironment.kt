@@ -1,6 +1,6 @@
 package com.jiachian.nbatoday.coroutine
 
-import com.jiachian.nbatoday.dispatcher.DispatcherProvider
+import com.jiachian.nbatoday.common.ui.dispatcher.DispatcherProvider
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope

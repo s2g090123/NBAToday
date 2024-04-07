@@ -6,26 +6,26 @@ import com.jiachian.nbatoday.BasicNumber
 import com.jiachian.nbatoday.HomePlayerFullName
 import com.jiachian.nbatoday.HomePlayerId
 import com.jiachian.nbatoday.HomeTeamId
-import com.jiachian.nbatoday.models.remote.team.RemoteTeamPlayer
+import com.jiachian.nbatoday.team.data.model.remote.TeamPlayerDto
 
 object RemoteTeamPlayerGenerator {
-    fun get(teamId: Int): RemoteTeamPlayer {
-        return RemoteTeamPlayer(
+    fun get(teamId: Int): TeamPlayerDto {
+        return TeamPlayerDto(
             parameters = getParameters(teamId),
             data = listOf(getResult(teamId))
         )
     }
 
-    private fun getParameters(teamId: Int): RemoteTeamPlayer.RemoteParameters {
-        return RemoteTeamPlayer.RemoteParameters(
+    private fun getParameters(teamId: Int): TeamPlayerDto.RemoteParameters {
+        return TeamPlayerDto.RemoteParameters(
             teamId = teamId
         )
     }
 
-    private fun getResult(teamId: Int): RemoteTeamPlayer.RemoteResult {
+    private fun getResult(teamId: Int): TeamPlayerDto.RemoteResult {
         val playerId = if (teamId == HomeTeamId) HomePlayerId else AwayPlayerId
         val playerName = if (teamId == HomeTeamId) HomePlayerFullName else AwayPlayerLastName
-        return RemoteTeamPlayer.RemoteResult(
+        return TeamPlayerDto.RemoteResult(
             name = "PlayersSeasonTotals",
             headers = listOf(
                 "PLAYER_ID",
@@ -61,6 +61,34 @@ object RemoteTeamPlayerGenerator {
                     playerName,
                     playerName,
                     BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString()
+                ),
+                listOf(
+                    (playerId + 1).toString(),
+                    playerName,
+                    playerName,
+                    (BasicNumber - 1).toString(),
                     BasicNumber.toString(),
                     BasicNumber.toString(),
                     BasicNumber.toString(),

@@ -1,8 +1,9 @@
 package com.jiachian.nbatoday.database.dao
 
 import com.jiachian.nbatoday.DataHolder
-import com.jiachian.nbatoday.models.local.score.BoxScore
-import com.jiachian.nbatoday.models.local.score.BoxScoreAndGame
+import com.jiachian.nbatoday.boxscore.data.BoxScoreDao
+import com.jiachian.nbatoday.boxscore.data.model.local.BoxScore
+import com.jiachian.nbatoday.boxscore.data.model.local.BoxScoreAndGame
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

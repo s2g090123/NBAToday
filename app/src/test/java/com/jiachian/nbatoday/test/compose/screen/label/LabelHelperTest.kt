@@ -1,18 +1,18 @@
 package com.jiachian.nbatoday.test.compose.screen.label
 
-import com.jiachian.nbatoday.NA
-import com.jiachian.nbatoday.compose.screen.home.standing.models.StandingLabel
-import com.jiachian.nbatoday.compose.screen.label.LabelHelper
-import com.jiachian.nbatoday.compose.screen.player.models.PlayerStatsLabel
-import com.jiachian.nbatoday.compose.screen.player.models.PlayerTableLabel
-import com.jiachian.nbatoday.compose.screen.score.models.BoxScoreLeaderLabel
-import com.jiachian.nbatoday.compose.screen.score.models.BoxScorePlayerLabel
-import com.jiachian.nbatoday.compose.screen.score.models.BoxScoreTeamLabel
-import com.jiachian.nbatoday.compose.screen.team.models.TeamPlayerLabel
+import com.jiachian.nbatoday.boxscore.ui.leader.model.BoxScoreLeaderLabel
+import com.jiachian.nbatoday.boxscore.ui.player.model.BoxScorePlayerLabel
+import com.jiachian.nbatoday.boxscore.ui.team.model.BoxScoreTeamLabel
+import com.jiachian.nbatoday.common.data.NA
 import com.jiachian.nbatoday.data.local.BoxScoreGenerator
 import com.jiachian.nbatoday.data.local.PlayerGenerator
 import com.jiachian.nbatoday.data.local.TeamGenerator
 import com.jiachian.nbatoday.data.local.TeamPlayerGenerator
+import com.jiachian.nbatoday.home.standing.ui.model.StandingLabel
+import com.jiachian.nbatoday.player.ui.model.PlayerStatsLabel
+import com.jiachian.nbatoday.player.ui.model.PlayerTableLabel
+import com.jiachian.nbatoday.team.ui.player.model.TeamPlayerLabel
+import com.jiachian.nbatoday.utils.LabelHelper
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.decimalFormat
 import com.jiachian.nbatoday.utils.getOrAssert
@@ -298,7 +298,7 @@ class LabelHelperTest {
 
     @Test
     fun `getValueByLabel(TeamPlayerLabel) expects correct`() {
-        val stats = TeamPlayerGenerator.getHome()
+        val stats = TeamPlayerGenerator.getHome().first()
         assertIs(LabelHelper.getValueByLabel(TeamPlayerLabel.GP, stats), stats.gamePlayed.toString())
         assertIs(LabelHelper.getValueByLabel(TeamPlayerLabel.W, stats), stats.win.toString())
         assertIs(LabelHelper.getValueByLabel(TeamPlayerLabel.L, stats), stats.lose.toString())

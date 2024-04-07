@@ -96,6 +96,7 @@
     <string name="team_page_tab_player">Players</string>
     <string name="team_page_tab_before_game">Previous</string>
     <string name="team_page_tab_next_game">Next</string>
+    <string name="team_not_found">Team not found or Something went wrong.</string>
     <string name="stats_label_gp" translatable="false">GP</string>
     <string name="stats_label_w" translatable="false">W</string>
     <string name="stats_label_l" translatable="false">L</string>

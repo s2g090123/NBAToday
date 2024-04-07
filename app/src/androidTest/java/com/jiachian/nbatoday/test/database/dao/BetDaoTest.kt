@@ -3,11 +3,11 @@ package com.jiachian.nbatoday.test.database.dao
 import androidx.room.Room
 import com.jiachian.nbatoday.BaseAndroidTest
 import com.jiachian.nbatoday.UserAccount
+import com.jiachian.nbatoday.bet.data.BetDao
+import com.jiachian.nbatoday.common.data.database.NBADatabase
 import com.jiachian.nbatoday.data.local.BetAndGameGenerator
 import com.jiachian.nbatoday.data.local.BetGenerator
 import com.jiachian.nbatoday.data.local.GameGenerator
-import com.jiachian.nbatoday.database.NBADatabase
-import com.jiachian.nbatoday.database.dao.BetDao
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.collectOnce
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -30,7 +30,13 @@ class BetDaoTest : BaseAndroidTest() {
             .allowMainThreadQueries()
             .build()
         dao = database.getBetDao()
-        insertGames()
+        database.getGameDao().addGames(
+            listOf(
+                GameGenerator.getFinal(),
+                GameGenerator.getPlaying(),
+                GameGenerator.getComingSoon()
+            )
+        )
     }
 
     @After
@@ -39,37 +45,19 @@ class BetDaoTest : BaseAndroidTest() {
     }
 
     @Test
-    fun betDao_getBetsAndGames() = launch {
-        dao.insertBet(BetGenerator.getFinal())
-        dao.getBetsAndGames().collectOnce(this) {
-            it.assertIs(listOf(BetAndGameGenerator.getFinal()))
-        }
-    }
-
-    @Test
-    fun betDao_getBetsAndGames_withAccounts() = launch {
-        dao.insertBet(BetGenerator.getFinal())
+    fun betDao_getBetsAndGames() = runTest {
+        dao.addBet(BetGenerator.getFinal())
         dao.getBetsAndGames(UserAccount).collectOnce(this) {
             it.assertIs(listOf(BetAndGameGenerator.getFinal()))
         }
     }
 
     @Test
-    fun betDao_deleteBet() = launch {
-        dao.insertBet(BetGenerator.getFinal())
+    fun betDao_deleteBet() = runTest {
+        dao.addBet(BetGenerator.getFinal())
         dao.deleteBet(BetGenerator.getFinal())
-        dao.getBetsAndGames().collectOnce(this) {
+        dao.getBetsAndGames(UserAccount).collectOnce(this) {
             it.assertIs(emptyList())
         }
-    }
-
-    private suspend fun insertGames() {
-        database.getGameDao().insertGames(
-            listOf(
-                GameGenerator.getFinal(),
-                GameGenerator.getPlaying(),
-                GameGenerator.getComingSoon()
-            )
-        )
     }
 }

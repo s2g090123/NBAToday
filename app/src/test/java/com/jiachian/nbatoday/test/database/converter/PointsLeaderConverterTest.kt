@@ -1,10 +1,10 @@
 package com.jiachian.nbatoday.test.database.converter
 
 import com.google.gson.reflect.TypeToken
+import com.jiachian.nbatoday.common.data.database.converter.PointsLeaderConverter
+import com.jiachian.nbatoday.common.data.database.converter.typeAdapterGson
 import com.jiachian.nbatoday.data.local.GameGenerator
-import com.jiachian.nbatoday.database.converter.PointsLeaderConverter
-import com.jiachian.nbatoday.database.converter.typeAdapterGson
-import com.jiachian.nbatoday.models.local.game.Game
+import com.jiachian.nbatoday.game.data.model.local.Game
 import com.jiachian.nbatoday.utils.assertIs
 import org.junit.Test
 

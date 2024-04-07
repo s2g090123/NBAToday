@@ -13,7 +13,7 @@ object BetTestTag {
     const val BetWarningDialogButtons_Text_Cancel = "BetWarningDialogButtons_Text_Cancel"
 
     const val BetScreen_BetTop_Button_Back = "BetScreen_BetTop_Button_Back"
-    const val BetScreen_BetEmptyScreen = "BetScreen_BetEmptyScreen"
+    const val BetScreen_BetEmptyText = "BetScreen_BetEmptyText"
     const val BetScreen_BetBody_BetCard = "BetScreen_BetBody_BetCard"
     const val BetScreen_BetBody_Loading = "BetScreen_BetBody_Loading"
 

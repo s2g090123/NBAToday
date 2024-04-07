@@ -15,21 +15,28 @@ fun <T> T.assertIs(expected: T) = apply {
     assertThat(this, `is`(expected))
 }
 
-inline fun <T, reified V : T> T.assertIsA(targetType: Class<V>): V {
+@Suppress("UNCHECKED_CAST")
+fun <T, V : T> T.assertIsA(targetType: Class<V>): V {
     assertThat(this, instanceOf(targetType))
     return this as V
+}
+
+inline fun <reified T> Any?.assertIsA(): T {
+    assertThat(this, instanceOf(T::class.java))
+    return this as T
 }
 
 fun <T> T.assertIsNot(not: T) = apply {
     assertThat(this, not(not))
 }
 
-fun <T> T.assertIsNull() = apply {
+fun <T> T?.assertIsNull() = apply {
     assertThat(this, nullValue())
 }
 
-fun <T> T.assertIsNotNull() = apply {
+fun <T> T?.assertIsNotNull() = let {
     assertThat(this, notNullValue())
+    it as T
 }
 
 fun Boolean?.assertIsTrue() = apply {

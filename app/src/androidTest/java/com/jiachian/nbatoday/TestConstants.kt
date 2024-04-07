@@ -1,9 +1,9 @@
 package com.jiachian.nbatoday
 
-import com.jiachian.nbatoday.compose.theme.CelticsColors
-import com.jiachian.nbatoday.compose.theme.LakersColors
-import com.jiachian.nbatoday.models.local.team.data.teamCeltics
-import com.jiachian.nbatoday.models.local.team.data.teamLakers
+import com.jiachian.nbatoday.common.ui.theme.CelticsColors
+import com.jiachian.nbatoday.common.ui.theme.LakersColors
+import com.jiachian.nbatoday.team.data.model.local.teams.teamCeltics
+import com.jiachian.nbatoday.team.data.model.local.teams.teamLakers
 
 const val FinalGameId = "0"
 const val PlayingGameId = "1"
@@ -15,10 +15,10 @@ const val GameStatusFinal = "Final"
 const val GameDate = "2023-01-01"
 const val FinalGameDateTime = "2022-12-31T12:00:00"
 const val PlayingGameDateTime = "2023-01-01T12:00:00"
-const val ComingSoonGameDateTime = "2023-01-02T12:00:00"
+const val ComingSoonGameDateTime = "2023-02-01T12:00:00"
 const val FinalGameTimeMs = 1672506000000L
 const val PlayingGameTimeMs = 1672592400000L
-const val ComingSoonGameTimeMs = 1672678800000L
+const val ComingSoonGameTimeMs = 1675270800000L
 const val GameDay = "Sun"
 const val GameSeason = "2022-23"
 const val GameSeasonNext = "2023-24"

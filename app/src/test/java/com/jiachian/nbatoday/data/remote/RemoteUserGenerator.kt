@@ -5,11 +5,11 @@ import com.jiachian.nbatoday.UserName
 import com.jiachian.nbatoday.UserPassword
 import com.jiachian.nbatoday.UserPoints
 import com.jiachian.nbatoday.UserToken
-import com.jiachian.nbatoday.models.remote.user.RemoteUser
+import com.jiachian.nbatoday.home.user.data.model.remote.UserDto
 
 object RemoteUserGenerator {
-    fun get(): RemoteUser {
-        return RemoteUser(
+    fun get(): UserDto {
+        return UserDto(
             account = UserAccount,
             name = UserName,
             points = UserPoints,

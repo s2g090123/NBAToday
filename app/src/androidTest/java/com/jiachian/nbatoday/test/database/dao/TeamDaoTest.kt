@@ -4,15 +4,16 @@ import androidx.room.Room
 import com.jiachian.nbatoday.BaseAndroidTest
 import com.jiachian.nbatoday.HomePlayerId
 import com.jiachian.nbatoday.HomeTeamId
+import com.jiachian.nbatoday.common.data.database.NBADatabase
 import com.jiachian.nbatoday.data.local.TeamGenerator
 import com.jiachian.nbatoday.data.local.TeamPlayerGenerator
-import com.jiachian.nbatoday.database.NBADatabase
-import com.jiachian.nbatoday.database.dao.TeamDao
-import com.jiachian.nbatoday.models.local.team.NBATeam
-import com.jiachian.nbatoday.models.local.team.TeamAndPlayers
+import com.jiachian.nbatoday.team.data.TeamDao
+import com.jiachian.nbatoday.team.data.model.local.TeamAndPlayers
+import com.jiachian.nbatoday.team.data.model.local.teams.NBATeam
 import com.jiachian.nbatoday.utils.assertIs
 import com.jiachian.nbatoday.utils.collectOnce
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -39,17 +40,17 @@ class TeamDaoTest : BaseAndroidTest() {
     }
 
     @Test
-    fun teamDao_getTeams() = launch {
-        dao.insertTeams(listOf(TeamGenerator.getHome()))
+    fun teamDao_getTeams() = runTest {
+        dao.addTeams(listOf(TeamGenerator.getHome()))
         dao.getTeams(NBATeam.Conference.EAST).collectOnce(this) {
             it.assertIs(listOf(TeamGenerator.getHome()))
         }
     }
 
     @Test
-    fun teamDao_getTeamAndPlayers() = launch {
-        dao.insertTeams(listOf(TeamGenerator.getHome()))
-        dao.insertTeamPlayers(listOf(TeamPlayerGenerator.getHome()))
+    fun teamDao_getTeamAndPlayers() = runTest {
+        dao.addTeams(listOf(TeamGenerator.getHome()))
+        dao.addTeamPlayers(listOf(TeamPlayerGenerator.getHome()))
         dao.getTeamAndPlayers(HomeTeamId).collectOnce(this) {
             it.assertIs(
                 TeamAndPlayers(
@@ -61,7 +62,7 @@ class TeamDaoTest : BaseAndroidTest() {
     }
 
     @Test
-    fun teamDao_getTeamStanding() = launch {
+    fun teamDao_getTeamStanding() = runTest {
         insertTeams()
         dao.getTeamStanding(HomeTeamId, NBATeam.Conference.EAST).collectOnce(this) {
             it.assertIs(1)
@@ -69,7 +70,7 @@ class TeamDaoTest : BaseAndroidTest() {
     }
 
     @Test
-    fun teamDao_getPointsRank() = launch {
+    fun teamDao_getPointsRank() = runTest {
         insertTeams()
         dao.getPointsRank(HomeTeamId).collectOnce(this) {
             it.assertIs(1)
@@ -77,7 +78,7 @@ class TeamDaoTest : BaseAndroidTest() {
     }
 
     @Test
-    fun teamDao_getReboundsRank() = launch {
+    fun teamDao_getReboundsRank() = runTest {
         insertTeams()
         dao.getReboundsRank(HomeTeamId).collectOnce(this) {
             it.assertIs(1)
@@ -85,9 +86,9 @@ class TeamDaoTest : BaseAndroidTest() {
     }
 
     @Test
-    fun teamDao_deleteTeamPlayers() = launch {
+    fun teamDao_deleteTeamPlayers() = runTest {
         insertTeams()
-        dao.insertTeamPlayers(listOf(TeamPlayerGenerator.getHome()))
+        dao.addTeamPlayers(listOf(TeamPlayerGenerator.getHome()))
         dao.deleteTeamPlayers(HomeTeamId, listOf(HomePlayerId))
         dao.getTeamAndPlayers(HomeTeamId).collectOnce(this) {
             it.assertIs(
@@ -100,7 +101,7 @@ class TeamDaoTest : BaseAndroidTest() {
     }
 
     @Test
-    fun teamDao_getAssistsRank() = launch {
+    fun teamDao_getAssistsRank() = runTest {
         insertTeams()
         dao.getAssistsRank(HomeTeamId).collectOnce(this) {
             it.assertIs(1)
@@ -108,7 +109,7 @@ class TeamDaoTest : BaseAndroidTest() {
     }
 
     @Test
-    fun teamDao_getPlusMinusRank() = launch {
+    fun teamDao_getPlusMinusRank() = runTest {
         insertTeams()
         dao.getPlusMinusRank(HomeTeamId).collectOnce(this) {
             it.assertIs(1)
@@ -116,7 +117,7 @@ class TeamDaoTest : BaseAndroidTest() {
     }
 
     private suspend fun insertTeams() {
-        dao.insertTeams(
+        dao.addTeams(
             listOf(
                 TeamGenerator.getHome(),
                 TeamGenerator.getAway()

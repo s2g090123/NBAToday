@@ -8,7 +8,7 @@ import com.jiachian.nbatoday.FinalGameId
 import com.jiachian.nbatoday.PlayingBetId
 import com.jiachian.nbatoday.PlayingGameId
 import com.jiachian.nbatoday.UserAccount
-import com.jiachian.nbatoday.models.local.bet.Bet
+import com.jiachian.nbatoday.bet.data.model.local.Bet
 
 object BetGenerator {
     fun getFinal(): Bet {

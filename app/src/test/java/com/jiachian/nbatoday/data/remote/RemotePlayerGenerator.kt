@@ -15,29 +15,29 @@ import com.jiachian.nbatoday.HomeTeamId
 import com.jiachian.nbatoday.HomeTeamName
 import com.jiachian.nbatoday.PlayerBirthDateTime
 import com.jiachian.nbatoday.TeamCity
-import com.jiachian.nbatoday.models.remote.player.RemotePlayer
-import com.jiachian.nbatoday.models.remote.player.RemotePlayerInfo
-import com.jiachian.nbatoday.models.remote.player.RemotePlayerStats
+import com.jiachian.nbatoday.player.data.model.remote.PlayerDto
+import com.jiachian.nbatoday.player.data.model.remote.PlayerInfoDto
+import com.jiachian.nbatoday.player.data.model.remote.PlayerStatsDto
 
 object RemotePlayerGenerator {
-    fun get(playerId: Int): RemotePlayer {
-        return RemotePlayer(
+    fun get(playerId: Int): PlayerDto {
+        return PlayerDto(
             info = getPlayerInfo(playerId),
             stats = getPlayerStats(playerId)
         )
     }
 
-    private fun getPlayerStats(playerId: Int): RemotePlayerStats {
-        return RemotePlayerStats(
-            parameters = RemotePlayerStats.RemoteParameter(playerId),
+    private fun getPlayerStats(playerId: Int): PlayerStatsDto {
+        return PlayerStatsDto(
+            parameters = PlayerStatsDto.RemoteParameter(playerId),
             resultSets = listOf(getPlayerStatsResult(playerId))
         )
     }
 
-    private fun getPlayerStatsResult(playerId: Int): RemotePlayerStats.RemoteResult {
+    private fun getPlayerStatsResult(playerId: Int): PlayerStatsDto.RemoteResult {
         val teamId = if (playerId == HomePlayerId) HomeTeamId else AwayTeamId
         val teamAbbr = if (playerId == HomePlayerId) HomeTeamAbbr else AwayTeamAbbr
-        return RemotePlayerStats.RemoteResult(
+        return PlayerStatsDto.RemoteResult(
             name = "ByYearPlayerDashboard",
             headers = listOf(
                 "GROUP_VALUE",
@@ -141,25 +141,76 @@ object RemotePlayerGenerator {
                     BasicNumber.toString(),
                     BasicNumber.toString(),
                     BasicNumber.toString(),
+                ),
+                listOf(
+                    (BasicNumber + 1).toString(),
+                    teamId.toString(),
+                    teamAbbr,
+                    (BasicNumber - 1).toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
+                    BasicNumber.toString(),
                 )
             )
         )
     }
 
-    private fun getPlayerInfo(playerId: Int): RemotePlayerInfo {
-        return RemotePlayerInfo(
+    private fun getPlayerInfo(playerId: Int): PlayerInfoDto {
+        return PlayerInfoDto(
             resultSets = getPlayerInfoResults(playerId)
         )
     }
 
-    private fun getPlayerInfoResults(playerId: Int): List<RemotePlayerInfo.RemoteResult> {
+    private fun getPlayerInfoResults(playerId: Int): List<PlayerInfoDto.RemoteResult> {
         val firstName = if (playerId == HomePlayerId) HomePlayerFirstName else AwayPlayerFirstName
         val lastName = if (playerId == HomePlayerId) HomePlayerLastName else AwayPlayerLastName
         val teamId = if (playerId == HomePlayerId) HomeTeamId else AwayTeamId
         val teamName = if (playerId == HomePlayerId) HomeTeamName else AwayTeamName
         val teamAbbr = if (playerId == HomePlayerId) HomeTeamAbbr else AwayTeamAbbr
         return listOf(
-            RemotePlayerInfo.RemoteResult(
+            PlayerInfoDto.RemoteResult(
                 name = "CommonPlayerInfo",
                 headers = listOf(
                     "PERSON_ID",
@@ -210,7 +261,7 @@ object RemotePlayerGenerator {
                     )
                 )
             ),
-            RemotePlayerInfo.RemoteResult(
+            PlayerInfoDto.RemoteResult(
                 name = "PlayerHeadlineStats",
                 headers = listOf(
                     "TimeFrame",

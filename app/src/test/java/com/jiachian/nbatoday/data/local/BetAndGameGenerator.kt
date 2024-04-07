@@ -2,8 +2,8 @@ package com.jiachian.nbatoday.data.local
 
 import com.jiachian.nbatoday.FinalGameId
 import com.jiachian.nbatoday.PlayingGameId
-import com.jiachian.nbatoday.models.local.bet.Bet
-import com.jiachian.nbatoday.models.local.bet.BetAndGame
+import com.jiachian.nbatoday.bet.data.model.local.Bet
+import com.jiachian.nbatoday.bet.data.model.local.BetAndGame
 
 object BetAndGameGenerator {
     fun get(bet: Bet): BetAndGame {

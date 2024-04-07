@@ -1,10 +1,11 @@
 package com.jiachian.nbatoday.database.dao
 
 import com.jiachian.nbatoday.DataHolder
-import com.jiachian.nbatoday.models.local.team.NBATeam
-import com.jiachian.nbatoday.models.local.team.Team
-import com.jiachian.nbatoday.models.local.team.TeamAndPlayers
-import com.jiachian.nbatoday.models.local.team.TeamPlayer
+import com.jiachian.nbatoday.team.data.TeamDao
+import com.jiachian.nbatoday.team.data.model.local.Team
+import com.jiachian.nbatoday.team.data.model.local.TeamAndPlayers
+import com.jiachian.nbatoday.team.data.model.local.TeamPlayer
+import com.jiachian.nbatoday.team.data.model.local.teams.NBATeam
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
@@ -45,7 +46,7 @@ class TestTeamDao(
         }
     }
 
-    override suspend fun insertTeams(stats: List<Team>) {
+    override suspend fun addTeams(stats: List<Team>) {
         dataHolder.teams.value = dataHolder.teams.value.toMutableList().apply {
             val id = stats.map { it.teamId }
             removeIf { team -> team.teamId in id }
@@ -53,7 +54,7 @@ class TestTeamDao(
         }
     }
 
-    override suspend fun insertTeamPlayers(stats: List<TeamPlayer>) {
+    override suspend fun addTeamPlayers(stats: List<TeamPlayer>) {
         dataHolder.teamPlayers.value = dataHolder.teamPlayers.value.toMutableList().apply {
             val id = stats.map { it.playerId }
             removeIf { player -> player.playerId in id }

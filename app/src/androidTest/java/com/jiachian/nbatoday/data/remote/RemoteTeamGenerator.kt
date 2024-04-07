@@ -4,23 +4,23 @@ import com.jiachian.nbatoday.AwayTeamId
 import com.jiachian.nbatoday.BasicNumber
 import com.jiachian.nbatoday.GamePlayed
 import com.jiachian.nbatoday.HomeTeamId
-import com.jiachian.nbatoday.models.remote.team.RemoteTeam
+import com.jiachian.nbatoday.team.data.model.remote.TeamDto
 
 object RemoteTeamGenerator {
-    fun get(): RemoteTeam {
-        return RemoteTeam(
+    fun get(): TeamDto {
+        return TeamDto(
             data = listOf(getResult(listOf(HomeTeamId, AwayTeamId)))
         )
     }
 
-    fun get(teamId: Int): RemoteTeam {
-        return RemoteTeam(
+    fun get(teamId: Int): TeamDto {
+        return TeamDto(
             data = listOf(getResult(listOf(teamId)))
         )
     }
 
-    private fun getResult(teamId: List<Int>): RemoteTeam.RemoteResult {
-        return RemoteTeam.RemoteResult(
+    private fun getResult(teamId: List<Int>): TeamDto.RemoteResult {
+        return TeamDto.RemoteResult(
             name = "LeagueDashTeamStats",
             headers = listOf(
                 "TEAM_ID",

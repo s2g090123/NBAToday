@@ -2,7 +2,7 @@ package com.jiachian.nbatoday.test.database
 
 import androidx.room.Room
 import com.jiachian.nbatoday.BaseAndroidTest
-import com.jiachian.nbatoday.database.NBADatabase
+import com.jiachian.nbatoday.common.data.database.NBADatabase
 import com.jiachian.nbatoday.utils.assertIs
 import io.mockk.every
 import io.mockk.mockkStatic

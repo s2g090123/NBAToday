@@ -1,12 +1,13 @@
 package com.jiachian.nbatoday.database.dao
 
 import com.jiachian.nbatoday.DataHolder
-import com.jiachian.nbatoday.models.local.game.Game
-import com.jiachian.nbatoday.models.local.game.GameAndBets
-import com.jiachian.nbatoday.models.local.game.GameScoreUpdateData
-import com.jiachian.nbatoday.models.local.game.GameUpdateData
-import java.util.Date
+import com.jiachian.nbatoday.game.data.GameDao
+import com.jiachian.nbatoday.game.data.model.local.Game
+import com.jiachian.nbatoday.game.data.model.local.GameAndBets
+import com.jiachian.nbatoday.game.data.model.local.GameScoreUpdateData
+import com.jiachian.nbatoday.game.data.model.local.GameUpdateData
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 class TestGameDao(
@@ -34,6 +35,14 @@ class TestGameDao(
         }
     }
 
+    override suspend fun getGameAndBets(gameId: String): GameAndBets? {
+        return dataHolder.gamesAndBets
+            .first()
+            .firstOrNull { gameAndBets ->
+                gameAndBets.game.gameId == gameId
+            }
+    }
+
     override fun getGamesAndBetsDuring(from: Long, to: Long): Flow<List<GameAndBets>> {
         return dataHolder.gamesAndBets.map { gamesAndBets ->
             gamesAndBets.filter { gameAndBets ->
@@ -42,27 +51,11 @@ class TestGameDao(
         }
     }
 
-    override fun getLastGameDateTime(): Flow<Date?> {
-        return dataHolder.gamesAndBets.map { gamesAndBets ->
-            gamesAndBets.maxByOrNull { gameAndBets ->
-                gameAndBets.game.gameDateTime.time
-            }?.game?.gameDateTime
-        }
-    }
-
-    override fun getFirstGameDateTime(): Flow<Date?> {
-        return dataHolder.gamesAndBets.map { gamesAndBets ->
-            gamesAndBets.minByOrNull { gameAndBets ->
-                gameAndBets.game.gameDateTime.time
-            }?.game?.gameDateTime
-        }
-    }
-
     override suspend fun gameExists(): Boolean {
         return dataHolder.games.value.isNotEmpty()
     }
 
-    override suspend fun insertGames(games: List<Game>) {
+    override suspend fun addGames(games: List<Game>) {
         dataHolder.games.value = dataHolder.games.value.toMutableList().apply {
             val id = games.map { it.gameId }
             removeAll { game -> game.gameId in id }

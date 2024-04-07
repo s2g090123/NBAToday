@@ -29,6 +29,12 @@ object DateUtils {
      */
     fun getCalendar(): Calendar {
         return Calendar.getInstance().apply {
+            resetCalendar(this)
+        }
+    }
+
+    fun resetCalendar(calendar: Calendar) {
+        calendar.apply {
             timeZone = TimeZone.getTimeZone("EST")
             time = Date()
         }

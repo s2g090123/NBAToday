@@ -78,6 +78,7 @@
     <string name="team_page_tab_player">球員</string>
     <string name="team_page_tab_before_game">先前的</string>
     <string name="team_page_tab_next_game">之後的</string>
+    <string name="team_not_found">找不到此球隊的資料或可能發生了一些問題</string>
     <string name="player_career_not_found">找不到此球員的資料或可能發生了一些問題</string>
     <string name="player_career_info_ppg">均得分</string>
     <string name="player_career_info_rpg">均籃板</string>

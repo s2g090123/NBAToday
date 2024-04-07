@@ -1,12 +1,14 @@
 package com.jiachian.nbatoday
 
-import com.jiachian.nbatoday.datastore.BaseDataStore
-import com.jiachian.nbatoday.dispatcher.DispatcherProvider
+import com.jiachian.nbatoday.common.data.datastore.BaseDataStore
+import com.jiachian.nbatoday.common.ui.dispatcher.DispatcherProvider
+import com.jiachian.nbatoday.datastore.data.TestDataStore
 import com.jiachian.nbatoday.koin.testModule
 import com.jiachian.nbatoday.repository.RepositoryProvider
 import com.jiachian.nbatoday.rule.CalendarRule
 import com.jiachian.nbatoday.rule.CoroutineRule
 import com.jiachian.nbatoday.rule.NBATeamRule
+import com.jiachian.nbatoday.usecase.UseCaseProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -48,11 +50,14 @@ open class BaseUnitTest : KoinTest {
     protected val dataHolder: DataHolder
         get() = get()
 
-    protected val dataStore: BaseDataStore
-        get() = get()
+    protected val dataStore: TestDataStore
+        get() = get<BaseDataStore>() as TestDataStore
 
     protected val repositoryProvider: RepositoryProvider
         get() = RepositoryProvider()
+
+    protected val useCaseProvider: UseCaseProvider
+        get() = UseCaseProvider()
 
     protected fun launch(testBody: suspend TestScope.() -> Unit) = coroutineRule.launch {
         testBody()

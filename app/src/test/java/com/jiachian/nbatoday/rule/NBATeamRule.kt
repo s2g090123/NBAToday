@@ -2,7 +2,7 @@ package com.jiachian.nbatoday.rule
 
 import com.jiachian.nbatoday.HomeTeamId
 import com.jiachian.nbatoday.data.local.NBATeamGenerator
-import com.jiachian.nbatoday.models.local.team.NBATeam
+import com.jiachian.nbatoday.team.data.model.local.teams.NBATeam
 import io.mockk.every
 import io.mockk.mockkObject
 import io.mockk.unmockkObject
