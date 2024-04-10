@@ -18,6 +18,14 @@ jobs:
       - name: Check ktlint
         run: ./gradlew ktlintCheck
 
+      - name: Archive ktlint Reports
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: ktlint-report
+          path: |
+            app/build/reports/ktlint/*
+
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -43,6 +51,14 @@ jobs:
       - name: Check detekt
         run: ./gradlew detekt
 
+      - name: Archive detekt Reports
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: detekt-report
+          path: |
+            app/build/reports/detekt/detekt.html
+
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -67,6 +83,14 @@ jobs:
 
       - name: Check Android lint
         run: ./gradlew lint
+
+      - name: Archive android lint Reports
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: android-lint-report
+          path: |
+            app/build/reports/lint-results-debug.html
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
