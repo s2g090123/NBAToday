@@ -103,7 +103,7 @@ class SplashViewModel(
         themeLoaded.emit(true)
     }
 
-    private suspend fun loadUser() {
+    private suspend fun loadUser(): Unit {
         userUseCase
             .getUser()
             .firstOrNull()
@@ -111,5 +111,7 @@ class SplashViewModel(
                 userUseCase.userLogin(user.account, user.password)
             }
         userLoaded.emit(true)
+
+
     }
 }
