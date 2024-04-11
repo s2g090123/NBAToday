@@ -11,7 +11,7 @@ buildscript {
         mockk_version = '1.13.3'
         jacoco_version = '0.8.10'
         jacoco_android_version = "0.2"
-        detekt_version = "1.23.1"
+      detekt_version = "1.23.6"
         ktlint_version = "0.43.1"
         ktlint_gradle_version = "11.5.1"
         detekt_compose_plugin_version = "1.3.0"
