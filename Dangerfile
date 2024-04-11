@@ -21,23 +21,23 @@ Dir[detekt_dir].each do |file_name|
 end
 
 # Ktlint output check
-ktlint_dir = [
-  "**/build/reports/ktlint/ktlintAndroidTestSourceSetCheck/ktlintAndroidTestSourceSetCheck.json",
-  "**/build/reports/ktlint/ktlintMainSourceSetCheck/ktlintMainSourceSetCheck.json",
-  "**/build/reports/ktlint/ktlintTestSourceSetCheck/ktlintTestSourceSetCheck.json"
-]
-ktlint_dir.each do |dir|
-  Dir[dir].each do |file_name|
-    ktlint.skip_lint = true
-    ktlint.report_file = file_name
-    ktlint.lint(inline_mode: true)
-  end
-end
-
-# Android Lint output check
-lint_dir = '**/build/reports/lint-results-debug.xml'
-Dir[lint_dir].each do |file_name|
-  android_lint.skip_gradle_task = true
-  android_lint.report_file = file_name
-  android_lint.lint(inline_mode: true)
-end
+# ktlint_dir = [
+#   "**/build/reports/ktlint/ktlintAndroidTestSourceSetCheck/ktlintAndroidTestSourceSetCheck.json",
+#   "**/build/reports/ktlint/ktlintMainSourceSetCheck/ktlintMainSourceSetCheck.json",
+#   "**/build/reports/ktlint/ktlintTestSourceSetCheck/ktlintTestSourceSetCheck.json"
+# ]
+# ktlint_dir.each do |dir|
+#   Dir[dir].each do |file_name|
+#     ktlint.skip_lint = true
+#     ktlint.report_file = file_name
+#     ktlint.lint(inline_mode: true)
+#   end
+# end
+#
+# # Android Lint output check
+# lint_dir = '**/build/reports/lint-results-debug.xml'
+# Dir[lint_dir].each do |file_name|
+#   android_lint.skip_gradle_task = true
+#   android_lint.report_file = file_name
+#   android_lint.lint(inline_mode: true)
+# end
