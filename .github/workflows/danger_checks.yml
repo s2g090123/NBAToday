@@ -77,13 +77,13 @@ jobs:
       - name: Check detekt
         run: ./gradlew detekt
 
-      #      - name: Archive detekt Reports
-      #        if: always()
-      #        uses: actions/upload-artifact@v2
-      #        with:
-      #          name: detekt-report
-      #          path: |
-      #            app/build/reports/detekt/detekt.html
+      - name: Archive detekt Reports
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: detekt-report
+          path: |
+            app/build/reports/detekt/detekt.html
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
