@@ -13,7 +13,7 @@ warn("Please provide a summary in the PR description to make it easier to review
 warn("Please add labels to this PR") if github.pr_labels.empty?
 
 # Detekt output check
-detekt_dir = "**/build/reports/detekt/detekt.html"
+detekt_dir = "**/build/reports/detekt/detekt.xml"
 Dir[detekt_dir].each do |file_name|
   kotlin_detekt.skip_gradle_task = true
   kotlin_detekt.report_file = file_name
