@@ -27,7 +27,7 @@ jobs:
           gem install bundler
           bundle config set --local gemfile danger/gemfiles/GemPR
           bundle install
-          bundle exec danger --dangerfile=danger/dangerfiles/DangerPR --danger_id=pr --new-comment --remove-previous-comments
+          bundle exec danger --dangerfile=danger/dangerfiles/DangerPR --danger_id=pr
 
   ktlint:
     runs-on: ubuntu-latest
@@ -62,7 +62,7 @@ jobs:
           gem install bundler
           bundle config set --local gemfile danger/gemfiles/GemKtlint
           bundle install
-          bundle exec danger --dangerfile=danger/dangerfiles/DangerKtlint --danger_id=ktlint --new-comment --remove-previous-comments
+          bundle exec danger --dangerfile=danger/dangerfiles/DangerKtlint --danger_id=ktlint
 
   detekt:
     runs-on: ubuntu-latest
@@ -97,7 +97,7 @@ jobs:
           gem install bundler
           bundle config set --local gemfile danger/gemfiles/GemDeteKt
           bundle install
-          bundle exec danger --dangerfile=danger/dangerfiles/DangerDeteKt --danger_id=detekt --new-comment --remove-previous-comments
+          bundle exec danger --dangerfile=danger/dangerfiles/DangerDeteKt --danger_id=detekt
 
   androidLint:
     runs-on: ubuntu-latest
@@ -132,4 +132,4 @@ jobs:
           gem install bundler
           bundle config set --local gemfile danger/gemfiles/GemAndroidLint
           bundle install
-          bundle exec danger --dangerfile=danger/dangerfiles/DangerAndroidLint --danger_id=androidlint --new-comment --remove-previous-comments
+          bundle exec danger --dangerfile=danger/dangerfiles/DangerAndroidLint --danger_id=androidlint
