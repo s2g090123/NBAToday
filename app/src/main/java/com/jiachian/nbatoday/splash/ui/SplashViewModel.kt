@@ -104,6 +104,8 @@ class SplashViewModel(
     }
 
     private suspend fun loadUser() {
+
+
         userUseCase
             .getUser()
             .firstOrNull()
