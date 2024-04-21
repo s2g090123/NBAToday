@@ -20,7 +20,6 @@ Dir[detekt_dir].each do |file_name|
   kotlin_detekt.detekt(inline_mode: true)
 end
 
-Ktlint output check
 ktlint_dir = [
   "**/build/reports/ktlint/ktlintAndroidTestSourceSetCheck/ktlintAndroidTestSourceSetCheck.json",
   "**/build/reports/ktlint/ktlintMainSourceSetCheck/ktlintMainSourceSetCheck.json",
