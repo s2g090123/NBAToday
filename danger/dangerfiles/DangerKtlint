@@ -5,7 +5,7 @@ ktlint_dir = [
 ]
 ktlint_dir.each do |dir|
   Dir[dir].each do |file_name|
-    ktlint.skip_lint = true
+    ktlint.skip_lint = false
     ktlint.report_file = file_name
     ktlint.lint(inline_mode: true)
   end

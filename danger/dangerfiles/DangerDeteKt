@@ -1,6 +1,6 @@
 detekt_dir = "**/build/reports/detekt/detekt.xml"
 Dir[detekt_dir].each do |file_name|
-  kotlin_detekt.skip_gradle_task = true
+  kotlin_detekt.skip_gradle_task = false
   kotlin_detekt.report_file = file_name
   kotlin_detekt.detekt(inline_mode: true)
 end
