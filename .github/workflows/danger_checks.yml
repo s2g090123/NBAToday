@@ -90,7 +90,7 @@ jobs:
           bundle install
           bundle exec danger --dangerfile=danger/dangerfiles/DangerDeteKt --danger_id=detekt
 
-      - name: Archive detekt ReQports
+      - name: Archive detekt Reports
         uses: actions/upload-artifact@v2
         with:
           name: detekt-report

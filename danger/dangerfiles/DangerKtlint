@@ -3,9 +3,9 @@ ktlint_dir = [
   "**/build/reports/ktlint/ktlintMainSourceSetCheck/ktlintMainSourceSetCheck.json",
   "**/build/reports/ktlint/ktlintTestSourceSetCheck/ktlintTestSourceSetCheck.json"
 ]
+ktlint.skip_lint = false
 ktlint_dir.each do |dir|
   Dir[dir].each do |file_name|
-    ktlint.skip_lint = false
     ktlint.report_file = file_name
     ktlint.lint(inline_mode: true)
   end
