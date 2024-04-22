@@ -39,8 +39,8 @@ jobs:
         with:
           fetch-depth: 100
 
-      #      - name: Check ktlint
-      #        run: ./gradlew ktlintCheck
+      - name: Check ktlint
+        run: ./gradlew ktlintCheck
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
@@ -73,8 +73,8 @@ jobs:
         with:
           fetch-depth: 100
 
-      #      - name: Check detekt
-      #        run: ./gradlew detekt
+      - name: Check detekt
+        run: ./gradlew detekt
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
@@ -107,8 +107,8 @@ jobs:
         with:
           fetch-depth: 100
 
-      #      - name: Check Android lint
-      #        run: ./gradlew lint
+      - name: Check Android lint
+        run: ./gradlew lint
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
