@@ -1,21 +1,22 @@
 apply plugin: "io.gitlab.arturbosch.detekt"
 
 detekt {
-    buildUponDefaultConfig = true
-    parallel = true
-    ignoreFailures = true
-    config.setFrom("${rootProject.projectDir}/config/detekt/detekt_config.yml")
+  buildUponDefaultConfig = true
+  parallel = true
+  ignoreFailures = true
+  config.setFrom("${rootProject.projectDir}/config/detekt/detekt_config.yml")
 }
 
 tasks.named("detekt").configure {
-    reports {
-        html.required.set(true)
-        xml.required.set(false)
-        txt.required.set(false)
-        sarif.required.set(false)
-        md.required.set(false)
-        html.outputLocation.set(file("$buildDir/reports/detekt/detekt.html"))
-    }
-    // Exclude specific files
-    // exclude("**/*.kt")
+  reports {
+    html.required.set(true)
+    xml.required.set(true)
+    txt.required.set(false)
+    sarif.required.set(false)
+    md.required.set(false)
+    html.outputLocation.set(file("$buildDir/reports/detekt/detekt.html"))
+    xml.outputLocation.set(file("$buildDir/reports/detekt/detekt.xml"))
+  }
+  // Exclude specific files
+  // exclude("**/*.kt")
 }
